@@ -10,9 +10,10 @@ from .report_agent import ReportDashAgent
 from .preview_monitor_agent import PreviewMonitorAgent
 from .preview_price_agent import PreviewPriceAgent
 from .signals_price_agent import SignalsPriceAgent
-from .autopilot_account_agent import AutopilotAccountAgent
-from .autopilot_execution_agent import AutopilotExecutionAgent
-from .autopilot_pnl_agent import AutopilotPnLAgent
+# Autopilot agents removed 2026-05-08 — Tier 4 paid autopilot tier was
+# discontinued; modules were dormant (no launchd, no live import chain
+# outside the autopilot family itself). See `growth/support_agent.py`
+# is unrelated and stays.
 
 __all__ = [
     "BaseAgent", "BalanceAgent", "PriceAgent",
@@ -20,6 +21,4 @@ __all__ = [
     "MonitorDashboardAgent", "SecurityDashAgent",
     "ReportDashAgent", "PreviewMonitorAgent",
     "PreviewPriceAgent", "SignalsPriceAgent",
-    "AutopilotAccountAgent", "AutopilotExecutionAgent",
-    "AutopilotPnLAgent",
 ]
