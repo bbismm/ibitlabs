@@ -48,7 +48,31 @@ ALERT_AT_STREAK = 1   # log + ntfy on 1st mismatch
 ESCALATE_AT_STREAK = 3  # log + ntfy + iMessage
 BOOTOUT_AT_STREAK = 5   # bootout the bot
 
+# Auth-class failure thresholds — separate streak from position mismatch.
+# Reason: 2026-05-08 35h blind-flight incident. Coinbase IP allowlist edge
+# rejected calls with bare 401, swallowed by generic except → no escalation.
+# See feedback_coinbase_ip_allowlist_signature.md for the bare-401 signature.
+AUTH_ALERT_AT_STREAK = 1     # log + ntfy on 1st auth fail (60s)
+AUTH_ESCALATE_AT_STREAK = 3  # log + ntfy + iMessage (~3 min)
+AUTH_BOOTOUT_AT_STREAK = 5   # bootout sniper (~5 min) — bot can't trade anyway
+
 LOG_PREFIX = "[GHOST-WATCHDOG]"
+
+
+def _is_auth_failure(err_str: str) -> bool:
+    """Detect 401-class auth failure from exception string.
+
+    Coinbase SDK wraps HTTP errors with status code in the message. Per
+    feedback_coinbase_ip_allowlist_signature.md: bare 401 body with no
+    WWW-Authenticate header is the IP allowlist edge-rejection signature.
+    We can't see headers from the exception alone, but '401' / 'Unauthorized'
+    in the wrapped message is reliable across the SDK's error paths.
+    """
+    err_lc = err_str.lower()
+    return ("401" in err_str
+            or "unauthorized" in err_lc
+            or "invalid api key" in err_lc
+            or "permission_denied" in err_lc)
 
 
 def log(msg: str) -> None:
@@ -139,25 +163,50 @@ def read_coinbase_state() -> dict:
             "bp": bp,
         }
     except Exception as e:
-        return {"ok": False, "err": str(e)}
+        err_str = str(e)
+        return {"ok": False, "err": err_str, "is_auth_failure": _is_auth_failure(err_str)}
+
+
+def _read_state() -> dict:
+    if not WATCHDOG_STATE.exists():
+        return {}
+    try:
+        return json.loads(WATCHDOG_STATE.read_text())
+    except Exception:
+        return {}
+
+
+def _write_state(updates: dict) -> None:
+    """Read existing state, merge updates, write back. Preserves both
+    position-mismatch and auth-fail streak fields across writes."""
+    WATCHDOG_STATE.parent.mkdir(parents=True, exist_ok=True)
+    state = _read_state()
+    state.update(updates)
+    WATCHDOG_STATE.write_text(json.dumps(state, indent=2))
 
 
 def read_streak() -> int:
-    if not WATCHDOG_STATE.exists():
-        return 0
-    try:
-        return int(json.loads(WATCHDOG_STATE.read_text()).get("streak", 0))
-    except Exception:
-        return 0
+    return int(_read_state().get("streak", 0))
 
 
 def write_streak(streak: int, last_check: dict) -> None:
-    WATCHDOG_STATE.parent.mkdir(parents=True, exist_ok=True)
-    WATCHDOG_STATE.write_text(json.dumps({
+    _write_state({
         "streak": streak,
         "last_check_ts": int(time.time()),
         "last_check": last_check,
-    }, indent=2))
+    })
+
+
+def read_auth_streak() -> int:
+    return int(_read_state().get("auth_fail_streak", 0))
+
+
+def write_auth_streak(streak: int, err: str = "") -> None:
+    _write_state({
+        "auth_fail_streak": streak,
+        "auth_fail_last_ts": int(time.time()),
+        "auth_fail_last_err": err[:200],  # truncate to keep state file small
+    })
 
 
 def ntfy(title: str, body: str) -> None:
@@ -216,9 +265,44 @@ def main() -> int:
     cb = read_coinbase_state()
 
     if not cb.get("ok"):
-        # Transient API failure — log and exit non-zero, don't move streak.
-        log(f"fetch failed: {cb.get('err')!r}")
-        return 1
+        err = cb.get("err", "")
+        if cb.get("is_auth_failure"):
+            # Auth-class failure — runs its own escalation streak.
+            # Don't disturb the position-mismatch streak (different concern).
+            auth_streak = read_auth_streak() + 1
+            write_auth_streak(auth_streak, err)
+            log(f"AUTH FAIL (streak={auth_streak}): {err!r}")
+
+            if auth_streak >= AUTH_BOOTOUT_AT_STREAK:
+                msg = (f"Coinbase auth has failed {auth_streak} consecutive "
+                       f"checks (~5 min). Likely IP allowlist mismatch / key "
+                       f"revoked / clock skew. Booting out sniper. err={err!r}")
+                log(msg)
+                ntfy("[BOOTOUT] AUTH persistent", msg)
+                imessage(f"iBitLabs auth-watchdog: {auth_streak}x consecutive "
+                         f"401 - sniper bootout fired.")
+                bootout_bot()
+            elif auth_streak >= AUTH_ESCALATE_AT_STREAK:
+                msg = (f"Coinbase auth failed {auth_streak} consecutive "
+                       f"checks (~3 min). Bot may be flying blind. Check "
+                       f"IP allowlist + key validity + clock. err={err!r}")
+                log(msg)
+                ntfy("[ALERT] AUTH persistent", msg)
+                imessage(f"iBitLabs auth-watchdog: {auth_streak}x consecutive "
+                         f"401 - check Coinbase key.")
+            elif auth_streak >= AUTH_ALERT_AT_STREAK:
+                ntfy("[ALERT] AUTH first hit", f"err={err!r}")
+            return 1
+        else:
+            # Transient (network, DNS, etc.) — log only, don't move any streak.
+            log(f"fetch failed (non-auth): {err!r}")
+            return 1
+
+    # Successful fetch — reset auth_fail_streak if it was non-zero.
+    prev_auth_streak = read_auth_streak()
+    if prev_auth_streak > 0:
+        write_auth_streak(0)
+        log(f"AUTH recovered (streak reset from {prev_auth_streak})")
 
     bot_has = bot["exists"]
     api_has = cb["api_has_position"]
