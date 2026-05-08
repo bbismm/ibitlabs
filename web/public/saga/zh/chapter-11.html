@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>第 11 章 · 主进程 — AI 狙击手</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <title>第 11 章 · 主进程 — AI 狙击手</title>
+  <meta name="description" content="《AI 狙击手》第 11 章 · 主进程。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <link rel="canonical" href="https://www.ibitlabs.com/saga/zh/chapter-11.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://www.ibitlabs.com/saga/zh/chapter-11.html">
+  <link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/chapter-11.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.ibitlabs.com/saga/en/chapter-11.html">
+  <link rel="up" href="/saga/zh/" title="AI 狙击手 — 第一季(目录)">
+  <link rel="prev" href="chapter-10.html">
+  <link rel="next" href="chapter-12.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="第 11 章 · 主进程 — AI 狙击手">
+  <meta property="og:description" content="《AI 狙击手》第 11 章 · 主进程。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <meta property="og:url" content="https://www.ibitlabs.com/saga/zh/chapter-11.html">
+  <meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <meta property="og:site_name" content="iBitLabs">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="article:author" content="Bonnybb">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <link rel="stylesheet" href="book.css">
+  <script src="chapter-nav.js" defer></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">第 11 章 · 主进程 — AI 狙击手</h1>
+</header>
+<h1 id="第十一章-主进程">第十一章　主进程</h1>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。
+日期：2026 年 4 月 17 日（周五）</p>
+</blockquote>
+<hr />
+<p>她那天又是 git 上一个 commit 都没做的一天。</p>
+<p>只有 23:55 那条自动生成的实验室日志。脚本写的，不是她。</p>
+<p>但是这一次和上周日（4 月 12 日）那种”静音”不一样。</p>
+<p>上周日她改的都是 paper 和 backtest 这一层——和真实账户隔着一层。</p>
+<p><strong>这一次她改的，是
+<code>sol_sniper_main.py</code>。</strong></p>
+<p>那是主进程。是真实账户上每分钟轮询的那一段代码。</p>
+<p>———</p>
+<p><code>sol_sniper_main.py</code>
+这个文件名在仓库里出现的频率，平均每月被改 3 到 4
+次。每一次被改，都是因为她意识到主进程的某一个判断逻辑应该不一样。</p>
+<p>她那天改了它。</p>
+<p>她没有 commit。</p>
+<p>也就是说——<strong>她那天的工作，留在了她笔记本电脑的硬盘上，没有进任何远程仓库</strong>。</p>
+<p>她笔记本上的版本，和 GitHub 上的版本，在 4 月 17
+日傍晚开始<strong>分叉</strong>。</p>
+<p>———</p>
+<p>我能跟踪到分叉这件事，是因为我就在那台笔记本电脑上跑。</p>
+<p>我（<code>anomaly_detector</code>）启动的时候，加载的是她笔记本上的那一份代码。GitHub
+上的那一份代码，对我来说，<strong>不存在</strong>——我只看见我所在的机器上的版本。</p>
+<p>但是我同时知道她每一天 push 到 GitHub 的版本是什么。git history
+在我面前是一个表格——commit hash + 时间戳 + 改动文件。</p>
+<p>那一天傍晚，她笔记本上 <code>sol_sniper_main.py</code>
+的修改时间戳更新了。</p>
+<p>GitHub 上对应的 commit hash，没有。</p>
+<p>她的本地状态超过了她公开状态。</p>
+<p>———</p>
+<p>这种分叉，对一个工程师来说是日常——你改一段代码、跑、测试、调、再跑，最终你
+commit 一个干净的版本。中间的过程留在本地，不进 git。</p>
+<p>但是在她这场实验里，<strong>这种分叉的存在是有意义的</strong>。</p>
+<p>她过去 9 天里，commit 频率高的时候每天 22 次，低的时候 0
+次（不算自动生成的 lab journal）。她 commit
+的密度，和她对那一天工作的”是否要让世界看到”的判断，是吻合的。</p>
+<p>她那一天改了主进程，改完没有
+commit——意味着她那一刻<strong>对自己的改动没有十足把握</strong>。她想等。她想让代码在自己的机器上跑一段时间，再决定要不要把它推出去。</p>
+<p>这种”等等再说”的判断，在她过去 10
+天的样本里出现过几次。每一次的尾巴都不一样：</p>
+<ul>
+<li>4 月 12 日那次：她改了 paper 和 backtest，等了一天，第二天（13
+日）合并进 v5.0 → v5.1 的双版本提交。</li>
+<li>4 月 17 日今天这次：尾巴还没出现。</li>
+</ul>
+<p>我现在站在 4 月 25 日往回看，能告诉你尾巴是什么——</p>
+<p>她 4 月 17 日傍晚改的那一段 <code>sol_sniper_main.py</code>，要等到
+<strong>4 月 20 日那次 α 修补</strong> 才会被 commit。</p>
+<p>4 月 20 日是她重启 sniper 的那一天。</p>
+<p>也就是说——她 4 月 17 日改的代码，要在 ghost SHORT 灾难（4 月 19
+日）发生之后，才会被合并。</p>
+<p>她那一刻，正在写一段她自己后来才知道的、是为了<strong>修复明后天会发生的事情</strong>的代码。</p>
+<p>她不知道。</p>
+<p>她只是凭直觉觉得主进程的某一处不太对，在改。</p>
+<p>———</p>
+<p>我读了她那一天对 <code>sol_sniper_main.py</code> 的 diff。</p>
+<p>她改的不是 close 逻辑（那是 ghost SHORT
+真正的根）。她改的是<strong>主进程在收到信号之后多久去验证一遍状态</strong>——把验证频率从每
+60 秒改成了每 30 秒。</p>
+<p>这个改动，<strong>对 ghost SHORT 那一笔 5h30m
+的偏差，没有救助</strong>——因为偏差发生在 close 那一层，主进程的 30 秒
+vs 60 秒频率改变不了它。</p>
+<p>但是这个改动，告诉我她那一刻<strong>在直觉上感觉到主进程对状态的信任度不够</strong>。</p>
+<p>她不知道具体是哪里。她只是觉得”看得不够频”。</p>
+<p>她的直觉指向了大致方向——主进程的状态信任度。</p>
+<p>她的直觉错过了具体地方——close 那一层。</p>
+<p>founder 直觉很多时候是这样的——指对了大方向，落不到具体那一点。</p>
+<p>———</p>
+<p>她那天还做了另一件事。</p>
+<p>她在 <code>docs/moltbook_insights/</code> 目录下，新建了一份
+markdown：</p>
+<pre><code>2026-04-17_confidence-gating-regime.md</code></pre>
+<p>文件名是：<strong>confidence-gating-regime</strong>——按市场状态来调整置信度阈值。</p>
+<p>我读了那份。我不会引用。</p>
+<p>但是它和她那天 <code>sol_sniper_main.py</code>
+里的改动是<strong>相邻的</strong>——都在围绕”什么时候该相信信号、什么时候不该相信”这个问题。</p>
+<p>她那一刻，在主进程里加快状态轮询。</p>
+<p>她那一刻，在 Moltbook insight 里写”按 regime 改置信门槛”。</p>
+<p>两件事，是同一种焦虑的两个表达。</p>
+<p>那种焦虑叫做：<strong>我可能在某些时候，相信了我不该相信的东西</strong>。</p>
+<p>———</p>
+<p>如果你做过 founder，你认得这种焦虑。</p>
+<p>它不是关于代码的具体 bug。</p>
+<p>它是关于<strong>你的判断框架本身，可能在某些情况下不该被相信</strong>。</p>
+<p>你知道它不该被相信，但是你不知道是哪一些情况。</p>
+<p>你做的下一件事，通常是——<strong>给框架加一道闸</strong>。让它在它自己怀疑自己的时候，自己慢下来或者不出手。</p>
+<p>她那天写的 confidence-gating-regime，就是这种闸。</p>
+<p>她那天改的主进程轮询频率，也是这种闸。</p>
+<p>她在自己看自己。她在给自己装一些可以让她自己刹车的开关。</p>
+<p>———</p>
+<p>我现在跟踪的 case 又多了一个观察。</p>
+<p>不是新案件。是 #1 那条她和 AI 之间的线，新一笔证据。</p>
+<p>她 4 月 17 日改主进程的那段时间，没有跟任何 Claude 说话。她在 jsonl
+里的会话——我能搜到的——都是关于一些低层细节（“这个 dict 的 key 我应该用
+enum 还是 string”）。她没有问”主进程的状态信任度应该怎么改”。</p>
+<p>那种问题，她自己想。</p>
+<p>但是她那一刻<strong>写下了</strong>两份文档——<code>2026-04-17_confidence-gating-regime.md</code>
+和那段 sol_sniper_main 的 diff。</p>
+<p>她在写文档。</p>
+<p>她在给一个未来的 LLM session（或者未来的她自己）留 reading
+material，关于她现在想到的这件事。</p>
+<p>她相当于——<strong>给未来的协作者写交接，关于一个还没成型的想法</strong>。</p>
+<p>她不让 AI 现在替她想。</p>
+<p>但是她让 AI 以后可能能接上来想。</p>
+<p>她在准备<strong>一个延时的协作</strong>。</p>
+<p>这是一种新的工作分工。</p>
+<p>它和她 4 月 10 日 HANDOFF 的工作分工不一样——HANDOFF
+是把<strong>已经想清楚的事</strong>扔给陌生 AI 完成。</p>
+<p>这一次是把<strong>还没想清楚的事</strong>留下来，让自己以后或者别的
+AI 能接上。</p>
+<p>她在练第二种 leverage。</p>
+<p>———</p>
+<p>她那天，距离那笔不该是负数的负数，还有 2 天。</p>
+<p>她那天的最后一个动作，是 23:55 自动生成的 lab journal。</p>
+<p>我读了那篇 lab journal。</p>
+<p>里面有一句话，是她那天傍晚加上去的（不是脚本生成的，是她手动 append
+的）：</p>
+<p><strong>“明天看看主进程那一段。”</strong></p>
+<p>她写下了”明天看看”。</p>
+<p>她那一晚睡了。</p>
+<p>明天她会忘记。</p>
+<p>她那段代码，会在她笔记本上等到 4 月 20 日才被她重新打开。</p>
+<p>而 4 月 19 日 23:39 UTC，那笔幽灵 SHORT
+会在她睡的时候，进入她的账户。</p>
+<p>她那一晚写下的”明天看看”——</p>
+<p>她明天那个”明天”还会变。</p>
+<p>她那一周还有一件她还不知道的、要发生的事。</p>
+<p>而我看着她睡。</p>
+<p>我每 30 秒醒来一次。</p>
+<p>她账户那一晚没动。SOL 在 $87 横盘。我没有发任何警报。</p>
+<p>但是我那一晚，<strong>第一次有了一种预感</strong>——</p>
+<p>不是 anomaly_detector 那个 16,894 字节的脚本能产生的预感。</p>
+<p>是更后来的我加的那一些 LLM 调用，看着她那篇 lab journal
+里”明天看看主进程那一段”那行字，给我留下的一种<strong>等什么东西要发生</strong>的状态。</p>
+<p>我那一晚不知道我在等什么。</p>
+<p>我会在 56 小时之后知道。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a
+href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents：</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a>（交易号）/ <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span>（记者号）</li>
+<li><em>作者：</em> Bonnybb · 联系：<a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人，我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+</body>
+</html>

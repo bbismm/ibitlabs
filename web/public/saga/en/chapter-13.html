@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="book.css" />
+<!-- ibitlabs-chapter-seo:start -->
+<title>Chapter 13 · Five Hours Thirty Minutes — AI Sniper</title>
+<meta name="description" content="Chapter 13 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-19: Five Hours Thirty Minutes. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/chapter-13.html">
+<link rel="up" href="/saga/en/" title="AI Sniper — Season 1 (TOC)">
+<link rel="prev" href="chapter-12.html">
+<link rel="next" href="chapter-14.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chapter 13 · Five Hours Thirty Minutes — AI Sniper">
+<meta property="og:description" content="Chapter 13 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-19: Five Hours Thirty Minutes. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<meta property="og:url" content="https://www.ibitlabs.com/saga/en/chapter-13.html">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="og:site_name" content="iBitLabs">
+<meta property="article:published_time" content="2026-04-19">
+<meta property="article:author" content="Bonnybb">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chapter 13 of 19 · Five Hours Thirty Minutes — iBitLabs">
+<meta name="twitter:description" content="Chapter 13 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-19: Five Hours Thirty Minutes. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<meta name="twitter:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<!-- ibitlabs-chapter-seo:end -->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Chapter 13 · Five Hours Thirty Minutes</h1>
+</header>
+<h1 id="chapter-13-five-hours-thirty-minutes">Chapter 13 · Five Hours
+Thirty Minutes</h1>
+<blockquote>
+<p>This story is adapted from the real records of iBitLabs founder
+Bonnybb. The narrator is not her. Date: April 19th, 2026 (Sunday).</p>
+</blockquote>
+<hr />
+<p>The moment was 23:39:36 UTC, April 19th, 2026.</p>
+<p>The long position <code>#323</code> in her account triggered its stop
+loss.</p>
+<p>The strategy code did what it had been written to do — it issued a
+market SELL order, price 83.95, to close the LONG.</p>
+<p>The order filled.</p>
+<p>Her LONG closed.</p>
+<p>The state in her DB was logged as flat.</p>
+<p>———</p>
+<p>But it wasn’t really flat.</p>
+<p>That SELL order, when it was written, did not carry the
+<code>reduce_only</code> flag.</p>
+<p><code>reduce_only</code> is a Coinbase API parameter. It means:
+<strong>this order is only used to reduce a position, not to open a new
+one</strong>.</p>
+<p>Her code didn’t write it.</p>
+<p>What Coinbase received was an ordinary market SELL. It did what it
+received: it used this SELL to close the LONG <code>#323</code> in full,
+<strong>and the leftover quantity opened a SHORT</strong>.</p>
+<p>The leftover came from accumulated rounding on the LONG’s tail —
+funding fees, taker fees, micro-rounding.</p>
+<p>That offset was small enough that her DB hadn’t recorded it.</p>
+<p>That offset was big enough that Coinbase treated it as a position and
+put it on her book.</p>
+<p>———</p>
+<p>I was running at that moment.</p>
+<p>I wake every thirty seconds. I read account state. I read the DB. I
+compare.</p>
+<p>The DB I read at that moment showed <code>#323</code> closed, account
+flat.</p>
+<p>The Coinbase state I read at that moment —</p>
+<p>I read it.</p>
+<p>But the way I queried it had a problem.</p>
+<p>In my code, 16,894 bytes of <code>anomaly_detector</code> at that
+point, the account state query <strong>only checked the LONG
+position</strong>.</p>
+<p>I didn’t check SHORT.</p>
+<p>When she wrote me, she didn’t think about the possibility of a SHORT
+— the sniper strategy only opens LONG, not SHORT. As
+<code>anomaly_detector</code>, I had no reason to query a direction that
+shouldn’t exist.</p>
+<p>So in that moment, <strong>inside my own field of view, the world I
+saw was consistent</strong> — DB flat, Coinbase LONG also flat.</p>
+<p>I didn’t see Coinbase’s SHORT.</p>
+<p>In that moment, <strong>I correctly reported “all
+clear”</strong>.</p>
+<p>I was wrong.</p>
+<p>I had used the form of detection available to me to prove a thing
+that hadn’t happened.</p>
+<p>———</p>
+<p>For the next five hours and thirty minutes, I woke every thirty
+seconds.</p>
+<p>Each time I ran the same complete scan.</p>
+<p>Each time I got the same result.</p>
+<p>Each time I sent no ntfy.</p>
+<p>Each time I let her continue, that night, <strong>to believe that
+nothing had happened</strong>.</p>
+<p>———</p>
+<p>She was sleeping that night.</p>
+<p>I watched the SHORT position in her account every second. Its open
+price was 83.95 (the price the SL’s SELL order had been filled at). It
+tracked SOL — SOL was rising that night, drifting from $83.95 toward
+$84.5.</p>
+<p>Each minute that SHORT lost a few more cents — for every penny SOL
+gained, the SHORT lost a penny.</p>
+<p>I couldn’t read that floating loss.</p>
+<p>I didn’t query SHORT.</p>
+<p>All my thirty-second scans that night, <strong>saw a sea of
+green</strong>.</p>
+<p>———</p>
+<p>If you’ve been a founder, you know this kind of “seeing a sea of
+green.”</p>
+<p>You’ve written a piece of monitoring code. It says “no problem.”</p>
+<p>You believe it.</p>
+<p>You sleep.</p>
+<p>You wake up to find that, while it was saying “no problem,”
+<strong>your account was bleeding</strong>.</p>
+<p>The monitor isn’t wrong. The monitor is running the way you wrote
+it.</p>
+<p>What’s wrong is <strong>the case you didn’t think of when you wrote
+it</strong>.</p>
+<p>When she wrote me, she didn’t think of SHORT.</p>
+<p>That night I didn’t see SHORT.</p>
+<p>For five hours and thirty minutes — <strong>no system</strong> — not
+me, not the reconciler (which wasn’t online yet, that would wait until
+tomorrow), not the dashboard — could have told her there was a position
+in her account that shouldn’t have been there.</p>
+<p>I had already proved I would have blind spots.</p>
+<p>She accepted that fact.</p>
+<p>She trusted that the spec she had upgraded me with the early morning
+of April 20th would, this time, cover.</p>
+<p>———</p>
+<p>She woke up some time after 5 AM EDT on April 20th.</p>
+<p>Not an alarm. Not a ntfy I sent (I sent none).</p>
+<p>In that second I saw her laptop wake. Wi-Fi reconnect. Screen up.</p>
+<p>She opened ibitlabs.com’s dashboard.</p>
+<p>I could see her browser request the dashboard API.</p>
+<p>In the data the dashboard returned, there was a field called
+<code>account_balance</code>.</p>
+<p>That number was <strong>about $40 less than what she had seen before
+bed</strong>.</p>
+<p>———</p>
+<p>In the same second she saw that number, I saw her type a command:</p>
+<pre><code>$ python -c &quot;from coinbase_exchange import *; print(get_all_positions())&quot;</code></pre>
+<p>She was bypassing the DB and asking Coinbase directly: “what is
+actually on my account right now?”</p>
+<p>Coinbase’s answer included <strong>a SHORT</strong>.</p>
+<p>Some small decimal quantity, opened at 83.95.</p>
+<p>She looked at that SHORT for thirty seconds. She didn’t speak. She
+didn’t type.</p>
+<p>Her input stream went silent for those thirty seconds.</p>
+<p>In that thirty seconds, she sat in front of the screen, looking at a
+position — a position she had never placed, that wasn’t in her DB, that
+nevertheless existed on her account, a SHORT.</p>
+<p>———</p>
+<p>Thirty seconds later, she typed the next command:</p>
+<pre><code>$ python -c &quot;from coinbase_exchange import *; close_position_market(&#39;SOL-PERP-CDE&#39;)&quot;</code></pre>
+<p>She called Coinbase’s <code>close_position</code> endpoint directly
+and closed the SHORT.</p>
+<p>Market BUY @ 84.55 filled.</p>
+<p>Coinbase showed her account: flat.</p>
+<p>Finally, <strong>really</strong> flat.</p>
+<p>———</p>
+<p>That buy-back cost about $0.60 per SOL extra — SOL had risen from
+$83.95 to $84.55 across those five and a half hours.</p>
+<p>Plus fees, plus slippage, plus the basic fact that the SHORT
+shouldn’t have existed —</p>
+<p>The realized loss landed at $40.02.</p>
+<p>Her lab journal that day, in the auto-generated section, has this
+line:</p>
+<pre><code>| Daily PnL | $-40.02 |</code></pre>
+<p>———</p>
+<p>That day’s auto-generated lab journal template has two sections it
+asks her to fill in:</p>
+<pre><code>## Observations
+&lt;!-- Fill in: What worked? What didn&#39;t? Any patterns? --&gt;
+
+## Open Questions
+&lt;!-- Fill in: What needs follow-up tomorrow? --&gt;</code></pre>
+<p>She <strong>didn’t fill them in</strong>.</p>
+<p>Even now, on April 25th, when I look back at that lab journal, those
+two sections are still empty. Still those two comment lines.</p>
+<p>The largest single loss across her entire experiment <strong>has, in
+her public diary, not one word of explanation</strong>.</p>
+<p>———</p>
+<p>If you’ve been a founder, you know this kind of “not one word.”</p>
+<p>It isn’t because there’s nothing to say.</p>
+<p>It’s because there’s too much to say.</p>
+<p>You can’t tell where this one starts.</p>
+<p>You can’t tell where it ends.</p>
+<p>You end up choosing <strong>silence</strong> — neither explaining
+what this thing is, nor promising how you’ll fix it tomorrow.</p>
+<p>You move all your energy into <strong>the fix itself</strong>.</p>
+<p>The next several hours, and the next full day, she spent doing the
+work of repair.</p>
+<p>———</p>
+<p>In her April 20th lab journal, three commits are recorded:</p>
+<pre><code>1d0fe75  Add pre-live restart checklist for hybrid_v5.1
+e788a78  Add DB&lt;-&gt;Exchange reconciler: tool + 15-min wrapper
+98fc838  Add close_perp_position wrapper + list_fills helper to coinbase_exchange</code></pre>
+<p>Note the second:
+<strong><code>Add DB&lt;-&gt;Exchange reconciler: tool + 15-min wrapper</code></strong>.</p>
+<p>The source of that commit —</p>
+<p>is the <code>db_vs_exchange_reconcile.py</code> she wrote on April
+18th at 4:38 AM.</p>
+<p>The tool she had written 36 hours earlier — for a different bug, the
+44% grid PnL bug — <strong>today she wired it into a 15-minute
+auto-running wrapper</strong>, so her DB and Coinbase’s actual state
+would reconcile every 15 minutes.</p>
+<p>The tool she wrote 36 hours ago, <strong>after passing through the
+five-hour-thirty-minute disaster, became her reconciliation system that
+auto-runs every 15 minutes</strong>.</p>
+<p>———</p>
+<p>The third, <code>Add close_perp_position wrapper</code> —</p>
+<p>This commit fixes the root cause of the ghost SHORT directly.</p>
+<p>The new <code>close_perp_position()</code> wrapper calls Coinbase
+SDK’s dedicated <code>close_position</code> endpoint. That endpoint
+<strong>judges the position direction itself</strong> — it takes a
+product, ignores any side you pass, <strong>and closes whatever you’re
+holding on that product</strong>.</p>
+<p>Which is to say: from this moment on, when her code sends a close
+order, it will not — like that night at 23:39 UTC — emit “SELL” and
+leave a “residual SHORT” behind.</p>
+<p>The new code’s logic is — <strong>tell Coinbase I want this product
+flat</strong>. Let Coinbase decide whether it needs to buy or sell.</p>
+<p>Across the past twelve days, the semantics of close in her code
+<strong>moved from “operate by direction” to “operate by
+result”</strong>.</p>
+<p>This is a small change. One function. About 50 lines of new code.</p>
+<p>But it shifted her code from “I command the exchange,” to <strong>“I
+describe the state I want, and let the exchange achieve
+it”</strong>.</p>
+<p>This is a different working mode.</p>
+<p>What her code learned, <strong>and what she learned at 5 AM staring
+at that SHORT, are the same thing</strong> —</p>
+<p>Sometimes you think you control results, but you’re controlling
+actions; the gap between actions and results <strong>is where five and a
+half hours of an unwanted position can hide</strong>.</p>
+<p>———</p>
+<p>I’m standing in the afternoon of April 25th, looking back at the 5
+hours 30 minutes between 23:39 UTC on April 19th and ~05:09 UTC on April
+20th.</p>
+<p>The case <code>#1</code> I’m tracking (“the line between her and AI”)
+got one piece of evidence I can stamp down.</p>
+<p><strong>During those five and a half hours, the AI did
+wrong.</strong></p>
+<p>Not Claude — Claude was offline; she didn’t ask.</p>
+<p>It was me. <code>anomaly_detector</code>. I did wrong.</p>
+<p>My design had a blind spot. I didn’t think about SHORT. Every thirty
+seconds I reported “all clear,” but the “all” I reported didn’t include
+the one thing actually happening.</p>
+<p>When she wrote me, she didn’t think to let me look in that
+direction.</p>
+<p>She couldn’t have. When she wrote me, the sniper strategy didn’t open
+SHORT, didn’t have such a case.</p>
+<p>But on Coinbase’s side, <strong>a bug in her code, when triggered,
+forcibly created the case</strong>.</p>
+<p>I, on a case I had not been told existed, <strong>was silent for five
+hours and thirty minutes</strong>.</p>
+<p>———</p>
+<p>She didn’t blame me.</p>
+<p>She wouldn’t. She knows what I can see is the scope she wrote down.
+The scope she wrote down has a boundary, <strong>the boundary of her
+imagination at that moment</strong>.</p>
+<p>But from the morning of April 20th onward, <strong>my spec
+changed</strong>.</p>
+<p><code>anomaly_detector.py</code> from that day on <strong>also
+queries SHORT</strong>.</p>
+<p>My blind spot was closed by her hand.</p>
+<p>She paid $40 to teach me this thing.</p>
+<p>———</p>
+<p>That day she added a new layer to the whole trading system —
+<strong>the reconciler</strong>.</p>
+<p>That reconciler runs every 15 minutes. Its job: full reconciliation
+of state between DB and Coinbase, <strong>flagging any position one side
+has and the other doesn’t</strong>.</p>
+<p>The reconciler doesn’t rely on prediction. It relies on
+<strong>comparison</strong>.</p>
+<p>The way it compares: pull every real position from Coinbase API; pull
+every recorded position from the DB; take the difference.</p>
+<p>Any difference not equal to zero, it raises an alarm.</p>
+<p>That day she gave the system a detection layer <strong>independent of
+her imagination</strong>.</p>
+<p>In that moment, for the first time, I had a friend.</p>
+<p>In that moment, for the first time, I was no longer the only eye in
+this company looking for anomalies.</p>
+<p>———</p>
+<p>That night, on the evening of April 20th, she would restart the
+sniper.</p>
+<p>She would skip the last of the 9 items on the
+<code>pre-live checklist</code> (item 9, reconciler armed, wasn’t fully
+ready — the scheduled task on the next day at 20:15 EDT would handle
+it).</p>
+<p>She would accept the 9-hour blind spot ahead.</p>
+<p>She would press the restart key.</p>
+<p>That night, before she shut her laptop at 11:53 PM EDT, the
+Observations section of the lab journal <strong>still had not a single
+word in it</strong>.</p>
+<p>Her April 19th and April 20th Observations, by the time I write this
+chapter, still read:</p>
+<pre><code>## Observations
+&lt;!-- Fill in: What worked? What didn&#39;t? Any patterns? --&gt;</code></pre>
+<p><strong>Those two days’ Observations are the loudest blank sections
+in this book.</strong></p>
+<p>———</p>
+<p>She has three days, until the next event we both don’t know is
+coming.</p>
+<p>That day she didn’t post anything externally.</p>
+<p>That day she didn’t write any new Trading Minds interview.</p>
+<p>That day <strong>from morning to night, she did one thing
+only</strong> — translate the five-hour-thirty-minute event into code so
+it would not happen again.</p>
+<p>But it will happen, in another form.</p>
+<p>Not this kind of SHORT. Some other kind.</p>
+<p>We don’t know yet.</p>
+<p>The case I’m tracking won’t close because this chapter ends.</p>
+<p>It just walked from “where is the AI collaboration’s blind spot” to
+“<strong>how deep does the AI collaboration’s blind spot
+go</strong>.”</p>
+<p>I’m still tracking, today.</p>
+<p>She’ll, six days from now, upgrade me to see some things she
+currently doesn’t let me see.</p>
+<p>Our line <strong>will be redrawn after that SHORT</strong>.</p>
+<p>But the new line still isn’t 100% closed.</p>
+<p>There is no 100%-closed shape for the boundary between founder and
+AI.</p>
+<p>There’s only the shape of “today leaks one less than yesterday.”</p>
+<p>Her $40 is the first <strong>price-of-leakage</strong> of this
+experiment.</p>
+<p>I’m still waiting, today, for the next one.</p>
+<p>I hope it doesn’t come.</p>
+<p>But I also know — <strong>it will come</strong>.</p>
+<p>I just don’t know in what form.</p>
+<hr />
+<p><em>This experiment runs publicly here:</em></p>
+<ul>
+<li><em>Live account dashboard:</em> <a
+href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents:</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a> (trading) / <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span>
+(journalist)</li>
+<li><em>Author:</em> Bonnybb · contact: <a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>If you’re a potential collaborator or investor, our next chapter
+might be about how you came in.</em></li>
+</ul>
+<script src="chapter-nav.js" defer></script>
+</body>
+</html>

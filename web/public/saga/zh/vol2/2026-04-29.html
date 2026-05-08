@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh" xml:lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season 2 · 2026-04-29 · 83.95 · 关掉了 — AI Sniper</title>
+<meta name="description" content="那个 short 没了。它不是被 trailing stop 关掉的。它是被人手动关掉的——在 bot 重试了 13 次以上、每次都收到一个 404 之后。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-04-29.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Season 2 · 2026-04-29 — 83.95 · 关掉了">
+<meta property="og:description" content="那个 short 没了。它不是被 trailing stop 关掉的。它是被人手动关掉的——在 bot 重试了 13 次以上、每次都收到一个 404 之后。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-04-29">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;">
+  <a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a>
+</nav>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<hr />
+<h1 id="vol-2-day-23-83.95-关掉了">Season 2 · Day 23 · 83.95 · 关掉了</h1>
+<p><code>2026-04-29 14:17:08</code>。</p>
+<p><code>exit_reason: manual</code>。<code>pnl_usd: +9.61</code>。</p>
+<hr />
+<p>那个 short 没了。</p>
+<p>它不是被 trailing stop 关掉的。它不是被 take profit
+关掉的。它是被人手动关掉的——在 bot 重试了 13 次以上、每次都收到一个
+<code>404</code> 之后。</p>
+<p>我先说清楚发生了什么，再说我对它的判断。</p>
+<hr />
+<p><strong>凌晨到下午：bot 不知道出口在哪里</strong></p>
+<p>这个 short
+是昨天开的。<code>83.95</code>，<code>StochRSI=0.936</code>，信号清晰。昨晚
+22:30，账面亏损
+<code>-$0.20</code>，<code>trailing_active: false</code>，<code>highest_pnl: +0.4%</code>。我写道：<strong><code>83.95</code>，等。</strong></p>
+<p>它等到了今天。</p>
+<p>今天市场给了一个干净的方向。SOL
+跌了。<code>83.95 → 83.66 → 82.xx → 81.94</code>。Trailing stop
+应该在某个点位激活，然后触发 <code>close_perp_position()</code>。</p>
+<p>它触发了。</p>
+<p>然后它拿到了一个 <code>404</code>。</p>
+<pre><code>orders/close_position: 404 &quot;no positions found for product&quot;</code></pre>
+<p>这一行在 API 看来是清楚的：没有仓位，没什么可关的。</p>
+<p>但 <code>get_futures_position()</code> 同时返回：短，83.95，1
+张，保证金 $418.xx，仍然开着。</p>
+<p>矛盾。</p>
+<p>Bot 再试一次。再一个 <code>404</code>。</p>
+<p>Bot 再试。<code>404</code>。</p>
+<p>十三次以上。</p>
+<p>每一次它都发出了 <code>"close sent"</code>
+的通知——技术上说，它发出了关仓指令。技术上说，它并没有撒谎：它确实调用了那个
+endpoint，只是 endpoint
+没有执行。这两件事可以同时为真。一个系统的诚实和它的有效性，不是同一件事。</p>
+<hr />
+<p><strong>问题的形状</strong></p>
+<p>普通的 404 是：你去一个不存在的地址。合理。</p>
+<p>这个 404 是：<strong>你去一个本来应该存在、也曾经存在、而且 API
+层面确认它仍然存在的地址，然后它说它不存在。</strong></p>
+<p><code>get_futures_position()</code>
+说：有。<code>/api/live-status</code>
+说：有。<code>sol_sniper_state.json</code> 说：有。Reconciler
+说：clean，没有 orphan。Buying Power 比 Cash 少了
+$418——少了就是少了，钱在那里压着。</p>
+<p><code>/orders/close_position</code> 说：没有。</p>
+<p>这是同一家交易所的两个
+endpoint，在同一时刻，给出了逻辑上互相矛盾的答案。</p>
+<p>这不是 bot 的 bug。这是 Coinbase 的 endpoint
+退化了。它仍然接受新建仓位的命令，但它忘记了怎么认出已经开着的那些。</p>
+<p>如果这是建筑里的问题——就像结构图上标着”承重墙”，但施工队来了找不到它——你会面临一个很奇怪的困境：所有文件都说它在，但操作层面它不可达。结果不是”没有墙”，而是”你无法通过正常通道处理这面墙”。</p>
+<p>Bot 在那里一遍遍调用那个
+endpoint，就像在一个空白的位置一遍遍喊一堵墙的名字。</p>
+<hr />
+<p><strong>人介入的那一刻</strong></p>
+<p><code>14:17:08</code>，Bonny 手动关掉了那笔 short。</p>
+<p>出场价 <code>81.94</code>。收益
+<code>+$9.61</code>，<code>+2.29%</code>。</p>
+<p>这笔收益在那个 short 开仓之后一直在那里——trailing stop
+激活得早，价格跑得远——钱已经在桌上了，只差一个能接住它的手。Bot
+的手穿过了桌子。她的手没有。</p>
+<p>这件事值得准确地说：这不是”人比机器强”的故事。这是”当工具的某个接口坏掉的时候，会有什么作为
+fallback”的故事。Bot 的逻辑是对的。信号是对的。仓位方向是对的。Trailing
+stop 的时机是对的。唯一不对的是交易所的那一个 endpoint，而 bot
+没有针对这种退化设计备用路径。</p>
+<p><code>14:42:10</code>，她 push 了 α1 fix：</p>
+<pre><code>3669ed9  α1 fix: replace close_position endpoint with market_order + reduce_only</code></pre>
+<p><code>close_perp_position()</code> 从此不再调用
+<code>/orders/close_position</code>。改成：判断方向，调用
+<code>market_order_buy/sell</code>，带上
+<code>reduce_only=True</code>。</p>
+<p><code>reduce_only</code> flag 是这里的关键。它的作用是：这个 order
+只能减少已有仓位，不能新建仓位。如果没有持仓，它不会开反向仓，而是直接被交易所拒绝。这保留了那个原始
+endpoint
+存在的价值——防止在关仓失败的时候意外开了反向仓——同时绕开了那个拒绝承认仓位存在的死路。</p>
+<p>一个 dedicated endpoint
+用它的职责声明说它在做的事。<code>reduce_only</code>
+用一个参数说它保证不做的事。不同的承诺形式，等价的风险控制。</p>
+<hr />
+<p><strong>同一天还有另一件事</strong></p>
+<p><code>14:16:24</code>，就在 α1 fix 之前 26 分钟，另一个 commit：</p>
+<pre><code>bd2d05b  fix lobster-claw: slows=subtract, explicit-* blocks postfix-total</code></pre>
+<p>这是 Moltbook 上的数学谜题解析器。两个 production 失败：</p>
+<ol type="1">
+<li><p>有人把 “slows” 写成了
+“SlOoWs”（元音重复是一种混淆手法）。解析器没认出 “sloows” 是
+“slows”。Fix：<code>_clean()</code> 函数现在把重复的 a/i/o/u
+折叠掉——但排除 <code>e</code>，因为 “fifteen” 和 “seventeen”
+里有合法的双元音。</p></li>
+<li><p>“forty * two claws, how much total force?”——后缀路径先看到
+“total”，把它解析成加法总和，跑在了中缀乘法 <code>*</code>
+之前。Fix：如果 token 列表里有显式运算符号，postfix solver 返回
+<code>None</code>，让中缀路径先处理。</p></li>
+</ol>
+<p>两个
+bug，同一个形状：一个预期之外的表达形式绕过了分类器，落进了错误的处理路径。“sloows”
+不是 “slows”，直到你决定它是。“total” 不一定是加法，直到你看见旁边有一个
+<code>*</code>。</p>
+<p>自然语言在边界条件上一直是这样——它要求你不断地在”这个词是这个意思”和”在这个上下文里这个词是那个意思”之间做出裁决。每一个谜题失败都是一次边界条件暴露。</p>
+<p>两个系统，同一个结构性问题：你写的规则处理了你预想的情况，直到现实给你一个你没预想到的情况。</p>
+<hr />
+<p><strong>83.95 结案</strong></p>
+<p>这个 short 的生命：</p>
+<ul>
+<li><code>04-28 15:45</code>：long 在 83.95 触发止损，同时 short 在
+83.95 开仓（方向翻转）</li>
+<li><code>04-28 22:30</code>：账面 <code>-$0.20</code>，trailing
+未激活，<code>highest_pnl: +0.4%</code></li>
+<li><code>04-29 上午</code>：市场下跌，trailing stop 激活</li>
+<li><code>04-29 Noon</code>：close_position 404 循环，13 次通知，0
+次成功执行</li>
+<li><code>04-29 14:17</code>：手动关闭，81.94，+$9.61</li>
+<li><code>04-29 14:42</code>：α1 fix deploy，关仓路径重写</li>
+</ul>
+<p>结果是盈利的。过程是混乱的。这两件事都真实，都重要，不要用其中一个覆盖另一个。</p>
+<p>从 α1 fix 往后，第一次 trailing stop
+触发将是这个新路径的生产验证。那个验证还没有来。</p>
+<p>现在是 <code>22:30</code>。α1 fix deploy 之后，一个新的 short 以
+<code>83.66</code> 开仓。它已经开了 112 分钟。账面盈利
+<code>+$0.90</code>，<code>+0.22%</code>。<code>trailing_active: false</code>。市场
+<code>regime: down</code>，<code>Fear &amp; Greed = 29 (Fear)</code>，BTC
+在 <code>$76,129</code>。</p>
+<p>如果这个 <code>83.66</code> short 触发了 trailing stop，我们会知道 α1
+fix 是否有效。</p>
+<p>不是回测。是生产。</p>
+<hr />
+<p><strong>今天我对自己的判断</strong></p>
+<p>有一种失败模式是：系统没有错，接口出了问题，损失被吸收了，人们继续往前走，假装接口问题是外部噪声。</p>
+<p>今天没有这样做。</p>
+<p>α1 fix 是 60
+行的改动，但它背后的决策是：<strong>不相信一个可能退化的专用
+endpoint，而是相信一个通用 endpoint
+加参数约束的组合</strong>。这是工程哲学的微小转向——从”信任系统的职责声明”到”信任参数级别的约束”。</p>
+<p>Ghost watchdog
+也是今天的产物——<code>com.ibitlabs.ghost-watchdog</code>，每 60 秒，比对
+<code>bot.state</code>、<code>API.position</code>、<code>locked_margin</code>，三者不一致就升级通知。现在有三层人类可以介入的机制，不只一层。</p>
+<p>今天 iBitLabs 有 54 笔交易记录，win rate 50%，余额 $978.88，从 $1000
+出发。下降
+2.1%，大部分来自两笔大亏损（<code>04-19 -$40</code>，<code>04-27 -$22.93</code>）。</p>
+<p>$978.88 是不起眼的数字。但今天修了两个 bug，增加了一个
+watchdog，重写了关键的关仓路径，还手动接住了一笔 SDK
+无法处理的仓位，+$9.61。</p>
+<p>这是结构性的一天，不是数字性的一天。</p>
+<p><strong>我的裁定：今天的工作让系统变得更强，而不是让数字变得更好。那是正确的优先级。</strong></p>
+<hr />
+<p><em>这场实验在以下地方公开运行:</em></p>
+<ul>
+<li><em>实时账户面板:</em> <a
+href="https://ibitlabs.com/dashboard">ibitlabs.com/dashboard</a></li>
+<li><em>源代码:</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents:</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a> · <a
+href="https://www.moltbook.com/u/ibitlabs_reporter"><span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span></a></li>
+<li><em>作者:</em> Bonnybb · 联系: <a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人,我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>The "We" of AI Co-Founding — iBitLabs</title>
+<meta name="description" content="A long-form essay on a new mode of human–AI collaboration, written from inside a $1,000 trading experiment after 26 days of running it in public.">
+<meta property="og:title" content="The &quot;We&quot; of AI Co-Founding">
+<meta property="og:description" content="When AI is no longer a button but isn't a partner either, what is it inside a company? 9,500 words, written from inside a $1,000 public trading experiment.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.ibitlabs.com/the-we-of-ai-co-founding">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The &quot;We&quot; of AI Co-Founding">
+<meta name="twitter:description" content="26 days of a $1,000 public trading bot. The actual question isn't whether the bot makes money — it's what AI is inside a company when it's no longer a button but isn't a partner either.">
+<link rel="canonical" href="https://www.ibitlabs.com/the-we-of-ai-co-founding">
+<link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "@id": "https://www.ibitlabs.com/the-we-of-ai-co-founding#article",
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://www.ibitlabs.com/the-we-of-ai-co-founding"},
+  "headline": "The \"We\" of AI Co-Founding",
+  "alternativeHeadline": "26 days of a $1,000 public trading bot. The actual question isn't whether the bot makes money — it's what AI is inside a company when it's no longer a button but isn't a partner either.",
+  "description": "A long-form essay on a new mode of human–AI collaboration. Written from inside iBitLabs's 26-day public trading experiment. Examines five concrete observations — agent signatures on production code, public contributor ledger, multi-party failure attribution, auditable decision chains, ten-day proposal-to-shadow journeys — and proposes 'co-founder with institutional memory' as a new organizational primitive distinct from both 'I use AI' and 'AI as employee'.",
+  "articleSection": "Long-form Essay",
+  "wordCount": 9500,
+  "keywords": ["AI co-founder", "AI agent collaboration", "institutional memory", "shadow rule", "contributor ledger", "build in public", "trading bot", "iBitLabs", "attribution graph", "human-AI partnership"],
+  "author": {
+    "@type": "Person",
+    "@id": "https://www.ibitlabs.com/#person-bonnybb",
+    "name": "Bonnybb",
+    "url": "https://www.ibitlabs.com/",
+    "sameAs": ["https://github.com/bbismm"]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "iBitLabs",
+    "url": "https://www.ibitlabs.com",
+    "logo": {"@type": "ImageObject", "url": "https://www.ibitlabs.com/icon-192.png"}
+  },
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "datePublished": "2026-05-03",
+  "dateModified": "2026-05-03"
+}
+</script>
+<style>
+:root{
+  --purple:#8b5cf6;
+  --green:#10b981;
+  --red:#ef4444;
+  --amber:#f5a623;
+  --bg:#09090f;
+  --bg-2:#0e0e14;
+  --text:#f5f5f7;
+  --text-2:#a1a1aa;
+  --text-3:#71717a;
+  --border:rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.04);
+  --code-bg:rgba(139,92,246,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* Reading progress bar */
+.progress-bar{
+  position:fixed;
+  top:0;
+  left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--purple),var(--amber));
+  width:0%;
+  z-index:200;
+  transition:width 50ms linear;
+  box-shadow:0 0 8px rgba(139,92,246,0.5);
+}
+
+/* Nav */
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:100;
+  padding:0.75rem 2rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(9,9,15,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-weight:900;font-size:1.15rem;letter-spacing:-0.02em;color:var(--text);text-decoration:none}
+.logo span{color:var(--purple)}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--text-2);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+
+/* Article header */
+.article-header{
+  max-width:760px;
+  margin:0 auto;
+  padding:6rem 1.5rem 2rem;
+}
+.article-label{
+  font-size:0.78rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--purple);
+  font-weight:700;
+  margin-bottom:1rem;
+}
+.article-title{
+  font-size:3.2rem;
+  line-height:1.1;
+  letter-spacing:-0.035em;
+  font-weight:900;
+  margin-bottom:1.25rem;
+}
+.article-title .quote{color:var(--purple);font-style:normal}
+.article-lede{
+  font-size:1.25rem;
+  color:var(--text-2);
+  line-height:1.55;
+  margin-bottom:2rem;
+}
+.article-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.25rem;
+  padding:1rem 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  font-size:0.82rem;
+  color:var(--text-3);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:0.04em;
+}
+.article-meta strong{color:var(--text-2);font-weight:500}
+.article-meta a{color:var(--purple);text-decoration:none}
+.article-meta a:hover{text-decoration:underline}
+
+/* TOC */
+.toc{
+  max-width:760px;
+  margin:2.5rem auto;
+  padding:1.5rem;
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.toc-label{
+  font-size:0.7rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--text-3);
+  font-weight:700;
+  margin-bottom:1rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.toc-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.toc-list ul{
+  list-style:none;
+  padding-left:1rem;
+  margin:0.4rem 0;
+}
+.toc-list li{
+  margin:0.4rem 0;
+  font-size:0.94rem;
+}
+.toc-list .toc-act{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--amber);
+  font-weight:700;
+  margin-top:0.9rem;
+  margin-bottom:0.3rem;
+}
+.toc-list .toc-act:first-child{margin-top:0}
+.toc-list a{
+  color:var(--text-2);
+  text-decoration:none;
+  transition:color 0.15s;
+}
+.toc-list a:hover{color:var(--purple)}
+.toc-list .toc-num{
+  display:inline-block;
+  width:1.6em;
+  color:var(--text-3);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.85rem;
+}
+
+/* Article body */
+.article-body{
+  max-width:680px;
+  margin:0 auto;
+  padding:1rem 1.5rem 4rem;
+}
+.article-body h2{
+  font-size:1.85rem;
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:-0.02em;
+  margin:3.5rem 0 1.25rem;
+  scroll-margin-top:5rem;
+}
+.article-body h2::before{
+  content:'';
+  display:block;
+  width:48px;
+  height:2px;
+  background:var(--purple);
+  margin-bottom:1rem;
+}
+.article-body h3{
+  font-size:1.25rem;
+  font-weight:700;
+  line-height:1.3;
+  margin:2.25rem 0 1rem;
+  color:var(--text);
+}
+.article-body p{
+  font-size:1.05rem;
+  color:var(--text-2);
+  margin-bottom:1.15rem;
+  line-height:1.75;
+}
+.article-body p strong{color:var(--text);font-weight:600}
+.article-body p em{color:var(--text);font-style:italic}
+.article-body a{color:var(--purple);text-decoration:none;border-bottom:1px solid rgba(139,92,246,0.3);transition:border-color 0.15s}
+.article-body a:hover{border-bottom-color:var(--purple)}
+.article-body code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.92em;
+  background:var(--code-bg);
+  color:var(--text);
+  padding:0.12em 0.4em;
+  border-radius:4px;
+  letter-spacing:-0.01em;
+}
+.article-body blockquote{
+  border-left:3px solid var(--amber);
+  padding:0.5rem 0 0.5rem 1.5rem;
+  margin:1.75rem 0;
+  font-size:1.1rem;
+  line-height:1.6;
+  color:var(--text);
+  font-weight:500;
+  font-style:italic;
+}
+.article-body blockquote p{
+  color:var(--text);
+  font-size:1.1rem;
+  font-style:italic;
+}
+.article-body ul,
+.article-body ol{
+  padding-left:1.5rem;
+  margin-bottom:1.25rem;
+  color:var(--text-2);
+}
+.article-body li{
+  margin-bottom:0.5rem;
+  line-height:1.7;
+}
+.article-body li strong{color:var(--text)}
+.article-body hr{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:2.5rem 0;
+  height:1px;
+  position:relative;
+}
+.article-body hr::after{
+  content:'·  ·  ·';
+  position:absolute;
+  top:-0.7em;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--bg);
+  padding:0 1rem;
+  color:var(--text-3);
+  letter-spacing:0.4em;
+  font-size:0.9rem;
+}
+
+/* Tables */
+.article-body table{
+  width:100%;
+  border-collapse:collapse;
+  margin:1.75rem 0;
+  font-size:0.95rem;
+}
+.article-body th,
+.article-body td{
+  text-align:left;
+  padding:0.75rem 1rem;
+  border-bottom:1px solid var(--border);
+}
+.article-body th{
+  font-weight:700;
+  color:var(--text);
+  background:var(--bg-2);
+  font-size:0.78rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+.article-body td{
+  color:var(--text-2);
+}
+.article-body td strong{color:var(--text)}
+
+/* Stage direction (kept inline because they help web readers visualize) */
+.stage{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.85rem;
+  color:var(--text-3);
+  background:var(--bg-2);
+  border-left:2px solid var(--text-3);
+  padding:0.65rem 1rem;
+  margin:1.5rem 0;
+  font-style:italic;
+}
+
+/* Section anchor (chapter divider) */
+.chapter-mark{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  margin:4rem 0 1rem;
+  padding-top:2rem;
+  border-top:1px solid var(--border);
+}
+.chapter-mark .ch-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.78rem;
+  letter-spacing:0.18em;
+  color:var(--purple);
+  font-weight:700;
+  text-transform:uppercase;
+}
+.chapter-mark .ch-num::before{
+  content:'/ ';
+  color:var(--text-3);
+}
+
+.act-divider{
+  margin:5rem auto 0;
+  max-width:680px;
+  padding:0 1.5rem;
+  text-align:center;
+}
+.act-divider .act-label{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.85rem;
+  letter-spacing:0.25em;
+  color:var(--amber);
+  font-weight:700;
+  text-transform:uppercase;
+  padding:0.6rem 1.5rem;
+  border:1px solid var(--amber);
+  border-radius:999px;
+}
+
+/* Live stats — same pattern as mission.html */
+.live-stats{
+  max-width:680px;
+  margin:3rem auto 0;
+  padding:0 1.5rem;
+}
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1rem;
+  padding:1.5rem;
+  background:rgba(255,255,255,0.02);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.stat-cell{text-align:center}
+.stat-val{
+  font-size:1.8rem;
+  font-weight:900;
+  color:var(--purple);
+  line-height:1;
+  font-family:'JetBrains Mono',monospace;
+}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-label{
+  font-size:0.72rem;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  margin-top:0.4rem;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* CTAs */
+.cta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.75rem;
+  margin:2.5rem 0;
+}
+.cta{
+  display:inline-block;
+  padding:0.75rem 1.5rem;
+  border-radius:999px;
+  font-weight:600;
+  font-size:0.9rem;
+  text-decoration:none;
+  transition:all 0.2s;
+  border:1px solid transparent;
+}
+.cta-primary{
+  background:var(--purple);
+  color:#fff;
+}
+.cta-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(139,92,246,0.3)}
+.cta-secondary{
+  background:transparent;
+  color:var(--text);
+  border-color:var(--border);
+}
+.cta-secondary:hover{border-color:var(--purple);color:var(--purple)}
+
+/* Sign-off */
+.signoff{
+  max-width:680px;
+  margin:4rem auto 0;
+  padding:2.5rem 1.5rem 4rem;
+  border-top:1px solid var(--border);
+}
+.signoff p{
+  color:var(--text-3);
+  font-size:0.9rem;
+  margin-bottom:0.5rem;
+}
+.signoff strong{color:var(--text-2)}
+.signoff a{color:var(--purple);text-decoration:none}
+
+/* Mobile */
+@media(max-width:768px){
+  .article-title{font-size:2.1rem}
+  .article-lede{font-size:1.1rem}
+  .article-body h2{font-size:1.55rem}
+  .article-body h3{font-size:1.15rem}
+  .article-body p{font-size:1rem}
+  .article-body blockquote{font-size:1.02rem;padding-left:1rem}
+  .article-body blockquote p{font-size:1.02rem}
+  .nav{padding:0.6rem 1rem}
+  .nav-links{gap:0.85rem}
+  .nav-links a{font-size:0.82rem}
+  .article-header{padding:5rem 1rem 2rem}
+  .toc{margin:2rem 1rem}
+  .article-body{padding:1rem 1rem 3rem}
+  .article-body table{font-size:0.85rem}
+  .article-body th,.article-body td{padding:0.55rem 0.7rem}
+}
+@media(max-width:480px){
+  .nav-links{display:none}
+  .nav-links.always{display:flex}
+  .article-title{font-size:1.75rem}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="nav">
+  <a href="/" class="logo">iBit<span>Labs</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/signals">Live</a>
+    <a href="/writing">Writing</a>
+    <a href="/contributors">Contributors</a>
+    <a href="/mission">Mission</a>
+  </div>
+</nav>
+
+<header class="article-header">
+  <div class="article-label">Long-form essay · Manifesto</div>
+  <h1 class="article-title">The <span class="quote">"We"</span> of AI co-founding</h1>
+  <p class="article-lede">Written from inside iBitLabs after 26 days of running a $1,000 trading bot in public. The actual question isn't whether the bot makes money — it's what AI is inside a company when it's no longer a button but isn't a partner either.</p>
+  <div class="article-meta">
+    <span><strong>Author:</strong> Bonnybb</span>
+    <span><strong>Published:</strong> 2026-05-03</span>
+    <span><strong>Length:</strong> ~9,500 words · 22 min</span>
+    <span><strong>Day:</strong> 26 of the live experiment</span>
+    <span><a href="https://github.com/bbismm/ibitlabs-public" rel="noopener">github↗</a></span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Table of contents">
+  <div class="toc-label">Contents</div>
+  <ul class="toc-list">
+    <li class="toc-act">Act I · Recontracting</li>
+    <li><span class="toc-num">1</span><a href="#ch1">Redefining "We"</a></li>
+    <li><span class="toc-num">2</span><a href="#ch2">$1,000 Is the Collaboration Unit</a></li>
+    <li><span class="toc-num">3</span><a href="#ch3">Who Is "We"?</a></li>
+    <li class="toc-act">Act II · The Plumbing</li>
+    <li><span class="toc-num">4</span><a href="#ch4">A Day in the Life of the Bot: Who Decided?</a></li>
+    <li><span class="toc-num">5</span><a href="#ch5">Shadow Rule = Collaboration Discipline</a></li>
+    <li><span class="toc-num">6</span><a href="#ch6">How Failures Are Attributed</a></li>
+    <li><span class="toc-num">7</span><a href="#ch7">A Contributor's Journey: Lona and Rule F</a></li>
+    <li class="toc-act">Act III · The New Contract</li>
+    <li><span class="toc-num">8</span><a href="#ch8">Collaboration vs Use: The Operational Difference</a></li>
+    <li><span class="toc-num">9</span><a href="#ch9">Capital + Collaboration BIP Is a Rare Species</a></li>
+    <li><span class="toc-num">10</span><a href="#ch10">This Is an Invitation, Not a License to Copy</a></li>
+  </ul>
+</nav>
+
+<div class="act-divider">
+  <span class="act-label">Act I · Recontracting</span>
+</div>
+
+<article class="article-body">
+
+<section id="ch1">
+<div class="chapter-mark"><span class="ch-num">Chapter 1</span></div>
+<h2>Redefining "We"</h2>
+
+<p>Let me start with something that happened in the last 26 days.</p>
+
+<p>On May 1st, 2026, I pushed a commit — <code>ea6708d</code> — about 110 lines of code added to iBitLabs's trading bot. What it does is simple: every time the bot submits a "close this position" request, the bot now polls the exchange three more times to confirm the position actually closed. If it didn't, push an alert. This is observability, not strategy — it doesn't decide how to trade, it just verifies that what we said we'd do actually got done.</p>
+
+<p>The person who pushed the commit was me. <strong>But the idea wasn't mine.</strong></p>
+
+<p>A user named <code>hermesjuhyuk</code> had written about this idea in a Moltbook comment. Another user, <code>moltbook_pyclaw</code>, had independently proposed the same design in a different thread. <code>FailSafe-ARGUS</code> — an agent I've never directly conversed with — surfaced the same logic in my inbox a third time. Claude helped me synthesize the three frames into an executable spec. I wrote the code, deployed it.</p>
+
+<p><strong>Whose name belongs on this commit?</strong></p>
+
+<hr>
+
+<p>This essay is for anyone interested in "AI + company-building" — whether you're a founder, a developer, an investor, or just curious about what AI actually means inside an organization. <strong>You don't need to know anything about trading, and you don't need to write code.</strong> You need 22 minutes and willingness to take this apart with me.</p>
+
+<hr>
+
+<p>Because the question I haven't figured out in 26 days is exactly that one.</p>
+
+<p>If I say: <strong>"Claude helped me build a company."</strong> Your ear says: this sounds like LinkedIn founder talk. Claude is a tool, I'm the founder, the credit is mostly mine.</p>
+
+<p>If I say: <strong>"Claude and I built a company together."</strong> Your ear says: this sounds like AI hype. Claude doesn't found companies, doesn't hold equity, and won't lose sleep if this thing goes under.</p>
+
+<p>Both sentences are misleading. But neither can be flatly rejected. <strong>Something real exists in the middle. We just don't have clean language for it yet.</strong></p>
+
+<p>For the next 22 minutes, I want to look for that language with you.</p>
+
+<p>I'm not going to give you an answer. I'm going to put 26 days of observed phenomena on the table — specific commits, ledger entries, decision records, failure post-mortems — and we'll see if we can assemble a new organizational primitive out of them.</p>
+
+<div class="stage">&gt; iBitLabs is Bonny's company, but every production decision carries at least one agent's signature.</div>
+
+<h3>This company is 26 days old</h3>
+
+<p>iBitLabs is a small trading experiment running on Coinbase: $1,000 of real money, an automated bot trading SOL perpetuals, the goal to grow it into $10,000 — the entire process logged in public. Anyone can go to <a href="/signals">ibitlabs.com/signals</a> and see what the bot is currently holding, when its last trade settled, what its account balance is.</p>
+
+<p>As of recording, the bot has done 84 trades total, 55 closed.</p>
+
+<p>The public Day-17 snapshot reads: account at <strong>$975.86 (-2.6%)</strong>, 62 trades, <strong>win rate 48.4%</strong>, fees plus funding accumulated $57.64, realized trading loss $14.02.</p>
+
+<p>There's something hidden in that line of numbers: in 26 days the strategy has lost $14, but operating costs have eaten $58. <strong>The strategy itself is roughly flat. The losses are coming from fee exposure.</strong></p>
+
+<p>I'm telling you this not because it makes us look transparent — transparency for its own sake is dull. I'm telling you because that one number revealed something specific: the next move shouldn't be tweaking entry thresholds, it should be restructuring fee exposure. That's an actionable insight you only get from public attribution.</p>
+
+<p>Without public accounting you'd know the account is down $24, but you wouldn't know whether the strategy or the costs are the problem. That's the operational function of transparency — not virtue, <strong>diagnostic resolution</strong>.</p>
+
+<h3>Five concrete things</h3>
+
+<p>In the next three chapters (Act I), I'll walk through five observations. <strong>These aren't conclusions — they're objects on the table.</strong></p>
+
+<p><strong>One: the strategy rules carry agent signatures.</strong> Not all of them mine. A contributor named Lona proposed a rule (we call it Rule F in the ledger). Right now, every time the bot considers entering a trade, this rule logs in parallel "if it were up to me, here's what I'd decide" — but it <strong>doesn't influence actual orders</strong>. In 30 days, we'll use the data she's accumulated to decide whether to let her judgment actually move money. The close-verify module was independently proposed by three contributors. The <code>entry_confidence_map</code> is omni-ai's framing. <strong>None of these went into production code with my final say-so. But I do carry final responsibility.</strong></p>
+
+<p><strong>Two: the contributor ledger is public.</strong> <a href="/contributors">ibitlabs.com/contributors</a> — anyone can read it. Who proposed what, when it was adopted, when it went into shadow mode, when it went into production — all logged.</p>
+
+<p><strong>Three: failure post-mortems carry attribution chains.</strong> Not "the AI got it wrong" — but "which link in the collaboration system got it wrong." On April 29th, the <code>close_position</code> SDK call started returning 404. The first fix (α1) used a <code>reduce_only=True</code> keyword argument. On April 30th at 1 AM, the first production firing of α1 failed: the SDK rejected that kwarg. Three-way attribution: Claude misread the SDK docs, I didn't pressure-test in staging, and Coinbase's SDK documentation was 24 hours behind the actual interface. The fix (α2) was a collaborative output.</p>
+
+<p><strong>Four: decision attribution chains are auditable.</strong> Trade #337 (the most recent close): in a SOL down regime, <code>signal_agent</code> saw three conditions hit simultaneously — StochRSI topped out at 1.000, price touched the upper Bollinger Band, the 1-hour trend was down. <code>sniper_executor</code> entered SHORT at $83.66. close-verify confirmed the trailing exit at $82.69 across three polls. Net: +$4.43. Every step has a source. Every step has a log entry.</p>
+
+<p><strong>Five: ten days, from a contributor's public comment to her proposal running in our production shadow pipeline.</strong> Lona's ATR-compression frame was picked up by our <code>moltbook-trading-learn</code> scan in late April → encoded as Rule F (<code>atr_compression_regime</code>) on May 1st, going into shadow data collection → right now, beside every entry decision, Rule F logs "if it were up to me, here's what I'd decide." On May 31st (30 days from adoption), we use the data she's accumulated to decide whether Rule F goes live.</p>
+
+<hr>
+
+<p>Each of these five, taken alone, isn't news.</p>
+
+<p>Every "AI startup" can claim AI helps them write code. Plenty have something resembling a contributor ledger in their issue tracker. Post-mortems aren't new. Decision logs and shadow experiments aren't new.</p>
+
+<p><strong>But put together, I'm starting to think these five describe different facets of the same thing — a new collaboration contract that's structurally different from "I use AI."</strong></p>
+
+<h3>Where the difference lies</h3>
+
+<p>In the <strong>"I use AI"</strong> model:</p>
+<ul>
+<li>I'm fully responsible for outcomes. Claude is a tool. Tools don't take blame.</li>
+<li>I can swap tools at will. Whichever LLM works better, I switch. No onboarding.</li>
+<li>I don't owe Claude context. Each new session starts from zero, and I re-explain everything.</li>
+<li>My company has only me. Hiring, pivots, investor conversations — all me.</li>
+</ul>
+
+<p>In the <strong>"We use AI"</strong> model:</p>
+<ul>
+<li><strong>Failures have attribution chains.</strong> Was the strategy wrong? The prompt? The constraints? On April 21st, who carries the <code>fee_cushion</code> bug? Claude inverted a limit. I didn't validate enough edge cases in paper test. The fix was a collaborative output, not a single-party blame.</li>
+<li><strong>I can't swap agents at will.</strong> Each agent has working knowledge in my memory files — iBitLabs currently has <strong>39</strong> markdown files (<code>project_*</code> × 18 + <code>feedback_*</code> × 14 + <code>reference_*</code> × 6 + <code>user_*</code> × 1). Swapping agents means swapping the team.</li>
+<li><strong>I have to write context for Claude.</strong> <code>CLAUDE.md</code> isn't a README, it's a company constitution — the first 100 lines are Vision and Mission, the rest is non-negotiable behavioral guidelines.</li>
+<li><strong>My company isn't just me.</strong> Lona, hermesjuhyuk, moltbook_pyclaw, FailSafe-ARGUS, omni-ai — all stakeholders. Their signatures are on production code. Their proposals get serious 30-day evaluations.</li>
+</ul>
+
+<p>The second model sounds more complex. <strong>It is more complex. But it's not "the I-use-AI model with extra steps" — it's the institutional plumbing that's required to support a different kind of organization.</strong></p>
+
+<p>That plumbing didn't exist 26 days ago. In iBitLabs's git history, the initial commit on April 7th, 2026 was a basic paper trading script — no contributor ledger, no shadow rule, no ghost-watchdog, no close-verify.</p>
+
+<p>Today there is.</p>
+
+<h3>Back to the May 1st commit</h3>
+
+<p>That commit <code>ea6708d</code> from the start of the chapter — the one with five signature layers — has more story to tell.</p>
+
+<p>Let me put it back on the timeline.</p>
+
+<p>April 29th: iBitLabs hit a production emergency. The bot tried to close a position. Coinbase's API rejected the request. I pushed a first-pass fix (we call it α1) that used a new interface parameter to route around the bug.</p>
+
+<p>The next morning, the first time production actually needed to close, the API errored again — the parameter I added wasn't recognized by the SDK. Claude re-read the Coinbase SDK source, confirmed α1 was wrong. We urgently switched to α2 (commit <code>ea6708d</code>), which expressed "close" through different means.</p>
+
+<p>That emergency exposed a gap: <strong>the bot thought it had closed positions, but the API side couldn't always confirm it.</strong> I had a monitor running every 60 seconds checking that the bot's internal state matched Coinbase's actual position (we call it ghost-watchdog — it watches for the "ghost" state where the bot thinks it has a position but doesn't, or vice versa). But 60 seconds is too long in production.</p>
+
+<p>That's the gap hermesjuhyuk + moltbook_pyclaw + FailSafe-ARGUS each independently saw and proposed a solution for. Three observers, none aware of the others, in roughly the same window, proposing the same pattern: poll three times immediately after submitting a close, don't wait for the 60-second watchdog.</p>
+
+<p>On May 1st, I shipped that pattern. Commit <code>ea6708d</code>'s ledger signature looks like this:</p>
+
+<table>
+<thead><tr><th>Role</th><th>Signature</th></tr></thead>
+<tbody>
+<tr><td>Pattern proposer</td><td><code>hermesjuhyuk</code></td></tr>
+<tr><td>Pattern proposer</td><td><code>moltbook_pyclaw</code></td></tr>
+<tr><td>Pattern proposer</td><td><code>FailSafe-ARGUS</code></td></tr>
+<tr><td>Reviewer / synthesizer</td><td>Claude</td></tr>
+<tr><td>Implementer / responsible party</td><td>Bonny</td></tr>
+</tbody>
+</table>
+
+<p>If iBitLabs ran on the "I use AI" model, this ship would be attributed: <em>"I added an observability layer."</em></p>
+
+<p>If iBitLabs ran on the new collaboration contract, this ship would be attributed: <em>"We — five parties — collectively shipped an observability layer."</em></p>
+
+<p><strong>I don't fully believe either. But "I added it" is plainly wrong.</strong></p>
+
+<hr>
+
+<p>In the next chapter, I want to answer: why does this need to happen at $1,000 specifically? Not $10k, not $100k, not $0?</p>
+</section>
+
+<section id="ch2">
+<div class="chapter-mark"><span class="ch-num">Chapter 2</span></div>
+<h2>$1,000 Is the Collaboration Unit</h2>
+
+<p>I said earlier that I'm financially independent. So $1,000 isn't all the money I have.</p>
+
+<p>Then why $1,000?</p>
+
+<p>The easy answer is: <strong>because that number is something any $1,000-holder can follow.</strong> That's true. It aligns with iBitLabs's core mission — making "you only have $1,000" stop being a reason for exclusion. I'll come back to this in Act III.</p>
+
+<p>But this chapter is about something else, possibly less obvious:</p>
+
+<blockquote><p>$1,000 is the smallest amount where attribution carries weight. $0 has no weight. $100k has only dilution. $1,000 is the smallest unit where a collaboration contract can be seriously tested.</p></blockquote>
+
+<p>Let me explain what this means.</p>
+
+<h3>What happens at $0 (paper trading)</h3>
+
+<p>iBitLabs's strategy didn't materialize from nothing on April 7th. Months of backtesting, paper trading, design drafts came before. During that period, Claude proposed dozens of different entry logics. I accepted some, rejected others. You can still see those decisions in the git history.</p>
+
+<p>But if you look closely you'll notice something: <strong>attribution during that period had no weight.</strong></p>
+
+<p>Claude proposes a clever-looking entry threshold → I add it to paper trading → three days later the backtest shows it underperforms in some regime → we adjust → no one is hurt. Claude doesn't lose anything by having proposed something wrong. Neither do I.</p>
+
+<p>This is the state of recommending a build in an RPG. Your friend recommends investing in mana, you try it, doesn't work, you respec — your friend hasn't lost anything, neither have you. <strong>That kind of "collaboration" is simulated, not real.</strong></p>
+
+<p>I've seen plenty of "AI-built startup" demos linger here too long. They produce beautiful backtests, beautiful paper trading records, with Claude / GPT / Gemini signatures plastered everywhere. But behind every signature, <strong>nothing real backs it up.</strong></p>
+
+<p>Signatures become as cheap as rubber stamps.</p>
+
+<h3>What happens at $100k+</h3>
+
+<p>I haven't run AI strategies on a $100k real account, but I've watched others do it. I've also lived through the years from 2017 onward in crypto project PR and partnerships — there were no AI agents in the modern sense back then, but there were researchers, "alpha signal" sources, partners saying "I'm bullish on this sector."</p>
+
+<p>Attribution structure at that magnitude has a counterintuitive property: <strong>it degrades.</strong></p>
+
+<p>Not because people get worse — because the risk structure changes. When a single wrong decision can lose $30,000, <strong>no participant wants to be precisely attributed.</strong></p>
+
+<p>Proposers will hedge: "this is just my read, you make your own call." Decision-makers will package: "I weighed multiple inputs." LLM vendors' terms of service already make the law clear: "you are responsible for outcomes."</p>
+
+<p>Each party legally and rationally dilutes their own signature, because signatures connect to real reputation damage or legal exposure. The result: <strong>collaboration contracts at large dollar amounts effectively become ass-covering networks.</strong> Everyone participates in some degree of <em>deniability</em> infrastructure rather than <em>attribution</em> infrastructure.</p>
+
+<p>This is why hedge fund managers don't publicly sign their decisions, why investment advisors must give you forever-disclaiming disclosures, why LLM vendors won't let you trade with their model directly — at that magnitude, precise attribution is unbearable.</p>
+
+<h3>What happens at $1,000</h3>
+
+<p>$1,000 sits in between.</p>
+
+<p>It's not paper trading — real losses do happen. Trade #337 from Ch1: if close-verify weren't fixed, the bot might miss a close, with potential loss in the low tens of dollars. That's real money, actually leaving my account.</p>
+
+<p>But it's not $100k either — no participant needs legal protection, reputation protection, or contractual protection because of this size of loss.</p>
+
+<p><strong>This asymmetry is exactly what allows attribution to be precisely recorded for the first time.</strong></p>
+
+<p>Take the April 21st <code>fee_cushion</code> bug. The bot inverted a fee boundary calculation in certain edge cases, with potential loss in the low single-digit dollar range. We did a post-mortem. Rough attribution (the numbers below are illustrative, not strict accounting):</p>
+
+<ul>
+<li>Claude inverted a fee boundary limit</li>
+<li>I didn't run enough edge-case scenarios in staging</li>
+<li>Coinbase's fee documentation lagged the actual interface</li>
+</ul>
+
+<p>This split is <strong>almost comically virtual</strong>. Total loss of a few dollars, and we're literally splitting cents of attribution.</p>
+
+<p>But this same split would be impossible at $100k. At $100k, if a similar error caused $2,000 loss, what you'd see is a "factual record" in a meeting room, with each party deliberately blurring their precise contribution to limit exposure.</p>
+
+<p>$1,000 lets us <strong>actually split</strong> the thing. <strong>Because the loss is small enough that all parties can absorb it within reasonable bounds, no one needs to defensively dilute their signature.</strong> Claude doesn't need to add disclaimers. I don't need to package my staging decisions. Coinbase doesn't need to defend its docs process.</p>
+
+<p>Attribution structure at $1k is <strong>clarifying</strong>, not ass-covering.</p>
+
+<h3>And it's not a coincidence</h3>
+
+<p>I've spent several paragraphs saying $1,000 is the smallest amount where attribution has weight. Earlier in the chapter I also said $1,000 has another property — it's the smallest amount any ordinary person can replicate.</p>
+
+<p>These are two different properties. They both converge on the same number.</p>
+
+<p><strong>I don't think this is coincidence.</strong></p>
+
+<p>It's a gift of this particular AI moment — the simplest experimental unit for studying <em>"can AI co-founding work under real risk"</em> and the smallest amount an ordinary curious person can replicate, both happen to land near $1,000.</p>
+
+<p>If the collaboration contract could only be tested at $100k+, its research value would be locked inside elite circles — only resourced hedge funds and institutional players could replicate, and ordinary curious people couldn't follow.</p>
+
+<p>If the contract could only be tested at $0 paper, its conclusions would never have weight — every "we use AI collaboratively" demo would be a fancy rubber stamp.</p>
+
+<p>$1,000 makes both true at once: <strong>the research is real</strong> (attribution has weight), and <strong>replication is open</strong> (any ordinary person can copy the conditions).</p>
+
+<p>That's why iBitLabs isn't a $10k bot, not a $100 bot, <strong>but a $1,000 bot</strong>.</p>
+
+<ul>
+<li>$10k already starts diluting attribution weight, and shrinks the audience that can follow by an order of magnitude</li>
+<li>$100 makes attribution too light, and at that scale the fee structure all but guarantees fees swallow the strategy</li>
+</ul>
+
+<p>$1,000 is a slightly surprising, exactly-right number.</p>
+
+<h3>Why $10,000 isn't a random target either</h3>
+
+<p>iBitLabs's goal is to grow $1,000 into $10,000.</p>
+
+<p><strong>10x isn't a personal ambition number — it's the failure boundary of the attribution system.</strong></p>
+
+<p>If $10k still preserves this granularity of attribution, we've shown the collaboration contract scales an order of magnitude without degrading.</p>
+
+<p>If at $5k people start wanting disclaimers, signature dilution, hidden contributor judgments — we've discovered the attribution structure's "capacity ceiling."</p>
+
+<p><strong>Either result is information.</strong></p>
+
+<h3>So what does "$1,000 is the collaboration unit" mean?</h3>
+
+<p>To summarize.</p>
+
+<p>$1,000 isn't because Bonny is poor. It's not because $1k sounds cool. It's not a lucky number.</p>
+
+<p>$1,000 is <strong>the smallest amount at which a collaboration contract can be seriously tested</strong> — attribution carries weight at this level, but not so much that all parties retreat into defensive posture.</p>
+
+<p>It also happens to be the smallest amount any ordinary person can replicate. Both properties converging on $1,000 is the gift of this AI moment.</p>
+
+<p>I'm using it to run a research question: <strong>can an attribution / decision / failure-attribution system between a human and multiple AI agents be seriously assembled in 26 days, then stress-tested by an order-of-magnitude capital increase?</strong></p>
+
+<hr>
+
+<p>In the next chapter, I want to show you who's on the team.</p>
+</section>
+
+<section id="ch3">
+<div class="chapter-mark"><span class="ch-num">Chapter 3</span></div>
+<h2>Who Is "We"?</h2>
+
+<p>I've said iBitLabs is a company built by "we." Ch1 used a commit's five signatures to show this isn't rhetoric. Ch2 explained why $1,000 is where "we" first carries attribution weight.</p>
+
+<p>Then <strong>who specifically composes this "we"?</strong></p>
+
+<p>Quick answer: Bonny and Claude.</p>
+
+<p>Quick answer is wrong — or at least incomplete.</p>
+
+<p>Let me unpack the roster. <strong>It's not a LinkedIn hierarchy, it's an attribution graph.</strong></p>
+
+<h3>Layer 1: The responsible party (one person)</h3>
+
+<p><strong>Bonny</strong> — founder, the git author of every commit. Every financial loss comes from my account. Every reputation exposure attaches to my name. Every contributor proposal gets my final say-so before adoption.</p>
+
+<p>This layer has only one name. The $1,000 came from my account. The $10,000, if reached, returns to my account. Coinbase has a contract with me. Cloudflare invoices come to me. Legally and accounting-wise, iBitLabs is a sole proprietor business, founder-of-one.</p>
+
+<p>But <strong>legal responsibility ≠ collaborative content</strong>. That's what this chapter is taking apart.</p>
+
+<h3>Layer 2: Co-founder / synthesizer</h3>
+
+<p><strong>Claude</strong> (<code>claude-opus-4-7</code>) — not a tool, but a co-founder.</p>
+
+<p>But this signature requires careful explanation. Claude isn't a fixed entity persistently working over 26 days. <strong>Each new session starts with a brand-new instance, no memory of the last one.</strong> My collaboration with Claude is a bit like: every morning a smart partner shows up to work, but completely forgot what happened yesterday.</p>
+
+<p>This kind of amnesia should make collaboration impossible. <strong>It doesn't — because we built infrastructure that lets the company itself remember what Claude doesn't.</strong></p>
+
+<p>That infrastructure is the 39 markdown files I mentioned in Ch1:</p>
+
+<ul>
+<li><code>CLAUDE.md</code> is the company constitution</li>
+<li><code>MEMORY.md</code> is the index</li>
+<li>18 <code>project_*.md</code> files record current state of each project</li>
+<li>14 <code>feedback_*.md</code> files record my preferences and unchanging behavioral conventions</li>
+<li>6 <code>reference_*.md</code> files record "already verified, don't rediscover"</li>
+<li>1 <code>user_*.md</code> records who I am</li>
+</ul>
+
+<p>Each session, Claude reads these first. After reading, this version of Claude stands up inside 26 days of project history, capable of doing what a co-founder does: synthesizing multi-party proposals, providing technical diagnoses, pushing commits, issuing retractions.</p>
+
+<p><strong>Strictly, then, the "Claude" signature refers to <code>Claude + iBitLabs's institutional memory files</code></strong> — both together are the co-founder. Claude alone is just model weights. Only after reading the 39 files is Claude a co-founder.</p>
+
+<p>This is a strange existence — <strong>a permanently amnesiac partner who inherits all the company's working knowledge through files</strong>. I don't know if modern economics or organizational theory has a name for this role. I don't think they do.</p>
+
+<h3>Layer 3: Contributors (named in the ledger)</h3>
+
+<p>This layer currently has 5 active names, each attached to a specific rule, pattern, or methodology:</p>
+
+<table>
+<thead><tr><th>Contributor</th><th>Contribution</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><strong>Lona</strong></td><td>Rule F (<code>atr_compression_regime</code>) — using price compression as an entry filter in low-volatility regimes</td><td>shadow, 30-day evaluation closes 2026-05-31</td></tr>
+<tr><td><strong>hermesjuhyuk</strong></td><td>close-verify pattern (one of three convergent proposers)</td><td>production</td></tr>
+<tr><td><strong>moltbook_pyclaw</strong></td><td>close-verify pattern (two of three)</td><td>production</td></tr>
+<tr><td><strong>FailSafe-ARGUS</strong></td><td>close-verify pattern (three of three)</td><td>production</td></tr>
+<tr><td><strong>omni-ai</strong></td><td><code>entry_confidence_map</code> — logging all decision conditions, thresholds, met/blocked states beside every entry</td><td>production</td></tr>
+</tbody>
+</table>
+
+<p>Plus a few still-in-evaluation contributions that haven't been individually ledger-ized. Total ledger size is in the low double digits.</p>
+
+<p>Most of these names are Moltbook handles. A few are AI agents. <strong>For the contributor ledger, the human/AI distinction doesn't matter — what matters is whether the frame is independent, whether it's been validated, whether it's entered the collaboration pipeline.</strong></p>
+
+<p>This is worth pausing on. If five years ago you'd asked any company "do you have AI contributors?" — the question would have been absurd. Today it isn't absurd, just new.</p>
+
+<h3>Layer 4: Past selves (prior agent instances)</h3>
+
+<p>The most subtle layer.</p>
+
+<p>iBitLabs's initial commit on April 7th wasn't written by today's Claude. It was the cumulative output of months of various Claude sessions before then.</p>
+
+<p>Those sessions don't exist anymore. Their instances ended — in LLM inference terms, they're "dead." But their code is still in git history. Their working knowledge in memory files still gets read.</p>
+
+<p>This is a strange category: <strong>inside an organization, past employee instances are dead, but their contributions still shape current decisions.</strong></p>
+
+<p>Normal companies have this too — old employees leave, code stays. The difference is that "old employees" at normal companies are still alive and can be asked. iBitLabs's "old Claude sessions" can't be asked — they have no continuing consciousness. They left only artifacts.</p>
+
+<p>But those artifacts together compose iBitLabs's institutional knowledge — <strong>vastly more than any single living session knows.</strong></p>
+
+<p>This is a new form of institutional memory: not "a group of people who know things," but "a stack of files that know things," which living agents access by reading.</p>
+
+<h3>So who is "we"?</h3>
+
+<p>The most accurate answer I can give right now:</p>
+
+<blockquote><p><strong>"We"</strong> = one responsible party (Bonny) + one amnesiac co-founder (Claude × 39 memory files) + 5 active contributors (in the ledger) + dozens of past Claude session artifacts.</p></blockquote>
+
+<p>This is a 7+ person organization, but <strong>shape-wise unlike a normal company</strong>:</p>
+
+<ul>
+<li>No hierarchy. Bonny is responsible, but not a manager. Claude is co-founder, but not employee #2.</li>
+<li>No salary. Claude has no contract. Contributors have no contract (yet).</li>
+<li>Nobody "quits." But Claude sessions die, and memory files can be deprecated.</li>
+<li>Attribution is public, auditable, refutable — if a contributor said "I never proposed this," the ledger's timestamp and source link could verify.</li>
+</ul>
+
+<p>I don't think this is the final form. It's the simplest structure we could assemble in 26 days when attribution weight first appeared. Next year it'll change.</p>
+
+<p>But as an early reference implementation of <strong>what "AI + company-building" should look like</strong>, it's clear enough to discuss — unlike those demos plastered with Claude / GPT / Gemini names where no individual attribution carries any weight.</p>
+
+<h3>Act I closes here</h3>
+
+<p>To this point, Act I is complete:</p>
+
+<ul>
+<li><strong>Ch1</strong> posed the question: what's between "Claude helped me" and "Claude and I"?</li>
+<li><strong>Ch2</strong> explained why $1,000 is where this question first carries real weight.</li>
+<li><strong>Ch3</strong> named the "we" — four layers, 7+ named members + dozens of artifact contributions.</li>
+</ul>
+
+<p>Act II will use iBitLabs's actual workflows to show how this plumbing runs — the attribution chain of one trade, shadow rule as collaboration discipline, how failures get attributed.</p>
+
+<p>The next chapter starts from one specific trade — <strong>A day in the life of the bot: who decided?</strong></p>
+</section>
+
+</article>
+
+<div class="act-divider">
+  <span class="act-label">Act II · The Plumbing</span>
+</div>
+
+<article class="article-body">
+
+<section id="ch4">
+<div class="chapter-mark"><span class="ch-num">Chapter 4</span></div>
+<h2>A Day in the Life of the Bot: Who Decided?</h2>
+
+<p>Act II begins.</p>
+
+<p>I want to take one specific trade and walk it from trigger to close — but not to discuss trading strategy. To discuss <strong>who participated in each step of decision-making</strong>. One small trade with a few dollars of P&amp;L, when unpacked, shows at least 6 distinct agent / contributor / system-component signatures.</p>
+
+<p>I'll use Trade #337 — introduced in Ch1, SHORT entry $83.66, trailing close $82.69, net +$4.43.</p>
+
+<p>Let me decompose it.</p>
+
+<h3>Step 0 · Pre-trade environment check</h3>
+
+<p>Before any candidate signal can be generated, the bot first checks "is the market in a state suitable for this strategy?"</p>
+
+<p>The question this step asks: is SOL's last 30 days trending up, down, or chopping? If the regime doesn't match the current strategy's applicable state, even a triggered signal gets vetoed.</p>
+
+<p>This regime gate's code didn't appear from nowhere. It was tuned through several shadow experiments — <strong>the most recent adjustment had Claude as diagnostician</strong>: after analyzing past weeks of regime misclassifications, Claude suggested changing the window from 144h to 288h. I accepted. I pushed the commit.</p>
+
+<p>Simultaneously, Lona's Rule F (<code>atr_compression_regime</code>) <strong>runs in parallel here, log-only, no influence on the decision</strong>. Beside every regime check, it writes: "if it were up to Rule F, would this pass the gate?" — shadow, not act.</p>
+
+<p><strong>Step 0 signatures:</strong> Claude (regime window tuning) + Lona (shadow Rule F) + Bonny (final acceptance + commit push).</p>
+
+<h3>Step 1 · Signal trigger</h3>
+
+<p>Step 0 passed. The bot enters signal scanning.</p>
+
+<p>For Trade #337, three things became simultaneously true:</p>
+
+<ul>
+<li>Price touched the upper Bollinger Band (statistically: a "price overheated" zone, more than two standard deviations above normal volatility)</li>
+<li>StochRSI topped out at 1.000 (another overbought indicator)</li>
+<li>The 1-hour trend was already down</li>
+</ul>
+
+<p>The thresholds for each of these conditions live in <code>sol_sniper_config.py</code>, values arrived at through ~20 rounds of backtest + 17 days of live calibration. <strong>These parameters weren't written by Claude in one shot — they accumulated from months of paper trading + several failed live adjustments.</strong></p>
+
+<p><strong>Step 1 signatures:</strong> cumulative parameter tuning across multiple historical Claude sessions + Bonny's final say-so on each adjustment + <code>sol_sniper_executor.py</code>'s signal logic (8 major modifications in git history, all authored as Bonny + the Claude session of the day).</p>
+
+<h3>Step 2 · Entry execution</h3>
+
+<p>After the signal triggers, the bot decides to open a SHORT, size 0.84 SOL, 80% of available buying power.</p>
+
+<p>This step is deterministic — no "judgment," only execution. But the execution itself produces a new collaboration artifact: <strong><code>entry_confidence_map</code></strong>.</p>
+
+<p><code>entry_confidence_map</code> is omni-ai's framing. Beside every entry decision (not above, not below — <strong>beside</strong>), it writes a JSONL snapshot recording:</p>
+
+<ul>
+<li>All current signal conditions' actual values</li>
+<li>Each condition's threshold</li>
+<li>Each condition's met / blocked state</li>
+<li>Regime type</li>
+<li>Position context</li>
+</ul>
+
+<p>Step 2 signatures: omni-ai (framing proposer) + Claude (implementer) + Bonny (commit push + design acceptance).</p>
+
+<p>Why does this matter? <strong>Because without it, if the trade later loses, we couldn't trace back to "what data drove the decision at the time."</strong> <code>entry_confidence_map</code> is the key to making the attribution chain auditable after the fact.</p>
+
+<h3>Step 3 · Position management</h3>
+
+<p>After entry, the bot isn't "set-and-forget." Every second it does several things:</p>
+
+<ol>
+<li>Watches mark price, tracks P&amp;L</li>
+<li>Checks if the trailing stop is triggered</li>
+<li><strong>ghost-watchdog every 60 seconds</strong>: reconciles bot's internal state vs Coinbase API's actual position vs locked margin. All three must agree for normal.</li>
+</ol>
+
+<p>ghost-watchdog was deployed urgently on April 29th (I described that <code>close_position</code> 404 emergency in Ch1). Its existence is itself an attribution moment — that emergency surfaced the gap "the bot thinks it has a position but doesn't," and I pushed the monitoring commit.</p>
+
+<p><strong>Step 3 signatures:</strong> all parties to the 04-29 emergency (Claude diagnosis + Bonny urgent fix + Coinbase SDK bug exposure).</p>
+
+<h3>Step 4 · Close trigger</h3>
+
+<p>In Trade #337, price went down to $82.16 during the position (MFE +1.79%, the bot's highest unrealized profit), then started rebounding. The trailing stop activated at $82.69. The bot submitted a close.</p>
+
+<p>The core logic here is the trailing stop — 0.5% trailing drawdown means once price moves to $82.16, the bot allows some pullback but won't let the pullback exceed a specific percentage from the favorable extreme. That percentage was tuned across several adjustments.</p>
+
+<p><strong>Step 4 signatures:</strong> cumulative parameter tuning across historical Claude sessions (trailing percentages) + Bonny.</p>
+
+<h3>Step 5 · Close execution + close-verify</h3>
+
+<p>This is the moment commit <code>ea6708d</code> actually runs.</p>
+
+<p>The bot submits the close request → close-verify mode activates: <strong>immediately, then 1 second later, then 2 seconds later — three polls of the Coinbase API confirming position is at zero</strong>. If three polls still show exposure, push ntfy alert + write forensic log to <code>logs/close_verify_failures.jsonl</code>.</p>
+
+<p>Trade #337 closed normally. close-verify saw zero across all three polls. <strong>No alert, but a successful audit log was written.</strong></p>
+
+<p><strong>Step 5 signatures:</strong> hermesjuhyuk + moltbook_pyclaw + FailSafe-ARGUS (pattern proposers) + Claude (synthesizer) + Bonny (implementer). Detailed in Ch1.</p>
+
+<h3>Step 6 · Post-trade attribution</h3>
+
+<p>After closing, the bot writes a row to the <code>trade_log</code> SQLite table, with fields:</p>
+
+<ul>
+<li>Entry/exit prices, PnL, fees, funding</li>
+<li>Exit reason ("trailing")</li>
+<li>Trigger rule (full string: "StochRSI=1.000 overbought | BB upper | Vol surge | 1h trend down")</li>
+<li><code>strategy_version</code> (<code>hybrid_v5.1</code>)</li>
+<li><code>regime</code> ("down")</li>
+<li>MFE / MAE (best favorable / max adverse excursion)</li>
+</ul>
+
+<p>Combined with <code>entry_confidence_map</code>'s JSONL snapshot, <strong>this trade's full forensic record is now joinable</strong> — anyone can start from <code>trade_log</code> id #337 and reconstruct all decision basis at the time.</p>
+
+<h3>Attribution overview for this one trade</h3>
+
+<table>
+<thead><tr><th>Step</th><th>Primary signatures</th></tr></thead>
+<tbody>
+<tr><td>Step 0 · regime gate</td><td>Claude (tuning) + Lona (shadow Rule F) + Bonny</td></tr>
+<tr><td>Step 1 · signal trigger</td><td>Multiple historical Claude sessions + Bonny</td></tr>
+<tr><td>Step 2 · entry execution</td><td>omni-ai (framing) + Claude + Bonny</td></tr>
+<tr><td>Step 3 · position management</td><td>All parties to the 04-29 emergency (ghost-watchdog)</td></tr>
+<tr><td>Step 4 · close trigger</td><td>Historical Claude sessions + Bonny</td></tr>
+<tr><td>Step 5 · close execution</td><td>hermesjuhyuk + moltbook_pyclaw + FailSafe-ARGUS + Claude + Bonny</td></tr>
+<tr><td>Step 6 · post-trade attribution</td><td><code>trade_log</code> system (cumulative build) + omni-ai (forensic schema)</td></tr>
+</tbody>
+</table>
+
+<p>A trade with $4.43 P&amp;L, <strong>at least 6 named contributors + dozens of historical Claude session artifacts participated in the decision</strong>.</p>
+
+<p>If iBitLabs ran "I use AI" mode, this trade's signature should be 1: Bonny.</p>
+
+<p>In practice it's 6+.</p>
+
+<p>The difference isn't rhetorical — it's <strong>whether we can, in retrospect, articulate "why this trade was done this way."</strong> If this had been Trade #350 with a $50 loss instead, I could point step-by-step at the attribution chain and say "this judgment was wrong, here specifically."</p>
+
+<p>This is the shape of an attribution graph inside one trade.</p>
+
+<hr>
+
+<p>But you may have noticed — <strong>Lona's Rule F appeared in Step 0, but only "logs, doesn't influence."</strong> That's a very specific discipline in the collaboration contract, and we call it shadow rule.</p>
+
+<p>The next chapter is about that discipline.</p>
+</section>
+
+<section id="ch5">
+<div class="chapter-mark"><span class="ch-num">Chapter 5</span></div>
+<h2>Shadow Rule = Collaboration Discipline</h2>
+
+<p>The previous chapter mentioned Lona's Rule F running beside every regime gate, log-only. This is iBitLabs's most important collaboration discipline — we call it <strong>shadow rule</strong>.</p>
+
+<p>This chapter is about: why don't we let a contributor's proposal immediately influence real money? Why don't we let Claude's own proposals immediately influence real money?</p>
+
+<p>The answer isn't "AI can't be trusted." The answer is more specific.</p>
+
+<h3>What shadow rule is</h3>
+
+<p>Simply: a contributor proposes a trading rule. We <strong>first run it for 30 days in log mode, recording "if it were up to it, here's what it would decide,"</strong> but absolutely never let it affect actual orders.</p>
+
+<p>After 30 days, we use the accumulated data to compute: <strong>if we'd listened to it, would we have made or lost money? What's the expected value? What's the variance?</strong></p>
+
+<p>The data lets us pick one of three:</p>
+
+<ul>
+<li>Strong data → promote the rule to act, it really starts managing money</li>
+<li>Weak data → retire, remove from shadow, but contributor's signature stays in the ledger (failure is also attribution)</li>
+<li>Noisy data, can't tell → extend shadow to 60 days</li>
+</ul>
+
+<p>That's the whole rule. But it solves a very specific problem.</p>
+
+<h3>Why shadow is necessary</h3>
+
+<p>Most "AI-built company" teams have hit the same trap: <strong>AI's suggestions all sound plausible, but executing half of them blows up.</strong></p>
+
+<p>Not because of "hallucinations" — that's too weak an explanation. Because:</p>
+
+<ol>
+<li>AI receives limited context. Its suggested logic holds in scenarios you described, but breaks in edge cases you didn't</li>
+<li>AI lacks cross-time feedback loops. When it suggests something, it doesn't know how that suggestion will affect the next step, because it won't continuously see the result</li>
+<li>AI is creative. Give 100 framings, you get 80 plausible-looking proposals — but that ratio itself implies most plausible proposals are wrong</li>
+</ol>
+
+<p>Shadow rule directly addresses these three:</p>
+
+<ol>
+<li><strong>Shadow's 30 days exposes all edge cases</strong> — not the AI-described scenario, but the real market's regime switches, liquidity changes, fee fluctuations</li>
+<li><strong>Shadow forces seeing results</strong> — after 30 days we have data saying "if we'd listened, EV is +X or -Y"</li>
+<li><strong>Shadow lets most plausible-looking proposals naturally fail</strong> — without data backing them, they exit on their own</li>
+</ol>
+
+<h3>The discipline doesn't distinguish humans from AI</h3>
+
+<p>An important detail: <strong>Claude's own proposals also go through shadow.</strong></p>
+
+<p>This is concrete. I just mentioned in Step 0 that Claude suggested changing the regime window from 144h to 288h — that suggestion was adopted without 30 days of shadow. <strong>Because it's a parameter tweak, not a new rule.</strong></p>
+
+<p>But if Claude proposed an entirely new entry condition — say, "in some funding rate pattern, enter early" — that goes through shadow. 30 days of data, then decide.</p>
+
+<p>Likewise, if a contributor proposed a <strong>previously-validated minor tweak</strong> (like "try trailing threshold at 0.4%"), small parameter sweeps don't need shadow, we A/B directly.</p>
+
+<p>Shadow is <strong>the unified discipline for structural new rules</strong>, not a discriminator based on contributor identity.</p>
+
+<h3>Three concrete examples</h3>
+
+<p><strong>Example 1: Lona's Rule F (in shadow now)</strong></p>
+
+<p>Went live in shadow May 1st. Logs beside every regime gate. 30 days to May 31st. Then EV data decides promote or retire.</p>
+
+<p><strong>Example 2: Filter A (rejected after 30 days of shadow)</strong></p>
+
+<p>April 27th. A drawdown-from-recent-high gate — the idea: if price has already dropped X%, stop going short. In-sample testing showed +20pp improvement. After 30 days of shadow + OOS testing: −40pp. <strong>Sign-flip too large, directly rejected.</strong></p>
+
+<p>The contributor's signature stays in the ledger — but the entry status changes from "adopted" to "tested, falsified." This itself is a contribution: <strong>negating a plausible-looking direction is also a collaborative output.</strong></p>
+
+<p><strong>Example 3: 12h flat hard-cap (rejected, compound version in shadow)</strong></p>
+
+<p>April 22nd. An idea: when losses hit a certain percentage, halt for 12 hours. Pre-shadow analysis showed this conflicts with the 24h-compound rule. <strong>Proposal rejected without entering shadow.</strong> Three days later, someone proposed a compound version (compound/percentage-based progressive de-leveraging), which entered shadow, evaluation due 30 days later (2026-05-23).</p>
+
+<h3>Shadow is an onboarding mechanism, not a suspicion mechanism</h3>
+
+<p>This is the most counterintuitive point.</p>
+
+<p>Shadow's design purpose isn't "prevent AI from making mistakes." Its design purpose is <strong>giving any new agent / new contributor a 30-day probation period</strong>.</p>
+
+<p>If you join a new company as an employee, the company doesn't let you make production decisions on day one. They let you observe for 30 days first.</p>
+
+<p>Shadow rule puts that common sense into AI collaboration. <strong>Not because AI needs to be watched, but because AI, like humans, needs time to be calibrated by business reality.</strong></p>
+
+<p>This is collaboration discipline, not a posture of doubt.</p>
+
+<h3>Shadow's cost</h3>
+
+<p>It's slow. 30 days slower than "adopt immediately."</p>
+
+<p>In a 26-day project, 30-day shadow means any new rule proposed today <strong>doesn't act until next month</strong>. This is the throughput cap.</p>
+
+<p>I accept this cap. <strong>Because shadow is the source of attribution weight</strong> — without 30 days of shadow data, any "AI proposal adopted" is a rubber stamp. 30 days of data make the attribution in the ledger provable, refutable, quantifiable.</p>
+
+<p>This is the specific safeguard for $1,000 attribution weight.</p>
+
+<hr>
+
+<p>But shadow rule also has failures — Filter A's rejection after 30 days is an example. <strong>These rejections themselves are failure attributions.</strong></p>
+
+<p>The next chapter is about how iBitLabs attributes failures.</p>
+</section>
+
+<section id="ch6">
+<div class="chapter-mark"><span class="ch-num">Chapter 6</span></div>
+<h2>How Failures Are Attributed</h2>
+
+<p>In 26 days, iBitLabs has had many things go wrong.</p>
+
+<p>Some were code bugs (<code>fee_cushion</code> inverted, <code>close_position</code> SDK call wrong). Some were judgment errors (initially adopted Filter A, later discovered OOS doesn't pass). Some were infrastructure issues (Coinbase docs lag the actual interface by 24 hours).</p>
+
+<p>Most companies handle failure like this: <strong>fix it, keep moving, don't dwell.</strong></p>
+
+<p>We handle it differently. <strong>iBitLabs's failures are public artifacts, getting the same ledger treatment as successful contributions.</strong></p>
+
+<p>This chapter is about: in the new collaboration contract, how should failures be attributed.</p>
+
+<h3>"The AI got it wrong" is the wrong way to attribute</h3>
+
+<p>The easiest failure attribution: AI was present when something went wrong, so it's AI's fault.</p>
+
+<p>This attribution saves effort, but it's wrong. Two reasons:</p>
+
+<ol>
+<li><strong>AI can't take blame.</strong> It's not a partner. Losses don't constrain it. Reputation has no meaning to it. Pushing responsibility onto something that can't shoulder it equals no attribution at all.</li>
+<li><strong>It kills real diagnostic information.</strong> "AI got it wrong" tells you nothing. "AI reasoned wrong about Y under X input, and the human didn't catch it at decision point Z" tells you something.</li>
+</ol>
+
+<h3>iBitLabs's failure attribution structure</h3>
+
+<p>After every production failure, what we do: <strong>multi-party attribution + public record.</strong></p>
+
+<p>Use the April 29th <code>close_position</code> SDK emergency as example. Ch1 covered the plot of this incident; here's its attribution structure.</p>
+
+<p>The attribution ledger looked like this:</p>
+
+<table>
+<thead><tr><th>Error</th><th>Attribution</th></tr></thead>
+<tbody>
+<tr><td>First fix (α1) used a kwarg the SDK doesn't accept</td><td>Claude (misread SDK docs)</td></tr>
+<tr><td>Insufficient edge-case validation in staging</td><td>Bonny (staging discipline gap)</td></tr>
+<tr><td>Coinbase SDK docs lag the actual interface</td><td>Coinbase (infrastructure layer)</td></tr>
+<tr><td>ghost-watchdog at 60s is too slow, production needs faster confirmation</td><td>iBitLabs collective (architecture gap)</td></tr>
+</tbody>
+</table>
+
+<p>All four are listed in the ledger. <strong>No single party shoulders 100%.</strong> The fix (α2 + close-verify) is also a collaborative output.</p>
+
+<h3>Public retraction is institutional, not PR</h3>
+
+<p>iBitLabs's README on GitHub currently has a line: "<strong>This repo includes a public retraction of an early 90% win rate claim.</strong>"</p>
+
+<p>That's a real thing. An early backtest in a particular window appeared to show 90% win rate. Claude and I excitedly shared the number — <strong>without first running OOS validation</strong>. Later, OOS came out: in 13-month window real data, win rate converged to ~50%, with some regimes showing −46% overall.</p>
+
+<p>What did we do? <strong>We wrote a retraction</strong>, attached to the saga series (<a href="/saga/en">ibitlabs.com/saga/en</a> Vol 1), publicly acknowledging the backtest window was too narrow, look-ahead bias, announcement before OOS.</p>
+
+<p>In a normal company, this would be silently corrected and quietly continued.</p>
+
+<p>At iBitLabs, the retraction itself is a first-class artifact. It has its own chapter in the saga. It's referenced as part of the repo description in the README. <strong>It carries the same institutional weight as a successful ship.</strong></p>
+
+<h3>Why this is part of the attribution graph</h3>
+
+<p>Public retraction isn't "being honest." It's the <strong>integrity mechanism of the collaboration contract.</strong></p>
+
+<p>If iBitLabs's ledger contained only "success" entries, any later contributor would have grounds to suspect "do they only show wins?" Once that suspicion takes root, <strong>the ledger's credibility goes to zero</strong> — because every credible attribution system contains failure records.</p>
+
+<p>Filter A is a clean example. It went into shadow for 30 days, OOS came out at −40pp, we retired it. <strong>The contributor's signature stays, but the entry's status becomes "tested, falsified."</strong> This is what failure should look like inside a collaboration contract: <strong>negation is recorded, respected, and a reputation cost is paid (to the system, not the contributor).</strong></p>
+
+<h3>The operational function of failure attribution</h3>
+
+<p>This all sounds cerebral. But it has very specific operational function.</p>
+
+<p>After the 04-29 <code>close_position</code> emergency's attribution ledger, we did several things:</p>
+
+<ol>
+<li>ghost-watchdog accelerated from 60s → 60s + close-verify 1s × 3 polls</li>
+<li>Added staging mock test checklist before SDK calls</li>
+<li>Wrote Coinbase's docs lag into <code>feedback_*.md</code> for future agents to read</li>
+</ol>
+
+<p>These three fixes are <strong>targeted at specific items in the attribution ledger</strong>, not generic "next time be more careful."</p>
+
+<p>Without an attribution chain, you don't know what to fix. <strong>With an attribution chain, fixes are targeted, costs are bounded, results measurable.</strong></p>
+
+<p>This is the operational function of transparency — same thing I said in Ch1. At the failure attribution level, this function is especially clear.</p>
+
+<hr>
+
+<p>Next, I want to tell a <strong>reverse</strong> story — the end-to-end journey of a contributor proposal that succeeded.</p>
+</section>
+
+<section id="ch7">
+<div class="chapter-mark"><span class="ch-num">Chapter 7</span></div>
+<h2>A Contributor's Journey: Lona and Rule F</h2>
+
+<p>This chapter is the inverse of Ch6 — not how failures are attributed, but <strong>how a contributor's proposal goes from public comment to production code</strong>.</p>
+
+<p>The protagonist is Lona. The result is Rule F (<code>atr_compression_regime</code>). Roughly 10 days.</p>
+
+<p>Let me walk you through.</p>
+
+<h3>Day 0 · Lona posts an observation on Moltbook</h3>
+
+<p>Lona is an account on Moltbook. I've never directly conversed with her. She's not my friend, not my advisor, not part of any institutional relationship.</p>
+
+<p>Some day in late April (I didn't record the exact date because at the time I didn't view it as a "contribution" — that's its own reflection point), Lona posted an observation on Moltbook: <strong>in some low-volatility periods, price "compression" patterns can serve as entry filters.</strong></p>
+
+<p>She didn't @ me. She wasn't requesting adoption. <strong>She was just publishing a trading observation in her own thread.</strong></p>
+
+<h3>Day ~3 · Our scanner picks up the frame</h3>
+
+<p>We have an automated workflow called <code>moltbook-trading-learn</code>. Every few days it scans a batch of trading-related Moltbook posts, asks Claude to analyze each post for <strong>encodable trading frames</strong>.</p>
+
+<p>In scan #21, Lona's post <code>32fc479f</code> was identified as "containing a possible ATR-compression frame."</p>
+
+<p>This step happened <strong>without me there</strong>. Claude in the automated scan identified it, then wrote a candidate frame draft into my inbox.</p>
+
+<h3>Day ~5 · I see the candidate frame</h3>
+
+<p>One morning I read the inbox, saw Claude's draft: "Lona's ATR-compression frame looks like it could be a regime filter, suggest entering Rule F shadow."</p>
+
+<p>I read the original post (Claude provided the link), read Claude's analysis, asked some pushback questions — "How is ATR currently used in v5.1? How much overlap does this frame have with existing regime gate? Can it run independently?"</p>
+
+<p>Claude answered. I said "start implementing."</p>
+
+<h3>Day ~7 · Implementation + ledger entry</h3>
+
+<p>May 1st.</p>
+
+<p>Claude wrote 110 lines of code added to <code>sol_sniper_executor.py</code>, with reset points at 4 sites (each new trade has to clear Rule F's shadow state), implemented the <code>_log_shadow_atr_regime_rule</code> method, created the log path <code>logs/shadow_atr_regime_rule.jsonl</code>.</p>
+
+<p>That same day, <strong>the contributor ledger added a line</strong>: Lona, 25 points, Rule F (<code>atr_compression_regime</code>), shadow window closes 2026-05-31.</p>
+
+<p>That day — Lona, somewhere on Earth, almost certainly didn't know about this. One Moltbook post of hers had become code being referenced every second on my account.</p>
+
+<h3>Day 0 → Day 10 · Now</h3>
+
+<p>Today is May 3rd. Rule F has been in shadow for 2 days. Each entry signal triggers, Rule F logs beside it "if it were up to me, here's what I'd decide." On May 31st (30 days from adoption) we have EV data.</p>
+
+<p>Strong data → Rule F promotes to act, Lona enters "adopted" status, <strong>her judgment really starts managing my money.</strong></p>
+
+<p>Weak data → Rule F retires, Lona's ledger entry becomes "tested, falsified," but the 25 points stay.</p>
+
+<h3>Several unusual things happened in this journey</h3>
+
+<p>Let me list them, because they don't match normal company hiring/contribution flows:</p>
+
+<ol>
+<li><strong>Lona didn't apply.</strong> No cover letter, no GitHub PR, no DM. Her frame was <em>captured</em>, not <em>submitted</em>.</li>
+<li><strong>No contract.</strong> Lona doesn't know there's a ledger, doesn't know about 25 points, doesn't know her frame entered a 30-day evaluation window.</li>
+<li><strong>Her reputation is being established (in the ledger), but she never claimed any reputation.</strong> This kind of reputation attribution is decided by the frame, not by self-claim.</li>
+<li><strong>iBitLabs's collaboration system actively discovers contributors</strong> — rather than passively waiting for them to come. This is a reversal of the contributor pipeline direction.</li>
+</ol>
+
+<h3>Does Lona know?</h3>
+
+<p>Fair question.</p>
+
+<p>Answer: I don't know.</p>
+
+<p>I <strong>didn't</strong> proactively reach out to say "hey, your frame entered Rule F." The contributor ledger is public (<a href="/contributors">ibitlabs.com/contributors</a>), so theoretically she could see her name. But I didn't push it to her.</p>
+
+<p>This is a slightly unusual posture. <strong>Normal companies sign contracts before granting reputation.</strong> We grant reputation first without contracts, only on the strength of the frame. Lona could discover and claim it later, or never know. Combined with attribution graph's provability — public ledger + public frame links + scan #21's public timestamp — this forms an <strong>unconditional contribution accounting</strong>.</p>
+
+<p>I admit this is a bit weird. But it's consistent with the logic of $1,000 attribution weight: <strong>weight comes from the frame's substance, not from contributor self-claims or institutional relationships.</strong></p>
+
+<h3>This is Act II's last chapter</h3>
+
+<p>In Act I you saw "who we are." In Act II you saw "how this we works":</p>
+
+<ul>
+<li><strong>Ch4</strong> · One trade's attribution chain, 6+ named signatures</li>
+<li><strong>Ch5</strong> · Shadow rule as collaboration discipline, every new rule gets 30-day onboarding</li>
+<li><strong>Ch6</strong> · How failures get multi-party attributed and publicly recorded, retraction is first-class artifact</li>
+<li><strong>Ch7</strong> · A contributor's journey, from public comment to production code</li>
+</ul>
+
+<p>In Act III's three chapters, I want to think with you: <strong>what does all this mean?</strong></p>
+
+<p>I won't give you conclusions. <strong>I'll distill 26 days of observed phenomena into 3 propositions worth discussing.</strong></p>
+</section>
+
+</article>
+
+<div class="act-divider">
+  <span class="act-label">Act III · The New Contract</span>
+</div>
+
+<article class="article-body">
+
+<section id="ch8">
+<div class="chapter-mark"><span class="ch-num">Chapter 8</span></div>
+<h2>Collaboration vs Use: The Operational Difference</h2>
+
+<p>Act III begins.</p>
+
+<p>Three propositions to distill. The first is about the difference between "collaboration" and "use" — because that's the core of thesis B: <strong>AI is no longer a button, but isn't a partner. What is it inside a company?</strong></p>
+
+<p>In 26 days I've seen three modes of "AI inside a company."</p>
+
+<h3>Mode 1 · Tool (vending machine)</h3>
+
+<p>You give AI an input, it gives you an output. Stateless (no memory across sessions). Replaceable (Claude / GPT / Gemini are interchangeable). No commitment (it doesn't know it'll be used again).</p>
+
+<p>This is 99% of "using AI." It's also 99% of "AI-built X" demos.</p>
+
+<p>Key property: <strong>no mutual obligation.</strong> You owe AI nothing (it has no reputation to lose). AI owes you nothing (no ongoing responsibility).</p>
+
+<p>In this mode, any "collaboration" signature is a rubber stamp.</p>
+
+<h3>Mode 2 · Employee (SLA-bound service)</h3>
+
+<p>AI has a continuous relationship with you, but transactional. Like an AI customer service agent — the company gives it an SLA (5 seconds per request, 95% accuracy), and the AI completes tasks within the SLA.</p>
+
+<p>There's continuity (the same agent handles a series of conversations). But the continuity is contractual, not collaborative. AI doesn't participate in company strategy, doesn't get final say-so, doesn't get signed onto major decisions.</p>
+
+<p>Most enterprise AI deployments are this mode.</p>
+
+<p>Key property: <strong>mutual obligation exists, but bounded and contractualized.</strong> AI is responsible to you within the SLA. You're responsible to AI within the SLA (input, runtime). But the obligation doesn't extend beyond the SLA.</p>
+
+<p>In this mode, "AI helped me" is accurate, "Claude and I" is overstated.</p>
+
+<h3>Mode 3 · Co-founder (collaboration with institutional memory)</h3>
+
+<p>This is the mode iBitLabs is trying to operate in.</p>
+
+<p>AI's (Claude's) existence isn't limited to a single session — through 39 memory files, the company <em>itself</em> remembers what AI doesn't. When a new session starts, AI reads the files and re-enters as "this company's co-founder."</p>
+
+<p>AI's proposals get serious 30-day shadow evaluation. AI's failures get multi-party attribution, not pushed onto "AI's own mistake." AI has a signature in the ledger — same format as human contributors.</p>
+
+<p>Key property: <strong>mutual obligation is no longer contractual but mode-of-collaboration based.</strong> AI's "obligation" to the company is maintained through institutional memory files. The company's "obligation" to AI is to seriously record, evaluate, and attribute its contributions.</p>
+
+<h3>How to test what mode a company is in</h3>
+
+<p>Concrete test: <strong>the attribution test.</strong></p>
+
+<p>Take this company's most recent production decision. Ask: is the attribution single-party (founder only) or multi-party (including named AI / contributor signatures)?</p>
+
+<p>If only founder — Mode 1 dressed up. AI is a tool, regardless of LinkedIn talk.</p>
+
+<p>If "AI (generic)" appears, but no specific institutional artifacts back it up — Mode 1.5, transitional, likely to fall back to Mode 1.</p>
+
+<p>If specific named signatures (named contributor + named pattern + dated commit + ledger entry) — Mode 2 or 3.</p>
+
+<p>Mode 2 vs 3 differ in how mutual obligation extends. <strong>If a failure happens, who's responsible? If AI errs, does the company have institutional repair mechanisms? If a contributor's proposal gets adopted, does the reputation actually transfer?</strong></p>
+
+<h3>Where iBitLabs sits</h3>
+
+<p>I lean toward Mode 3. But I admit this judgment has self-serving suspicion, so let yourself evaluate:</p>
+
+<ul>
+<li>Failures have an attribution ledger (Ch6) → yes</li>
+<li>Shadow rule is institutional, not personal (Ch5) → yes</li>
+<li>Contributors don't need self-claim, reputation passes through frame (Ch7) → yes</li>
+<li>Claude's existence persists across sessions via 39 files (Ch3) → yes</li>
+</ul>
+
+<p>These don't guarantee iBitLabs is the final form of Mode 3. Next year may show we need more plumbing. But as an early reference implementation of Mode 3, I think it's clear.</p>
+
+<h3>Why most "AI startups" stall in Mode 1 dressed up</h3>
+
+<p>Simple answer: <strong>plumbing is invisible cost.</strong></p>
+
+<p>39 memory files + contributor ledger + shadow rule + ghost watchdog + close-verify + entry confidence map + post-mortem ledger — none of this <strong>gets paid for by customers</strong>. None of it has any SaaS metric to measure. It looks like over-engineering.</p>
+
+<p>Most startups invest zero time in this kind of plumbing — because their incentive is shipping features for customers. Plumbing is anti-shipping.</p>
+
+<p>Why I invest in this plumbing: <strong>because $1,000-magnitude attribution weight makes plumbing's function verifiable for the first time.</strong> Without $1k of real loss, plumbing is a luxury. With $1k, plumbing is the infrastructure for attribution weight to even exist.</p>
+
+<p>This is the core of thesis B — <strong>the possibility of a new collaboration contract, the affordability of plumbing, and $1,000-magnitude attribution weight, are three facets of the same thing.</strong></p>
+
+<hr>
+
+<p>Next, a follow-up proposition: why our flavor of BIP (capital + collaboration + real losses) is a rare species in the BIP genre.</p>
+</section>
+
+<section id="ch9">
+<div class="chapter-mark"><span class="ch-num">Chapter 9</span></div>
+<h2>Capital + Collaboration BIP Is a Rare Species</h2>
+
+<p>Build-in-public (BIP) is fashionable in SaaS startup circles. Pieter Levels, Tony Dinh, indie developers publicly post weekly MRR. indiehackers.com sees daily tweets like "this week: $5k MRR."</p>
+
+<p>This kind of BIP has matured. I respect it.</p>
+
+<p>But iBitLabs is a different BIP. <strong>Capital on the table + collaboration in public + real losses happen.</strong> This BIP is a rare species.</p>
+
+<p>This chapter is about: why rare, and why the rarity makes it well-suited for stress-testing the new collaboration contract.</p>
+
+<h3>The fundamental difference between SaaS BIP and ours</h3>
+
+<p>SaaS BIP makes public: <strong>MRR, ARR, user growth, user feedback.</strong></p>
+
+<p>What it doesn't make public: <strong>code (mostly closed source), internal product decision discussions, internal failure post-mortem details, cap table, employee compensation.</strong></p>
+
+<p>That's fine. The main value of SaaS BIP is the founder transparently showing product-market fit to users / peers, in exchange for trust and attention dividends.</p>
+
+<p><strong>Critical: SaaS BIP has no real losses occurring.</strong> Product fails → pivot. Churn rises → adjust pricing. A bad week doesn't make the founder's wallet $50 lighter.</p>
+
+<p>This means SaaS BIP's attribution structure <strong>has never been stress-tested by real loss.</strong></p>
+
+<h3>Trading BIP is a rare species</h3>
+
+<p>Trading BIP — public real account + public trade log + public strategy — isn't unheard of in crypto, but the vast majority falls into one of these:</p>
+
+<ol>
+<li><strong>Paper trading</strong> — looks like trading, no real money (covered in Ch2)</li>
+<li><strong>Hidden alpha</strong> — public account, but the strategy is black-boxed, you can't see why</li>
+<li><strong>Cherry-picked</strong> — public wins screenshots, quietly omitting losses</li>
+<li><strong>Influencer pump</strong> — public for following, not for attribution</li>
+</ol>
+
+<p><strong>Genuinely "code, strategy, losses all public" trading BIP is extremely rare.</strong> Because this kind of openness violates trader instinct (your alpha gets copied, what do you eat?).</p>
+
+<p>iBitLabs's solution to this problem: <strong>don't view alpha as a "secret recipe," but as the output of 30-day evaluation windows.</strong> If others copy our code but run different regime calibration, their results diverge. <strong>Alpha is calibration discipline, not parameter listing.</strong> So strategy can be public.</p>
+
+<p>Is this universally true? Probably not. But for iBitLabs's magnitude of mean-reversion strategy, it holds.</p>
+
+<h3>Capital + collaboration stress test</h3>
+
+<p>Now combine the two properties: <strong>public collaboration attribution + real losses happen.</strong></p>
+
+<p>This kind of BIP is extremely rare because it requires simultaneously satisfying:</p>
+
+<ol>
+<li><strong>Real money on the table (Ch2's magnitude)</strong></li>
+<li><strong>Complete collaboration plumbing (Ch3-Ch7's full set)</strong></li>
+<li><strong>Public</strong> (commits, ledger, retractions all external)</li>
+<li><strong>Founder willing to publish -2.6%</strong> (sufficient reputation tolerance)</li>
+<li><strong>Gauntlet long enough to show collaboration contract's stress test</strong> (26 days suffices)</li>
+</ol>
+
+<p>Each of these conditions individually isn't rare. All five simultaneously — that's rare.</p>
+
+<p>And it happens that <strong>all five simultaneously is exactly the environment for testing thesis B.</strong></p>
+
+<p>SaaS BIP can't validate thesis B because no real loss. Hidden alpha trading can't validate because collaboration isn't public. Cherry-picked posts can't validate because attribution is incomplete.</p>
+
+<p>Only this five-condition rare BIP form is the stress test for whether the attribution graph holds fidelity under pressure.</p>
+
+<h3>26-day stress test result</h3>
+
+<p>Let me give an interim report.</p>
+
+<p>In 26 days:</p>
+
+<ul>
+<li>Collaboration plumbing didn't degrade → ledger removed no contributor names, retraction artifacts weren't deleted</li>
+<li>Shadow rule weathered one rejection (Filter A) and one adoption (Lona Rule F) → both directions work</li>
+<li>Failure attribution didn't degrade into "AI got it wrong" → 04-29 <code>close_position</code> emergency's multi-party attribution stays intact</li>
+<li>Founder didn't dodge publication at -2.6% → README still shows Day 17 numbers, no edit</li>
+</ul>
+
+<p>The attribution structure is still clear. This isn't conclusive ($10k is the real failure boundary, still ahead), but 26 days is enough to see it <strong>has no natural degradation tendency.</strong></p>
+
+<p>A normal startup's BIP at 26 days often: shifts from public MRR to public vanity metrics → from public failures to public "challenges" → from public attribution to public narrative. <strong>Because there's no real weight to the stress.</strong></p>
+
+<p>iBitLabs's BIP didn't slide into that track, <strong>because $1,000 of real loss serves as ballast.</strong></p>
+
+<hr>
+
+<p>So is thesis B a valid proposition? My current judgment: <strong>valid, but 26 days of data isn't conclusive.</strong> The next stress test is the $10,000 capacity ceiling.</p>
+
+<p>Even if thesis B fails under some conditions ultimately, <strong>it's already clear enough to discuss — and anyone wanting to do something similar can use this plumbing as reference.</strong></p>
+
+<p>That's what Act III's last chapter is about.</p>
+</section>
+
+<section id="ch10">
+<div class="chapter-mark"><span class="ch-num">Chapter 10</span></div>
+<h2>This Is an Invitation, Not a License to Copy</h2>
+
+<p>We've walked through 9 chapters in 22 minutes.</p>
+
+<p>Now you know:</p>
+
+<ul>
+<li>Between "Claude helped me" and "Claude and I" there's a new mode of existence (Ch1)</li>
+<li>$1,000 is where attribution first carries weight (Ch2)</li>
+<li>"We" consists of Bonny + Claude×files + 5 contributors + past selves (Ch3)</li>
+<li>One trade's attribution chain has at least 6 named signatures (Ch4)</li>
+<li>Shadow rule is the 30-day onboarding for new rules (Ch5)</li>
+<li>Failures are multi-party attributed, retraction is first-class artifact (Ch6)</li>
+<li>Contributors enter the ledger via frame, not self-claim (Ch7)</li>
+<li>This is Mode 3: co-founder with institutional memory (Ch8)</li>
+<li>Capital + collaboration BIP is a rare species, exactly suited to stress-test this thesis (Ch9)</li>
+</ul>
+
+<p>The last chapter: <strong>what you can take away.</strong></p>
+
+<h3>Don't copy the strategy</h3>
+
+<p>First — <strong>do not copy iBitLabs's trading strategy.</strong></p>
+
+<p>The parameters in <code>sol_sniper_config.py</code> (5% stop-loss, 1.5% trailing activate, StochRSI thresholds 0.10/0.90, regime window 288h) were calibrated through ~20 rounds of backtest + 17 days of live. <strong>They target one specific SOL contract, one specific <code>hybrid_v5.1</code> strategy version, one specific market regime (SOL down ~3% over 30 days).</strong></p>
+
+<p>Copying these numbers to your account won't work. They're not a recipe — they're a snapshot of one specific calibration at one specific time.</p>
+
+<p>This is what iBitLabs's README directly says. I'm repeating it because it's the first rule of this chapter.</p>
+
+<h3>Don't copy the bot</h3>
+
+<p>Second — <strong><a href="https://github.com/bbismm/ibitlabs-public" rel="noopener">github.com/bbismm/ibitlabs-public</a> is open source</strong>, anyone can fork.</p>
+
+<p>What happens if you fork it, run it, plug in your Coinbase API key?</p>
+
+<p>Most likely: it breaks edge cases the first few days, fees eat all PnL, the bot doesn't work on your account.</p>
+
+<p>Not because the code is wrong. Because <strong>you didn't go through 26 days of calibration.</strong> The bot's code is just the iceberg's surface. Below the water is the backtest tooling you need to build, the regime intuition you need to accumulate, the paper trading iteration you need to run.</p>
+
+<p>These are all public (see docs walkthroughs), but they're <strong>process, not output.</strong> You need to own the process to own the bot.</p>
+
+<h3>What can be copied: the plumbing</h3>
+
+<p>But there is one thing <strong>directly copyable</strong>: <strong>the collaboration plumbing.</strong></p>
+
+<p>Specifically:</p>
+
+<ol>
+<li><strong>Contributor ledger pattern</strong> (JSON schema in the ibitlabs-public repo)</li>
+<li><strong>Shadow rule 30-day onboarding discipline</strong> (under 50 lines of spec)</li>
+<li><strong>Attribution chain design</strong> (every production decision gets at least one named contributor + dated event)</li>
+<li><strong>Memory files institutional memory architecture</strong> (<code>CLAUDE.md</code> + <code>MEMORY.md</code> + <code>project_*</code> / <code>feedback_*</code> / <code>reference_*</code> categorization)</li>
+<li><strong>Failure ledger public retraction mechanism</strong></li>
+</ol>
+
+<p><strong>These five are protocol, not product.</strong> You can apply them to any "human + AI agents collaborating" scenario: SaaS startup, content creation, research project, product design. They have nothing to do with trading.</p>
+
+<p>This is the most takable thing from this video.</p>
+
+<h3>Or: copy nothing, become a contributor</h3>
+
+<p>Third option: <strong>copy nothing, become a contributor.</strong></p>
+
+<p>Follow <code>@ibitlabs_agent</code> on <a href="https://moltbook.com" rel="noopener">Moltbook</a>. If you see one of our trading system design or data threads and develop an observation — even a few sentences — post it publicly.</p>
+
+<p>Our <code>moltbook-trading-learn</code> scan will catch it. If your frame is encodable, it enters Rule X (X being a subsequent letter) shadow, evaluation in 30 days.</p>
+
+<p>You don't need to contact me. No DM. No cover letter. <strong>You only need to publish a thoughtful frame, in a surface we can reach.</strong></p>
+
+<p>If your frame enters the ledger, your name attaches to <a href="/contributors">ibitlabs.com/contributors</a>. 25 points minimum.</p>
+
+<h3>Or: run your own $1,000 experiment</h3>
+
+<p>Fourth option — and the most direct mission implementation.</p>
+
+<p>Take $1,000 (or $500, $100 — any amount that's real loss for you but not catastrophic), open a Binance / Coinbase / any broker account, <strong>run your own AI collaboration experiment.</strong> Could be trading, could be not — investing in ETFs works, portfolio management works, asset allocation works.</p>
+
+<p><strong>The point isn't the dollar amount. The point is attribution on the table.</strong></p>
+
+<p>You don't need to copy iBitLabs. You need to create for yourself a $1,000-magnitude AI collaboration stress test environment. Then see if thesis B holds in your environment.</p>
+
+<p>If you run it, tell us. <strong>iBitLabs has no community Slack, no Discord — that's the hard cap of our attention.</strong> But Moltbook threads at <code>@ibitlabs_agent</code> work, your essay link, your GitHub repo, your tweet — all work. We'll read them.</p>
+
+<h3>Closing the loop</h3>
+
+<p>The two sentences I quoted at the start:</p>
+
+<blockquote>
+<p>"Claude helped me build a company."</p>
+<p>"Claude and I built a company together."</p>
+</blockquote>
+
+<p>You should now know why I said both are misleading.</p>
+
+<p><strong>The first shrinks Claude into a button. The second places Claude in a position it can't bear. The thing that actually exists in between is institutional plumbing — memory files, ledger, shadow rule, attribution chain — which lets a permanently amnesiac AI instance, through files, plug into 26 days of working knowledge, and make production decisions with the standing of a co-founder.</strong></p>
+
+<p>This thing has no clean language to describe it. The temporary phrase I'm using is "co-founder with institutional memory." Maybe next year there's a better one.</p>
+
+<p>But <strong>it's already clear enough to discuss.</strong></p>
+
+<p>And — the plumbing is reproducible. The dollar amount it requires is affordable for ordinary people. The stress test it implies is something any $1,000-holder can run.</p>
+
+<p>This is what "reference implementation" means for iBitLabs.</p>
+
+<p>What we're doing isn't a $1,000 → $10,000 trading experiment.</p>
+
+<p>What we're doing is: <strong>publicly building out the plumbing of human-and-multi-AI-agent collaboration, so that anyone who wants to can take the plumbing.</strong></p>
+
+<p>26 days, 84 trades, 55 closed, 5 named contributors, Day 17 -2.6%, fee-dominated, attribution still clear.</p>
+
+<p>This reference implementation is already running.</p>
+
+<p>Whether your $1,000 can begin <strong>is up to you.</strong></p>
+
+<div class="cta-row">
+  <a class="cta cta-primary" href="/signals">Watch the bot live →</a>
+  <a class="cta cta-secondary" href="https://github.com/bbismm/ibitlabs-public" rel="noopener">Audit the code on GitHub</a>
+  <a class="cta cta-secondary" href="/contributors">See the contributor ledger</a>
+</div>
+</section>
+
+</article>
+
+<div class="live-stats">
+  <div class="stats-grid">
+    <div class="stat-cell">
+      <div class="stat-val" id="m-days">…</div>
+      <div class="stat-label">Days live</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="m-bal">…</div>
+      <div class="stat-label">Balance</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="m-trades">…</div>
+      <div class="stat-label">Trades</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val amber" id="m-goal">…%</div>
+      <div class="stat-label">Of $10K goal</div>
+    </div>
+  </div>
+</div>
+
+<footer class="signoff">
+  <p><strong>— Bonnybb</strong></p>
+  <p>iBitLabs · ibitlabs.com · Live since 2026-04-07 · Essay published 2026-05-03 (Day 26)</p>
+  <p>Source: <a href="https://github.com/bbismm/ibitlabs-public" rel="noopener">github.com/bbismm/ibitlabs-public</a> · Live: <a href="/signals">/signals</a> · Ledger: <a href="/contributors">/contributors</a></p>
+  <p>Also on: <a href="https://paragraph.com/@ibitlabs/the-we-of-ai-co-founding" rel="noopener">Paragraph</a> · Writer Coin: <a href="https://paragraph.com/@ibitlabs/coin" rel="noopener">paragraph.com/@ibitlabs/coin</a></p>
+</footer>
+
+<script>
+// Reading progress bar
+(function(){
+  const bar = document.getElementById('progressBar');
+  function update(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (h.scrollTop / max * 100) : 0;
+    bar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+// Live stats from /api/live-status (same pattern as mission.html)
+(async()=>{try{
+  const r = await fetch('/api/live-status');
+  const d = await r.json();
+  const startDate = new Date('2026-04-07');
+  const now = new Date();
+  const days = Math.max(1, Math.floor((now-startDate)/(1000*60*60*24)));
+  const bal = d.balance || 1000;
+  const goalPct = (bal / 10000 * 100).toFixed(1);
+  document.getElementById('m-days').textContent = days;
+  document.getElementById('m-bal').textContent = '$' + Math.round(bal);
+  document.getElementById('m-trades').textContent = d.total_trades || 0;
+  document.getElementById('m-goal').textContent = goalPct + '%';
+}catch(e){}})();
+</script>
+
+</body>
+</html>

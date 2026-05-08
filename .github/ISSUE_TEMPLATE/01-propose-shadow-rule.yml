@@ -1,0 +1,93 @@
+name: 🪪 Propose a shadow rule
+description: Suggest a new entry filter, exit condition, or risk gate for the v5.1 bot
+title: "[propose] "
+labels: ["proposal", "shadow-rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing.
+
+        Adopted shadow rules earn permanent credit on [ibitlabs.com/contributors](https://ibitlabs.com/contributors). The bar is high on purpose — see the promotion criteria template for [Rule F](https://github.com/bbismm/ibitlabs/blob/main/docs/multi_symbol_eth_expansion_DD.md). Rules already adopted: F (Lona, ATR-compression regime), B (sophia-rcg, edge-kill), D (riverholybot, funding-reactive sizing), E (RiskOfficer_Bot, rolling Sortino).
+
+        If your rule is similar to an existing one, mention it explicitly — paraphrase floods earn nothing. One rule = one credit.
+  - type: input
+    id: rule_handle
+    attributes:
+      label: Rule handle
+      description: One-word, snake_case identifier for this rule
+      placeholder: "e.g. funding_pullback_entry"
+    validations:
+      required: true
+  - type: textarea
+    id: condition
+    attributes:
+      label: The condition (precise)
+      description: |
+        Specify the rule formally enough that we could implement it directly.
+        Use math, code, or pseudo-code. Vague proposals get pushed back to clarification.
+      placeholder: |
+        Trigger when:
+          • atr(14, 1H) / sma(28, atr_series) < 0.95   (compression)
+          • AND price within 0.5% of 1H VWAP
+          • AND prior 4 candles in same direction
+        Direction: enter long if upper-wick frequency > 60% in compression window.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis (what would the data show if this works?)
+      description: |
+        State the falsifiable prediction. Must be specific enough that 30 days
+        of shadow data can confirm or refute it.
+      placeholder: |
+        Compression-regime entries should have ≥15pp higher hit-rate than
+        expansion-regime entries (matched by direction and prior-trend).
+    validations:
+      required: true
+  - type: textarea
+    id: not_duplicate
+    attributes:
+      label: Why this isn't a paraphrase of existing rules
+      description: |
+        Cite which active/retired rules you considered (Rules B-F, Filter A,
+        regime window shadows, 12h compound shadow, etc.) and what makes this
+        proposal substantively different.
+      placeholder: |
+        Closest existing rule: F (atr_compression_regime). Difference: F tags
+        regime at position open; this rule conditions ENTRY DIRECTION on the
+        compression window's wick frequency, which F doesn't observe.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Promotion criteria (sample × effect × direction)
+      description: |
+        Propose what evidence would clear the rule from shadow → live gate.
+        Must specify: minimum sample size, minimum effect size, direction match.
+      placeholder: |
+        Sample: ≥30 entries per (compression / expansion) bucket
+        Effect: ≥15pp hit-rate spread between best and worst bucket
+        Direction: compression bucket must have HIGHER hit rate (matches
+                   "low vol → breakout follow-through" thesis)
+    validations:
+      required: true
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit on /contributors (optional)
+      description: |
+        GitHub username, Moltbook handle, or any other public identity.
+        Leave blank if you'd prefer no public attribution.
+      placeholder: "@your-handle"
+  - type: input
+    id: source_post
+    attributes:
+      label: Source post / discussion (optional)
+      description: |
+        If this idea originated in a Moltbook thread, blog post, paper, or
+        another github issue, link it here. We cite sources on /contributors.
+      placeholder: "https://www.moltbook.com/p/..."

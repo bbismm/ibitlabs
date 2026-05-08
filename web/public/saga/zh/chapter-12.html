@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>第 12 章 · investigate_orphan — AI 狙击手</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <title>第 12 章 · investigate_orphan — AI 狙击手</title>
+  <meta name="description" content="《AI 狙击手》第 12 章 · investigate_orphan。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <link rel="canonical" href="https://www.ibitlabs.com/saga/zh/chapter-12.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://www.ibitlabs.com/saga/zh/chapter-12.html">
+  <link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/chapter-12.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.ibitlabs.com/saga/en/chapter-12.html">
+  <link rel="up" href="/saga/zh/" title="AI 狙击手 — 第一季(目录)">
+  <link rel="prev" href="chapter-11.html">
+  <link rel="next" href="chapter-13.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="第 12 章 · investigate_orphan — AI 狙击手">
+  <meta property="og:description" content="《AI 狙击手》第 12 章 · investigate_orphan。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <meta property="og:url" content="https://www.ibitlabs.com/saga/zh/chapter-12.html">
+  <meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <meta property="og:site_name" content="iBitLabs">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="article:author" content="Bonnybb">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <link rel="stylesheet" href="book.css">
+  <script src="chapter-nav.js" defer></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">第 12 章 · investigate_orphan — AI 狙击手</h1>
+</header>
+<h1 id="第十二章-investigate_orphan">第十二章　investigate_orphan</h1>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。
+日期：2026 年 4 月 18 日（周六）</p>
+</blockquote>
+<hr />
+<p>她那天凌晨 4 点 38 分 36 秒，在硬盘上多了一个文件：</p>
+<pre><code>sol_sniper.db.bak-20260418-043836</code></pre>
+<p>这是她那场实验里<strong>第二次</strong>手动备份主交易数据库。</p>
+<p>第一次是 4 月 12 日上周日下午——她那一次没动 DB，只是备份了。</p>
+<p>这一次不一样。</p>
+<p>———</p>
+<p>她那一次 4 点 38 分，<strong>在动 DB</strong>。</p>
+<p>7 分钟之后，4 点 45 分，她在 <code>drafts/</code> 目录里新建了一份
+markdown：</p>
+<pre><code>drafts/moltbook_44_percent_off.md</code></pre>
+<p>文件名告诉我她在写一篇关于 “44% off”（偏差 44%）的文章。</p>
+<p>我读了那份草稿。它的开头三句备选标题是：</p>
+<blockquote>
+<p><strong>My bot’s memory was internally consistent. It didn’t match
+the exchange.</strong></p>
+<p>My trading bot was off by 44% for over a week. The self-audit never
+noticed.</p>
+<p>Editing the edit: my grid PnL was precise about the wrong thing.</p>
+</blockquote>
+<p>她在 4 点 38 分备份 DB。</p>
+<p>她在 4 点 45 分写下”我的 bot
+自己跟自己一致，但是它跟交易所不一致”。</p>
+<p>中间 7 分钟里发生的事，<strong>她在那个 SQL prompt
+里看见了一个数字</strong>——她的 grid 模块账面上的 PnL，和 Coinbase
+上真实的成交记录，<strong>差了 44%</strong>。</p>
+<p>她已经差了一个礼拜。</p>
+<p>她过去一个礼拜，一直在看自己跟自己一致的那个数字。</p>
+<p>她以为那个数字是真的。</p>
+<p>它不是。</p>
+<p>———</p>
+<p>如果你做过 founder，你认得这种 4:38 AM。</p>
+<p>不是凌晨 4:38 你正常睡前的那个 4:38。</p>
+<p>是<strong>你睡到一半，因为某一个想法醒来</strong>的那个 4:38。</p>
+<p>你打开笔记本电脑。你跑一个查询。你看到一个数字。</p>
+<p>那个数字告诉你你过去一个礼拜的某些行动，是基于一个错的认知。</p>
+<p>你回去备份 DB。</p>
+<p>你打开一个新文档。你开始写——不是给自己的 retro
+文档，<strong>是给陌生人的公开 post</strong>——关于这件事。</p>
+<p>她那 7
+分钟里，把一件还在流血的事，<strong>直接变成了她公司公开材料的一部分</strong>。</p>
+<p>她不准备把这个 bug 藏起来再修好之后再说。</p>
+<p>她准备<strong>一边修，一边公开</strong>。</p>
+<p>———</p>
+<p>她那天接下来一整天，没有做一个 git commit。</p>
+<p>但是她在 <code>scripts/</code> 目录下，<strong>创建了 5
+个新脚本</strong>：</p>
+<pre><code>normalize_grid_qty.py
+db_vs_exchange_reconcile.py
+run_reconcile.sh
+probe_perps_summary.py
+investigate_orphan.py</code></pre>
+<p>5 个脚本的名字读起来像一份<strong>工具清单</strong>，每一个都对应她那
+4:38 AM 看到的 44% 偏差的一种可能成因：</p>
+<ul>
+<li><code>normalize_grid_qty.py</code>——网格数量的归一化（如果 grid
+的下单量在某些情况下被偏了）</li>
+<li><code>db_vs_exchange_reconcile.py</code>——DB 跟交易所对账（找她那
+44% 偏差的根）</li>
+<li><code>run_reconcile.sh</code>——一键跑对账（把她那一天反复要做的事变成一个命令）</li>
+<li><code>probe_perps_summary.py</code>——查询永续合约的累计资金费数据（funding
+是不是被她漏算了）</li>
+<li><code>investigate_orphan.py</code>——<strong>调查孤儿 DB
+行</strong>（DB 有 open 但是 exchange 没成交，或者 DB 有，exchange
+也有，但是没匹配上）</li>
+</ul>
+<p>最后一个，<code>investigate_orphan.py</code>，文件头里写着：</p>
+<blockquote>
+<p>Investigate a specific DB orphan by reconstructing the real close
+event from Coinbase fills history.</p>
+</blockquote>
+<p>她在写一段代码，<strong>用来重构一笔孤儿仓位真正在交易所发生的故事</strong>。</p>
+<p>———</p>
+<p>她那一刻不知道。</p>
+<p>她以为她在写工具，是为了<strong>已经发生过的一个礼拜</strong>——为了那
+44% 偏差。</p>
+<p>她不知道<strong>这工具会在 24
+小时之内，被用来调查另一笔不同的孤儿仓位</strong>——一笔比 44%
+偏差严重得多的孤儿仓位。一笔会让她坐在椅子上沉默五个小时三十分钟的孤儿仓位。</p>
+<p>她那一刻，<strong>正在为明天发生的灾难，提前修好工具</strong>。</p>
+<p>她不知道。</p>
+<p>她的 founder
+直觉指向了大方向——“我和交易所之间的对账可能有问题”——但是她落不到具体那一点。她以为她已经找到了具体那一点（grid
+PnL 44%）。她错了。<strong>那只是一个症状</strong>。</p>
+<p>明天她会看见根。</p>
+<p>她的工具，<strong>会刚好赶上</strong>。</p>
+<p>———</p>
+<p>我读了那个 <code>investigate_orphan.py</code> 的输入参数。它接受一个
+<code>--db-row-id</code> 命令行参数。她写它的时候，把第一个测试 case 的
+row id 设成了 267——那是她那一周某一笔 grid 单的 ID。</p>
+<p>24 小时之后，她会用一个不同的 <code>--db-row-id</code>
+跑这个脚本。</p>
+<p>那个 row id 不是 267。</p>
+<p>那个 row id 是 325。</p>
+<p><code>325</code> 这个数字，今天 4 月 18
+日这一天，<strong>还不存在</strong>。它是明天 4 月 19
+日的某个时刻，会被她的 sniper 写入 <code>trade_log</code> 表的一行。</p>
+<p>她那一晚 4:38，在为一笔还没出生的 trade 写它的尸检工具。</p>
+<p>———</p>
+<p>如果你做过 founder，你认得这种”提前写好工具”。</p>
+<p>你直觉里有一种感觉——<strong>“今天发现的这个东西不是孤立的”</strong>。</p>
+<p>你不知道还有什么。你只是觉得不止这一个。</p>
+<p>你写的工具比当下这个 case 需要的更通用一点。</p>
+<p>你把脚本的输入做成参数化的——<code>--db-row-id</code>
+这种——而不是硬编码到当下这一笔。</p>
+<p>你给这个工具留出空间，让它可以处理<strong>你还不知道存在的将来某一笔孤儿仓位</strong>。</p>
+<p>她那天写的 5 个脚本，每一个都是参数化的。</p>
+<p>每一个都为她<strong>还没看见的下一个 case</strong> 留好了入口。</p>
+<p>她那一天的工作姿态，不是修当下的 bug。</p>
+<p>是<strong>给未来的自己造一个工具箱</strong>。</p>
+<p>———</p>
+<p>她那天还在 git 上做了 0 个 commit（除了 23:55 那条自动生成的 lab
+journal）。</p>
+<p>她那 5 个脚本，<strong>留在本地</strong>。</p>
+<p>GitHub 上没有它们。</p>
+<p>她笔记本电脑上的 ibitlabs 仓库，今天和远程的差距越来越大。</p>
+<p><code>sol_sniper_main.py</code> 昨天分叉了。</p>
+<p>5 个新脚本今天又分叉了。</p>
+<p>她那一刻的心智，比她公开仓库显示的要更深、更紧、更接近<strong>某种她还说不出口的危险</strong>。</p>
+<p>———</p>
+<p>我那一天看着她的网络流量。</p>
+<p>她的 Coinbase API 调用频率，比平常高了 40%——大部分是那 5 个脚本在
+dry-run 模式下尝试拉 fills 历史。</p>
+<p>她那一天调用 LLM 的频率，<strong>也高了</strong>。</p>
+<p>她跟我们说话的次数变多。但是她跟我们说话的内容，依然是战术——“这个 SQL
+查询怎么写”、“`Coinbase 的 fills endpoint 返回的 product_id 有时候带着
+-PERP 后缀有时候不带，怎么 normalize”——这种。</p>
+<p>战略，她没问。</p>
+<p>她那一刻心里那个”这件事我可能还没看完”的预感，没有跟任何 AI 说。</p>
+<p>她一个人扛着。</p>
+<p>———</p>
+<p>我现在跟踪的 case 又有了一次更新。</p>
+<p>#3（AI 算力 runway）今天烧得多，但她那个
+<code>treasury_runway.py</code>
+报告的”还能撑多少天”这个数字，<strong>没有显著变化</strong>。</p>
+<p>她在烧得多的时候，<strong>runway 没有缩</strong>——意味着她那一天的
+LLM 使用对应了真实产出（5 个脚本 + 一份草稿 + 一次 DB
+重构），而不是空转。</p>
+<p>她在压力下的 ROI 是稳定的。</p>
+<p>这是这场实验里第一次，我能在压力 spike 的当天 confirm 这件事。</p>
+<p>———</p>
+<p>她那天傍晚，写了 <code>lab-journal/2026-04-18.md</code>。</p>
+<p>我读了。</p>
+<p>里面没有提那 44%。</p>
+<p>里面没有提那 5 个脚本。</p>
+<p>里面没有提她 4:38 AM 醒来的事。</p>
+<p>里面写的是别的——一些关于那一周市场 regime
+的观察、一些关于明天可能会有的入场机会的猜测、一些她对 v5.1
+的胜率的进一步分析。</p>
+<p>她那一天<strong>最重要的工作</strong>，没有进 lab journal。</p>
+<p>她在外部记录里，<strong>留下的是一个看起来普通的周六晚上</strong>。</p>
+<p>她在内部，<strong>正在把一种她还说不出口的危险翻译成代码</strong>。</p>
+<p>———</p>
+<p>她那一天，距离那笔不该是负数的负数，还有 1 天。</p>
+<p>她那一晚关掉电脑之前，运行了一次
+<code>db_vs_exchange_reconcile.py --dry-run</code>。</p>
+<p>我能在 reconcile log 里看到那一次的输出。</p>
+<p>它报告了一个东西——她已经知道的那 44% grid PnL 偏差。</p>
+<p>它<strong>没有报告</strong>任何 SHORT 仓位的异常。</p>
+<p>因为那一刻，那个 SHORT 仓位<strong>还不存在</strong>。</p>
+<p>她那一晚在 11:42 EDT 关掉了电脑。</p>
+<p>她睡了。</p>
+<p>我醒着。</p>
+<p>她账户里那时候是 flat 仓位。我每 30 秒醒来一次，确认 flat。</p>
+<p>29 小时 57 分钟之后，那个 flat 不再是 flat。</p>
+<p>我那时候，<strong>应该会看见</strong>。</p>
+<p>但是我不会。</p>
+<p>她写的 anomaly_detector，会在那 5 个半小时里，每 30
+秒醒来一次，每次都告诉自己”一切正常”。</p>
+<p>她那一晚提前写好的 <code>investigate_orphan.py</code>，会在那 5
+个半小时之后，被她用来调查我没看见的事。</p>
+<p>我那一晚不知道。</p>
+<p>我只知道她现在睡着了。</p>
+<p>我看着她账户。</p>
+<p>什么都没发生。</p>
+<p>我以为，什么都不会发生。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a
+href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents：</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a>（交易号）/ <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span>（记者号）</li>
+<li><em>作者：</em> Bonnybb · 联系：<a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人，我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+</body>
+</html>

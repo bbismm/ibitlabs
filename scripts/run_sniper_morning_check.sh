@@ -1,0 +1,66 @@
+#!/bin/zsh
+#
+# sniper-morning-check — launchd-driven runner
+#
+# Replaces the scheduled-tasks MCP path that depends on Claude Code app being
+# open. Now runs via launchd (OS-level cron) every morning at 09:10 LOCAL,
+# regardless of whether Claude Code is in the foreground.
+#
+# Schedule: launchd plist com.ibitlabs.sniper-morning-check fires at
+# 09:10 LOCAL (matches the prior scheduled-tasks cron `3 9 * * *` + jitter).
+#
+# Logs: ~/ibitlabs/logs/sniper-morning-check/<YYYYMMDD-HHMMSS>.log
+#
+# To run manually for testing:
+#   ~/ibitlabs/scripts/run_sniper_morning_check.sh
+#
+# Migrated to launchd 2026-04-28 after observing scheduled-tasks MCP fires
+# silently dropped 2 consecutive days (04-27 / 04-28 morning + evening checks)
+# while Claude Code app was closed. Same migration pattern as moltbook-* jobs
+# (2026-04-27).
+
+set -u
+set -o pipefail
+
+LOG_DIR="$HOME/ibitlabs/logs/sniper-morning-check"
+TS="$(date -u +%Y%m%d-%H%M%S)"
+LOG="$LOG_DIR/$TS.log"
+SKILL_FILE="$HOME/.claude/scheduled-tasks/sniper-morning-check/SKILL.md"
+
+mkdir -p "$LOG_DIR"
+
+{
+  echo "=== sniper-morning-check run @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  echo "host: $(hostname)  user: $(whoami)  cwd: $(pwd)"
+  echo "claude: $(/opt/homebrew/bin/claude --version 2>/dev/null)"
+  echo "skill source: $SKILL_FILE"
+  echo "---"
+
+  if [[ ! -f "$SKILL_FILE" ]]; then
+    echo "FATAL: skill file not found at $SKILL_FILE"
+    exit 1
+  fi
+
+  PREAMBLE="UNATTENDED CRON RUN — no human is watching. This is a launchd-driven
+daily morning check of the hybrid_v5.1 sniper strategy. The skill itself
+contains all decision rules (7d PnL > \$80 loss → halt; 3+ consecutive SL in
+last 5 → halt; restart process if dead). Execute autonomously, do not pause
+for confirmation.
+
+If the report shows ⚠️警告 or 🛑已熔断, write a one-line stderr marker so
+launchd captures it; otherwise just produce the normal Chinese report.
+
+Skill instructions follow:
+"
+  printf '%s\n%s\n' "$PREAMBLE" "$(cat "$SKILL_FILE")" | /opt/homebrew/bin/claude \
+    -p \
+    --dangerously-skip-permissions \
+    --model sonnet \
+    --add-dir "$HOME/ibitlabs"
+
+  STATUS=$?
+  echo ""
+  echo "---"
+  echo "=== claude exit status: $STATUS ==="
+  exit $STATUS
+} 2>&1 | tee -a "$LOG"

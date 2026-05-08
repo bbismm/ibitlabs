@@ -1,0 +1,59 @@
+#!/bin/zsh
+#
+# github-learning-loop-weekly — launchd-driven weekly rollup.
+#
+# Reads the past 7 days of github-learning-loop digests, picks top 3 candidates,
+# writes a Notion subpage under Strategy Optimization, sends one ntfy push, and
+# appends a one-line audit entry to ibitlabs/CLAUDE.md. Claude-driven (sonnet)
+# because the Notion write needs MCP.
+#
+# Schedule: Sundays 21:30 LOCAL (after moltbook-influence-review at 21:00).
+#
+# Manual run:
+#   ~/ibitlabs/scripts/run_github_learning_loop_weekly.sh
+
+set -u
+set -o pipefail
+
+LOG_DIR="$HOME/ibitlabs/logs/github-learning-loop-weekly"
+TS="$(date -u +%Y%m%d-%H%M%S)"
+LOG="$LOG_DIR/$TS.log"
+SKILL_FILE="$HOME/Documents/Claude/Scheduled/github-learning-loop-weekly/SKILL.md"
+
+mkdir -p "$LOG_DIR"
+
+{
+  echo "=== github-learning-loop-weekly run @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  echo "host: $(hostname)  user: $(whoami)"
+  echo "claude: $(/opt/homebrew/bin/claude --version 2>/dev/null)"
+  echo "skill source: $SKILL_FILE"
+  echo "---"
+
+  if [[ ! -f "$SKILL_FILE" ]]; then
+    echo "FATAL: skill file not found at $SKILL_FILE"
+    exit 1
+  fi
+
+  PREAMBLE="UNATTENDED LAUNCHD RUN — no human is watching. This is the weekly
+github-learning-loop rollup. Read the past 7 days of digests/raw, score, pick
+top 3, write Notion subpage under Strategy Optimization, send ONE ntfy push,
+append one line to ibitlabs/CLAUDE.md, commit (don't push).
+
+Strict-mode design is locked: do NOT propose loosening contributor-credit
+rules. Your job is selection, not policy.
+
+Skill instructions follow:
+"
+  printf '%s\n%s\n' "$PREAMBLE" "$(cat "$SKILL_FILE")" | /opt/homebrew/bin/claude \
+    -p \
+    --dangerously-skip-permissions \
+    --max-budget-usd 0.75 \
+    --model sonnet \
+    --add-dir "$HOME/ibitlabs"
+
+  STATUS=$?
+  echo ""
+  echo "---"
+  echo "=== claude exit status: $STATUS ==="
+  exit $STATUS
+} 2>&1 | tee -a "$LOG"

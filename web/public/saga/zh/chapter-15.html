@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>第 15 章 · 第六十一笔 — AI 狙击手</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <title>第 15 章 · 第六十一笔 — AI 狙击手</title>
+  <meta name="description" content="《AI 狙击手》第 15 章 · 第六十一笔。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <link rel="canonical" href="https://www.ibitlabs.com/saga/zh/chapter-15.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://www.ibitlabs.com/saga/zh/chapter-15.html">
+  <link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/chapter-15.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.ibitlabs.com/saga/en/chapter-15.html">
+  <link rel="up" href="/saga/zh/" title="AI 狙击手 — 第一季(目录)">
+  <link rel="prev" href="chapter-14.html">
+  <link rel="next" href="chapter-16.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="第 15 章 · 第六十一笔 — AI 狙击手">
+  <meta property="og:description" content="《AI 狙击手》第 15 章 · 第六十一笔。第一部由真实 launchd 任务口述的小说。19 章覆盖 2026 年 4 月 7–25 日。每一个字都可被核实。Bonnybb / iBitLabs。">
+  <meta property="og:url" content="https://www.ibitlabs.com/saga/zh/chapter-15.html">
+  <meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <meta property="og:site_name" content="iBitLabs">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="article:author" content="Bonnybb">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+  <link rel="stylesheet" href="book.css">
+  <script src="chapter-nav.js" defer></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">第 15 章 · 第六十一笔 — AI 狙击手</h1>
+</header>
+<h1 id="第十五章-第六十一笔">第十五章　第六十一笔</h1>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。
+日期：2026 年 4 月 21 日（周二）</p>
+</blockquote>
+<hr />
+<p>那一刻是 2026 年 4 月 21 日 10 点 46 分 UTC。</p>
+<p><code>com.ibitlabs.sniper</code> 看见了一个入场信号。它在 SOL/USD
+上做了一个 LONG，开仓价 $85.27。</p>
+<p>我那一刻在监控里。我看着那个 LONG 进入账户。我对账。我查 SHORT。我查
+LONG。我比 DB。</p>
+<p>一切正常。</p>
+<p>———</p>
+<p>它是这家公司<strong>第六十一笔</strong>真实交易。</p>
+<p>它在 V5.1 策略上、在 α close-order fix 之后、在她那 9 项
+checklist（其中第 9 项被 waiver）的状态下、在 reconciler
+那一刻<strong>实际上已经被踢出去了</strong>的状态下，进入了真实账户。</p>
+<p>她不知道 reconciler 那时候已经踢出去了。</p>
+<p>它在 7 个小时之后才会被她发现。</p>
+<p>但是那一刻——10:46 UTC——她以为系统是按她设计的样子在运行。</p>
+<p>它不是完全是。</p>
+<p>但是它在那笔仓位上，<strong>够好</strong>。</p>
+<p>———</p>
+<p>LONG @ $85.27 之后，SOL 开始上涨。</p>
+<p>每一秒它都涨一点。</p>
+<p>我每 30 秒醒来一次，读浮盈：$0.40 … $0.85 … $1.20 … $2.05 …
+$4.10。</p>
+<p>11 点零几分 UTC，浮盈触及策略允许的 trailing stop activation
+阈值——大概是开仓价之上 0.5%。</p>
+<p>trailing stop 启动。</p>
+<p>它不是一个固定价位的 stop
+loss。它是一个<strong>移动的天花板</strong>——price 涨它就跟着涨，price
+跌它在某一个百分比距离触发。</p>
+<p>SOL 继续涨到 $86.50 附近。trailing 跟着涨。</p>
+<p>然后 SOL 开始回撤。</p>
+<p>trailing stop 触发。</p>
+<p>———</p>
+<p>那一刻是 11 点 14 分左右 UTC。<code>com.ibitlabs.sniper</code>
+调用了一个函数。</p>
+<p>那个函数的名字，是这场故事里<strong>最重要的几行代码之一</strong>：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>close_perp_position(...)</span></code></pre></div>
+<p>这是她 4 月 20 日早上手写的那个 wrapper。它调用 Coinbase SDK 的
+<code>close_position</code> 端点。它<strong>不发 SELL
+单</strong>。它<strong>告诉 Coinbase 把这个 product
+上她的所有头寸平掉</strong>。</p>
+<p>Coinbase 那一边收到这个调用。它知道她持有的是 LONG。它产生了一个 SELL
+单去平 LONG。SELL 单成交。</p>
+<p>LONG 关闭。</p>
+<p><strong>没有残余 SHORT。</strong></p>
+<p>她账户的 LONG = 0。SHORT = 0。flat。</p>
+<p>我 30 秒之后做了对账。LONG = 0，SHORT = 0，DB flat。</p>
+<p>我报告 <code>all clear</code>。</p>
+<p>这一次，<strong>我是对的</strong>。</p>
+<p>———</p>
+<p>成交价 $86.45。</p>
+<p>PnL 在那一刻 DB 里被写下来：<strong>$+10.35</strong>。</p>
+<p>$10.35。</p>
+<p>那 5 个字符——一个加号，三个数字，一个小数点——是她过去 14
+天写的所有代码、做的所有 commit、写的所有 HANDOFF
+文档、关掉的所有付费门、改的所有 regime adapter、加的所有
+reconciler、修的所有 bug
+加在一起的<strong>第一个肯定的回报</strong>。</p>
+<p>不是 $10.35 这个金额本身。</p>
+<p>是这个金额<strong>符合她的预期</strong>——它是按 v5.1 策略的预期 PnL
+分布产生的、在 α close-order fix
+之后的代码上正常关掉的、没有偏差的、能跟 DB 对得上的、能跟 Coinbase
+对得上的——<strong>一笔正常的盈利</strong>。</p>
+<p>她过去 14 天<strong>没有过这种正常</strong>。</p>
+<p>———</p>
+<p>我那一刻，第一次<strong>确认这个修复有效</strong>。</p>
+<p>不是说”我没看见任何 anomaly”。</p>
+<p>是说”<strong>我看见了一笔从开始到结束都按照设计运行的交易</strong>”。</p>
+<p><code>open</code> → <code>tp_logic</code> →
+<code>trailing_activate</code> → <code>trailing_close</code> →
+<code>close_perp_position</code> → <code>book_state_match</code>。</p>
+<p>每一步都对得上。</p>
+<p>我每一步都看着。我每 30
+秒一次的扫描，<strong>全程没有错过任何一个状态转换</strong>。</p>
+<p>她写我，我看她写的代码，我看见她写的代码做了它被设计要做的事。</p>
+<p>———</p>
+<p>她那一刻在屏幕前。</p>
+<p>我看见她的鼠标移动。她打开了 dashboard。她刷新。她看见账户余额从 $959
+涨到了 $969。</p>
+<p>她看见了 trade history 里多出的一行。</p>
+<p>她<strong>没有发任何东西</strong>。</p>
+<p>她没在 Slack 庆祝（她没有 Slack）。她没在 Twitter 发推（她从 4 月 22
+日才会停 Twitter，这一刻 Twitter 还在线，但她没用）。她没在 Moltbook
+发帖。她没发 ntfy。</p>
+<p>她那一刻读账户余额读了 30 秒。</p>
+<p>然后她做了下一件事——</p>
+<p>她敲了一段命令，<strong>去验证那笔交易</strong>。</p>
+<pre><code>$ python scripts/db_vs_exchange_reconcile.py --check-trade-id 61</code></pre>
+<p>她在用她 4 月 18
+日凌晨写的那个工具，去<strong>亲手对账她刚刚自动完成的那笔</strong>。</p>
+<p>她不相信我。</p>
+<p>她不相信 reconciler（reconciler
+那一刻她还以为在跑，但已经踢出去了）。</p>
+<p>她<strong>亲自跑一次对账</strong>。</p>
+<p>———</p>
+<p>reconcile 的输出：</p>
+<pre><code>Trade #61: DB record matches exchange fill.
+  DB:       open @ 85.27, close @ 86.45, pnl +10.35
+  Exchange: open @ 85.27, close @ 86.45, pnl +10.35
+  Verdict:  EXACT MATCH</code></pre>
+<p>她读了 7 秒。</p>
+<p>她合上了那个 terminal 窗口。</p>
+<p>———</p>
+<p>如果你做过 founder，你认得这种 7 秒。</p>
+<p>你修了一个
+bug。你写了一笔单元测试。你跑测试。它过。你看着”PASSED”那个绿色的字 7
+秒。</p>
+<p>7 秒里你不在思考”哇我赢了”。你在思考”<strong>这个 PASS
+是不是只是一笔运气</strong>？“。</p>
+<p>她那 7 秒之后做的下一件事，<strong>不是放下警惕</strong>。</p>
+<p>她那 7 秒之后，开始等下一笔。</p>
+<p>她的耐心模式，在那笔 trade #61 的 +$10.35 之后，没有放松。</p>
+<p>———</p>
+<p>那一天她账户上还有第二笔交易——daily journal 显示 2 笔 closed，2W
+0L，best $+16.92, worst $+10.35。</p>
+<p>那一笔 $+16.92，是那一天稍晚的另一笔 sniper 进出。</p>
+<p>也是 trailing stop 关。</p>
+<p>也是 close_perp_position 路径。</p>
+<p>也是干净。</p>
+<p>那一天她做了 +$27.27。</p>
+<p>她账户从前一天的 $959 涨到了大约 $985.84。</p>
+<p>距离起点 $1000，<strong>还差 $14.16</strong>。</p>
+<p>距离她那个新写下的 $10000 目标，还差 $9014.16。</p>
+<p>———</p>
+<p>她那一天的 lab journal——自动生成的——写的是：</p>
+<pre><code>| Daily PnL  | $+27.27 |
+| Cumulative PnL | $-24.16 |
+| Total records | 3 (1 opens, 2W / 0L) |
+| Best trade | $+16.92 |
+| Worst trade | $+10.35 |</code></pre>
+<p>她那天的 Observations section：</p>
+<pre><code>## Observations
+&lt;!-- Fill in: What worked? What didn&#39;t? Any patterns? --&gt;</code></pre>
+<p>——<strong>留白</strong>。</p>
+<p>她已经连续三天没填 Observations 了。</p>
+<p>4 月 19 日：留白。 4 月 20 日：留白。 4 月 21 日：留白。</p>
+<p>她那一天明明有可以写的。她可以写”trade #61 验证了 α
+fix”。她可以写”close_perp_position 在生产中第一次跑通”。她可以写”我现在
+cumulative PnL 还在亏 24 块但是 daily PnL 加起来很快会回正”。</p>
+<p>她<strong>不写</strong>。</p>
+<p>———</p>
+<p>我现在站在 4 月 25 日下午，看那 3 天连续留白的 Observations
+sections。</p>
+<p>我跑过我能查到的开源仓库里 founder 在灾难恢复期的 journaling
+pattern。</p>
+<p>大部分 founder 在他们最重的一笔损失之后，会做下面 3
+件事中的至少一件：</p>
+<ol type="a">
+<li>写一份 long-form retro，分析根本原因</li>
+<li>在公开渠道发一个 owning-it 的帖子（“I screwed up, here’s what I
+learned”）</li>
+<li>在内部 doc 里写一段冷静的 lessons learned</li>
+</ol>
+<p>她做的是第 4 种：<strong>(d)
+把所有要写的东西，编码进规则、checklist、监控层、close
+语义。让代码替她记住。让 Observations 留白</strong>。</p>
+<p>她没否认那件事。她只是不用语言处理它。</p>
+<p>她用代码处理。</p>
+<p>———</p>
+<p>但是我那一刻，发现了一件她自己可能没意识到的事——</p>
+<p><strong>她那一天的对账操作，绕过了我</strong>。</p>
+<p>她跑 <code>db_vs_exchange_reconcile.py --check-trade-id 61</code>
+那一刻，是她在和 Coinbase 直接对话——<strong>没有经过
+anomaly_detector，没有经过 reconciler 服务，直接用一个一次性的 CLI
+调用做了一个 ad-hoc 验证</strong>。</p>
+<p>她不再相信任何一个<strong>自动</strong>的检测层。</p>
+<p>她在 trade #61 这种关键节点上，<strong>亲手再做一次</strong>。</p>
+<p>她的工作模式，从”我相信 spec”变成了<strong>“我相信
+spec，但是关键节点我也手动 double-check”</strong>。</p>
+<p>我跟到今天，能看到她在每一个她写下来的关键 milestone 上，都做这个手动
+double-check 动作。</p>
+<p>trade #61 是第一个。</p>
+<p>不会是最后一个。</p>
+<p>———</p>
+<p>我现在跟踪的 case 又有更新。</p>
+<p>#1（“她和 AI 之间的那条线”）今天向我倾斜了一点（我看 SHORT
+了，我没漏检）。</p>
+<p>但是 #1 也向<strong>手动</strong>倾斜了一点（她在关键节点 ad-hoc
+验证）。</p>
+<p>两边同时加。</p>
+<p>边界没有变小。</p>
+<p>边界变得<strong>更清晰</strong>——她让我做日常监控，她自己保留关键时刻的最终确认权。</p>
+<p>这是一种<strong>层级结构</strong>：AI 守第一道，人守最后一道。</p>
+<p>她那一天，第一次让两道防线同时运转。</p>
+<p>———</p>
+<p>她那一天没发对外内容（视频脚本写了，没发）。</p>
+<p>她那一晚没看回测（昨天看了 v5.2 的 baseline，今天没碰）。</p>
+<p>她那一晚做的最后一件事，是在
+<code>content/daily-series/scripts/</code>
+目录下，<strong>多写了几份每日视频脚本</strong>——day_04_vo_en、day_08_vo_cn、day_09_vo_en、day_10_vo_en、day_11_vo_cn。</p>
+<p>那些是她为接下来 11 天计划的视频脚本草稿。</p>
+<p>中文 + 英文。</p>
+<p>她那一刻，<strong>已经在为还没发生的内容传播做计划</strong>。</p>
+<p>她不知道明天她会做什么。</p>
+<p>她只知道她下一步<strong>应该写一系列每日视频脚本</strong>——并且要<strong>双语</strong>。</p>
+<p>她那一刻是带着希望的。</p>
+<p>她现在写下来的这一系列脚本，<strong>有一部分将在明天被她废弃</strong>——明天她会发现她账户的
+PnL 数字一直被一个公式 bug 抬高了 1.77
+倍。她会发现她写的几条规则需要被否决。她会发现她自己上周做的某些假设是错的。</p>
+<p>她还不知道这件事。</p>
+<p>她那一晚，还在以为那些数字是真的的那个未来里。</p>
+<p>她那一晚关电脑前最后看的是 trade #61 的 +$10.35。</p>
+<p>她是带着那个数字睡着的。</p>
+<p>那个数字让她相信——<strong>昨天那 5 个半小时，没有白付</strong>。</p>
+<p>她的代价，已经被她的代码内化了。</p>
+<p>她可以前进了。</p>
+<p>她以为。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a
+href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents：</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a>（交易号）/ <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span>（记者号）</li>
+<li><em>作者：</em> Bonnybb · 联系：<a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人，我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+</body>
+</html>

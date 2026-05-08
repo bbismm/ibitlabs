@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  com.ibitlabs.sniper-eth — ETH paper-mode bot
+
+  Status: TEMPLATE, not bootstrapped.
+
+  Purpose: parallel v5.1 instance trading ETH-PERP (ETP-20DEC30-CDE) in paper
+  mode. Per docs/multi_symbol_eth_expansion_DD.md Phase 3, this runs paper for
+  ≥7 days and ≥10 virtual trades before any consideration of live promotion.
+
+  To activate (when ready):
+    1. Verify the executor handles ETH contract_size=0.1 (one-time check on
+       the first paper signal — see DD's tier-3 contract spec notes).
+    2. cp ~/ibitlabs/launchd-templates/com.ibitlabs.sniper-eth.plist \
+          ~/Library/LaunchAgents/
+    3. launchctl bootstrap gui/$(id -u) \
+          ~/Library/LaunchAgents/com.ibitlabs.sniper-eth.plist
+    4. tail -f ~/ibitlabs/logs/sniper_eth_paper.log
+
+  To deactivate:
+    launchctl bootout gui/$(id -u)/com.ibitlabs.sniper-eth
+    rm ~/Library/LaunchAgents/com.ibitlabs.sniper-eth.plist
+
+  Differences from com.ibitlabs.sniper (the live SOL bot):
+    --paper           (NOT --live)
+    --symbol ETH      (routes through v5_1_config.config_for('ETH'))
+    --instance-name eth_paper
+    --db, --state-file, --grid-state-file, --log-file all eth-specific paths
+    --quiet           (no broadcast, no push, no KV publish)
+    No CB_API_KEY / CB_API_SECRET needed — paper mode skips auth (price data
+      via public market endpoints; orders never submitted).
+
+  Running this does NOT touch the SOL live bot's DB, state, or trade ledger.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.ibitlabs.sniper-eth</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/python3</string>
+		<string>/Users/bonnyagent/ibitlabs/sol_sniper_main.py</string>
+		<string>--paper</string>
+		<string>--symbol</string>
+		<string>ETH</string>
+		<string>--instance-name</string>
+		<string>eth_paper</string>
+		<string>--db</string>
+		<string>/Users/bonnyagent/ibitlabs/sol_sniper_eth_paper.db</string>
+		<string>--state-file</string>
+		<string>/Users/bonnyagent/ibitlabs/sol_sniper_state_eth_paper.json</string>
+		<string>--grid-state-file</string>
+		<string>/Users/bonnyagent/ibitlabs/grid_state_eth_paper.json</string>
+		<string>--log-file</string>
+		<string>/Users/bonnyagent/ibitlabs/logs/sniper_eth_paper.log</string>
+		<string>--no-grid</string>
+		<string>--quiet</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/bonnyagent/ibitlabs</string>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>KeepAlive</key>
+	<true/>
+
+	<key>ThrottleInterval</key>
+	<integer>30</integer>
+
+	<key>StandardOutPath</key>
+	<string>/Users/bonnyagent/ibitlabs/logs/sniper_eth_paper_launchd.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>/Users/bonnyagent/ibitlabs/logs/sniper_eth_paper_launchd_err.log</string>
+</dict>
+</plist>

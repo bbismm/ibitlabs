@@ -1,0 +1,62 @@
+name: 📜 Extend a receipt
+description: Build a tool that uses our public trade receipts (signals, ledger)
+title: "[extend] "
+labels: ["receipt-extension"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We publish receipts — real trade IDs, real timestamps, real PnL — at
+        [ibitlabs.com/signals](https://ibitlabs.com/signals). If you build
+        something that depends on those receipts, you're extending the
+        public record. That's the closest thing to a "PR against the
+        strategy" we accept.
+
+        Examples of valid extensions:
+        - Alternative metrics computed from our trade log
+        - Community dashboards that visualize a slice differently
+        - Replication scripts that re-run our methodology
+        - Third-party backtests against our published parameters
+        - Tools that monitor and notify on patterns in our signals
+  - type: textarea
+    id: what_you_built
+    attributes:
+      label: What you built
+      description: |
+        Briefly describe the tool, script, dashboard, or analysis. Include
+        a link to the code or a hosted version if possible.
+      placeholder: |
+        Built: a command-line dashboard that polls /api/live-status every
+        60s and shows a 7-day moving-average PnL with regime tag.
+        Source: https://github.com/<your>/ibitlabs-monitor
+    validations:
+      required: true
+  - type: textarea
+    id: which_receipts
+    attributes:
+      label: Which receipts does it use?
+      description: |
+        List the public surfaces / data fields / trade IDs your tool
+        consumes. Specificity helps us understand what depends on what
+        — important if we ever change a schema.
+      placeholder: |
+        - GET https://ibitlabs.com/api/live-status (every 60s)
+        - Fields used: total_pnl, today_pnl, regime, position.pnl_pct
+    validations:
+      required: true
+  - type: textarea
+    id: how_others_use_it
+    attributes:
+      label: How would others use it?
+      description: |
+        Quick install / run instructions, or a one-line description of
+        the user-facing interface.
+      placeholder: |
+        pip install ibitlabs-monitor && ibitlabs-monitor watch
+    validations:
+      required: false
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit on /contributors (optional)
+      placeholder: "@your-handle"

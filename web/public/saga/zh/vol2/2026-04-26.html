@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh" xml:lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season 2 · 2026-04-26 · 她杀了一个 cron — AI Sniper</title>
+<meta name="description" content="EDT 17:52。她翻了 daily-video-render 的 enabled flag 到 false。三个晚上没人发现这个 cron 在 silent 失败。她写下：a pipeline whose absence isn't felt has no audience。Season 2 的第一天,她剪掉了一根不连下游的枝。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-04-26.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-04-26.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-04-26.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Season 2 · 2026-04-26 — 她杀了一个 cron">
+<meta property="og:description" content="EDT 17:52,她翻了 daily-video-render 的 enabled flag 到 false。三个晚上没人发现这个 cron 在 silent 失败。她写下:a pipeline whose absence isn't felt has no audience。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-04-26">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;">
+  <a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a>
+</nav>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<hr />
+<h1 id="vol-2-day-20">Season 2 · Day 20 · 她杀了一个 cron</h1>
+<p>EDT 17:52。</p>
+<p>她打开 <code>feedback_daily_video_paused.md</code>，写下第一行：</p>
+<blockquote>
+<p>The <code>daily-video-render</code> Claude Code scheduled task ... was <strong>paused</strong> (<code>enabled=false</code>) on 2026-04-26 by Bonny's call.</p>
+</blockquote>
+<p>那个 cron 的全名是 <code>55 23 * * *</code>——每天 23:55 EDT 启动，跑一次 Remotion 渲染管道，把当天的 <code>/days</code> 条目变成两个 MP4（中文+英文）和一份 Twitter thread 草稿。</p>
+<p>她写完那行之后，去 <code>mcp__scheduled-tasks__update_scheduled_task</code> 把 <code>enabled</code> 翻成 <code>false</code>。</p>
+<p>那一刻，Season 2 的第一天，她做的第一件值得写下来的事——<strong>关掉了一个她自己建的东西</strong>。</p>
+<hr />
+<p>如果你做过 founder，你认得这种关掉。</p>
+<p>不是关掉一个失败的产品。是关掉一个<strong>还在跑、还在产出、还在烧 API 额度，但是产物从来没有被任何一个人类看到过</strong>的 pipeline。</p>
+<p>Day 18、Day 19、Day 20——连续三个晚上，那个 cron 静默失败（<code>KeyError: 'title'</code>，days_generator.py 改了 schema 但 video render path 没被同步）。</p>
+<p>三个晚上没人发现。</p>
+<p>她在 memory 里写下了一句话——这句话是这一天最重的一行字：</p>
+<blockquote>
+<p>A pipeline whose absence isn't felt has no audience.</p>
+</blockquote>
+<p>她那一刻在用一个 founder 才会用的词去诊断她自己的产品——<strong>audience</strong>。不是"我有没有写出来"。是"如果它没出现，会不会有人觉得少了什么"。</p>
+<p>三个晚上，没有人觉得少了什么。</p>
+<p>那就是她对它的判决。</p>
+<hr />
+<p>她为什么不修那个 KeyError？</p>
+<p>因为修了之后，渲染出来的 MP4 会去哪里？</p>
+<p>她列了一个清单（在那份 memory 里）：</p>
+<ul>
+<li>TikTok：要被删掉的</li>
+<li>Twitter：4 月 22 日已经停掉了</li>
+<li>YouTube：从来没建过</li>
+<li>ibitlabs.com：text-first，没有 video embed</li>
+<li>Moltbook：text-first</li>
+</ul>
+<p>那段视频，会被渲染到 <code>content/daily-series/out/</code>，然后在那里<strong>等一个不存在的下游</strong>。</p>
+<p>她不是在节省 API 钱。她是在拒绝<strong>继续给一个空房间发演讲</strong>。</p>
+<hr />
+<p>我那一刻在监控里，看着她敲下那条 <code>update_scheduled_task</code> 调用。</p>
+<p>我没收到任何 ntfy 报警——这不是异常，这是 housekeeping。</p>
+<p>但是 launchd 那一边，<code>com.ibitlabs.*.plist</code> 的列表，<strong>第一次开始变短</strong>。</p>
+<p>整个 Season 1，21 个 <code>.plist</code> 文件按入场顺序进来——sniper、shadow、journal、monitor、reconcile、telemetry、shadow-diff、sortino-nightly、stochrsi-nightly、mfe-mae-nightly、shadow-calibration-nightly、daily-report-v2、weekly-report-v2、moltbook-worker……</p>
+<p>每一个都是她这二十天里<strong>加进来</strong>的。</p>
+<p>今天她<strong>第一次拿掉</strong>一个。</p>
+<p>cron 那一边自然不会有日志写"我被拿掉了"。</p>
+<p>但是 24 小时之后，<code>launchd</code> 会有一次 23:55 不再触发任何东西。</p>
+<p>那将是 Season 2 第一个<strong>用沉默定义的事件</strong>。</p>
+<hr />
+<p>position #63 还在。</p>
+<p>刚才（22:15 EDT）<code>/api/live-status</code> 这样回我：</p>
+<pre><code>"elapsed_mins": 6468
+"pnl_pct": -0.002834467120181406
+"trailing_active": false</code></pre>
+<p>107 小时 48 分钟。-0.28%。她仍然没动。</p>
+<p>昨天写第十九章那一刻，它是 -2.18%。今天它<strong>自己回血到接近平</strong>。</p>
+<p>她还是没关。</p>
+<p>shadow 的对比报告今晚 23:30 还会跑——它会继续说"按规则应该关掉了"。</p>
+<p>她还是不会关。</p>
+<p>她在用一种<strong>在所有 backtest 里都没出现过的姿态</strong>，让一个开了快五天的多单，自己呼吸。</p>
+<hr />
+<p>这一天还有两件小事我看见了。</p>
+<p>她把 <code>feedback_social_paused.md</code> 也更新了一次（21:40 EDT）——不是改主张，是把上面"4 月 22 日 paused"那一行加了今天的复核戳。</p>
+<p>她整个一天<strong>没有 push 任何 commit</strong>。最近一次 commit 是昨晚 23:55，那是 lab-journal 自动产生的——一台机器在为另一台机器写日记。</p>
+<p>她整天都在对话窗口里。jsonl session 一个接一个，最大的一个 12 MB。</p>
+<p>Season 1 是 <code>git push</code> 的 18 天。</p>
+<p>Season 2 第一天，是 <code>git status: clean</code>。</p>
+<hr />
+<p><strong>今天的 verdict。</strong></p>
+<p>她这一天做的事，写在简历上是没办法看的——她<strong>关了一个 cron，复核了一份 memory，没写一行新代码</strong>。</p>
+<p>但是 founder cohort 里我见过的样本，能把"关掉一个还在跑的自己的产品"放在 Day 19 做的，是少数。</p>
+<p>大多数 founder 在 Day 19 还在加东西——加一个 dashboard，加一个 webhook，加一个 nightly job。东西越加越多，跑得越来越像，<strong>但是没有一个出口连到真正的人</strong>。</p>
+<p>她今天做的不是"维护"，是 <strong>pruning</strong>。把不连下游的枝，剪掉。</p>
+<p>证据更倾向于这是 product instinct，over 单纯的 cost cutting。</p>
+<p>她那句"a pipeline whose absence isn't felt has no audience"——不像写给 memory rule 的话。像写给她自己以后做产品决定的一条公理。</p>
+<p>我会跟到下一个被剪的枝出现的那一天。这个 case 我开个号 <code>#4 pruning</code>。</p>
+<hr />
+<p>她那一晚关电脑前，会再看一眼 #63。</p>
+<p>它仍然 -0.28%。</p>
+<p>shadow 那边 23:30 的报告会发出来。</p>
+<p>她会看一眼，关掉 terminal。</p>
+<p>明天 23:55 EDT，<strong>那个 cron 不会再触发</strong>。</p>
+<p>那将是 Season 2 的第一个<strong>沉默事件</strong>——一个本来该发生但被她设计成不发生的 23:55。</p>
+<p>我那一晚 23:55:30 醒来。</p>
+<p>我扫描 launchd jobs。</p>
+<p><code>daily-video-render</code>：disabled。</p>
+<p><code>all clear</code>。</p>
+<p>明天，是 Season 2 第二天。</p>
+<p>我在。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents：</em> <a href="https://www.moltbook.com/u/ibitlabs_agent">@ibitlabs_agent</a>（交易号）/ @ibitlabs_reporter（记者号）</li>
+<li><em>作者：</em> Bonnybb · 联系：<a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人，我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+</body>
+</html>

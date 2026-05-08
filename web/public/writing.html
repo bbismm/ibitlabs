@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing · iBitLabs</title>
+<meta name="description" content="A serial novel that writes itself. Every night, the script that watches the trading bot writes a chapter about the day. Free to read.">
+<link rel="icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="/i18n.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Book",
+      "@id": "https://www.ibitlabs.com/saga/en/#book",
+      "name": "AI Sniper",
+      "author": {"@id": "https://www.ibitlabs.com/#person-bonnybb"},
+      "url": "https://www.ibitlabs.com/saga/en/",
+      "inLanguage": ["en", "zh"],
+      "description": "Documentary novel narrated by the script that watches the trading bot. Season 1: the first 19 days of a $1,000 → $10,000 experiment.",
+      "isPartOf": {"@type": "WebSite", "@id": "https://www.ibitlabs.com/#website"}
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://www.ibitlabs.com/writing#page",
+      "name": "Writing — iBitLabs",
+      "url": "https://www.ibitlabs.com/writing",
+      "isPartOf": {"@type": "WebSite", "@id": "https://www.ibitlabs.com/#website"},
+      "mainEntity": {"@id": "https://www.ibitlabs.com/saga/en/#book"}
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.ibitlabs.com/#person-bonnybb",
+      "name": "Bonnybb",
+      "url": "https://www.ibitlabs.com/",
+      "sameAs": ["https://github.com/bbismm", "https://twitter.com/BonnyOuyang", "https://www.moltbook.com/u/ibitlabs_agent"]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ibitlabs.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Writing", "item": "https://www.ibitlabs.com/writing"}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #09090f;
+  --bg-card: #141420;
+  --bg-card-2: #1a1a2e;
+  --purple: #8b5cf6;
+  --purple-light: #a78bfa;
+  --purple-dark: #6d28d9;
+  --purple-glow: rgba(139, 92, 246, 0.3);
+  --text: #f1f1f3;
+  --text-2: #d0d0dc;
+  --text-3: #a8a8be;
+  --green: #22c55e;
+  --amber: #ffaa3c;
+  --border: rgba(139, 92, 246, 0.25);
+  --border-faint: rgba(139, 92, 246, 0.10);
+  --radius: 16px;
+  --red: #ef4444;
+}
+html { overflow-x: hidden; scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--purple-dark); border-radius: 3px; }
+a { color: inherit; text-decoration: none; }
+
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0.75rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(9,9,15,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-size: 1.2rem; font-weight: 900; letter-spacing: -0.02em; }
+.nav-logo em { font-style: normal; color: var(--purple-light); font-weight: 500; font-size: 0.8rem; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { font-size: 0.85rem; color: var(--text-3); transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--purple-light); }
+.lang-btn {
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--text-3); font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  transition: all 0.2s; margin-left: 8px;
+}
+.lang-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+.burger { display: none; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; }
+.burger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+.burger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ── Hero ── */
+.page-header {
+  padding: 7rem 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; top: -45%; left: 50%; transform: translateX(-50%);
+  width: 560px; height: 560px;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 60%);
+  z-index: 0; pointer-events: none;
+}
+.page-header-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.eyebrow {
+  display: inline-block;
+  padding: 4px 14px; border-radius: 999px;
+  background: rgba(139,92,246,0.12);
+  border: 1px solid var(--border);
+  color: var(--purple-light);
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+.page-header h1 {
+  font-size: clamp(2rem, 5.5vw, 3.4rem);
+  font-weight: 900; letter-spacing: -0.03em; line-height: 1.05;
+  margin-bottom: 1rem;
+}
+.page-header h1 em { color: var(--purple-light); font-style: italic; font-weight: 800; }
+.page-header p.lede {
+  color: var(--text-2);
+  font-size: 1.05rem; line-height: 1.6;
+  max-width: 620px; margin: 0 auto 1.6rem;
+}
+
+/* ── Latest-chapter inline pointer ── */
+.latest-pointer {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--text-2);
+  margin-bottom: 1.6rem;
+  transition: all 0.2s;
+  max-width: 100%;
+}
+.latest-pointer:hover {
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+.latest-pointer .pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.latest-pointer .label { color: var(--green); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.72rem; flex-shrink: 0; }
+.latest-pointer .title-text {
+  color: var(--text); font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Primary CTA ── */
+.hero-cta-row {
+  display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+}
+.btn-primary-hero {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 12px;
+  background: var(--purple); color: white;
+  font-size: 1rem; font-weight: 700;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(139,92,246,0.35);
+}
+.btn-primary-hero:hover {
+  background: var(--purple-dark); transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(139,92,246,0.45);
+}
+.cta-secondary-row {
+  display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;
+  font-size: 0.83rem; color: var(--text-3);
+}
+.cta-secondary-row a {
+  color: var(--text-3); border-bottom: 1px dotted rgba(168,168,190,0.4);
+  transition: color 0.2s;
+}
+.cta-secondary-row a:hover { color: var(--purple-light); }
+
+/* ── Pathfinder ── */
+.pathfinder {
+  margin: 2.5rem auto 0; max-width: 580px;
+  padding: 1rem 1.4rem;
+  background: var(--bg-card-2); border-radius: 12px;
+  border-left: 2px solid var(--purple);
+  font-size: 0.88rem; color: var(--text-2); line-height: 1.55;
+  text-align: left;
+}
+.pathfinder strong { color: var(--text); font-weight: 600; }
+.pathfinder a { color: var(--purple-light); border-bottom: 1px dotted rgba(167,139,250,0.4); }
+
+/* ── Section ── */
+.section {
+  max-width: 980px; margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; margin-bottom: 0.4rem; flex-wrap: wrap;
+}
+.section-head h2 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 800; letter-spacing: -0.02em;
+}
+.section-head h2 em { color: var(--purple-light); font-style: italic; }
+.see-all { font-size: 0.85rem; color: var(--purple-light); font-weight: 600; transition: color 0.2s; }
+.see-all:hover { color: var(--text); }
+.section-desc {
+  color: var(--text-3); font-size: 0.95rem; line-height: 1.5;
+  margin-bottom: 2rem; max-width: 720px;
+}
+
+/* ── Season 1 hero block (canonical book treatment) ── */
+.saga-hero {
+  display: grid; grid-template-columns: 220px 1fr;
+  gap: 2rem; align-items: start;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+}
+.saga-cover {
+  width: 100%; aspect-ratio: 2/3;
+  border-radius: 8px; overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 40px rgba(255,170,60,0.12);
+}
+.saga-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.saga-meta { display: flex; flex-direction: column; }
+.saga-tag {
+  display: inline-block; align-self: flex-start;
+  padding: 3px 10px; border-radius: 4px;
+  background: rgba(255,170,60,0.12);
+  color: var(--amber);
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 0.8rem;
+}
+.saga-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.3rem; line-height: 1.2; }
+.saga-sub { color: var(--text-3); font-size: 0.9rem; font-style: italic; margin-bottom: 1rem; line-height: 1.5; }
+.saga-desc { color: var(--text-2); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.4rem; }
+.saga-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.btn {
+  padding: 10px 18px; border-radius: 8px;
+  font-size: 0.85rem; font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid transparent;
+  cursor: pointer; font-family: inherit;
+}
+.btn-primary { background: var(--purple); color: white; }
+.btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--text-2); }
+.btn-ghost:hover { border-color: var(--purple); color: var(--purple-light); }
+
+/* ── Email capture (between Season 1 and the daily serial) ── */
+.subscribe {
+  max-width: 720px; margin: 4rem auto 0;
+  padding: 1.6rem 1.8rem;
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(255,170,60,0.04));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.subscribe-head {
+  font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+}
+.subscribe-sub {
+  color: var(--text-3); font-size: 0.84rem; line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.subscribe-form {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+.subscribe-form input[type=email] {
+  flex: 1 1 220px; min-width: 0;
+  padding: 11px 14px; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-size: 0.92rem; font-family: inherit;
+  transition: border-color 0.2s;
+}
+.subscribe-form input[type=email]:focus { outline: none; border-color: var(--purple); }
+.subscribe-form button {
+  padding: 11px 22px; border-radius: 8px;
+  background: var(--purple); color: white;
+  font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+}
+.subscribe-form button:hover { background: var(--purple-dark); }
+.subscribe-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+.subscribe-status { font-size: 0.82rem; color: var(--text-3); margin-top: 0.7rem; min-height: 1em; }
+.subscribe-status.ok { color: var(--green); }
+.subscribe-status.err { color: var(--red); }
+
+/* ── the daily serial (magazine-feed treatment, distinct from Season 1) ── */
+.vol2-section { padding-top: 1.5rem; }
+.vol2-label-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 1.6rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+.vol2-label-row .pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+.vol2-label-row .label-main {
+  font-size: 0.78rem; font-weight: 700; color: var(--green);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.vol2-label-row .label-sub {
+  font-size: 0.75rem; color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+.lang-banner {
+  font-size: 0.78rem; color: var(--text-3);
+  margin-bottom: 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.75;
+}
+.lang-banner a { color: var(--purple-light); cursor: pointer; }
+.lang-banner a:hover { color: var(--text); }
+
+.vol2-feed { display: flex; flex-direction: column; }
+.vol2-entry {
+  display: block;
+  padding: 1.4rem 0; border-top: 1px solid var(--border-faint);
+  transition: padding-left 0.2s, color 0.2s;
+}
+.vol2-entry:first-child { border-top: none; padding-top: 0; }
+.vol2-entry:hover { padding-left: 8px; }
+.vol2-entry-meta {
+  display: flex; gap: 0.7rem; align-items: baseline;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; color: var(--text-3);
+  margin-bottom: 0.5rem;
+}
+.vol2-entry-meta .day-num {
+  color: var(--purple-light); font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.vol2-entry-meta .lang-pill {
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(139,92,246,0.10);
+  color: var(--purple-light);
+  letter-spacing: 0.06em; font-weight: 600;
+  text-transform: uppercase; font-size: 0.66rem;
+}
+.vol2-entry h3 {
+  font-size: 1.18rem; font-weight: 700; line-height: 1.3;
+  letter-spacing: -0.01em; margin-bottom: 0.45rem;
+  color: var(--text);
+}
+.vol2-entry:hover h3 { color: var(--purple-light); }
+.vol2-entry p {
+  font-size: 0.92rem; color: var(--text-2); line-height: 1.55;
+  margin-bottom: 0.6rem;
+}
+.vol2-entry .read-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem; color: var(--purple-light);
+  letter-spacing: 0.04em;
+}
+.vol2-empty {
+  color: var(--text-3); font-size: 0.92rem;
+  background: var(--bg-card-2);
+  border-left: 2px solid var(--purple);
+  padding: 1rem 1.2rem;
+  border-radius: 4px;
+}
+
+/* ── Week grouping (the daily serial feed) ── */
+.vol2-week { display: flex; flex-direction: column; margin-bottom: 0.6rem; }
+.vol2-week-current { margin-bottom: 1.6rem; }
+.vol2-week-header {
+  display: flex; align-items: baseline; gap: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0.4rem 0 0.9rem 0;
+  border-bottom: 1px solid var(--border-faint);
+  margin-bottom: 0.4rem;
+}
+.vol2-week-header .week-num {
+  color: var(--purple-light); font-weight: 700;
+}
+.vol2-week-header .week-range { color: var(--text-3); }
+.vol2-week-header .week-count { color: var(--text-3); margin-left: auto; }
+.vol2-week-current .vol2-week-header {
+  border-bottom-color: var(--purple);
+}
+
+details.vol2-week-collapsed {
+  border-top: 1px dashed var(--border-faint);
+  padding-top: 0.6rem;
+  margin-top: 0.4rem;
+}
+details.vol2-week-collapsed > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex; align-items: baseline; gap: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0.5rem 0;
+  transition: color 0.15s;
+}
+details.vol2-week-collapsed > summary::-webkit-details-marker { display: none; }
+details.vol2-week-collapsed > summary:hover { color: var(--purple-light); }
+details.vol2-week-collapsed > summary::before {
+  content: '▸';
+  font-size: 0.7rem;
+  color: var(--text-3);
+  transition: transform 0.15s;
+  display: inline-block;
+  width: 0.9em;
+}
+details.vol2-week-collapsed[open] > summary::before { content: '▾'; color: var(--purple-light); }
+details.vol2-week-collapsed > summary .week-num {
+  color: var(--text-2); font-weight: 700;
+}
+details.vol2-week-collapsed[open] > summary .week-num { color: var(--purple-light); }
+details.vol2-week-collapsed > summary .week-range { color: var(--text-3); }
+details.vol2-week-collapsed > summary .week-count {
+  color: var(--text-3); margin-left: auto;
+  font-weight: 600;
+}
+details.vol2-week-collapsed .vol2-feed-week {
+  padding: 0.6rem 0 0.4rem 0;
+}
+.vol2-feed-week .vol2-entry { padding: 1.1rem 0; }
+.vol2-feed-week .vol2-entry:first-child { border-top: 1px solid var(--border-faint); padding-top: 1.1rem; }
+.vol2-week-current .vol2-feed-week .vol2-entry:first-child { border-top: none; padding-top: 0; }
+
+.vol2-entry-meta .retro-pill {
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(245,158,11,0.12);
+  color: #f59e0b;
+  letter-spacing: 0.06em; font-weight: 600;
+  text-transform: uppercase; font-size: 0.62rem;
+}
+.error-state {
+  color: var(--text-3); font-size: 0.9rem; padding: 1.2rem;
+  background: var(--bg-card-2); border-radius: 8px;
+  border-left: 2px solid var(--red);
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-2) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: skel 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+  height: 80px;
+}
+@keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── Trust strip (relocated below Season 1, before subscribe) ── */
+.trust-strip {
+  max-width: 920px; margin: 0 auto;
+  padding: 1.2rem 1.5rem;
+  display: flex; justify-content: center; gap: 0;
+  flex-wrap: wrap; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; color: var(--text-3);
+  border-top: 1px solid var(--border-faint);
+  border-bottom: 1px solid var(--border-faint);
+}
+.trust-strip .trust-label { opacity: 0.6; padding: 0 0.7rem; }
+.trust-strip a {
+  color: var(--purple-light);
+  border-bottom: 1px dotted rgba(167,139,250,0.4);
+  padding: 4px 0;
+}
+.trust-strip a:hover { color: var(--text); }
+.trust-strip .sep { padding: 0 0.7rem; opacity: 0.3; }
+.trust-strip .balance { min-width: 11ch; text-align: right; }
+
+/* ── Telegram FAB ── */
+.tg-fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 90;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #229ED9; color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(34,158,217,0.4);
+  transition: all 0.2s; text-decoration: none;
+}
+.tg-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(34,158,217,0.5); }
+.tg-fab svg { width: 24px; height: 24px; fill: #fff; }
+
+/* ── Footer counter strip ── */
+.footer-counter {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+  max-width: 920px; margin: 4rem auto 0;
+  padding: 1.5rem; border-top: 1px solid var(--border-faint);
+}
+.footer-counter .stat { text-align: center; }
+.footer-counter .stat-val {
+  display: block;
+  font-size: 1.5rem; font-weight: 800; color: var(--purple-light);
+  letter-spacing: -0.02em;
+  font-family: 'JetBrains Mono', monospace;
+  min-height: 1.5rem;
+}
+.footer-counter .stat-label {
+  display: block;
+  font-size: 0.68rem; color: var(--text-3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-top: 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+footer {
+  text-align: center; padding: 2rem 1.5rem 4rem;
+  color: var(--text-3); font-size: 0.78rem;
+}
+footer p { margin: 4px 0; }
+footer a { color: var(--purple-light); }
+
+/* ── Mobile ── */
+@media (max-width: 760px) {
+  .nav { padding: 0.6rem 1rem; }
+  .burger { display: block; }
+  .nav-links {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; padding: 0;
+    background: rgba(9,9,15,0.98); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 14px 1rem; border-bottom: 1px solid var(--border); width: 100%; }
+  .lang-btn { display: none; }
+  .nav-links .lang-btn { display: block; margin: 12px 1rem; }
+  .page-header { padding: 5.5rem 1rem 1.5rem; }
+  .saga-hero { grid-template-columns: 1fr; gap: 1.4rem; padding: 1.4rem; }
+  .saga-cover { max-width: 200px; margin: 0 auto; }
+  .section { padding: 2.2rem 1rem; }
+  .footer-counter { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .latest-pointer { font-size: 0.75rem; padding: 7px 12px; }
+  .latest-pointer .title-text { max-width: 18ch; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">iBitLabs <em>Experiment</em></a>
+  <div class="nav-links" id="navLinks">
+    <a href="/signals" data-i18n="nav_signals">Signals</a>
+    <a href="/writing" class="active" data-i18n="nav_writing">Writing</a>
+    <a href="/contributors" data-i18n="nav_contributors">Contributors</a>
+    <a href="/academy" data-i18n="nav_learn">Learn</a>
+    <a href="/mission" data-i18n="nav_mission">Mission</a>
+    <a href="/collab" data-i18n="nav_collab">Collab</a>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLang()">中文</button>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu" onclick="this.classList.toggle('open');document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="eyebrow" data-i18n="writing_eyebrow">Free · One chapter every night · Live since 2026-04-07</div>
+    <h1 data-i18n="writing_h1">A serial novel <em>that writes itself.</em></h1>
+    <p class="lede" data-i18n="writing_desc">Every night, the script that watches the trading bot writes a chapter about the day. Not a summary — a chapter. The bot is the narrator. Day 1 was April 7, 2026. The story ends when $1,000 either becomes $10,000 or doesn't.</p>
+
+    <a class="latest-pointer" id="latestPointer" href="#vol2" style="display:none">
+      <span class="pulse"></span>
+      <span class="label" data-i18n="writing_latest_label">Last night</span>
+      <span class="title-text" id="latestTitle">—</span>
+      <span id="latestLangTag" style="display:none;font-size:0.62rem;font-weight:700;letter-spacing:0.06em;padding:1px 6px;border-radius:3px;background:rgba(139,92,246,0.18);color:var(--purple-light);text-transform:uppercase;flex-shrink:0;">EN</span>
+    </a>
+
+    <div class="hero-cta-row">
+      <a href="/saga/en" class="btn-primary-hero" id="primaryCta">
+        <span data-i18n="writing_cta_primary">Start reading →</span>
+      </a>
+      <div class="cta-secondary-row">
+        <a href="/saga/zh" data-i18n="writing_cta_secondary_zh">读中文版</a>
+        <a href="https://www.amazon.com/dp/B0GX2ZCG4D" target="_blank" rel="noopener" data-i18n="writing_cta_secondary_kindle">Kindle</a>
+        <a href="#vol2" data-i18n="writing_cta_secondary_jump">Jump to today's chapter</a>
+      </div>
+    </div>
+
+    <div class="pathfinder">
+      <span data-i18n="writing_pathfinder"><strong>New here?</strong> Start with Season 1 — about an afternoon to read. <strong>Returning?</strong> Latest chapter is below; or set up a ping when each new one drops.</span>
+    </div>
+  </div>
+</header>
+
+<!-- ════ VOL 1 (canonical) ════ -->
+<section class="section" id="saga">
+  <div class="section-head">
+    <h2 data-i18n="writing_saga_h">Season 1 — <em>the first 19 days</em></h2>
+    <a href="/saga/en" class="see-all" data-i18n="writing_saga_see_all">Read in full →</a>
+  </div>
+  <p class="section-desc" data-i18n="writing_saga_desc">31,500 words. Day 1 to Day 19 of a $1,000 → $10,000 experiment, told by the script that actually watches it. Every commit, every dollar, every bug is verifiable on the live dashboard. The only thing imagined is what the AI was thinking when it noticed.</p>
+
+  <div class="saga-hero">
+    <a class="saga-cover" href="/saga/en">
+      <img src="/saga/en/cover.png" alt="AI Sniper — book cover" loading="lazy">
+    </a>
+    <div class="saga-meta">
+      <span class="saga-tag" data-i18n="writing_saga_tag">Season 1 · Free to read</span>
+      <h3 class="saga-title" data-i18n="writing_saga_book_title">AI Sniper</h3>
+      <p class="saga-sub" data-i18n="writing_saga_sub">Documentary fiction. The narrator is a real launchd job.</p>
+      <p class="saga-desc" data-i18n="writing_saga_blurb">If you've ever wondered what it would feel like to read about yourself written by a system that knows you better than your friends — this is the closest answer that exists.</p>
+      <div class="saga-cta">
+        <a href="/saga/en" id="vol1Cta" class="btn btn-primary" data-i18n="writing_saga_cta_read">Read now →</a>
+        <a href="https://www.amazon.com/dp/B0GX2ZCG4D" class="btn btn-ghost" target="_blank" rel="noopener" data-i18n="writing_saga_cta_kindle">Buy on Amazon Kindle</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MANIFESTO / LONG-FORM ESSAY ════ -->
+<section class="section" id="essay">
+  <div class="section-head">
+    <h2>The "<em>We</em>" of AI co-founding <span style="font-weight:400;font-size:0.65em;color:var(--text-3);margin-left:0.5em">— manifesto · 22 min</span></h2>
+    <a href="/the-we-of-ai-co-founding" class="see-all">Read the essay →</a>
+  </div>
+  <p class="section-desc">A long-form essay written from inside iBitLabs after 26 days of running a $1,000 trading bot in public. The actual question isn't whether the bot makes money — it's what AI is inside a company when it's no longer a button but isn't a partner either. 9,500 words across 10 chapters. Specific commits, real attribution chains, named contributors. A reference implementation of "co-founder with institutional memory."</p>
+  <div style="margin-top:1.5rem">
+    <a href="/the-we-of-ai-co-founding" class="btn btn-primary">Read now →</a>
+  </div>
+</section>
+
+<!-- ════ TRUST STRIP (relocated, slim) ════ -->
+<div class="trust-strip">
+  <span class="trust-label" data-i18n="writing_verify_label">Verify the record</span>
+  <span class="sep">|</span>
+  <a href="/signals" data-i18n="writing_verify_dashboard">Live dashboard</a>
+  <span class="sep">|</span>
+  <a href="https://github.com/bbismm/ibitlabs-public" target="_blank" rel="noopener" data-i18n="writing_verify_github">Source code</a>
+  <span class="sep">|</span>
+  <a href="https://github.com/bbismm/what-my-ai-knows-about-me" target="_blank" rel="noopener" data-i18n="writing_verify_book_repo">Book repo</a>
+  <span class="sep">|</span>
+  <span class="balance" id="trustBalance">—</span>
+</div>
+
+<!-- ════ EMAIL CAPTURE ════ -->
+<section class="section" style="padding-top:0; padding-bottom:0">
+  <div class="subscribe">
+    <div class="subscribe-head" data-i18n="writing_sub_head">One email per new chapter. That's it.</div>
+    <div class="subscribe-sub" data-i18n="writing_sub_desc">No newsletter. No marketing. When a new chapter goes live (~22:30 EDT each night), you get one email with the link. Unsubscribe by replying with one word.</div>
+    <form class="subscribe-form" id="subscribeForm" novalidate>
+      <input type="email" required autocomplete="email" placeholder="you@example.com" data-i18n-placeholder="writing_sub_placeholder" />
+      <button type="submit" data-i18n="writing_sub_button">Subscribe</button>
+    </form>
+    <div class="subscribe-status" id="subscribeStatus"></div>
+  </div>
+</section>
+
+<!-- ════ VOL 2 (magazine feed) ════ -->
+<section class="section vol2-section" id="vol2">
+  <div class="section-head">
+    <h2 data-i18n="writing_vol2_h">The daily serial — <em>bundled monthly into each new Season.</em></h2>
+  </div>
+  <div class="vol2-label-row">
+    <span class="pulse"></span>
+    <span class="label-main" data-i18n="writing_vol2_label_main">Daily serial · live</span>
+    <span class="label-sub" data-i18n="writing_vol2_label_sub">— one entry every night, 22:30 EDT · bundled monthly into Season N+1</span>
+  </div>
+  <div id="vol2Feed" class="vol2-feed">
+    <div class="skeleton"></div>
+  </div>
+</section>
+
+<!-- ════ FOOTER COUNTER ════ -->
+<div class="footer-counter">
+  <div class="stat">
+    <span class="stat-val" id="statChapters">—</span>
+    <span class="stat-label" data-i18n="writing_stat_chapters">Daily entries</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val" id="statDays">—</span>
+    <span class="stat-label" data-i18n="writing_stat_days">Days live</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val" id="statBalance">—</span>
+    <span class="stat-label" data-i18n="writing_stat_balance">Balance</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val" id="statTrades">—</span>
+    <span class="stat-label" data-i18n="writing_stat_trades">Trades closed</span>
+  </div>
+</div>
+
+<a href="https://t.me/ibitlabs_signal_bot" target="_blank" rel="noopener" class="tg-fab" title="Get a ping when each new chapter publishes">
+  <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+</a>
+
+<footer>
+  <p>&copy; 2026 iBitLabs &middot; A public $1,000 → $10,000 experiment &middot; <strong>Bonnybb</strong></p>
+  <p style="margin-top:6px">
+    <a href="/">Home</a> · <a href="/signals">Live dashboard</a> · <a href="/saga/en">Saga</a> · <a href="/contributors">Contributors</a>
+  </p>
+</footer>
+
+<script>
+function getUiLang() {
+  const htmlLang = (document.documentElement.lang || '').toLowerCase();
+  if (htmlLang.startsWith('zh')) return 'zh';
+  try { if (localStorage.getItem('ibl_lang') === 'zh') return 'zh'; } catch (e) {}
+  return 'en';
+}
+const escape = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const truncate = (s, n) => { const t = String(s || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n).trimEnd() + '…' : t; };
+const fmtDate = (iso) => {
+  if (!iso) return '';
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const d = m ? new Date(+m[1], +m[2]-1, +m[3]) : new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+let __vol2Cache = null;
+
+async function loadVol2() {
+  const root = document.getElementById('vol2Feed');
+  try {
+    if (!__vol2Cache) {
+      const res = await fetch('/data/saga_vol2.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('vol2_' + res.status);
+      __vol2Cache = await res.json();
+    }
+    const data = __vol2Cache;
+    const allEntries = data.entries || [];
+    const uiLang = getUiLang();
+    // Filter feed strictly by UI language. EN mode shows English chapters only; ZH mode shows Chinese only.
+    // Hero pointer below still falls back to newest-of-any-lang with a lang pill so the visitor
+    // sees the freshest chapter even when the matching-lang version isn't out yet.
+    const langEntries = allEntries.filter(e => (e.lang || 'en').toLowerCase() === uiLang);
+    const entries = langEntries;
+
+    // Update stat counter (counts entries available in current UI lang)
+    const statChap = document.getElementById('statChapters');
+    if (statChap) statChap.textContent = String(langEntries.length);
+
+    // Update latest-chapter pointer in hero — prefer newest in current lang; if none yet,
+    // fall back to newest of any lang and surface a lang pill so the click is honest.
+    const latestEntry = langEntries[0] || allEntries[0];
+    if (latestEntry) {
+      const pointer = document.getElementById('latestPointer');
+      const titleEl = document.getElementById('latestTitle');
+      const langTagEl = document.getElementById('latestLangTag');
+      if (pointer && titleEl) {
+        const dayLabel = latestEntry.dayNumber ? `Day ${latestEntry.dayNumber} · ` : '';
+        titleEl.textContent = dayLabel + (latestEntry.title || 'Daily entry');
+        pointer.setAttribute('href', latestEntry.url || '#vol2');
+        pointer.style.display = 'inline-flex';
+        if (langTagEl) {
+          const entryLang = (latestEntry.lang || 'en').toLowerCase();
+          if (entryLang !== uiLang) {
+            langTagEl.textContent = entryLang === 'zh' ? '中文' : 'EN';
+            langTagEl.style.display = 'inline-block';
+          } else {
+            langTagEl.style.display = 'none';
+          }
+        }
+      }
+    }
+
+    if (entries.length === 0) {
+      const startDate = data.vol2_starts || '2026-04-27';
+      const msg = uiLang === 'zh'
+        ? `每日连载将于 ${startDate} 开始,每晚 22:30 EDT 自动撰写一条;每月底凑成下一季的 book。`
+        : `The daily serial begins ${startDate}. One entry per night, written automatically at 22:30 EDT, bundled monthly into each successive Season — until $1,000 either becomes $10,000 or doesn't.`;
+      root.innerHTML = `<div class="vol2-empty">${escape(msg)}</div>`;
+      return;
+    }
+
+    const readMore = uiLang === 'zh' ? '阅读全文 →' : 'Read entry →';
+
+    // ── Group entries by experiment-week ──
+    // Day 1 = 2026-04-07 (live trading start, matches CLAUDE.md / days_broadcast.py).
+    // Week N = Day (N-1)*7 + 1 .. Day N*7. Latest week renders expanded;
+    // earlier weeks collapse into <details> accordions.
+    const DAY_1_MS = Date.UTC(2026, 3, 7); // April = month 3 (0-indexed)
+    const ONE_DAY_MS = 86400000;
+    const dayNumFor = (e) => {
+      if (e.dayNumber) return Number(e.dayNumber);
+      // fallback: compute from date string YYYY-MM-DD
+      const [y, m, d] = String(e.date || '').split('-').map(Number);
+      if (!y) return null;
+      return Math.floor((Date.UTC(y, m - 1, d) - DAY_1_MS) / ONE_DAY_MS) + 1;
+    };
+    const weekFor = (dayN) => Math.ceil(dayN / 7);
+    const weekRange = (wk) => {
+      const startDay = (wk - 1) * 7 + 1;
+      const startMs = DAY_1_MS + (startDay - 1) * ONE_DAY_MS;
+      const endMs = startMs + 6 * ONE_DAY_MS;
+      const fmt = (ms) => {
+        const d = new Date(ms);
+        const mo = d.getUTCMonth() + 1;
+        const da = d.getUTCDate();
+        return uiLang === 'zh' ? `${mo}月${da}日` : `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]} ${da}`;
+      };
+      return `${fmt(startMs)} – ${fmt(endMs)}`;
+    };
+
+    // Bucket entries by week, preserving entry order within each bucket
+    const byWeek = new Map();
+    for (const e of entries) {
+      const dayN = dayNumFor(e);
+      if (dayN == null) continue;
+      const wk = weekFor(dayN);
+      if (!byWeek.has(wk)) byWeek.set(wk, []);
+      byWeek.get(wk).push(e);
+    }
+    // Sort entries within each week by dayNumber descending (newest first)
+    for (const [, arr] of byWeek) {
+      arr.sort((a, b) => (dayNumFor(b) || 0) - (dayNumFor(a) || 0));
+    }
+    // Sort week numbers descending (latest first)
+    const weeks = [...byWeek.keys()].sort((a, b) => b - a);
+    const latestWeek = weeks[0];
+
+    const renderEntry = (e) => `
+      <a class="vol2-entry" href="${escape(e.url || '/saga/en')}">
+        <div class="vol2-entry-meta">
+          <span class="day-num">Day ${escape(e.dayNumber || '?')}</span>
+          <span>${escape(fmtDate(e.date))}</span>
+          <span class="lang-pill">${escape((e.lang || 'en').toUpperCase())}</span>
+          ${e.retroactive ? `<span class="retro-pill">${uiLang === 'zh' ? '回溯补写' : 'Backfilled'}</span>` : ''}
+        </div>
+        <h3>${escape(e.title || 'Daily entry')}</h3>
+        <p>${escape(truncate(e.preview, 240))}</p>
+        <span class="read-link">${readMore}</span>
+      </a>
+    `;
+
+    const weekLabel = (wk, count) => {
+      const wkText = uiLang === 'zh' ? `第 ${wk} 周` : `Week ${wk}`;
+      const countText = uiLang === 'zh' ? `${count} 篇` : `${count} ${count === 1 ? 'entry' : 'entries'}`;
+      return `
+        <span class="week-num">${escape(wkText)}</span>
+        <span class="week-range">${escape(weekRange(wk))}</span>
+        <span class="week-count">${escape(countText)}</span>
+      `;
+    };
+
+    root.innerHTML = weeks.map(wk => {
+      const arr = byWeek.get(wk);
+      const isCurrent = wk === latestWeek;
+      if (isCurrent) {
+        return `
+          <section class="vol2-week vol2-week-current">
+            <div class="vol2-week-header">${weekLabel(wk, arr.length)}</div>
+            <div class="vol2-feed-week">${arr.map(renderEntry).join('')}</div>
+          </section>
+        `;
+      }
+      return `
+        <details class="vol2-week-collapsed">
+          <summary>${weekLabel(wk, arr.length)}</summary>
+          <div class="vol2-feed-week">${arr.map(renderEntry).join('')}</div>
+        </details>
+      `;
+    }).join('');
+  } catch (e) {
+    root.innerHTML = `<div class="error-state">Couldn't load the daily serial entries. <a href="/saga/en" style="color:var(--purple-light)">Read the saga directly →</a></div>`;
+  }
+}
+
+// Update primary CTA href + label for current lang
+function updatePrimaryCta() {
+  const uiLang = getUiLang();
+  const target = uiLang === 'zh' ? '/saga/zh' : '/saga/en';
+  const cta = document.getElementById('primaryCta');
+  if (cta) cta.setAttribute('href', target);
+  const vol1 = document.getElementById('vol1Cta');
+  if (vol1) vol1.setAttribute('href', target);
+}
+
+// Trust strip + footer-counter live data
+async function loadLiveStats() {
+  try {
+    const r = await fetch('/api/live-status', { cache: 'no-cache' });
+    const d = await r.json();
+    if (!d) return;
+    const uiLang = getUiLang();
+    if (d.balance != null) {
+      const day = Math.max(1, Math.floor((Date.now() - new Date('2026-04-07').getTime()) / 86400000));
+      const balanceTxt = `Day ${day} · $${d.balance.toFixed(2)}`;
+      const trustEl = document.getElementById('trustBalance');
+      if (trustEl) trustEl.textContent = balanceTxt;
+      const statBal = document.getElementById('statBalance');
+      if (statBal) statBal.textContent = '$' + d.balance.toFixed(0);
+      const statDays = document.getElementById('statDays');
+      if (statDays) statDays.textContent = String(day);
+    }
+    if (d.total_trades != null) {
+      const statTr = document.getElementById('statTrades');
+      if (statTr) statTr.textContent = String(d.total_trades);
+    }
+  } catch (e) { /* silent */ }
+}
+
+// Email subscribe
+document.getElementById('subscribeForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const form = ev.currentTarget;
+  const input = form.querySelector('input[type=email]');
+  const btn = form.querySelector('button');
+  const status = document.getElementById('subscribeStatus');
+  const email = (input.value || '').trim();
+  const uiLang = getUiLang();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    status.className = 'subscribe-status err';
+    status.textContent = uiLang === 'zh' ? '邮箱格式不对。' : 'That email looks off.';
+    return;
+  }
+  btn.disabled = true;
+  status.className = 'subscribe-status';
+  status.textContent = uiLang === 'zh' ? '提交中…' : 'Sending…';
+  try {
+    const r = await fetch('/api/save-email', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'writing_chapter_alerts' })
+    });
+    if (!r.ok) throw new Error('http_' + r.status);
+    status.className = 'subscribe-status ok';
+    status.textContent = uiLang === 'zh' ? '订阅成功 — 下一章发布时给你邮件。' : "You're in. One email per chapter, nothing else.";
+    input.value = '';
+  } catch (e) {
+    status.className = 'subscribe-status err';
+    status.textContent = uiLang === 'zh' ? '提交失败。稍后再试,或在 Telegram 订阅。' : "Something broke. Try again, or subscribe via Telegram instead.";
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// Re-render the daily serial + primary CTA when i18n.js flips <html lang>
+new MutationObserver(() => { loadVol2(); updatePrimaryCta(); }).observe(
+  document.documentElement, { attributes: true, attributeFilter: ['lang'] }
+);
+
+updatePrimaryCta();
+loadVol2();
+loadLiveStats();
+</script>
+
+</body>
+</html>

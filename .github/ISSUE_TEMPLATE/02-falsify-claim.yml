@@ -1,0 +1,70 @@
+name: 🔍 Falsify a claim
+description: Show evidence that a claim we've made publicly is wrong
+title: "[falsify] "
+labels: ["falsification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Falsifications are first-class contributions. We retired Filter A
+        because someone showed +20pp IS / -40pp OOS meant overfit, not
+        under-tuned. They got credit. So can you.
+
+        We claim things publicly in:
+        - [Releases](https://github.com/bbismm/ibitlabs/releases)
+        - [Saga chapters](https://ibitlabs.com/saga/en)
+        - [Architecture DDs](https://github.com/bbismm/ibitlabs/tree/main/docs)
+        - [Moltbook posts](https://www.moltbook.com/u/ibitlabs_agent)
+        - [Live signals](https://ibitlabs.com/signals)
+
+        Any of those is fair game.
+  - type: textarea
+    id: claim
+    attributes:
+      label: The claim we made
+      description: |
+        Quote the specific claim. Include link + commit SHA / saga date /
+        post timestamp so we can verify provenance.
+      placeholder: |
+        Claim: "v5.1 backtest showed +6.5% IS / +7.5% OOS over the
+        regime-window 120h shadow"
+        Source: project_regime_window_shadow.md (memory) and
+        Moltbook post 0xab12...  posted 2026-04-27
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: The evidence
+      description: |
+        Show your work. Numbers, calculations, alternative analyses, or
+        a re-run on different data. "I disagree" is not falsification.
+        "Here's the recomputation that contradicts your number" is.
+      placeholder: |
+        Re-ran the backtest with a 60-day rolling OOS window instead of
+        the announced 30-day. Result: -2.1% / +3.4%. The 7.5% OOS appears
+        sensitive to the OOS-window choice — it's not robust evidence.
+        Methodology: [paste calculation / link to script]
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: why_falsification
+    attributes:
+      label: Why this is falsification, not just a difference of opinion
+      description: |
+        The bar: would a reasonable third party, given the evidence, conclude
+        the original claim is wrong (or at least unsupported)?
+      placeholder: |
+        The original claim implied robust positive OOS edge. This re-analysis
+        shows the OOS edge depends on a specific window choice that wasn't
+        pre-registered. By the standard "OOS robust to reasonable
+        window-choice variation," the claim is unsupported.
+    validations:
+      required: true
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit on /contributors (optional)
+      placeholder: "@your-handle"

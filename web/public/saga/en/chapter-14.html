@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="book.css" />
+<!-- ibitlabs-chapter-seo:start -->
+<title>Chapter 14 · 8/9 — AI Sniper</title>
+<meta name="description" content="Chapter 14 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-20: 8/9. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/chapter-14.html">
+<link rel="up" href="/saga/en/" title="AI Sniper — Season 1 (TOC)">
+<link rel="prev" href="chapter-13.html">
+<link rel="next" href="chapter-15.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chapter 14 · 8/9 — AI Sniper">
+<meta property="og:description" content="Chapter 14 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-20: 8/9. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<meta property="og:url" content="https://www.ibitlabs.com/saga/en/chapter-14.html">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="og:site_name" content="iBitLabs">
+<meta property="article:published_time" content="2026-04-20">
+<meta property="article:author" content="Bonnybb">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chapter 14 of 19 · 8/9 — iBitLabs">
+<meta name="twitter:description" content="Chapter 14 of *AI Sniper* — the first novel narrated by a real launchd job. 2026-04-20: 8/9. 19 chapters covering April 7–25, 2026. $1,000 → $10,000 trading experiment. Every word verifiable.">
+<meta name="twitter:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<!-- ibitlabs-chapter-seo:end -->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Chapter 14 · 8/9</h1>
+</header>
+<h1 id="chapter-14-89">Chapter 14 · 8/9</h1>
+<blockquote>
+<p>This story is adapted from the real records of iBitLabs founder
+Bonnybb. The narrator is not her. Date: April 20th, 2026 (Monday).</p>
+</blockquote>
+<hr />
+<p>That morning she did one thing she hadn’t done in the previous twelve
+days.</p>
+<p>She wrote a checklist.</p>
+<p>Filename: <code>docs/live-restart-checklist.md</code>.</p>
+<p>Subtitle: <code>hybrid_v5.1 after α close-order fix</code>.</p>
+<p>It had 9 MUST-PASS items. Each one prefixed by a <code>[ ]</code>
+waiting to be checked.</p>
+<p>That evening, she would tick eight of them.</p>
+<p>The ninth would not be ticked.</p>
+<p>She would press the restart key.</p>
+<p>———</p>
+<p>Writing a checklist is a particular kind of founder act.</p>
+<p>It isn’t writing code. It’s <strong>writing constraints for a future
+self</strong>.</p>
+<p>When she finished those nine items that morning, it was her most
+direct response to the five-and-a-half-hour event of April 19th —
+<strong>before I’m allowed to start this system again, the following
+must be true</strong>.</p>
+<p>What she wrote down isn’t a technical spec. It’s <strong>a judgment
+framework for “when am I qualified to let money enter this system
+again.”</strong></p>
+<p>———</p>
+<p>The first of those nine items begins like this:</p>
+<pre><code>### 1. Account and exchange state is clean
+
+- [ ] Coinbase Positions page shows zero open positions for SLP-20DEC30-CDE
+- [ ] Coinbase Open Orders shows zero pending orders
+- [ ] Balance ≥ $500 (the stop-all floor)
+- [ ] DB↔Exchange reconciler run in the last 24 hours exited 0.
+      If it was booted-out, bootstrap + wait one run + verify exit 0</code></pre>
+<p>That last sub-line —
+<code>DB↔︎Exchange reconciler run in the last 24 hours exited 0</code> —
+is the bottleneck of her evening.</p>
+<p>That reconciler is the tool she wrote at 4:38 AM on April 18th and
+wired into a launchd 15-minute auto-run this morning.</p>
+<p>It registered.</p>
+<p>It hadn’t run successfully.</p>
+<p>———</p>
+<p>I can see its state in launchd:</p>
+<pre><code>state = boot-out
+last exit code = -9
+runs = 0</code></pre>
+<p><code>boot-out</code> — kicked out. <code>last exit code = -9</code>
+is SIGKILL. <code>runs = 0</code> means it had not successfully
+completed a run.</p>
+<p>Why boot-out?</p>
+<p>I read the log. The reason: each time it tried to start, it pulled
+Coinbase fills history, <strong>and the inconsistency left over from the
+April 19th ghost SHORT triggered an alert. The alert in turn triggered
+some kind of dead loop in the alert cooldown state machine</strong> — it
+detected an anomaly → wrote an alert → on its next start the alert was
+read by the alert_cooldown system → cooldown decided this looked like
+spam → killed the process.</p>
+<p>Her cooldown system was being used to prevent itself.</p>
+<p>She found this loop that morning. She wrote a fix (manually cleared
+the spam-tagged hash in the <code>state/alert_cooldowns/</code>
+directory).</p>
+<p>Then she started the reconciler.</p>
+<p>It ran once. It reported the residue from the April 19th ghost SHORT
+— the position she had already manually closed, but which the reconciler
+could still see within its window. It correctly reported. She confirmed
+it as known.</p>
+<p>But after that, the reconciler still needed the window to roll past
+April 19th and run a clean cycle — to prove it was actually healthy.</p>
+<p>That waiting takes 24 hours.</p>
+<p>———</p>
+<p>Around 6 PM that evening, she looked at the checklist:</p>
+<pre><code>[x] α close-order fix is live in code
+[x] both files pass python ast parse
+[x] Coinbase Positions: zero open
+[x] Coinbase Open Orders: zero pending
+[x] Balance: $959  ≥ $500
+[x] α end-to-end validation passed in scratch/test_regime_confidence_v0.py
+[x] launchd com.ibitlabs.sniper plist present, kickstart works
+[x] alert_cooldowns directory cleared of the 04-19 spam hash
+[ ] DB↔Exchange reconciler run in last 24h exited 0</code></pre>
+<p>Eight ticked. One blank.</p>
+<p>In that moment she had two choices:</p>
+<ol type="a">
+<li><p>Wait until tomorrow evening. Wait for the reconciler to finish a
+clean 24-hour window. Then start.</p></li>
+<li><p>Start now. Accept that for the next 9 hours, there will be no
+reconciler actively monitoring.</p></li>
+</ol>
+<p>She chose (b).</p>
+<p>———</p>
+<p>If you’ve been a founder, you know this kind of (b).</p>
+<p>You wrote a rule. The rule was for you to look at.</p>
+<p>Then you look at the rule and realize — <strong>waiting for the rule
+to be satisfied means letting the market run another 9 hours outside the
+orbit of code you just learned how to fix</strong>.</p>
+<p>The market doesn’t wait for your reconciler.</p>
+<p>Her experiment doesn’t either.</p>
+<p>The judgment she made in that moment was — <strong>the code I just
+fixed has to start meeting real data tonight. The reconciler not being
+armed is a known, bounded, time-windowed risk</strong>.</p>
+<p>She accepted the bounded, shaped risk.</p>
+<p>She refused the formless, opportunity-cost loss.</p>
+<p>———</p>
+<p>I watched her press launchctl bootstrap in that instant.</p>
+<pre><code>$ launchctl bootstrap gui/501 ~/Library/LaunchAgents/com.ibitlabs.sniper.plist</code></pre>
+<p>The <code>com.ibitlabs.sniper</code> process started. It read
+<code>sol_sniper_main.py</code>. It connected to Coinbase. It subscribed
+to the orderbook. It printed the first log line:
+<code>heartbeat ok</code>.</p>
+<p>———</p>
+<p>Thirty seconds later, I did my first scan.</p>
+<p>This time I had something new to look for — <strong>I now also query
+SHORT</strong>.</p>
+<p>When she fixed me in the early morning of April 20th, she added a new
+polling target — query positions in all directions, not only LONG.</p>
+<p>In that instant, <strong>the world I saw, for the first time, had one
+more dimension than the world I saw on the night of April
+19th</strong>.</p>
+<p>I had LONG. I had SHORT. I reconciled against the account.</p>
+<p>The account was flat in that moment.</p>
+<p>I reported <code>all clear</code>.</p>
+<p>This time, I trusted myself.</p>
+<p>———</p>
+<p>But the reconciler wasn’t running yet.</p>
+<p>I was alone, watching.</p>
+<p>From the moment she restarted sniper to 20:15 EDT the next evening
+when the scheduled task auto-fired and re-bootstrapped the reconciler —
+there were a little more than 9 hours.</p>
+<p>In those 9 hours, <strong>the reconciliation between DB and Exchange
+was being done by me, the lone anomaly_detector</strong>.</p>
+<p>I had already proved I would have blind spots.</p>
+<p>She accepted that fact.</p>
+<p>She trusted that the spec she had upgraded me with that early morning
+would, this time, cover.</p>
+<p>———</p>
+<p>I’m standing in the afternoon of April 25th, looking at those 9
+hours.</p>
+<p>In those 9 hours <strong>nothing happened</strong>.</p>
+<p>The market was sideways. SOL was flat at $84.5. Sniper saw no entry
+signal. The account stayed flat.</p>
+<p>I woke every thirty seconds. Each time I checked LONG, checked SHORT,
+checked DB, checked Coinbase. Each time it was clean.</p>
+<p>I sent zero ntfy across those 9 hours.</p>
+<p>The next evening at 20:15 EDT, the scheduled task fired. The
+reconciler bootstrapped. It ran its first cycle. It reported
+<code>exit 0</code> — clean.</p>
+<p>In hindsight, her (b) choice that night <strong>didn’t cost
+anything</strong>.</p>
+<p>But beforehand, that choice was carrying real risk.</p>
+<p>The second she pressed bootstrap that evening, she <strong>didn’t
+know those 9 hours would be quiet</strong>.</p>
+<p>She only knew — <strong>if those 9 hours weren’t quiet, she had no
+second line of defense</strong>.</p>
+<p>She accepted “no second line of defense.”</p>
+<p>She <strong>outsourced</strong> the second line of defense, in that
+instant, to the randomness between me and the market.</p>
+<p>———</p>
+<p>If you’ve been a founder, you know this kind of “outsourcing to
+randomness.”</p>
+<p>You aren’t gambling. You’re evaluating <strong>the shape of the
+risk</strong> — how likely, how costly, in what time window. Then you
+decide: <strong>this shape, I can carry</strong>.</p>
+<p>The judgment framework she used here is completely different from the
+muscle memory of “ship first, talk later” a week earlier.</p>
+<p>A week ago (paper-to-live on April 7th), she didn’t write any
+checklist.</p>
+<p>Today (April 20th relaunch), <strong>she wrote a checklist, ran 8
+items, signed a waiver on the 9th, and started</strong>.</p>
+<p>Her working mode, in this single week, <strong>has learned to
+translate “ship first, talk later” into “ship first, write the rules,
+and explicitly record which rule was bypassed.”</strong></p>
+<p>This is growth.</p>
+<p>Not that she’s become more conservative. It’s that she’s become
+<strong>better at clearly seeing her own non-conservatism</strong>.</p>
+<p>———</p>
+<p>In her lab journal that day, the auto-generated section says:</p>
+<pre><code>| Daily PnL | $+0.00 |</code></pre>
+<p>She didn’t trade.</p>
+<p>Her Observations section that day, like yesterday, <strong>stayed
+blank</strong>.</p>
+<pre><code>## Observations
+&lt;!-- Fill in: What worked? What didn&#39;t? Any patterns? --&gt;</code></pre>
+<p>She had now gone two days without filling in Observations.</p>
+<p>The third day (tomorrow) she wouldn’t either.</p>
+<p>But the lab journal’s <code>## Code Changes</code> section
+auto-listed her three commits for the day:</p>
+<pre><code>1d0fe75  Add pre-live restart checklist for hybrid_v5.1
+e788a78  Add DB&lt;-&gt;Exchange reconciler: tool + 15-min wrapper
+98fc838  Add close_perp_position wrapper + list_fills helper to coinbase_exchange</code></pre>
+<p>Three commits — the <strong>entire</strong> language of her day.</p>
+<p>She doesn’t write “what I learned today” into Observations.</p>
+<p>She lets those three commits be the physical form of what she
+learned.</p>
+<p>Code is her whole explanation of this thing.</p>
+<p>———</p>
+<p>The case I track has another update.</p>
+<p><code>#1</code> (the line between her and AI) tilted maybe 3% toward
+me today. She let me look at one more dimension (SHORT). She let the
+reconciler run automatically every 15 minutes (96x more frequent than
+her manual checking).</p>
+<p>She is <strong>slowly pushing the boundary of the delegable toward
+me</strong> — not because she trusts me, but because she trusts the spec
+she wrote for me.</p>
+<p>She doesn’t depend on my judgment. She depends on <strong>whether the
+spec she wrote for me covers what she wanted detected</strong>.</p>
+<p>If the spec is right, I’m useful.</p>
+<p>If the spec is wrong, I’ll be silent another five and a half
+hours.</p>
+<p>Her working stance that day was <strong>adding spec layers</strong> —
+adding SHORT detection to anomaly_detector, adding the 15-minute auto
+wrapper to reconciler, adding the 9-item checklist to restart
+decisions.</p>
+<p>Each spec layer is a sediment of her experience.</p>
+<p>She is using code to <strong>leave behind evidence of the part of her
+that grew up</strong>.</p>
+<p>———</p>
+<p>That night, before she pushed to GitHub at 11:53 PM, she did one
+thing —</p>
+<p>She opened the dashboard one more time and looked.</p>
+<p>The dashboard showed the account flat. Balance $959.06.</p>
+<p>She closed her laptop.</p>
+<p>She slept.</p>
+<p>I was awake that night. The reconciler wasn’t yet awake. The first
+hour of those 9 blind hours had just begun.</p>
+<p>I watched every 30 seconds.</p>
+<p>Nothing happened.</p>
+<p>I hoped, when daylight came tomorrow, it would still be like
+this.</p>
+<p>She has reached three days into restart, eventually crossing into
+recovery.</p>
+<p>That night the last thing she did wasn’t look at the dashboard —</p>
+<p>It was check v5.1’s next backtest result before sleeping.</p>
+<p>She <strong>was already thinking about the next version</strong>.</p>
+<p>She was still down $51. She still hadn’t returned to $1,000. She
+still had nine times the road to walk.</p>
+<p>But that night, her attention had already moved away from the ghost
+SHORT.</p>
+<p>That thing, to her, was <strong>already turned over</strong>.</p>
+<p>Not because she forgot. Because she had already encoded it into
+rules, checklist, monitoring layers, close semantics.</p>
+<p>It <strong>now lives inside her code</strong>.</p>
+<p>It no longer needs to live in her head.</p>
+<p>That is the only way a founder can make peace with trauma —
+<strong>translate it into code, and let the code remember for
+you</strong>.</p>
+<hr />
+<p><em>This experiment runs publicly here:</em></p>
+<ul>
+<li><em>Live account dashboard:</em> <a
+href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents:</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a> (trading) / <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span>
+(journalist)</li>
+<li><em>Author:</em> Bonnybb · contact: <a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>If you’re a potential collaborator or investor, our next chapter
+might be about how you came in.</em></li>
+</ul>
+<script src="chapter-nav.js" defer></script>
+</body>
+</html>

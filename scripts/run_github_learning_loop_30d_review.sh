@@ -1,0 +1,69 @@
+#!/bin/zsh
+#
+# github-learning-loop-30d-review — one-shot launchd job.
+#
+# Fires once at 2026-05-30 09:00 LOCAL time. Runs claude -p with the SKILL
+# prompt against the 30-day digest corpus. Appends a review section to
+# ~/ibitlabs/CLAUDE.md and self-disables the launchd plist so it does not
+# fire again next year on the same date.
+#
+# Manual run (any time, for testing):
+#   ~/ibitlabs/scripts/run_github_learning_loop_30d_review.sh
+
+set -u
+set -o pipefail
+
+LABEL="com.ibitlabs.github-learning-loop-30d-review"
+PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+LOG_DIR="$HOME/ibitlabs/logs/github-learning-loop-30d-review"
+TS="$(date -u +%Y%m%d-%H%M%S)"
+LOG="$LOG_DIR/$TS.log"
+SKILL_FILE="$HOME/Documents/Claude/Scheduled/github-learning-loop-30d-review/SKILL.md"
+
+mkdir -p "$LOG_DIR"
+
+{
+  echo "=== github-learning-loop-30d-review @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  echo "host: $(hostname)  user: $(whoami)"
+  echo "claude: $(/opt/homebrew/bin/claude --version 2>/dev/null)"
+  echo "skill source: $SKILL_FILE"
+  echo "---"
+
+  if [[ ! -f "$SKILL_FILE" ]]; then
+    echo "FATAL: skill file not found at $SKILL_FILE"
+    exit 1
+  fi
+
+  PREAMBLE="UNATTENDED LAUNCHD RUN — no human is watching. This is a one-shot
+30-day review of the github-learning-loop. Read the digests, do the
+aggregation + adoption cross-reference, write the report into
+~/ibitlabs/CLAUDE.md, commit the change (do not push). The strict-mode
+design rule is locked — do not propose loosening it.
+
+Skill instructions follow:
+"
+  printf '%s\n%s\n' "$PREAMBLE" "$(cat "$SKILL_FILE")" | /opt/homebrew/bin/claude \
+    -p \
+    --dangerously-skip-permissions \
+    --model sonnet \
+    --add-dir "$HOME/ibitlabs"
+
+  STATUS=$?
+  echo ""
+  echo "---"
+  echo "=== claude exit status: $STATUS ==="
+
+  # Self-disable: unload + rename plist so launchd never re-fires (StartCalendarInterval
+  # has no Year field — without this, the job would re-trigger on 2027-05-30).
+  echo ""
+  echo "=== self-disabling plist ==="
+  /bin/launchctl bootstrap-out "gui/$(id -u)/$LABEL" 2>/dev/null \
+    || /bin/launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null \
+    || true
+  if [[ -f "$PLIST" ]]; then
+    /bin/mv "$PLIST" "$PLIST.disabled-fired-$(date +%Y-%m-%d)"
+    echo "plist renamed to: $PLIST.disabled-fired-$(date +%Y-%m-%d)"
+  fi
+
+  exit $STATUS
+} 2>&1 | tee -a "$LOG"

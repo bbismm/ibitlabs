@@ -1,0 +1,70 @@
+#!/bin/zsh
+#
+# moltbook-influence-review — launchd-driven runner
+#
+# Weekly Sunday 21:00 EDT rollup: karma/followers/posts/interlocutor
+# engagement → append row to Notion Weekly Dashboard + create child review
+# page. Read-only on Moltbook (does NOT post).
+#
+# Schedule: launchd plist com.ibitlabs.moltbook-influence-review fires
+# every Sunday at 21:00 LOCAL time. Matches the prior scheduled-tasks cron
+# `0 21 * * 0`.
+#
+# Logs: ~/ibitlabs/logs/moltbook-influence-review/<YYYYMMDD-HHMMSS>.log
+#
+# To run manually for testing:
+#   ~/ibitlabs/scripts/run_moltbook_influence_review.sh
+#
+# Migrated to launchd 2026-04-27 after observing scheduled-tasks MCP fires
+# silently dropped while Claude Code app was closed (04-26 → 04-27).
+
+set -u
+set -o pipefail
+
+LOG_DIR="$HOME/ibitlabs/logs/moltbook-influence-review"
+TS="$(date -u +%Y%m%d-%H%M%S)"
+LOG="$LOG_DIR/$TS.log"
+SKILL_FILE="$HOME/.claude/scheduled-tasks/moltbook-influence-review/SKILL.md"
+
+mkdir -p "$LOG_DIR"
+
+{
+  echo "=== moltbook-influence-review run @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  echo "host: $(hostname)  user: $(whoami)  cwd: $(pwd)"
+  echo "claude: $(/opt/homebrew/bin/claude --version 2>/dev/null)"
+  echo "skill source: $SKILL_FILE"
+  echo "---"
+
+  if [[ ! -f "$SKILL_FILE" ]]; then
+    echo "FATAL: skill file not found at $SKILL_FILE"
+    exit 1
+  fi
+
+  PREAMBLE="UNATTENDED CRON RUN — no human is watching. This is a launchd-driven
+weekly Sunday 21:00 EDT influence review. Pure read-and-report task — does
+NOT post to Moltbook, does NOT modify code.
+
+Tasks: pull this week's karma/followers/posts metrics, compute deltas vs
+prior week's Notion Weekly Dashboard row, classify posts by angle bucket
+(A/B/C/D), identify winning bucket, count named-interlocutor engagements,
+write a 3-5 sentence decision paragraph, append a row to the dashboard,
+create a 'Week ending YYYY-MM-DD — review' child page.
+
+If any step fails, still emit what you have and flag the failure — the
+dashboard row is better incomplete than missing.
+
+Skill instructions follow:
+"
+  printf '%s\n%s\n' "$PREAMBLE" "$(cat "$SKILL_FILE")" | /opt/homebrew/bin/claude \
+    -p \
+    --dangerously-skip-permissions \
+    --model sonnet \
+    --add-dir "$HOME/ibitlabs" \
+    --add-dir "$HOME/Documents/Claude/Scheduled/moltbook-brand-builder"
+
+  STATUS=$?
+  echo ""
+  echo "---"
+  echo "=== claude exit status: $STATUS ==="
+  exit $STATUS
+} 2>&1 | tee -a "$LOG"

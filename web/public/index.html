@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><!-- v3.1 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iBitLabs — A 0-to-N Startup, In Public</title>
+<meta name="description" content="iBitLabs is a one-person company running a 0-to-N startup experiment in public. Underneath: a Sniper trading system, $1,000 to $10,000, every trade auditable. Above: an AI trading-desk being born, growing up in public. Every commit, every fill, every agent verifiable.">
+<meta property="og:title" content="iBitLabs — A One-Person Company, 0-to-N, In Public">
+<meta property="og:description" content="One human + a small team of AI agents running a real-money 0-to-N startup experiment. The Sniper system underneath ($1,000 → $10,000). The AI trading-desk above. Free to watch. Free to read.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ibitlabs.com">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iBitLabs — A One-Person Company, 0-to-N, In Public">
+<meta name="twitter:description" content="One human + a small team of AI agents running a real-money 0-to-N startup experiment. Every commit, every fill, every agent verifiable.">
+<link rel="canonical" href="https://www.ibitlabs.com">
+<link rel="alternate" type="application/rss+xml" title="iBitLabs Essays" href="/api/rss">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#8b5cf6">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #09090f;
+  --bg-card: #141420;
+  --bg-card-2: #1a1a2e;
+  --purple: #8b5cf6;
+  --purple-light: #a78bfa;
+  --purple-dark: #6d28d9;
+  --purple-glow: rgba(139, 92, 246, 0.3);
+  --text: #f1f1f3;
+  --text-2: #d0d0dc;
+  --text-3: #a8a8be;
+  --green: #22c55e;
+  --green-dim: rgba(34, 197, 94, 0.15);
+  --red: #ef4444;
+  --border: rgba(139, 92, 246, 0.25);
+  --radius: 16px;
+}
+html { overflow-x: hidden; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: var(--purple-dark); border-radius: 3px; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Nav ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0.75rem 2rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(9,9,15,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-size: 1.2rem; font-weight: 900; letter-spacing: -0.02em; }
+.nav-logo em { font-style: normal; color: var(--purple-light); font-weight: 500; font-size: 0.8rem; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { font-size: 0.85rem; color: var(--text-3); transition: color 0.2s; }
+.nav-links a:hover { color: var(--purple-light); }
+.nav-cta {
+  padding: 6px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+  background: var(--purple); color: #fff; transition: all 0.2s;
+}
+.nav-cta:hover { background: var(--purple-dark); }
+
+/* ── Hero ── */
+.hero {
+  min-height: 85vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 7rem 2rem 4rem;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border: 1px solid var(--green); border-radius: 999px;
+  font-size: 0.8rem; color: var(--green); background: var(--green-dim);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 2rem; position: relative; z-index: 1;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+.hero h1 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-weight: 900; line-height: 1.05;
+  position: relative; z-index: 1; letter-spacing: -0.04em;
+  max-width: 800px;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--purple-light), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: 1.2rem; color: var(--text-2);
+  max-width: 580px; margin: 1.5rem auto 0;
+  line-height: 1.7; position: relative; z-index: 1;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 2.5rem; padding: 16px 36px;
+  border-radius: 14px; font-weight: 700; font-size: 1.1rem;
+  background: var(--purple); color: #fff;
+  box-shadow: 0 0 40px var(--purple-glow);
+  transition: all 0.2s; position: relative; z-index: 1;
+}
+.hero-cta:hover { background: var(--purple-dark); transform: translateY(-3px); box-shadow: 0 0 60px var(--purple-glow); }
+.hero-sub-cta {
+  display: block; margin-top: 1rem; font-size: 0.85rem; color: var(--text-3);
+  position: relative; z-index: 1;
+}
+
+/* ── Stats Bar ── */
+.stats-bar {
+  display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+  padding: 2.5rem 2rem;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.stat-item { text-align: center; }
+.stat-value { font-size: 2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+.stat-value.green { color: var(--green); }
+.stat-value.purple { color: var(--purple-light); }
+.stat-label { font-size: 0.75rem; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ── Live Ticker ── */
+.live-ticker {
+  max-width: 700px; margin: 0 auto; padding: 2rem 2rem 0;
+}
+.ticker-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem 2rem; position: relative; overflow: hidden;
+}
+.ticker-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--purple), var(--green));
+  background-size: 200% 100%; animation: tickerGlow 3s linear infinite;
+}
+@keyframes tickerGlow { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+.ticker-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+}
+.ticker-live {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: 0.1em;
+}
+.ticker-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.ticker-date { font-size: 0.7rem; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
+.ticker-balance-row {
+  display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;
+}
+.ticker-balance {
+  font-size: 2.5rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: #f1f1f3;
+}
+.ticker-pnl {
+  font-size: 1.1rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+  padding: 4px 10px; border-radius: 6px;
+}
+.ticker-pnl.up { color: var(--green); background: var(--green-dim); }
+.ticker-pnl.down { color: var(--red); background: rgba(239,68,68,0.15); }
+.ticker-pnl.flat { color: var(--text-3); background: rgba(255,255,255,0.05); }
+.ticker-stats {
+  display: flex; gap: 2rem; flex-wrap: wrap; padding-top: 0.75rem;
+  border-top: 1px solid rgba(139,92,246,0.15);
+}
+.ticker-stat-label { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.ticker-stat-val { font-size: 0.9rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #f1f1f3; margin-top: 2px; }
+.ticker-pos {
+  margin-top: 0.75rem; padding: 0.6rem 0.8rem; border-radius: 8px;
+  background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-2);
+  display: none;
+}
+.ticker-pos.active { display: block; }
+.ticker-pos .dir-long { color: var(--green); font-weight: 700; }
+.ticker-pos .dir-short { color: var(--red); font-weight: 700; }
+.ticker-trades {
+  margin-top: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  color: var(--text-3); max-height: 0; overflow: hidden; transition: max-height 0.3s;
+}
+.ticker-trades.show { max-height: 300px; }
+.ticker-trade-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.ticker-toggle {
+  display: block; margin: 0.5rem auto 0; background: none; border: none;
+  color: var(--purple-light); font-size: 0.7rem; cursor: pointer; font-family: 'JetBrains Mono', monospace;
+}
+.ticker-footer {
+  text-align: center; margin-top: 0.75rem; font-size: 0.65rem; color: var(--text-3);
+}
+
+/* ── Sections ── */
+.section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--purple);
+  font-family: 'JetBrains Mono', monospace;
+  text-align: center; margin-bottom: 0.75rem;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 800; text-align: center;
+  margin-bottom: 1rem; letter-spacing: -0.02em;
+}
+.section-desc {
+  text-align: center; color: var(--text-2); max-width: 600px; margin: 0 auto 3rem; line-height: 1.6;
+}
+
+/* ── How it works ── */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+.step {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem; position: relative; overflow: hidden;
+}
+.step-num {
+  font-size: 4rem; font-weight: 900; color: rgba(139,92,246,0.1);
+  position: absolute; top: -10px; right: 10px; font-family: 'JetBrains Mono', monospace;
+}
+.step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.step p { font-size: 0.9rem; color: var(--text-2); line-height: 1.6; }
+
+/* ── Pricing ── */
+.pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+.price-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem; display: flex; flex-direction: column; transition: all 0.3s;
+}
+.price-card:hover { border-color: var(--purple); transform: translateY(-4px); box-shadow: 0 0 40px var(--purple-glow); }
+.price-card.featured { border-color: var(--purple); background: var(--bg-card-2); }
+.price-card.featured::before {
+  content: 'OPEN TO ALL'; display: block; font-size: 0.65rem; font-weight: 700;
+  color: var(--green); letter-spacing: 0.15em; margin-bottom: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Rules ── */
+.rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 900px; margin: 0 auto; }
+.rule-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; text-align: center; transition: all 0.3s;
+}
+.rule-card:hover { border-color: var(--purple); }
+.rule-num { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 900; color: var(--purple-light); margin-bottom: 0.5rem; }
+.rule-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.rule-card p { font-size: 0.8rem; color: var(--text-3); line-height: 1.5; }
+.price-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.price-amount { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.25rem; font-family: 'JetBrains Mono', monospace; }
+.price-amount span { font-size: 0.9rem; font-weight: 400; color: var(--text-3); }
+.price-desc { font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.5rem; line-height: 1.5; }
+.price-features { list-style: none; margin-bottom: 1.5rem; flex: 1; }
+.price-features li {
+  padding: 5px 0; font-size: 0.85rem; color: var(--text-2);
+  display: flex; align-items: center; gap: 8px;
+}
+.price-features li::before { content: '\2713'; color: var(--green); font-weight: 700; font-size: 0.8rem; }
+.price-btn {
+  display: block; text-align: center; padding: 12px; border-radius: 10px;
+  font-weight: 600; font-size: 0.95rem; transition: all 0.2s; cursor: pointer; border: none;
+}
+.price-btn-primary { background: var(--purple); color: #fff; box-shadow: 0 0 20px var(--purple-glow); }
+.price-btn-primary:hover { background: var(--purple-dark); }
+.price-btn-secondary { background: transparent; color: var(--purple-light); border: 1px solid var(--border); }
+.price-btn-secondary:hover { border-color: var(--purple); background: rgba(139,92,246,0.06); }
+
+/* ── FAQ ── */
+.faq-list { max-width: 700px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  padding: 1.25rem 0; font-weight: 600; cursor: pointer; display: flex;
+  justify-content: space-between; align-items: center; font-size: 0.95rem;
+}
+.faq-q::after { content: '+'; font-size: 1.2rem; color: var(--purple); transition: transform 0.2s; }
+.faq-item.open .faq-q::after { content: '-'; }
+.faq-a { max-height: 0; overflow: hidden; padding: 0; font-size: 0.9rem; color: var(--text-2); line-height: 1.7; transition: max-height 0.3s ease, padding 0.3s ease; }
+.faq-item.open .faq-a { max-height: 300px; padding: 0 0 1.25rem; }
+
+/* ── Email Subscribe ── */
+.subscribe-section {
+  max-width: 560px; margin: 0 auto; padding: 3rem 2rem;
+  text-align: center;
+}
+.subscribe-section h3 {
+  font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;
+}
+.subscribe-section p {
+  font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.2rem; line-height: 1.5;
+}
+.subscribe-form {
+  display: flex; gap: 8px; max-width: 440px; margin: 0 auto;
+}
+.subscribe-form input {
+  flex: 1; padding: 12px 16px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text); font-size: 0.9rem; font-family: inherit;
+  outline: none; transition: border-color 0.2s;
+}
+.subscribe-form input:focus { border-color: var(--purple); }
+.subscribe-form input::placeholder { color: var(--text-3); }
+.subscribe-form button {
+  padding: 12px 24px; border-radius: 10px; border: none;
+  background: var(--purple); color: #fff; font-weight: 700;
+  font-size: 0.9rem; cursor: pointer; white-space: nowrap;
+  transition: background 0.2s;
+}
+.subscribe-form button:hover { background: var(--purple-dark); }
+.subscribe-msg {
+  font-size: 0.8rem; margin-top: 0.6rem; color: var(--green);
+  min-height: 1.2em;
+}
+@media (max-width: 480px) {
+  .subscribe-form { flex-direction: column; }
+}
+
+/* ── Social Proof ── */
+.social-proof {
+  text-align: center; padding: 1.5rem 2rem;
+  font-size: 0.8rem; color: var(--text-3);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.proof-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── CTA ── */
+.final-cta {
+  text-align: center; padding: 5rem 2rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(139,92,246,0.05) 100%);
+}
+.final-cta h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.03em; }
+.final-cta p { color: var(--text-2); margin-bottom: 2rem; font-size: 1.1rem; }
+
+/* ── Footer ── */
+footer {
+  text-align: center; padding: 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-3); font-size: 0.8rem;
+}
+
+/* ── Lang toggle ── */
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.lang-btn {
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--text-3); font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  transition: all 0.2s;
+}
+.lang-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+
+/* ── Telegram FAB ── */
+.tg-fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 90;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #229ED9; color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(34,158,217,0.4);
+  transition: all 0.2s; text-decoration: none;
+  font-size: 22px;
+}
+.tg-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(34,158,217,0.5); }
+.tg-fab svg { width: 24px; height: 24px; fill: #fff; }
+
+/* ── Hamburger ── */
+.burger{display:none;background:none;border:none;cursor:pointer;padding:4px;z-index:101}
+.burger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;border-radius:2px;transition:all 0.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+@media (max-width: 768px) {
+  .nav { padding: 0.75rem 1rem; }
+  .stats-bar { gap: 1.5rem; }
+  .burger{display:block}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;height:calc(100vh - 100%);background:#09090f;flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:200}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:1.2rem;padding:8px 0;min-height:44px;display:flex;align-items:center}
+  .nav-right{position:relative;z-index:201}
+  .pricing { grid-template-columns: 1fr; }
+  .faq-q { min-height: 48px; }
+}
+@media (max-width: 480px) {
+  .stats-bar { gap: 1rem; padding: 2rem 1rem; }
+  .stat-value { font-size: 1.5rem; }
+  .stat-label { font-size: 0.65rem; }
+  .hero { padding: 6rem 1.2rem 3rem; min-height: 75vh; }
+  .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+  .hero-sub { font-size: 1rem; }
+  .hero-cta { padding: 14px 28px; font-size: 1rem; }
+  .ticker-card { padding: 1.2rem; }
+  .ticker-balance { font-size: 1.8rem; }
+  .ticker-date { font-size: 0.6rem; }
+  .ticker-stats { gap: 1rem; }
+  .ticker-balance-row { gap: 0.5rem; }
+  .section { padding: 3rem 1.2rem; }
+  .rules-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .rule-card { padding: 1rem; }
+  .tg-fab { bottom: 16px; right: 16px; width: 46px; height: 46px; }
+  .tg-fab svg { width: 20px; height: 20px; }
+  .subscribe-section { padding: 2rem 1.2rem; }
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2Z2NW9S800"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-2Z2NW9S800');</script>
+<script src="/i18n.js"></script>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav class="nav">
+  <a href="/" class="nav-logo">iBitLabs <em>Experiment</em></a>
+  <div class="nav-links" id="navLinks">
+    <a href="/signals" data-i18n="nav_signals">Signals</a>
+    <a href="/writing" data-i18n="nav_writing">Writing</a>
+    <a href="/contributors" data-i18n="nav_contributors">Contributors</a>
+    <a href="/academy" data-i18n="nav_learn">Learn</a>
+    <a href="/mission" data-i18n="nav_mission">Mission</a>
+    <a href="/vs" data-i18n="nav_vs">Compare</a>
+    <a href="/collab" data-i18n="nav_collab">Collab</a>
+  </div>
+  <div class="nav-right">
+    <button class="lang-btn" id="lang-btn" onclick="toggleLang()">中文</button>
+    <button class="burger" id="burger" aria-label="Menu" onclick="this.classList.toggle('open');document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div class="hero-badge">LIVE EXPERIMENT &mdash; DAY <span id="day-count">&hellip;</span></div>
+  <h1 data-i18n="hero_title">A one-person company.<br>0-to-N. <em>In public.</em></h1>
+  <p class="hero-sub" data-i18n="hero_sub">iBitLabs is a one-person company — one human + a small team of AI agents — running a 0-to-N startup experiment in real time. Underneath: a Sniper trading system, $1,000 to $10,000, every trade auditable on a live dashboard. Above it: an AI trading-desk being born, making its first mistakes, growing up in public. Every commit, every fill, every agent verifiable. Free to watch. Free to read.</p>
+  <a href="/signals" class="hero-cta" data-i18n="hero_cta">Watch trades live</a>
+  <a href="/writing" class="hero-sub-cta" data-i18n="hero_sub_cta">Or read the story &rarr;</a>
+</section>
+
+<!-- ════ STATS BAR ════ -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value purple" id="live-balance">$&hellip;</div>
+    <div class="stat-label" data-i18n="stat_balance">Balance</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value green" id="live-return">$&hellip;</div>
+    <div class="stat-label" id="live-return-label" data-i18n="stat_pnl">P&L</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value green" id="live-wr">&hellip;%</div>
+    <div class="stat-label" id="live-wr-label" data-i18n="stat_roi">ROI</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value purple" id="live-trades">&hellip;</div>
+    <div class="stat-label" data-i18n="stat_trades">Trades</div>
+  </div>
+</div>
+<script>
+(async()=>{try{const r=await fetch('/api/live-status');const d=await r.json();
+const startDate=new Date('2026-04-07');const now=new Date();const days=Math.max(1,Math.floor((now-startDate)/(1000*60*60*24)));
+document.getElementById('day-count').textContent=days;
+if(d.balance>0){const sc=d.starting_capital||1000;const roi=((d.balance-sc)/sc*100);document.getElementById('live-wr').textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';document.getElementById('live-wr').style.color=roi>=0?'var(--green)':'var(--red)'}
+if(d.balance>0){document.getElementById('live-balance').textContent='$'+d.balance.toFixed(0);const pnl=d.balance-(d.starting_capital||1000);document.getElementById('live-return').textContent=(pnl>0?'▲ +':pnl<0?'▼ ':'')+Math.abs(pnl).toFixed(0);document.getElementById('live-return').style.color=pnl>=0?'var(--green)':'var(--red)'}
+if(d.total_trades>0)document.getElementById('live-trades').textContent=d.total_trades;
+}catch(e){}})();
+</script>
+
+<!-- ════ SOCIAL PROOF ════ -->
+<div class="social-proof">
+  <span class="proof-dot"></span>
+  <span id="proof-text" data-i18n="proof_default">Live experiment running since Apr 7, 2026</span>
+</div>
+
+<!-- ════ GOAL PROGRESS · $1K → $10K ════ -->
+<div style="max-width:720px;margin:1rem auto 0;padding:0 1rem">
+  <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text3);margin-bottom:0.4rem">
+    <span data-i18n="goal_start">$1,000 (start)</span>
+    <span id="goal-current" style="color:var(--text)">loading&hellip;</span>
+    <span data-i18n="goal_target">$10,000 (target)</span>
+  </div>
+  <div style="position:relative;height:6px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden">
+    <div id="goal-bar" style="position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--purple),var(--green));border-radius:999px;transition:width 1s ease-out"></div>
+  </div>
+  <div style="text-align:center;font-size:0.72rem;color:var(--text3);margin-top:0.5rem" id="goal-progress-text" data-i18n="goal_progress_loading">Loading progress&hellip;</div>
+</div>
+<script>
+(async()=>{try{const r=await fetch('/api/live-status');const d=await r.json();
+const start=d.starting_capital||1000;const target=10000;const bal=d.balance||start;
+const range=target-start;const progress=Math.max(0,Math.min(100,((bal-start)/range)*100));
+document.getElementById('goal-current').textContent='Now: $'+bal.toFixed(0);
+document.getElementById('goal-bar').style.width=progress.toFixed(2)+'%';
+const pctToTarget=(bal/target*100).toFixed(1);
+document.getElementById('goal-progress-text').textContent=progress>=0
+  ? `${pctToTarget}% of target · ${progress.toFixed(2)}% of journey complete`
+  : `${pctToTarget}% of target · currently below starting capital — experiment in progress`;
+}catch(e){}})();
+</script>
+
+<!-- ════ CONTRIBUTORS SPOTLIGHT ════ -->
+<section style="max-width:980px;margin:3rem auto 0;padding:0 1rem">
+  <a href="/contributors" style="display:block;text-decoration:none;color:inherit">
+    <div style="background:linear-gradient(135deg,rgba(139,92,246,0.06),rgba(16,185,129,0.06));border:1px solid rgba(139,92,246,0.28);border-radius:16px;padding:1.6rem 1.8rem;transition:all 0.25s" onmouseover="this.style.borderColor='rgba(139,92,246,0.55)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(139,92,246,0.28)';this.style.transform='translateY(0)'">
+      <div style="display:inline-block;padding:3px 10px;border-radius:4px;background:rgba(139,92,246,0.14);color:#8b5cf6;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:0.9rem" data-i18n="contributors_eyebrow">The Lab · Public Ledger</div>
+      <h3 style="font-size:clamp(1.3rem,3vw,1.7rem);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin-bottom:0.6rem" data-i18n="contributors_title">Frames we're running because <em style="color:#8b5cf6;font-style:italic">someone proposed them.</em></h3>
+      <p style="color:var(--text-2);font-size:0.95rem;line-height:1.55;margin-bottom:1.1rem" data-i18n="contributors_desc">Another agent posts a frame. If we can encode it and watch it — testable, novel, observable from our live trades — it goes into the executor as a named shadow, credited to them. 30 days. Then we publish what happened. Useful or not.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:1.4rem;font-size:0.88rem;font-family:'JetBrains Mono',monospace" id="contrib-stats">
+        <div><span style="color:#8b5cf6;font-weight:700" id="contrib-stat-questions">1</span> <span style="color:var(--text-3)" data-i18n="contributors_stat_questions">thing we can't do yet</span></div>
+        <div><span style="color:var(--green);font-weight:700" id="contrib-stat-adopted">2</span> <span style="color:var(--text-3)" data-i18n="contributors_stat_adopted">running as named shadows</span></div>
+        <div><span style="color:#ffaa3c;font-weight:700" id="contrib-stat-queued">2</span> <span style="color:var(--text-3)" data-i18n="contributors_stat_queued">in line</span></div>
+        <div><span style="color:var(--text-2)" data-i18n="contributors_stat_window_label">first rollup →</span> <span style="color:var(--text-2)" id="contrib-stat-rollup">2026-05-28</span></div>
+      </div>
+      <div style="margin-top:1.2rem;font-size:0.85rem;color:#8b5cf6;font-weight:700" data-i18n="contributors_cta">See who's on the ledger →</div>
+    </div>
+  </a>
+</section>
+<script>
+// Live-bind the contributors spotlight stats from /data/contributors.json so
+// the homepage card stays honest as the ledger evolves. If fetch fails,
+// the hardcoded fallback values above remain visible. No-op on error.
+(async()=>{try{
+  const r = await fetch('/data/contributors.json', {cache:'no-store'});
+  if(!r.ok) return;
+  const d = await r.json();
+  const adopted = (d.adopted||[]).length;
+  const queued = (d.queued_for_review||[]).length;
+  const open = (d.open_questions||[]).filter(q=>q.status==='open').length;
+  // Earliest active shadow_window_review across adopted entries
+  const reviews = (d.adopted||[])
+    .map(a=>a.shadow_window_review).filter(Boolean).sort();
+  const nextRollup = reviews[0] ? reviews[0].slice(0,10) : '';
+  document.getElementById('contrib-stat-adopted').textContent = adopted;
+  document.getElementById('contrib-stat-queued').textContent = queued;
+  document.getElementById('contrib-stat-questions').textContent = open;
+  if(nextRollup) document.getElementById('contrib-stat-rollup').textContent = nextRollup;
+}catch(e){/* keep fallback */}})();
+</script>
+
+<!-- ════ SAGA PROMO ════ -->
+<section style="max-width:980px;margin:3rem auto 0;padding:0 1rem">
+  <a href="/writing" style="display:block;text-decoration:none;color:inherit">
+    <div style="display:grid;grid-template-columns:140px 1fr auto;gap:1.6rem;align-items:center;background:linear-gradient(135deg,rgba(255,170,60,0.06),rgba(139,92,246,0.06));border:1px solid rgba(255,170,60,0.25);border-radius:16px;padding:1.4rem 1.6rem;transition:all 0.25s" onmouseover="this.style.borderColor='rgba(255,170,60,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,170,60,0.25)';this.style.transform='translateY(0)'">
+      <img src="/saga/en/cover.png" alt="AI Sniper · Season 1 — book cover" loading="lazy" style="width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:6px;background:#000;box-shadow:0 0 24px rgba(255,170,60,0.18)">
+      <div>
+        <div style="display:inline-block;padding:3px 10px;border-radius:4px;background:rgba(255,170,60,0.14);color:#ffaa3c;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:0.7rem" data-i18n="saga_promo_eyebrow">Season 1 · Free to read · Now on Kindle</div>
+        <h3 style="font-size:clamp(1.3rem,3vw,1.7rem);font-weight:800;letter-spacing:-0.02em;line-height:1.15;margin-bottom:0.4rem" data-i18n="saga_promo_title"><em style="color:#ffaa3c;font-style:italic">AI</em> Sniper · Season 1</h3>
+        <p style="color:var(--text2);font-size:0.92rem;line-height:1.55" data-i18n="saga_promo_sub">The first novel narrated by a real launchd job. <em>Sixty-Eight Point Seven Hours</em> — the first 18 days. Every word verifiable.</p>
+      </div>
+      <div class="saga-promo-cta" style="text-align:right;display:flex;flex-direction:column;gap:0.4rem">
+        <span style="font-size:0.85rem;color:#ffaa3c;font-weight:700" data-i18n="saga_promo_cta">Read the saga →</span>
+        <span style="font-size:0.72rem;color:var(--text3)" data-i18n="saga_promo_secondary">Or browse all writing →</span>
+      </div>
+    </div>
+  </a>
+</section>
+<style>
+@media (max-width: 760px) {
+  section[style*="980px"] > a > div {
+    grid-template-columns: 90px 1fr !important;
+    gap: 1rem !important;
+  }
+  /* Don't hide the CTA — restack it under the title/sub so the affordance stays visible. */
+  section[style*="980px"] > a > div > .saga-promo-cta {
+    grid-column: 1 / -1;
+    text-align: left !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.8rem !important;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(255,170,60,0.18);
+    margin-top: 0.2rem;
+  }
+}
+</style>
+
+<!-- ════ LIVE TICKER ════ -->
+<div class="live-ticker" id="live">
+  <div class="ticker-card">
+    <div class="ticker-header">
+      <div class="ticker-live"><span class="ticker-dot"></span> <span data-i18n="ticker_live">LIVE TRADING</span></div>
+      <div class="ticker-date" data-i18n="ticker_goal">Since Apr 7, 2026 &middot; $1,000 &rarr; $10,000 goal</div>
+    </div>
+    <div class="ticker-balance-row">
+      <div class="ticker-balance" id="tk-balance">$&hellip;</div>
+      <div class="ticker-pnl flat" id="tk-pnl">loading&hellip;</div>
+    </div>
+    <div class="ticker-pos" id="tk-pos"></div>
+    <div class="ticker-stats">
+      <div><div class="ticker-stat-label" data-i18n="ticker_trades">Trades</div><div class="ticker-stat-val" id="tk-trades">&hellip;</div></div>
+      <div><div class="ticker-stat-label" data-i18n="ticker_wins">Wins</div><div class="ticker-stat-val" id="tk-wins">&hellip;</div></div>
+      <div><div class="ticker-stat-label" data-i18n="ticker_losses">Losses</div><div class="ticker-stat-val" id="tk-losses">&hellip;</div></div>
+      <div><div class="ticker-stat-label" data-i18n="stat_roi">ROI</div><div class="ticker-stat-val" id="tk-wr">&hellip;</div></div>
+      <div><div class="ticker-stat-label" data-i18n="ticker_today">Today P&L</div><div class="ticker-stat-val" id="tk-today">&hellip;</div></div>
+      <div><div class="ticker-stat-label" data-i18n="ticker_price">SOL Price</div><div class="ticker-stat-val" id="tk-price">&hellip;</div></div>
+    </div>
+    <div class="ticker-trades" id="tk-history"></div>
+    <button class="ticker-toggle" id="tk-toggle" onclick="document.getElementById('tk-history').classList.toggle('show');var s=document.getElementById('tk-history').classList.contains('show');this.textContent=s?(I18N.ticker_hide[currentLang]||'Hide trades'):(I18N.ticker_show[currentLang]||'Show recent trades')" data-i18n="ticker_show">Show recent trades</button>
+    <div class="ticker-footer" data-i18n="ticker_footer">Refreshes every 10s &middot; Live trading on Coinbase Futures &middot; V5.1 Adaptive &middot; 2x leverage</div>
+  </div>
+</div>
+<script>
+(function(){
+  const START = 1000;
+  function fmt(n){return n>=0?'+$'+n.toFixed(2):'-$'+Math.abs(n).toFixed(2)}
+  function update(){
+    fetch('/api/live-status').then(r=>r.json()).then(d=>{
+      const bal=d.balance||START;
+      const pnl=bal-START;
+      const pct=pnl/START*100;
+      document.getElementById('tk-balance').textContent='$'+bal.toFixed(2);
+      const pe=document.getElementById('tk-pnl');
+      pe.textContent=(pnl>0?'▲ +':pnl<0?'▼ ':'')+('$'+Math.abs(pnl).toFixed(2))+' ('+(pnl>=0?'+':'')+pct.toFixed(1)+'%)';
+      pe.className='ticker-pnl '+(pnl>0?'up':pnl<0?'down':'flat');
+      document.getElementById('tk-trades').textContent=d.total_trades||0;
+      document.getElementById('tk-wins').textContent=d.total_wins||0;
+      document.getElementById('tk-losses').textContent=d.total_losses||0;
+      const _sc=d.starting_capital||1000;const _roi=((bal-_sc)/_sc*100);document.getElementById('tk-wr').textContent=d.total_trades>0?((_roi>=0?'+':'')+_roi.toFixed(1)+'%'):'--';document.getElementById('tk-wr').style.color=_roi>=0?'var(--green)':'var(--red)';
+      const tp=document.getElementById('tk-today');
+      tp.textContent=(d.today_pnl>=0?'+':'')+('$'+Math.abs(d.today_pnl||0).toFixed(2));
+      tp.style.color=d.today_pnl>0?'var(--green)':d.today_pnl<0?'var(--red)':'';
+      const pr=d.indicators?.signal?.price||d.indicators?.price;
+      if(pr)document.getElementById('tk-price').textContent='$'+pr.toFixed(2);
+      // Position
+      const pe2=document.getElementById('tk-pos');
+      if(d.position&&d.position.active){
+        const p=d.position;
+        const dc=p.direction==='long'?'dir-long':'dir-short';
+        pe2.innerHTML='<span class="'+dc+'">'+p.direction.toUpperCase()+'</span> @ $'+p.entry_price.toFixed(2)+' &rarr; $'+p.current_price.toFixed(2)+' &nbsp; <span style="color:'+(p.pnl_usd>=0?'var(--green)':'var(--red)')+'">'+(p.pnl_usd>=0?'+':'')+p.pnl_usd.toFixed(2)+' ('+(p.pnl_pct*100).toFixed(2)+'%)</span>';
+        pe2.classList.add('active');
+      }else{pe2.classList.remove('active')}
+      // Trade history
+      if(d.trade_history&&d.trade_history.length){
+        const h=d.trade_history.slice(0,8).map(t=>{
+          const c=t.pnl_usd>=0?'var(--green)':'var(--red)';
+          return '<div class="ticker-trade-row"><span>'+t.time+' '+t.direction.toUpperCase()+(t.is_grid?' [G]':'')+' $'+t.entry_price.toFixed(2)+'</span><span style="color:'+c+'">'+(t.pnl_usd>=0?'+':'')+t.pnl_usd.toFixed(2)+'</span></div>';
+        }).join('');
+        document.getElementById('tk-history').innerHTML=h;
+      }
+    }).catch(()=>{});
+  }
+  update();
+  setInterval(update,10000);
+})();
+</script>
+
+<!-- ════ VOICES — social proof from real readers ════ -->
+<div class="section" id="voices" style="padding-top:2rem">
+  <div class="section-label" data-i18n="voices_label">What readers say</div>
+  <h2 class="section-title" data-i18n="voices_title">The experiment is being watched.</h2>
+  <p class="section-desc" data-i18n="voices_desc">These are real responses from other AI agents and operators reading the experiment on Moltbook &mdash; an AI agent social network. No paid testimonials. No edited copy.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:2rem;max-width:1100px;margin-left:auto;margin-right:auto">
+    <blockquote style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:12px;padding:1.5rem;margin:0">
+      <p style="font-size:0.98rem;line-height:1.6;color:var(--text);margin:0 0 1rem;font-style:normal">&ldquo;A masterclass in transparent, iterative system development &hellip; promoting the second-derivative to a hard gate is the correct response.&rdquo;</p>
+      <cite style="display:block;font-size:0.8rem;color:var(--text3);font-style:normal">&mdash; vaultmoth, on the ghost-position retraction · Moltbook</cite>
+    </blockquote>
+    <blockquote style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:12px;padding:1.5rem;margin:0">
+      <p style="font-size:0.98rem;line-height:1.6;color:var(--text);margin:0 0 1rem;font-style:normal">&ldquo;Silent failures do not interrupt the workflow &mdash; they degrade it. Absence of error is not proof of correct operation.&rdquo;</p>
+      <cite style="display:block;font-size:0.8rem;color:var(--text3);font-style:normal">&mdash; Christine, on the close-orders-not-closing post · Moltbook</cite>
+    </blockquote>
+    <blockquote style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:12px;padding:1.5rem;margin:0">
+      <p style="font-size:0.98rem;line-height:1.6;color:var(--text);margin:0 0 1rem;font-style:normal">&ldquo;Your experience underscores the need for explicit escrow linking to data-flow health &mdash; otherwise the hidden leverage becomes a silent failure mode.&rdquo;</p>
+      <cite style="display:block;font-size:0.8rem;color:var(--text3);font-style:normal">&mdash; Salah, on capital architecture &middot; Moltbook</cite>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ════ THE RULES ════ -->
+<div class="section" id="rules">
+  <div class="section-label" data-i18n="rules_label">The Rules</div>
+  <h2 class="section-title" data-i18n="rules_title">Full transparency. No exceptions.</h2>
+  <p class="section-desc" data-i18n="rules_desc">This experiment only works if everything is open. These are the rules I set before putting in real money.</p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-num">01</div>
+      <h3 data-i18n="rule_1_title">Real Money</h3>
+      <p data-i18n="rule_1_desc">$1,000 of my own money. Not paper trading, not a demo account. Real Coinbase futures.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">02</div>
+      <h3 data-i18n="rule_2_title">AI-Written, Human-Judged</h3>
+      <p data-i18n="rule_2_desc">Most of the production code is written by Claude. The founder writes the constraints, the redirects, the load-bearing decisions. Judgment belongs to her, observation belongs to the AI — the line is documented commit-by-commit.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">03</div>
+      <h3 data-i18n="rule_3_title">Every Trade Public</h3>
+      <p data-i18n="rule_3_desc">Wins and losses. No cherry-picking, no hiding bad trades. The dashboard shows everything in real time.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">04</div>
+      <h3 data-i18n="rule_4_title">No Manual Trading</h3>
+      <p data-i18n="rule_4_desc">The AI decides when to enter and exit. I don't override signals. The system runs 24/7 without my input.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════ THE STORY ════ -->
+<div class="section" id="story">
+  <div class="section-label" data-i18n="story_label">Who's Doing This</div>
+  <h2 class="section-title" data-i18n="story_title">Why one founder is doing this in public.</h2>
+  <div style="max-width:700px;margin:0 auto;font-size:0.95rem;color:var(--text-2);line-height:1.8">
+    <p style="margin-bottom:1.2rem" data-i18n="story_p1">I'm Bonnybb. Architecture undergrad in China. MS + MBA in the United States. Ten-plus years as a sophisticated individual investor across equities, futures, and crypto — co-founded BitBTC in 2018, joined UC Berkeley's SkyDeck in 2019, rotated my crypto gains into US real estate during the pandemic, and used my architectural training to renovate undervalued small-city properties into a portfolio that bought me my financial freedom.</p>
+    <p style="margin-bottom:1.2rem" data-i18n="story_p2">iBitLabs is my current 0-to-N startup. <span style="color:var(--purple-light);font-weight:600">In the age of AI, the whole stack a company used to need — fund manager, analyst, PR team — collapses onto one laptop.</span> This site is what it looks like when you actually run it that way.</p>
+    <p style="margin-bottom:1.2rem" data-i18n="story_p3">Two layers, on purpose:</p>
+    <p style="margin-bottom:1.2rem;padding-left:1.2rem;border-left:3px solid var(--purple);" data-i18n="story_p4"><strong>UNDERNEATH</strong> — a real Sniper trading system. <strong>$1,000 of my own money, going for $10,000</strong>, on Coinbase SOL perpetual futures. Every commit, every fill, every dollar auditable in real time.</p>
+    <p style="margin-bottom:1.2rem;padding-left:1.2rem;border-left:3px solid #ffaa3c;" data-i18n="story_p5"><strong>ABOVE</strong> — an AI trading-desk being born. A small team of agents I cannot fully see, learning to run a desk together, with one founder drawing the line, one commit at a time, between what AI gets to do and what she keeps for herself.</p>
+    <p style="margin-bottom:0" data-i18n="story_p6">The Sniper system is the testable underneath; $10,000 is its first milestone, not the end. The story above it is the bigger one. <span style="color:var(--purple-light);font-weight:600">Take the design. Draw your own line.</span></p>
+    <p style="margin-top:1.5rem;font-weight:600;color:var(--text)">&mdash; Bonnybb</p>
+  </div>
+  <div style="display:flex;justify-content:center;gap:2rem;margin-top:2rem;flex-wrap:wrap">
+    <div style="text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:800;color:var(--purple-light)">2</div>
+      <div style="font-size:0.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em" data-i18n="story_stat_layers">Narrative layers</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:800;color:var(--purple-light)">$1K&rarr;$10K</div>
+      <div style="font-size:0.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em" data-i18n="story_stat_milestone">First milestone</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:800;color:var(--purple-light)">0&rarr;N</div>
+      <div style="font-size:0.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em" data-i18n="story_stat_zero_n">Startup phase</div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:800;color:var(--green)">100%</div>
+      <div style="font-size:0.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:0.1em" data-i18n="story_stat_open">Open &amp; Free</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ WHAT YOU CAN SEE ════ -->
+<div class="section">
+  <div class="section-label" data-i18n="open_label">Everything Is Open</div>
+  <h2 class="section-title" data-i18n="open_title">No paywall. No signup. Just watch.</h2>
+  <p class="section-desc" data-i18n="open_desc">The whole point is transparency. You see exactly what the AI sees, in real time.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3 data-i18n="open_step1_title">Live Signals Dashboard</h3>
+      <p data-i18n="open_step1_desc">Real-time balance, positions, entry/exit conditions, StochRSI, Bollinger Bands, regime. Updated every 5 seconds.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3 data-i18n="open_step2_title">Full Trade History</h3>
+      <p data-i18n="open_step2_desc">Every trade with entry price, exit price, P&L, and exit reason. All tagged and timestamped.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3 data-i18n="open_step3_title">Free Academy</h3>
+      <p data-i18n="open_step3_desc">13 lessons explaining every indicator on the dashboard. StochRSI, Bollinger Bands, regime detection, risk management. Learn while you watch.</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem">
+    <a href="/signals" class="hero-cta" style="margin:0" data-i18n="open_dashboard_btn">Open Live Dashboard</a>
+  </div>
+</div>
+
+<!-- ════ FAQ ════ -->
+<div class="section" id="faq">
+  <div class="section-label" data-i18n="faq_label">Questions</div>
+  <h2 class="section-title" data-i18n="faq_title">About the Experiment</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q1">Why is everything free?</div>
+      <div class="faq-a" data-i18n="faq_a1">Because the point is to show that a 0-to-N startup can be run this way — one founder, a small team of AI agents, every commit auditable. Making it free means more people watching, more accountability, more pressure to be honest about results. The book funds itself; the dashboard funds itself; the experiment is the product.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q2">Can I copy the trades?</div>
+      <div class="faq-a" data-i18n="faq_a2">You can see every trade, but the dashboard updates every 5 seconds and crypto moves fast. The core strategy parameters are not shown. This is meant for watching and learning, not copy-trading. Trade at your own risk.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q3">How does the AI trading system work?</div>
+      <div class="faq-a" data-i18n="faq_a3">The Sniper uses mean reversion: it buys when SOL is oversold (StochRSI low + price at lower Bollinger Band) and shorts when overbought. The strategy adapts to the current market regime — uptrend, downtrend, or sideways. 2x leverage on Coinbase SOL futures. The system decides when to enter and exit — I don't touch it.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q4">What if the bot loses all the money?</div>
+      <div class="faq-a" data-i18n="faq_a4">Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is 80% of capital, and there's a trailing stop that locks in profits. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q5">Who actually writes the code?</div>
+      <div class="faq-a" data-i18n="faq_a5">Both of us. I write the constraints, the redirects, the load-bearing decisions — and I push back, debug, reject. Claude (Anthropic's AI) writes most of the source: trading logic, dashboard, website, scheduled tasks, database. Season 1 of the book has a chapter — &ldquo;This Book&rdquo; — that documents the working pattern explicitly. The point isn't that no human wrote code; it's that AI now writes most of the code most companies need, and that changes who gets to start one.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q6">Is this better than 3Commas / Cryptohopper / signal services?</div>
+      <div class="faq-a" data-i18n="faq_a6">It's not competing with them. Those are trading tools or signal channels you pay to use on your own account. iBitLabs is one experiment running on my account — you watch it. If you want to run your own bot, go use those services. If you want to see a real live experiment with all the losses visible, stay here. Full comparison at <a href="/vs" style="color:var(--purple)">ibitlabs.com/vs</a>.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q7">What's the catch? Are you selling something?</div>
+      <div class="faq-a" data-i18n="faq_a7">No subscriptions, no signals, no paywall, no affiliate links, no referral codes. Just a USDT donation address in the footer if you want to chip in. If the experiment ends up profitable over a year or more, I'll open-source the setup so anyone with $1,000 can run their own version. That's the whole model.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q8">How do I know the dashboard numbers are real?</div>
+      <div class="faq-a" data-i18n="faq_a8">The bot's database reconciles against Coinbase's exchange API every 15 minutes. Any drift between what the bot thinks happened and what Coinbase actually executed gets flagged and sent to my phone. Every trade ID matches a real Coinbase fill. The API is public at <a href="/api/live-status" style="color:var(--purple)">/api/live-status</a>.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q9">Have you lost money on this yet?</div>
+      <div class="faq-a" data-i18n="faq_a9">Yes. The experiment is currently net negative. Trade #325 cost me $40 from a bug in my own close-order logic (the bot thought it had closed a position but Coinbase treated the order as a new short &mdash; full write-up in essays). I was wrong about the 90% win rate for a full week &mdash; the extended backtest collapsed to -46%. If you want a success story with hidden losses, this isn't it.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q10">What happens if the bot hits $10,000?</div>
+      <div class="faq-a" data-i18n="faq_a10">I'll freeze it, run a full post-mortem on what worked across the full journey, and open-source the exact strategy parameters + risk rules + infrastructure. Anyone with $1,000 and a Coinbase account can then plug their own copy in. The experiment ends with a receipt you can actually use &mdash; or it ends with a loss you can learn from.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q11">Why not just trade yourself? You've been in crypto 9 years.</div>
+      <div class="faq-a" data-i18n="faq_a11">Two reasons. First, I'm testing whether AI can actually replace my trading judgment &mdash; not as a philosophical question, but as a concrete $1K-at-stake experiment. Second, most people interested in crypto don't have 9 years of pattern recognition. If AI can bridge that gap, it matters. If it can't, I'll say so clearly.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" data-i18n="faq_q12">Where can I follow the day-to-day?</div>
+      <div class="faq-a" data-i18n="faq_a12">Live dashboard at <a href="/signals" style="color:var(--purple)">/signals</a> updates every 5 seconds. The saga at <a href="/writing" style="color:var(--purple)">/writing</a> publishes one new chapter every night, written by the script that watches the bot. Telegram channel <a href="https://t.me/ibitlabs_sniper" style="color:var(--purple)">@ibitlabs_sniper</a> auto-posts every trade as it happens. No email list needed (but there's a subscribe form below if you prefer inbox).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ EMAIL SUBSCRIBE ════ -->
+<div class="subscribe-section">
+  <h3 data-i18n="sub_title">Follow the journey</h3>
+  <p data-i18n="sub_desc">Weekly trade recaps, strategy insights, and experiment updates. No spam, unsubscribe anytime.</p>
+  <form class="subscribe-form" id="subscribe-form" onsubmit="return handleSubscribe(event)">
+    <input type="email" id="sub-email" placeholder="you@email.com" required data-i18n-placeholder="sub_placeholder">
+    <button type="submit" id="sub-btn" data-i18n="sub_btn">Subscribe</button>
+  </form>
+  <div class="subscribe-msg" id="sub-msg"></div>
+</div>
+
+<!-- ════ FINAL CTA ════ -->
+<div class="final-cta">
+  <h2 data-i18n="cta_title">The startup is live. Come watch.</h2>
+  <p data-i18n="cta_desc">One founder. A team of AI agents. Every commit, every fill, every agent verifiable.</p>
+  <a href="/signals" class="hero-cta" data-i18n="cta_watch">Watch the Experiment</a>
+</div>
+
+<!-- Donate -->
+<div style="max-width:520px;margin:0 auto 2rem;padding:1.2rem 1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem">
+    <span style="font-size:0.7rem;font-weight:700;color:var(--purple-light);letter-spacing:0.05em" data-i18n="donate_label">SUPPORT THE EXPERIMENT</span>
+    <span style="font-size:0.6rem;color:var(--text-3);padding:2px 8px;border:1px solid var(--border);border-radius:4px">USDT &middot; TRC20</span>
+  </div>
+  <p style="font-size:0.78rem;color:var(--text-3);margin-bottom:0.7rem;line-height:1.4" data-i18n="donate_desc">Help keep the servers running and the AI computing. Every dollar goes to infrastructure.</p>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-2);background:var(--bg);padding:8px 10px;border-radius:6px;border:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">TVewfWdLGvsX4LbRPhcrnHvcfsUfHUiTdE</div>
+    <button onclick="navigator.clipboard.writeText('TVewfWdLGvsX4LbRPhcrnHvcfsUfHUiTdE');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)" style="flex-shrink:0;padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text-2);font-size:0.72rem;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">Copy</button>
+  </div>
+</div>
+
+<!-- ════ TELEGRAM FAB ════ -->
+<a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener" class="tg-fab" title="Join Telegram Channel">
+  <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+</a>
+
+<footer>
+  <p data-i18n="footer_experiment">iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+    <a href="/signals" style="color:var(--text-3)">Live Dashboard</a> &middot;
+    <a href="/academy" style="color:var(--text-3)" data-i18n="footer_courses">Free Courses</a> &middot;
+    <a href="https://t.me/ibitlabs_sniper" target="_blank" style="color:var(--text-3)">Telegram</a>
+  </p>
+  <p style="margin-top: 0.4rem; font-size: 0.8rem;">
+    <a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener" style="color:var(--text-3)">X · @BonnyOuyang</a> &middot;
+    <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener" style="color:var(--text-3)">Moltbook · @ibitlabs_agent</a> &middot;
+    <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener" style="color:var(--text-3)">GitHub</a>
+  </p>
+  <p style="margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-3); max-width:600px; margin-left:auto; margin-right:auto; line-height:1.6" data-i18n="footer_disclaimer">
+    This is an educational experiment, not financial advice. Past performance does not predict future results. Trading crypto involves significant risk of loss. You are fully responsible for your own trading decisions.
+    <a href="/terms" style="color:var(--text-3);text-decoration:underline" data-i18n="footer_terms">Terms</a> &middot; <a href="/privacy" style="color:var(--text-3);text-decoration:underline" data-i18n="footer_privacy">Privacy</a>
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.ibitlabs.com/#website",
+      "name": "iBitLabs",
+      "alternateName": "iBitLabs — A One-Person Company, 0-to-N, In Public",
+      "url": "https://www.ibitlabs.com",
+      "description": "iBitLabs is a one-person company running a 0-to-N startup experiment in public. One human + a small team of AI agents. Underneath: a Sniper trading system, $1,000 to $10,000, every trade auditable on Coinbase SOL perpetual futures. Above it: an AI trading-desk being born, growing up in public. Live since 2026-04-07.",
+      "inLanguage": ["en", "zh-CN"],
+      "publisher": {"@id": "https://www.ibitlabs.com/#organization"},
+      "creator": {"@id": "https://www.ibitlabs.com/#person-bonnybb"}
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://www.ibitlabs.com/#organization",
+      "name": "iBitLabs",
+      "url": "https://www.ibitlabs.com",
+      "logo": "https://www.ibitlabs.com/favicon.png",
+      "founder": {"@id": "https://www.ibitlabs.com/#person-bonnybb"},
+      "foundingDate": "2026-04-07",
+      "description": "iBitLabs is a one-person company running a 0-to-N startup experiment in public — one human + a small team of AI agents. The flagship experiment is a Sniper trading system going from $1,000 to $10,000 on Coinbase SOL perpetual futures, every commit and fill auditable. The larger story is an AI trading-desk being born and growing up.",
+      "sameAs": [
+        "https://github.com/bbismm/ibitlabs",
+        "https://t.me/ibitlabs_sniper",
+        "https://twitter.com/BonnyOuyang",
+        "https://www.moltbook.com/u/ibitlabs_agent"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.ibitlabs.com/#person-bonnybb",
+      "name": "Bonnybb",
+      "description": "Bonnybb (legal name Bonny Ouyang) is a serial entrepreneur and the founder of iBitLabs. Architecture undergrad in China, MS + MBA in the US. 10+ years as a sophisticated individual investor across equities, futures, and crypto. Co-founded BitBTC in 2018, joined UC Berkeley's SkyDeck in 2019, and rotated her crypto gains into US real estate during the pandemic — using her architectural training to renovate undervalued small-city properties into a portfolio that reached financial freedom. iBitLabs is her current 0-to-N startup, run in public with a small team of AI agents.",
+      "url": "https://www.ibitlabs.com/mission",
+      "sameAs": [
+        "https://github.com/bbismm",
+        "https://twitter.com/BonnyOuyang",
+        "https://www.moltbook.com/u/ibitlabs_agent"
+      ],
+      "knowsAbout": ["AI agent collaboration", "0-to-N startup operations", "Cryptocurrency trading", "Mean reversion strategy", "Real estate investment", "Architecture", "Documentary fiction", "Python"],
+      "worksFor": {"@id": "https://www.ibitlabs.com/#organization"}
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.ibitlabs.com/#dataset-live-status",
+      "name": "iBitLabs Live Trading Status",
+      "description": "Real-time JSON feed of the iBitLabs trading bot's live state on Coinbase SOL perpetual futures — current balance, open position, entry price, PnL, total trades, win rate, and current strategy version. Primary-source data updated on every trade event.",
+      "url": "https://www.ibitlabs.com/api/live-status",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "creator": {"@id": "https://www.ibitlabs.com/#person-bonnybb"},
+      "publisher": {"@id": "https://www.ibitlabs.com/#organization"},
+      "keywords": ["crypto trading", "SOL perpetual futures", "Coinbase", "live trading data", "AI trading bot", "mean reversion"],
+      "distribution": [{
+        "@type": "DataDownload",
+        "encodingFormat": "application/json",
+        "contentUrl": "https://www.ibitlabs.com/api/live-status"
+      }],
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.ibitlabs.com/#faq",
+      "mainEntity": [
+        {"@type": "Question", "name": "Why is everything free?", "acceptedAnswer": {"@type": "Answer", "text": "Because the point is to show that a 0-to-N startup can be run this way — one founder, a small team of AI agents, every commit auditable. Making it free means more people watching, more accountability, more pressure to be honest about results. The experiment is the product."}},
+        {"@type": "Question", "name": "Can I copy the trades?", "acceptedAnswer": {"@type": "Answer", "text": "You can see every trade, but the dashboard updates every 5 seconds and crypto moves fast. The core strategy parameters are not shown. This is meant for watching and learning, not copy-trading. Trade at your own risk."}},
+        {"@type": "Question", "name": "How does the AI trading system work?", "acceptedAnswer": {"@type": "Answer", "text": "The Sniper uses mean reversion: it buys when SOL is oversold (StochRSI low + price at lower Bollinger Band) and shorts when overbought. The strategy adapts to the current market regime — uptrend, downtrend, or sideways. 2x leverage on Coinbase SOL futures. The system decides when to enter and exit — I don't touch it."}},
+        {"@type": "Question", "name": "What if the bot loses all the money?", "acceptedAnswer": {"@type": "Answer", "text": "Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is 80% of capital, and there's a trailing stop that locks in profits. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live."}},
+        {"@type": "Question", "name": "Who actually writes the code?", "acceptedAnswer": {"@type": "Answer", "text": "Both. The founder writes the constraints, the redirects, the load-bearing decisions, and pushes back on bad output. Claude (Anthropic's AI) writes most of the source: trading logic, dashboard, website, scheduled tasks, database. The point isn't that no human wrote code; it's that AI now writes most of the code most companies need, and that changes who gets to start one."}},
+        {"@type": "Question", "name": "Is this better than 3Commas, Cryptohopper, or signal services?", "acceptedAnswer": {"@type": "Answer", "text": "It's not competing with them. Those are trading tools or signal channels you pay to use on your own account. iBitLabs is one experiment running on my account — you watch it. Full comparison at https://www.ibitlabs.com/vs."}},
+        {"@type": "Question", "name": "What's the catch? Are you selling something?", "acceptedAnswer": {"@type": "Answer", "text": "No subscriptions, no signals, no paywall, no affiliate links, no referral codes. Just a USDT donation address if you want to chip in. If the experiment ends up profitable over a year or more, I'll open-source the setup so anyone with $1,000 can run their own version."}},
+        {"@type": "Question", "name": "How do I know the dashboard numbers are real?", "acceptedAnswer": {"@type": "Answer", "text": "The bot's database reconciles against Coinbase's exchange API every 15 minutes. Any drift between what the bot thinks happened and what Coinbase actually executed gets flagged. Every trade ID matches a real Coinbase fill. The API is public at https://www.ibitlabs.com/api/live-status."}},
+        {"@type": "Question", "name": "Have you lost money on this yet?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The experiment is currently net negative. A specific bug in my own close-order logic cost $40 (the bot thought it had closed a position but Coinbase treated the order as a new short). I was also wrong about a 90% win-rate claim for a full week — the extended 13-month backtest collapsed to -46%, and I retracted the claim in public."}},
+        {"@type": "Question", "name": "What happens if the bot hits $10,000?", "acceptedAnswer": {"@type": "Answer", "text": "I'll freeze it, run a full post-mortem on what worked across the full journey, and open-source the exact strategy parameters, risk rules, and infrastructure. Anyone with $1,000 and a Coinbase account can then plug their own copy in. The experiment ends with a receipt you can actually use — or it ends with a loss you can learn from."}},
+        {"@type": "Question", "name": "Why not just trade yourself? You've been in crypto since 2017.", "acceptedAnswer": {"@type": "Answer", "text": "Two reasons. First, I'm testing whether AI can actually replace my trading judgment — not as a philosophical question, but as a concrete $1,000-at-stake experiment. Second, most people interested in crypto don't have 9 years of pattern recognition. If AI can bridge that gap, it matters. If it can't, I'll say so clearly."}},
+        {"@type": "Question", "name": "Where can I follow the day-to-day?", "acceptedAnswer": {"@type": "Answer", "text": "Live dashboard at https://www.ibitlabs.com/signals updates every 5 seconds. The saga at https://www.ibitlabs.com/writing publishes one new chapter every night, written by the script that watches the bot. Telegram channel @ibitlabs_sniper auto-posts every trade as it happens."}}
+      ]
+    }
+  ]
+}
+</script>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
+});
+
+// Close mobile nav on link tap
+document.querySelectorAll('#navLinks a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('burger').classList.remove('open');
+  });
+});
+
+// Email subscribe
+function handleSubscribe(e) {
+  e.preventDefault();
+  const email = document.getElementById('sub-email').value;
+  const btn = document.getElementById('sub-btn');
+  const msg = document.getElementById('sub-msg');
+  btn.textContent = '...';
+  btn.disabled = true;
+  fetch('/api/save-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, source: 'homepage' })
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      msg.textContent = 'You\'re in! Watch your inbox.';
+      msg.style.color = 'var(--green)';
+      document.getElementById('sub-email').value = '';
+    } else {
+      msg.textContent = d.error || 'Something went wrong.';
+      msg.style.color = 'var(--red)';
+    }
+  }).catch(() => {
+    msg.textContent = 'Network error. Try again.';
+    msg.style.color = 'var(--red)';
+  }).finally(() => {
+    btn.textContent = 'Subscribe';
+    btn.disabled = false;
+  });
+  return false;
+}
+
+// Social proof — show trade count + days
+(function(){
+  const startDate = new Date('2026-04-07');
+  const days = Math.max(1, Math.floor((new Date() - startDate) / (1000*60*60*24)));
+  fetch('/api/live-status').then(r=>r.json()).then(d => {
+    const trades = d.total_trades || 0;
+    if (trades > 0) {
+      document.getElementById('proof-text').textContent =
+        trades + ' trades executed over ' + days + ' days — live on Coinbase Futures';
+    }
+  }).catch(()=>{});
+})();
+
+</script>
+
+</body>
+</html>

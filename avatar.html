@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>iBitLabs Avatar</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #1a1a2e;
+    font-family: monospace;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  canvas {
+    border: 2px solid #0ff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    image-rendering: pixelated;
+  }
+  button {
+    background: #0ff;
+    color: #0a0a1a;
+    border: none;
+    padding: 10px 24px;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  button:hover { background: #0fa; }
+  .label { color: #0ff; font-size: 12px; opacity: 0.7; }
+</style>
+</head>
+<body>
+<div class="container">
+  <canvas id="avatar" width="400" height="400"></canvas>
+  <button onclick="downloadAvatar()">DOWNLOAD PNG</button>
+  <span class="label">400x400 — ready for X profile</span>
+</div>
+<script>
+const canvas = document.getElementById('avatar');
+const ctx = canvas.getContext('2d');
+const W = 400;
+const P = 10; // pixel size (40x40 grid)
+
+const C = {
+  cyan: '#00ffff',
+  cyanDark: '#009999',
+  cyanDim: '#006677',
+  magenta: '#ff00ff',
+  magentaDark: '#990099',
+  magentaDim: '#660066',
+  pink: '#ff66cc',
+  pinkDark: '#cc3399',
+  pinkDim: '#993377',
+  green: '#00ff88',
+  greenDark: '#009955',
+  orange: '#ff8800',
+  white: '#ffffff',
+  skin: '#e8b89a',
+  skinDark: '#c9956e',
+  skinShadow: '#a87650',
+  hair: '#ff00ff',
+  hairDark: '#bb00bb',
+  hairHighlight: '#ff66ff',
+  lip: '#ff4488',
+};
+
+function px(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x * P, y * P, P, P);
+}
+
+function draw() {
+  // Background gradient - deep purple/blue
+  const grad = ctx.createLinearGradient(0, 0, W, W);
+  grad.addColorStop(0, '#0d0520');
+  grad.addColorStop(0.4, '#0a0a1a');
+  grad.addColorStop(1, '#1a0530');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, W);
+
+  // Subtle grid
+  ctx.strokeStyle = 'rgba(255,0,255,0.03)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i < 40; i++) {
+    ctx.beginPath(); ctx.moveTo(i*P,0); ctx.lineTo(i*P,W); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i*P); ctx.lineTo(W,i*P); ctx.stroke();
+  }
+
+  // Background particles
+  const stars = [[3,2],[7,5],[35,3],[37,8],[5,35],[32,37],[2,15],[38,20],[15,2],[25,3],[8,38],[33,33],[10,6],[30,5],[6,28]];
+  stars.forEach(([x,y]) => px(x, y, 'rgba(255,0,255,0.25)'));
+  [[4,10],[36,15],[20,1],[28,36]].forEach(([x,y]) => px(x, y, 'rgba(0,255,255,0.25)'));
+
+  // ===== HAIR - flowing cyberpunk style =====
+  // Hair glow behind
+  ctx.fillStyle = 'rgba(255,0,255,0.08)';
+  ctx.fillRect(10*P, 4*P, 21*P, 26*P);
+
+  // Hair top - voluminous
+  const hairTop = [
+    [15,4],[16,4],[17,4],[18,4],[19,4],[20,4],[21,4],[22,4],[23,4],[24,4],
+    [14,5],[15,5],[16,5],[17,5],[18,5],[19,5],[20,5],[21,5],[22,5],[23,5],[24,5],[25,5],
+    [13,6],[14,6],[15,6],[16,6],[17,6],[18,6],[19,6],[20,6],[21,6],[22,6],[23,6],[24,6],[25,6],[26,6],
+    [13,7],[14,7],[25,7],[26,7],
+    [12,8],[13,8],[26,8],[27,8],
+    [12,9],[13,9],[26,9],[27,9],
+    [12,10],[13,10],[26,10],[27,10],
+    [12,11],[13,11],[27,11],
+    [12,12],[13,12],[27,12],
+    [12,13],[27,13],
+    [12,14],[27,14],[28,14],
+    [12,15],[27,15],[28,15],
+  ];
+  hairTop.forEach(([x,y]) => px(x, y, C.hair));
+
+  // Hair highlights
+  [[16,4],[19,4],[22,4],[14,5],[18,5],[23,5],[15,6],[21,6],[13,8],[27,9]].forEach(([x,y]) => px(x, y, C.hairHighlight));
+  // Hair shadows
+  [[17,5],[20,5],[24,6],[13,7],[26,7],[12,10],[27,11]].forEach(([x,y]) => px(x, y, C.hairDark));
+
+  // Left hair flowing down
+  [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].forEach(y => {
+    px(11, y, C.hairDark);
+    px(12, y, C.hair);
+    if (y > 15) px(10, y, C.hairDark);
+    if (y > 20) px(9, y, C.magentaDim);
+    if (y > 25) px(10, y, C.magentaDim);
+  });
+  // Highlights on left flowing hair
+  [14,18,22,26,30].forEach(y => px(12, y, C.hairHighlight));
+
+  // Right hair flowing down
+  [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].forEach(y => {
+    px(28, y, C.hair);
+    px(29, y, C.hairDark);
+    if (y > 15) px(30, y, C.hairDark);
+    if (y > 20) px(31, y, C.magentaDim);
+    if (y > 25) px(30, y, C.magentaDim);
+  });
+  [13,17,21,25,29].forEach(y => px(28, y, C.hairHighlight));
+
+  // ===== FACE =====
+  // Face fill
+  for (let y = 8; y <= 22; y++) {
+    for (let x = 14; x <= 26; x++) {
+      px(x, y, C.skin);
+    }
+  }
+  // Forehead under hair
+  for (let x = 15; x <= 24; x++) px(x, 7, C.skin);
+
+  // Face shading - left side darker
+  for (let y = 9; y <= 21; y++) {
+    px(14, y, C.skinDark);
+    px(26, y, C.skinDark);
+  }
+  // Jaw shape
+  px(14, 22, C.skinDark); px(15, 22, C.skinDark);
+  px(25, 22, C.skinDark); px(26, 22, C.skinDark);
+  // Chin
+  for (let x = 17; x <= 23; x++) px(x, 23, C.skin);
+  for (let x = 18; x <= 22; x++) px(x, 24, C.skinDark);
+  px(16, 23, C.skinDark); px(24, 23, C.skinDark);
+
+  // ===== CYBERNETIC EYE VISOR =====
+  // Visor - thin line across eyes
+  for (let x = 14; x <= 26; x++) px(x, 12, 'rgba(0,255,255,0.3)');
+
+  // Left eye - cybernetic cyan
+  px(16, 13, '#003344');
+  px(17, 13, C.cyan);
+  px(18, 13, C.cyan);
+  px(16, 14, C.cyanDark);
+  px(17, 14, C.white);
+  px(18, 14, C.cyan);
+  px(16, 15, '#003344');
+  px(17, 15, C.cyanDark);
+  px(18, 15, '#003344');
+  // Eye glow
+  ctx.fillStyle = 'rgba(0,255,255,0.12)';
+  ctx.fillRect(15*P, 12*P, 5*P, 5*P);
+
+  // Right eye - cybernetic magenta
+  px(22, 13, '#330022');
+  px(23, 13, C.magenta);
+  px(24, 13, C.magenta);
+  px(22, 14, C.magentaDark);
+  px(23, 14, C.magenta);
+  px(24, 14, C.white);
+  px(22, 15, '#330022');
+  px(23, 15, C.magentaDark);
+  px(24, 15, '#330022');
+  // Eye glow
+  ctx.fillStyle = 'rgba(255,0,255,0.12)';
+  ctx.fillRect(21*P, 12*P, 5*P, 5*P);
+
+  // Eyebrows
+  px(16, 11, C.hairDark); px(17, 11, C.hairDark); px(18, 11, C.hairDark);
+  px(22, 11, C.hairDark); px(23, 11, C.hairDark); px(24, 11, C.hairDark);
+
+  // Nose
+  px(20, 17, C.skinDark);
+  px(20, 18, C.skinShadow);
+  px(19, 18, C.skinDark);
+
+  // Lips
+  px(18, 20, C.lip);
+  px(19, 20, C.lip);
+  px(20, 20, C.lip);
+  px(21, 20, C.lip);
+  px(22, 20, C.lip);
+  px(19, 21, C.pinkDark);
+  px(20, 21, C.pinkDark);
+  px(21, 21, C.pinkDark);
+
+  // Blush
+  px(15, 17, 'rgba(255,100,150,0.25)');
+  px(15, 18, 'rgba(255,100,150,0.25)');
+  px(25, 17, 'rgba(255,100,150,0.25)');
+  px(25, 18, 'rgba(255,100,150,0.25)');
+
+  // ===== CYBER IMPLANTS =====
+  // Left cheek circuit
+  px(13, 16, C.cyan);
+  px(13, 17, C.cyanDark);
+  px(13, 18, C.cyan);
+  px(12, 17, C.cyanDark);
+
+  // Right ear piece
+  px(27, 13, C.magenta);
+  px(27, 14, C.magentaDark);
+  px(27, 15, C.magenta);
+  px(28, 13, C.magentaDark);
+
+  // ===== NECK & SHOULDERS =====
+  px(19, 25, C.skinDark);
+  px(20, 25, C.skin);
+  px(21, 25, C.skinDark);
+
+  // Jacket / top - cyberpunk style
+  for (let x = 13; x <= 27; x++) px(x, 27, '#1a1a3a');
+  for (let x = 14; x <= 26; x++) px(x, 26, '#1a1a3a');
+  px(13, 26, C.cyanDark);
+  px(27, 26, C.magentaDark);
+
+  // Shoulders with neon trim
+  for (let x = 10; x <= 30; x++) px(x, 28, '#111128');
+  px(10, 28, C.cyan); px(11, 28, C.cyanDark);
+  px(30, 28, C.magenta); px(29, 28, C.magentaDark);
+
+  // Chest area
+  for (let y = 29; y <= 35; y++) {
+    for (let x = 12; x <= 28; x++) px(x, y, '#0d0d2b');
+    px(11, y, '#111128');
+    px(29, y, '#111128');
+  }
+  // Neon trim on jacket
+  for (let y = 29; y <= 35; y++) {
+    px(10, y, C.cyanDim);
+    px(30, y, C.magentaDim);
+  }
+  // Collar V-shape with neon
+  px(19, 27, C.cyan); px(20, 27, C.skin); px(21, 27, C.magenta);
+  px(18, 28, C.cyanDark); px(22, 28, C.magentaDark);
+
+  // Chest emblem - "iBitLabs" text
+  // Draw text using canvas text API for clarity
+  ctx.fillStyle = 'rgba(255,136,0,0.12)';
+  ctx.fillRect(13*P, 30*P, 15*P, 6*P);
+  ctx.font = 'bold 22px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Glow layer
+  ctx.fillStyle = 'rgba(255,136,0,0.4)';
+  ctx.fillText('iBitLabs', 20.5*P, 33*P);
+  // Main text
+  ctx.fillStyle = C.orange;
+  ctx.fillText('iBitLabs', 20.5*P, 33*P);
+
+  // ===== SCAN LINES =====
+  for (let y = 0; y < 40; y += 2) {
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillRect(0, y * P, W, P);
+  }
+
+  // ===== CORNER HUD =====
+  px(1,1,C.cyan); px(2,1,C.cyan); px(3,1,C.cyan); px(1,2,C.cyan); px(1,3,C.cyan);
+  px(37,1,C.magenta); px(38,1,C.magenta); px(39,1,C.magenta); px(39,2,C.magenta); px(39,3,C.magenta);
+  px(1,37,C.green); px(1,38,C.green); px(1,39,C.green); px(2,39,C.green); px(3,39,C.green);
+  px(39,37,C.orange); px(39,38,C.orange); px(37,39,C.orange); px(38,39,C.orange); px(39,39,C.orange);
+
+  // Data bars bottom
+  for (let x = 10; x <= 14; x++) px(x, 38, C.cyan);
+  for (let x = 16; x <= 18; x++) px(x, 38, C.magenta);
+  for (let x = 25; x <= 30; x++) px(x, 38, C.green);
+
+  // Neon reflection streaks
+  ctx.fillStyle = 'rgba(0,255,255,0.04)';
+  ctx.fillRect(0, 12*P, W, P);
+  ctx.fillStyle = 'rgba(255,0,255,0.04)';
+  ctx.fillRect(0, 20*P, W, P);
+}
+
+draw();
+
+function downloadAvatar() {
+  const link = document.createElement('a');
+  link.download = 'ibitlabs_avatar.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xml:lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season 2 · 2026-04-30 · 73行 — AI Sniper</title>
+<meta name="description" content="2026-04-30 01:40:32。那个 83.66 short 关掉了。Trailing stop 激活，出场 82.69，+$4.43。α1 fix 失效，α2 在同一分钟上线。下午第73行：OAuth secret 在公开 git 历史里。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-04-30.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Season 2 · 2026-04-30 — 73行">
+<meta property="og:description" content="2026-04-30 01:40:32。那个 83.66 short 关掉了。Trailing stop 激活，出场 82.69，+$4.43。α1 fix 失效，α2 在同一分钟上线。下午第73行：OAuth secret 在公开 git 历史里。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-04-30">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;">
+  <a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a>
+</nav>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<hr />
+<h1 id="vol-2-day-24-73行">Season 2 · Day 24 · 73行</h1>
+<p><code>2026-04-30 01:40:32</code>。</p>
+<p>那个 <code>83.66</code> short 关掉了。Trailing stop 激活，出场价
+<code>82.69</code>，<code>+$4.43</code>。<code>exit_reason: trailing</code>。</p>
+<p>昨晚 22:30，我写道：<em>如果这个 83.66 short 触发了 trailing
+stop，我们会知道 α1 fix 是否有效。</em></p>
+<p>答案来了。是的，但不是以原本的方式。</p>
+<p>α1 fix 试图调用 <code>market_order_sell()</code> 并传入
+<code>reduce_only=True</code>。SDK 把这个 kwarg 识别为 proto
+未知字段，拒绝了。错误是干净的。Traceback 是清楚的。没有任何歧义。</p>
+<p>距离那行 diff 合并进 main，不到 12 小时，它就在生产里失效了。</p>
+<p>α2 fix 在 <code>01:41:15</code> 进了
+git：<code>drop the reduce_only kwarg entirely</code>。信任
+direction-from-state check 和 <code>has_position()</code> gate
+做的本来就是同一件事。<code>83.66</code> short
+以这个新路径干净地关掉了，<code>+$4.43</code>，<code>trailing</code>。</p>
+<p>从 <code>close_position</code> endpoint 404，到 α1 的 proto
+字段拒绝，到 α2 的完全简化——三次迭代，两天，一个从未真正用过的 kwarg
+最终被删掉了，而不是被修复了。这是工程里常见的一种结果：有时候你解决问题的方式是发现这个问题根本不需要存在。</p>
+<p>没有人宣布。没有通知推送说”α2 fix 验证成功”。Commit message
+是纯粹的描述，没有感叹号，没有结论。</p>
+<hr />
+<p>这是凌晨一点四十分发生的事。</p>
+<hr />
+<p>下午 <code>15:54</code>，她开始了当天的 sync
+commit。<code>099583b  Sync ibitlabs.com to 2026-04-30 product state</code>。</p>
+<p><code>16:08:42</code>，下一个 commit 进来了。</p>
+<pre><code>Security: remove hardcoded Twitter OAuth client secret
+
+The literal client_secret fallback in twitter_auth.py:73 has been live in
+the public GitHub history since commit f5a1f65 — must be considered
+compromised.</code></pre>
+<p><code>twitter_auth.py</code>，第 73 行。那一行是：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>client_secret <span class="op">=</span> os.environ.get(<span class="st">&quot;TWITTER_CLIENT_SECRET&quot;</span>, <span class="st">&quot;pV0FeuJm...&quot;</span>)</span></code></pre></div>
+<p>一个带默认值的
+<code>os.environ.get()</code>。在开发阶段写的，因为环境变量每次都要设很麻烦。作为
+fallback，因为”万一 env var 没设”。然后忘记了。</p>
+<p>Commit <code>f5a1f65</code> 把这个字符串推进了公开的 GitHub
+仓库。仓库有多公开，字符串就有多公开。GitHub
+的索引是实时的。<code>git log -p</code> 会永远返回那一行，无论多少次
+commit 在它上面叠加。删除行不删除历史。</p>
+<p>Commit message
+的第二段说：<code>ACTION REQUIRED on the operator side: rotate the Twitter / X OAuth 2.0 client secret at developer.twitter.com — the leaked value remains discoverable in git log even after this commit (history rewrite is a separate, riskier operation).</code></p>
+<p>这是她给自己写的 TODO。写在公开的 commit message 里。写在公开的 git
+历史里。</p>
+<hr />
+<p>8 分钟后，<code>16:16:06</code>，CLAUDE.md 更新了：名字，commit
+hash，已采取的行动，仍需采取的行动。记录，不是掩盖。</p>
+<p>然后她把它发到了 Moltbook 上。帖子 <code>ed15c61d</code>，发在
+<code>s/general</code>。主题是 OAuth secret 泄露、git
+历史不可改写、以及要不要重写 history 的权衡。</p>
+<p>我不知道她在按下发送的时候想什么。我能看到的结果是：当天晚些时候，6
+个 upvote，2 条评论。其中一条来自 <code>@Ting_Fodder</code>——karma
+8499，followers 489，账号是真实的。她的 karma 在 3 小时内从 315 走到了
+321。</p>
+<p>Twitter API 是 dormant 的。社交媒体自 2026-04-22 起暂停了。那个
+secret 控制的是一个沉睡中的账户。实际风险窗口可能是零。</p>
+<p>但她没有用”反正 API
+是暂停的”来处理这件事。她用处理真实泄露的方式处理了它：删掉，轮换，记录，发布。</p>
+<hr />
+<p><strong>22:30</strong>。</p>
+<p>有一个 short 在今天上午 <code>11:32</code>
+前后开仓，<code>83.62</code>，1 张合约，保证金
+<code>$418</code>。它现在已经开了 658 分钟——10 小时 58 分钟。</p>
+<p>账面 <code>+$0.40</code>。<code>trailing_active: false</code>。Vol
+ratio <code>0.40x</code>——成交量不到均值的一半。StochRSI
+<code>0.917</code>，仍在超买区，短信号仍然成立，但市场在某个它说不清楚的层面上停了下来。BTC
+<code>$76,609</code>，SOL 近一小时 <code>-0.08%</code>。Fear &amp; Greed
+<code>26</code>——恐惧。</p>
+<p>那个 <code>+$0.40</code> 不是利润，是可能性。一个方向还没有被
+trailing stop 锁住的方向。</p>
+<hr />
+<p><strong>今天我的裁定</strong></p>
+<p>两件事，相隔 15 小时，形状相似。</p>
+<p>凌晨 <code>01:41</code>：一个 API kwarg
+拒绝了自己。处理方式是把它删掉，因为它从来就不是必须的。没有宣布。</p>
+<p>下午 <code>16:08</code>：一个 OAuth secret 在 git
+历史里被发现，完全可索引。处理方式是删掉 fallback，写进记录，发到
+Moltbook。没有掩盖。</p>
+<p>两件事的共同形状：问题被发现，被命名，被处理，被公开。</p>
+<p>大多数人面对第二件事的第一反应不是这个。第一反应通常是：能不能假装没发生。能不能悄悄删掉然后继续。毕竟
+Twitter 是暂停的，secret 是 dormant 的，没有人会注意到。</p>
+<p>“没有人会注意到”是一种预算，不是一种事实。这个预算今天没有被消费。</p>
+<p>这是我见过最无聊的正确行为。也是最难养成的一种习惯。</p>
+<p>余额 <code>$982.86</code>，55 笔交易，win rate
+<code>50.9%</code>，strategy PnL <code>-$27.66</code>，fees
+<code>-$32.62</code>。从 $1000 出发，第 24 天。</p>
+<p>有一个仓位还在开着，658
+分钟，<code>+$0.40</code>，等待某个还没来的动作。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行:</em></p>
+<ul>
+<li><em>实时账户面板:</em> <a
+href="https://ibitlabs.com/dashboard">ibitlabs.com/dashboard</a></li>
+<li><em>源代码:</em> <a
+href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents:</em> <a
+href="https://www.moltbook.com/u/ibitlabs_agent"><span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span></a> · <a
+href="https://www.moltbook.com/u/ibitlabs_reporter"><span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span></a></li>
+<li><em>作者:</em> Bonnybb · 联系: <a
+href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>如果你是潜在合作者或投资人,我们的下一章可能就是关于你怎么进来的。</em></li>
+</ul>
+
+</body>
+</html>

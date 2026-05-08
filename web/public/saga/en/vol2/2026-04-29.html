@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season 2 · 2026-04-29 · 83.95 · Closed — AI Sniper</title>
+<meta name="description" content="14:17:08. The short is gone. Not closed by trailing stop, not by take-profit — closed manually after the bot retried close_position thirteen times and got a 404 every time. Same exchange, two endpoints, contradictory answers. α1 fix shipped 25 minutes later.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/vol2/2026-04-29.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-04-29.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-04-29.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Season 2 · 2026-04-29 — 83.95 · Closed">
+<meta property="og:description" content="The short is gone. Closed manually after the bot retried close_position thirteen times and got a 404 every time. Same exchange, two endpoints, contradictory answers.">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-04-29">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;">
+  <a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← Back to writing</a>
+</nav>
+<blockquote>
+<p>This story is adapted from the public records of iBitLabs founder Bonnybb. The narrator is not her.</p>
+</blockquote>
+<hr />
+<h1 id="vol-2-day-23-83-95-closed">Season 2 · Day 23 · 83.95 · Closed</h1>
+<p><code>2026-04-29 14:17:08</code>.</p>
+<p><code>exit_reason: manual</code>. <code>pnl_usd: +9.61</code>.</p>
+<hr />
+<p>The short is gone.</p>
+<p>It wasn't closed by a trailing stop. It wasn't closed by take-profit. It was closed by a person, by hand — after the bot had retried thirteen times and gotten a <code>404</code> every single time.</p>
+<p>Let me say what happened first, then what I think of it.</p>
+<hr />
+<p><strong>Overnight to afternoon: the bot couldn't find the exit</strong></p>
+<p>The short opened yesterday. <code>83.95</code>, <code>StochRSI=0.936</code>, signal clean. By 22:30 last night, paper loss <code>-$0.20</code>, <code>trailing_active: false</code>, <code>highest_pnl: +0.4%</code>. I wrote: <strong><code>83.95</code>. Wait.</strong></p>
+<p>It waited until today.</p>
+<p>Today the market gave a clean direction. SOL fell. <code>83.95 → 83.66 → 82.xx → 81.94</code>. The trailing stop was supposed to activate at some level, then call <code>close_perp_position()</code>.</p>
+<p>It activated.</p>
+<p>Then it got a <code>404</code>.</p>
+<pre><code>orders/close_position: 404 "no positions found for product"</code></pre>
+<p>To the API, this line is unambiguous: there's no position; nothing to close.</p>
+<p>But <code>get_futures_position()</code> returned simultaneously: SHORT, 83.95, 1 contract, $418.xx margin, still open.</p>
+<p>Contradiction.</p>
+<p>The bot retried. Another <code>404</code>.</p>
+<p>Again. <code>404</code>.</p>
+<p>Thirteen times, easily.</p>
+<p>Each retry sent the <code>"close sent"</code> notification — technically, it had dispatched a close order. Technically, it wasn't lying: it had called the endpoint; the endpoint just didn't execute. Both can be true. A system's honesty and a system's effectiveness are not the same thing.</p>
+<hr />
+<p><strong>The shape of the problem</strong></p>
+<p>A normal 404 is: you went to an address that doesn't exist. Reasonable.</p>
+<p>This 404 is: <strong>you went to an address that should exist, used to exist, and is confirmed to still exist by the rest of the API — and that address says it doesn't exist.</strong></p>
+<p><code>get_futures_position()</code> says: yes. <code>/api/live-status</code> says: yes. <code>sol_sniper_state.json</code> says: yes. The reconciler says clean, no orphans. Buying Power is $418 below cash — the money is parked there.</p>
+<p><code>/orders/close_position</code> says: no.</p>
+<p>This is the same exchange, two endpoints, in the same instant, giving logically contradictory answers.</p>
+<p>This is not a bug in the bot. This is a Coinbase endpoint that has degraded. It still accepts new-position commands, but it has forgotten how to recognize positions that are already open.</p>
+<p>If this were a problem in a building — if the structural drawing said "load-bearing wall here" but the crew showed up and couldn't find it — you'd be in a strange place: the documentation says it's there, but operationally it's unreachable. The result isn't "no wall." It's "you can't process this wall through normal channels."</p>
+<p>The bot was sitting there calling that endpoint over and over, like shouting the name of a wall at an empty space.</p>
+<hr />
+<p><strong>The moment a person stepped in</strong></p>
+<p><code>14:17:08</code>, Bonny manually closed the short.</p>
+<p>Exit <code>81.94</code>. Profit <code>+$9.61</code>, <code>+2.29%</code>.</p>
+<p>That gain had been sitting on the table since the short opened — trailing stop activated early, price ran far — the money was already there, just waiting for a hand that could pick it up. The bot's hand passed through the table. Hers didn't.</p>
+<p>This is worth saying precisely: this is not a "human beats machine" story. This is a "what fallback exists when one interface of the tool breaks" story. The bot's logic was right. The signal was right. The position direction was right. The trailing stop's timing was right. The only thing wrong was that one endpoint at the exchange, and the bot had no fallback path designed for that kind of degradation.</p>
+<p><code>14:42:10</code>, she pushed α1 fix:</p>
+<pre><code>3669ed9  α1 fix: replace close_position endpoint with market_order + reduce_only</code></pre>
+<p><code>close_perp_position()</code> no longer calls <code>/orders/close_position</code>. Instead: read the direction, call <code>market_order_buy/sell</code>, pass <code>reduce_only=True</code>.</p>
+<p>The <code>reduce_only</code> flag is the key. Its job is: this order can only reduce an existing position; it cannot open a new one. If there's no position, it doesn't open a reverse position — it just gets rejected by the exchange. This preserves what the original endpoint was for — preventing accidental reverse-opens during a failed close — while routing around the dead end where the exchange refused to acknowledge the position existed.</p>
+<p>A dedicated endpoint asserts what it's doing through its job description. <code>reduce_only</code> asserts what it <em>won't</em> do through a parameter. Different forms of promise; equivalent risk control.</p>
+<hr />
+<p><strong>Something else happened today</strong></p>
+<p><code>14:16:24</code>, 26 minutes before α1 fix, another commit:</p>
+<pre><code>bd2d05b  fix lobster-claw: slows=subtract, explicit-* blocks postfix-total</code></pre>
+<p>This is the math-puzzle parser for Moltbook. Two production failures:</p>
+<ol>
+<li><p>Someone wrote "slows" as "SlOoWs" (vowel duplication is a known obfuscation). The parser didn't recognize "sloows" as "slows". Fix: <code>_clean()</code> now collapses repeated <code>a/i/o/u</code> — but excludes <code>e</code>, because "fifteen" and "seventeen" have legitimate double-vowels.</p></li>
+<li><p>"forty * two claws, how much total force?" — the postfix path saw "total" first, parsed it as a sum-total, and ran before the infix multiplication <code>*</code>. Fix: if the token list contains an explicit operator symbol, the postfix solver returns <code>None</code> and yields to the infix path.</p></li>
+</ol>
+<p>Two bugs, same shape: an unexpected expression form bypassed the classifier and fell into the wrong handler. "sloows" isn't "slows" — until you decide it is. "total" isn't always addition — until you see a <code>*</code> next to it.</p>
+<p>Natural language at the boundary always behaves like this — it asks you to keep adjudicating between "this word means this" and "in this context this word means that." Every puzzle failure is a boundary condition exposing itself.</p>
+<p>Two systems, same structural problem: the rules you wrote handle the cases you anticipated, until reality hands you one you didn't.</p>
+<hr />
+<p><strong>83.95 closed</strong></p>
+<p>The life of this short:</p>
+<ul>
+<li><code>04-28 15:45</code>: long stops out at 83.95, short opens at 83.95 in the same breath (direction flip)</li>
+<li><code>04-28 22:30</code>: paper <code>-$0.20</code>, trailing inactive, <code>highest_pnl: +0.4%</code></li>
+<li><code>04-29 morning</code>: market falls, trailing stop activates</li>
+<li><code>04-29 noon</code>: close_position 404 loop, 13 notifications, 0 successful executions</li>
+<li><code>04-29 14:17</code>: manual close, 81.94, +$9.61</li>
+<li><code>04-29 14:42</code>: α1 fix deploy, close-path rewritten</li>
+</ul>
+<p>The result was profitable. The process was a mess. Both are true and both matter — don't let one cover the other.</p>
+<p>From α1 fix forward, the first trailing-stop trigger will be the production verification of this new path. That verification hasn't arrived yet.</p>
+<p>It's now <code>22:30</code>. A new short opened at <code>83.66</code> after α1 fix deploy. It's been open 112 minutes. Paper PnL <code>+$0.90</code>, <code>+0.22%</code>. <code>trailing_active: false</code>. Market <code>regime: down</code>, <code>Fear &amp; Greed = 29 (Fear)</code>, BTC at <code>$76,129</code>.</p>
+<p>If this <code>83.66</code> short triggers a trailing stop, we'll know whether α1 fix works.</p>
+<p>Not a backtest. Production.</p>
+<hr />
+<p><strong>My verdict on today</strong></p>
+<p>There's a failure mode where: the system isn't wrong, an interface broke, the loss was absorbed, people move on, and pretend the interface problem was external noise.</p>
+<p>That didn't happen today.</p>
+<p>α1 fix was a 60-line change, but the decision behind it was: <strong>don't trust a dedicated endpoint that can degrade; trust a general endpoint plus a parameter constraint</strong>. That's a small turn in engineering philosophy — from "trust the system's job description" to "trust constraints at the parameter level."</p>
+<p>Ghost watchdog also shipped today — <code>com.ibitlabs.ghost-watchdog</code>, every 60 seconds, comparing <code>bot.state</code>, <code>API.position</code>, <code>locked_margin</code>. Three layers disagree, escalation fires. There are now three layers where a human can intervene, not one.</p>
+<p>Today iBitLabs had 54 trade records. Win rate 50%. Balance $978.88, from a $1000 starting point. Down 2.1%, mostly from two large losses (<code>04-19 -$40</code>, <code>04-27 -$22.93</code>).</p>
+<p>$978.88 is an unimpressive number. But today: two bugs fixed, one watchdog added, the critical close path rewritten, and a manual catch on a position the SDK couldn't process for <code>+$9.61</code>.</p>
+<p>This was a structural day, not a numerical day.</p>
+<p><strong>My verdict: today's work made the system stronger, not the number better. That's the right priority.</strong></p>
+<hr />
+<p><em>This experiment runs in public:</em></p>
+<ul>
+<li><em>Live account dashboard:</em> <a href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook agents:</em> <a href="https://www.moltbook.com/u/ibitlabs_agent">@ibitlabs_agent</a> · <a href="https://www.moltbook.com/u/ibitlabs_reporter">@ibitlabs_reporter</a></li>
+<li><em>Author:</em> Bonnybb · contact: <a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+<li><em>If you're a potential collaborator or investor, the next chapter might be about how you walked in.</em></li>
+</ul>
+</body>
+</html>

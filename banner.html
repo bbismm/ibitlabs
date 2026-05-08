@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>iBitLabs X Banner</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #111;
+    font-family: monospace;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  canvas {
+    border: 1px solid #333;
+    box-shadow: 0 0 30px rgba(0,255,255,0.15);
+  }
+  button {
+    background: #0ff;
+    color: #0a0a1a;
+    border: none;
+    padding: 10px 24px;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  button:hover { background: #0fa; }
+  .label { color: #666; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <canvas id="banner" width="1500" height="500"></canvas>
+  <button onclick="downloadBanner()">DOWNLOAD PNG</button>
+  <span class="label">1500 x 500 — X/Twitter banner size</span>
+</div>
+<script>
+const canvas = document.getElementById('banner');
+const ctx = canvas.getContext('2d');
+const W = 1500, H = 500;
+
+function draw() {
+  // === BACKGROUND ===
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#1a1040');
+  bg.addColorStop(0.3, '#151530');
+  bg.addColorStop(0.7, '#151530');
+  bg.addColorStop(1, '#301050');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // === GRID ===
+  ctx.strokeStyle = 'rgba(0,255,255,0.07)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 30) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 30) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // === PERSPECTIVE GRID at bottom ===
+  ctx.strokeStyle = 'rgba(0,255,255,0.06)';
+  ctx.lineWidth = 1;
+  const vanishY = 250, groundY = 500;
+  const vanishX = 750;
+  for (let i = -20; i <= 20; i++) {
+    const x = vanishX + i * 80;
+    ctx.beginPath();
+    ctx.moveTo(vanishX + i * 8, vanishY + 80);
+    ctx.lineTo(x, groundY);
+    ctx.stroke();
+  }
+  for (let row = 0; row < 8; row++) {
+    const y = vanishY + 80 + row * row * 4;
+    if (y > groundY) break;
+    const spread = (y - vanishY) / (groundY - vanishY);
+    ctx.beginPath();
+    ctx.moveTo(vanishX - spread * 900, y);
+    ctx.lineTo(vanishX + spread * 900, y);
+    ctx.stroke();
+  }
+
+  // === FLOATING PARTICLES ===
+  const rand = (seed) => {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+  for (let i = 0; i < 80; i++) {
+    const x = rand(i * 7.3) * W;
+    const y = rand(i * 3.1) * H;
+    const size = rand(i * 11.7) * 3 + 1;
+    const alpha = rand(i * 5.9) * 0.3 + 0.05;
+    const colors = ['rgba(0,255,255,', 'rgba(255,0,255,', 'rgba(0,255,136,'];
+    ctx.fillStyle = colors[i % 3] + alpha + ')';
+    ctx.fillRect(x, y, size, size);
+  }
+
+  // === LEFT SIDE: Trading data visualization ===
+  // Candlestick-like elements
+  const candles = [
+    {x: 80, h: 60, up: true}, {x: 110, h: 40, up: false}, {x: 140, h: 80, up: true},
+    {x: 170, h: 30, up: true}, {x: 200, h: 55, up: false}, {x: 230, h: 70, up: true},
+    {x: 260, h: 45, up: false}, {x: 290, h: 90, up: true}, {x: 320, h: 35, up: true},
+    {x: 350, h: 50, up: false}, {x: 380, h: 65, up: true}, {x: 410, h: 25, up: true},
+  ];
+  candles.forEach(c => {
+    const baseY = 300;
+    const color = c.up ? 'rgba(0,255,136,' : 'rgba(255,80,120,';
+    // Wick
+    ctx.fillStyle = color + '0.6)';
+    ctx.fillRect(c.x + 8, baseY - c.h - 15, 2, c.h + 30);
+    // Body
+    ctx.fillStyle = color + '0.8)';
+    ctx.fillRect(c.x, baseY - c.h, 18, c.h);
+    // Glow
+    ctx.fillStyle = color + '0.15)';
+    ctx.fillRect(c.x - 4, baseY - c.h - 4, 26, c.h + 8);
+  });
+
+  // Price line
+  ctx.strokeStyle = 'rgba(0,255,255,0.6)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const pricePoints = [
+    [60,280],[100,250],[140,220],[180,240],[220,260],[260,230],
+    [300,210],[340,235],[380,215],[420,240],[460,220]
+  ];
+  pricePoints.forEach(([x,y], i) => {
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // === RIGHT SIDE: Code/data elements ===
+  ctx.font = '13px monospace';
+  ctx.fillStyle = 'rgba(0,255,255,0.25)';
+  const codeLines = [
+    'strategy: mean_reversion_v3',
+    'pair: SOL/PERP',
+    'leverage: 3x',
+    'win_rate: 63%',
+    'capital: $986',
+    'tp: 3.0% | sl: 3.5%',
+    'regime: adaptive',
+    'grid_levels: 3',
+    'trades_total: 52',
+    'status: LIVE',
+    'built_by: AI_agents',
+    'human_code: 0 lines',
+  ];
+  codeLines.forEach((line, i) => {
+    const alpha = 0.35 + (i % 3) * 0.08;
+    ctx.fillStyle = i === 9
+      ? `rgba(0,255,136,${alpha + 0.2})`
+      : i === 11
+        ? `rgba(255,0,255,${alpha + 0.15})`
+        : `rgba(0,255,255,${alpha})`;
+    ctx.fillText(line, 1080, 120 + i * 26);
+  });
+
+  // Bracket decoration
+  ctx.strokeStyle = 'rgba(0,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(1065, 105); ctx.lineTo(1060, 105); ctx.lineTo(1060, 435); ctx.lineTo(1065, 435);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(1350, 105); ctx.lineTo(1355, 105); ctx.lineTo(1355, 435); ctx.lineTo(1350, 435);
+  ctx.stroke();
+
+  // === CENTER: Main text ===
+  // "iBitLabs" main title
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Glow layers
+  ctx.font = 'bold 72px monospace';
+  ctx.fillStyle = 'rgba(0,255,255,0.08)';
+  ctx.fillText('iBitLabs', W/2, 170);
+  ctx.fillStyle = 'rgba(0,255,255,0.15)';
+  ctx.fillText('iBitLabs', W/2, 170);
+  // Main text
+  ctx.fillStyle = '#00ffff';
+  ctx.fillText('iBitLabs', W/2, 170);
+
+  // Underline accent
+  const textWidth = ctx.measureText('iBitLabs').width;
+  const lineGrad = ctx.createLinearGradient(W/2 - textWidth/2, 0, W/2 + textWidth/2, 0);
+  lineGrad.addColorStop(0, 'rgba(0,255,255,0)');
+  lineGrad.addColorStop(0.2, 'rgba(0,255,255,0.6)');
+  lineGrad.addColorStop(0.5, 'rgba(255,0,255,0.6)');
+  lineGrad.addColorStop(0.8, 'rgba(0,255,255,0.6)');
+  lineGrad.addColorStop(1, 'rgba(0,255,255,0)');
+  ctx.fillStyle = lineGrad;
+  ctx.fillRect(W/2 - textWidth/2 - 20, 208, textWidth + 40, 2);
+
+  // Tagline
+  ctx.font = '22px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText("I can't code. AI built this in 7 days.", W/2, 250);
+
+  // Sub info
+  ctx.font = '16px monospace';
+  ctx.fillStyle = 'rgba(255,100,255,0.85)';
+  ctx.fillText('$1,000 → $10,000 challenge  ·  SOL PERP  ·  100% AI-written code', W/2, 290);
+
+  // Experiment badge
+  ctx.font = '14px monospace';
+  ctx.fillStyle = 'rgba(0,255,136,0.7)';
+  ctx.fillText('🔬  A SOCIAL EXPERIMENT  —  REAL MONEY · REAL LOSSES · NO FILTER', W/2, 330);
+
+  // === HUD CORNERS ===
+  ctx.strokeStyle = 'rgba(0,255,255,0.7)';
+  ctx.lineWidth = 2;
+  // Top-left
+  ctx.beginPath(); ctx.moveTo(20, 40); ctx.lineTo(20, 20); ctx.lineTo(60, 20); ctx.stroke();
+  // Top-right
+  ctx.beginPath(); ctx.moveTo(W-60, 20); ctx.lineTo(W-20, 20); ctx.lineTo(W-20, 40); ctx.stroke();
+  // Bottom-left
+  ctx.strokeStyle = 'rgba(255,0,255,0.7)';
+  ctx.beginPath(); ctx.moveTo(20, H-40); ctx.lineTo(20, H-20); ctx.lineTo(60, H-20); ctx.stroke();
+  // Bottom-right
+  ctx.beginPath(); ctx.moveTo(W-60, H-20); ctx.lineTo(W-20, H-20); ctx.lineTo(W-20, H-40); ctx.stroke();
+
+  // Corner labels
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(0,255,255,0.6)';
+  ctx.fillText('SYS://iBitLabs_v3', 25, 15);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(255,0,255,0.6)';
+  ctx.fillText('SOLANA NETWORK', W - 25, 15);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(0,255,136,0.6)';
+  ctx.fillText('ibitlabs.com', 25, H - 8);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(255,136,0,0.6)';
+  ctx.fillText('LIVE TRADING', W - 25, H - 8);
+
+  // === SCAN LINES ===
+  for (let y = 0; y < H; y += 3) {
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    ctx.fillRect(0, y, W, 1);
+  }
+
+  // === HORIZONTAL NEON LINES ===
+  ctx.fillStyle = 'rgba(0,255,255,0.03)';
+  ctx.fillRect(0, 155, W, 1);
+  ctx.fillRect(0, 185, W, 1);
+  ctx.fillStyle = 'rgba(255,0,255,0.03)';
+  ctx.fillRect(0, 240, W, 1);
+  ctx.fillRect(0, 300, W, 1);
+}
+
+draw();
+
+function downloadBanner() {
+  const link = document.createElement('a');
+  link.download = 'ibitlabs_banner.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+</script>
+</body>
+</html>

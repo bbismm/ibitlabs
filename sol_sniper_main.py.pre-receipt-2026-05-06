@@ -1,0 +1,1087 @@
+#!/usr/bin/env python3
+"""
+iBitLabs Alpha — Hybrid Mean Reversion + Grid Trading System
+Coinbase Futures | Long+Short | 2x leverage
+
+Backtest verified: 84.7% win rate, +66.15% return (13 months, SOL -32%)
+Trending: Mean reversion TP1.5%/SL5% | Sideways: Grid 0.5% spacing
+Profitable in all three regimes (up/down/sideways)
+
+Usage:
+  python3 sol_sniper_main.py --paper                           # paper, default settings
+  python3 sol_sniper_main.py --live                            # live trading
+  python3 sol_sniper_main.py --paper --instance-name shadow \
+      --db sol_sniper_shadow.db --state-file sol_sniper_state_shadow.json \
+      --log-file logs/sniper_shadow.log --quiet                # shadow paper instance
+
+The shadow instance runs in --quiet mode: no KV publishing, no broadcasts,
+no Telegram/Twitter/iMessage notifications. It exists purely to write its own
+trade_log so we can diff its outcomes against the live instance and detect
+state-layer drift in the live strategy.
+"""
+
+import argparse
+import sys
+import os
+import json
+import time
+import signal as sig_module
+import logging
+from pathlib import Path
+
+# ── Argparse FIRST so env vars are set before any sniper module is imported ──
+def _parse_args():
+    parser = argparse.ArgumentParser(add_help=True)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--paper", action="store_true", help="Paper trading (default)")
+    mode.add_argument("--live", action="store_true", help="Live trading")
+    parser.add_argument("--instance-name", default=os.environ.get("SNIPER_INSTANCE_NAME", "live"),
+                        help="Tag written to trade_log.instance_name (default: live)")
+    parser.add_argument("--db", default=None,
+                        help="SQLite path (default: sol_sniper.db)")
+    parser.add_argument("--state-file", default=None,
+                        help="Position state JSON path (default: sol_sniper_state.json)")
+    parser.add_argument("--grid-state-file", default=None,
+                        help="Grid state JSON path (default: grid_state.json)")
+    parser.add_argument("--log-file", default=None,
+                        help="Log file path (default: sol_sniper.log)")
+    parser.add_argument("--quiet", action="store_true",
+                        help="Disable KV publish, broadcasts, push notifications "
+                             "(use for shadow / paper instances)")
+    parser.add_argument("--trailing-activate", type=float, default=None,
+                        help="Override trailing_activate_pct for this instance")
+    parser.add_argument("--trailing-stop", type=float, default=None,
+                        help="Override trailing_stop_pct for this instance")
+    parser.add_argument("--no-grid", action="store_true",
+                        help="Disable grid strategy, run momentum only")
+    parser.add_argument("--no-tp", action="store_true",
+                        help="Disable take-profit; rely on trailing stop only")
+    parser.add_argument("--tp-pct", type=float, default=None,
+                        help="Override tp_pct (e.g. 0.010 for 1%%)")
+    parser.add_argument("--stoch-rsi-long", type=float, default=None,
+                        help="Override stoch_rsi_long threshold (long entry oversold level)")
+    parser.add_argument("--stoch-rsi-short", type=float, default=None,
+                        help="Override stoch_rsi_short threshold (short entry overbought level)")
+    parser.add_argument("--symbol", default="SOL", choices=["SOL", "ETH"],
+                        help="Which symbol this bot trades (default: SOL). "
+                             "Routes through v5_1_config.config_for(); ETH "
+                             "fails loud until its Coinbase contract id is set.")
+    return parser.parse_args()
+
+_args = _parse_args()
+
+# Push the runtime overrides into env so hardcoded constants in sol_sniper_paper
+# / sol_sniper_executor / state_db pick them up at import time. This keeps the
+# main loop unchanged.
+if _args.state_file:
+    os.environ["SNIPER_STATE_FILE"] = _args.state_file
+if _args.grid_state_file:
+    os.environ["GRID_STATE_FILE"] = _args.grid_state_file
+os.environ["SNIPER_INSTANCE_NAME"] = _args.instance_name
+if _args.quiet:
+    os.environ["SNIPER_QUIET"] = "1"
+if _args.trailing_activate is not None:
+    os.environ["SNIPER_TRAILING_ACTIVATE"] = str(_args.trailing_activate)
+if _args.trailing_stop is not None:
+    os.environ["SNIPER_TRAILING_STOP"] = str(_args.trailing_stop)
+if _args.no_tp:
+    os.environ["SNIPER_TP_PCT"] = "999.0"    # effectively disabled
+if _args.tp_pct is not None:
+    os.environ["SNIPER_TP_PCT"] = str(_args.tp_pct)
+if _args.stoch_rsi_long is not None:
+    os.environ["SNIPER_STOCH_RSI_LONG"] = str(_args.stoch_rsi_long)
+if _args.stoch_rsi_short is not None:
+    os.environ["SNIPER_STOCH_RSI_SHORT"] = str(_args.stoch_rsi_short)
+
+# ── Load .env (only after CLI args, so CLI wins) ──
+_env_file = Path(__file__).parent / ".env"
+if _env_file.exists():
+    for line in _env_file.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            if v and k.strip() not in ("", "#"):
+                os.environ.setdefault(k.strip(), v.strip())
+
+from sol_sniper_config import SniperConfig
+from v5_1_config import config_for
+from sol_sniper_signals import SniperSignalEngine
+from sol_sniper_executor import SniperExecutor
+from sol_sniper_paper import PaperExecutor, send_push
+from sol_micro_grid import MicroGrid, GRID_SIZE, GRID_LEVELS, GRID_SIDE
+from coinbase_exchange import CoinbaseExchange
+from state_db import StateDB
+from notifier import Notifier
+from kv_publisher import publish_to_kv, broadcast_close, broadcast_grid_event, broadcast_signal
+
+QUIET_MODE = os.environ.get("SNIPER_QUIET") == "1"
+LOG_FILE = _args.log_file or "sol_sniper.log"
+
+# ── Capital safety floor ──────────────────────────────────────────────────
+# Hard floor: if free balance drops below this, the executor refuses to OPEN
+# new positions. Existing positions are NOT closed — they run to their own
+# TP/SL/trailing/timeout. The intent is "stop the bleeding without panic-
+# selling". Set MIN_CASH_FLOOR_USD=0 to disable. Default $850 = 15% drawdown
+# from the $1000 starting capital, which roughly aligns with backtest median
+# DD and is well above the realistic-fills sweep's worst-case DD.
+MIN_CASH_FLOOR = float(os.environ.get("MIN_CASH_FLOOR_USD", "850"))
+_floor_alert_sent = False  # dedupe so we push once per breach, not per scan
+
+# ── Regime gate ────────────────────────────────────────────────────────────
+# Off by default. When STRATEGY_REGIME_GATE=1, sniper will refuse signals
+# whose direction conflicts with the dominant 30-day regime: in an up-biased
+# 30d window, SHORT signals get blocked; in a down-biased window, LONGs get
+# blocked. Sideways → both allowed. The discovery that motivated this:
+# 2026-04-10 regime_watch found training (180d) was 56% down but live 30d is
+# 51% up, a +33pp drift on the `up` label. Strategy parameters are short-
+# biased; we want the OPTION to refuse trades it was never trained for.
+#
+# Tuning knobs (conservative defaults):
+#   STRATEGY_REGIME_GATE         — "1" / "true" to enable (default off)
+#   REGIME_GATE_DOMINANCE_PCT    — pp gap that defines "dominant" (default 25)
+#   REGIME_GATE_WINDOW_DAYS      — rolling window in days (default 30)
+#   REGIME_GATE_REFRESH_SECONDS  — cache TTL (default 3600 = 1 hour)
+REGIME_GATE_ENABLED = os.environ.get("STRATEGY_REGIME_GATE", "").lower() in ("1", "true", "yes")
+REGIME_GATE_DOMINANCE_PCT = float(os.environ.get("REGIME_GATE_DOMINANCE_PCT", "25"))
+REGIME_GATE_WINDOW_DAYS = int(os.environ.get("REGIME_GATE_WINDOW_DAYS", "30"))
+REGIME_GATE_REFRESH_SECONDS = int(os.environ.get("REGIME_GATE_REFRESH_SECONDS", "3600"))
+_regime_gate_cache = {"ts": 0, "verdict": None, "last_success_ts": 0, "last_warn_ts": 0}
+# last_success_ts tracks when _compute_regime_verdict last actually succeeded
+# (not just when it was last called). Watchdog: if too long passes without a
+# success while the gate is enabled, we log a loud warning. Without this, the
+# fail-open semantics could leave the gate silently dead for days.
+REGIME_GATE_STALE_SECONDS = int(os.environ.get("REGIME_GATE_STALE_SECONDS", "21600"))  # 6h
+
+
+def _compute_regime_verdict(exchange, config):
+    """Pull 1h candles for the last REGIME_GATE_WINDOW_DAYS, classify each
+    bar with the same SniperSignalEngine logic, return the dominance verdict.
+    Cached for REGIME_GATE_REFRESH_SECONDS so this doesn't run every scan.
+    Returns ("up_dominant"|"down_dominant"|"neutral", up_pct, down_pct) or None on error.
+
+    Uses Coinbase public REST directly (same as backtest_sniper_leverage.fetch_candles)
+    instead of exchange.fetch_ohlcv, because the wrapped CCXT call has a 350-bar
+    hard limit per request and we need ~720 bars for a 30-day 1h window.
+    `exchange` is accepted but unused — kept in the signature so the caller doesn't
+    have to know which path the gate uses."""
+    import json as _json
+    import urllib.request as _urlreq
+
+    now = time.time()
+    if _regime_gate_cache["verdict"] and (now - _regime_gate_cache["ts"]) < REGIME_GATE_REFRESH_SECONDS:
+        return _regime_gate_cache["verdict"]
+    try:
+        # We need REGIME_GATE_WINDOW_DAYS of 1h bars PLUS warmup for the
+        # rolling regime classifier (which looks back regime_window_hours).
+        warmup_hours = config.regime_window_hours + 24
+        total_hours = REGIME_GATE_WINDOW_DAYS * 24 + warmup_hours
+        granularity = 3600  # 1h
+        end_ts = int(now)
+        start_ts = end_ts - total_hours * granularity
+        bars = []
+        batch_seconds = 300 * granularity  # 300 bars per request, under the 350 limit
+        cur = start_ts
+        while cur < end_ts:
+            cur_end = min(cur + batch_seconds, end_ts)
+            url = (f"https://api.exchange.coinbase.com/products/SOL-USD/candles"
+                   f"?granularity={granularity}&start={cur}&end={cur_end}")
+            req = _urlreq.Request(url, headers={"User-Agent": "RegimeGate/1.0"})
+            with _urlreq.urlopen(req, timeout=10) as resp:
+                data = _json.loads(resp.read())
+            for row in data:
+                bars.append((row[0], row[4]))  # (ts, close)
+            cur = cur_end
+        bars.sort(key=lambda x: x[0])
+        # Dedup
+        seen = set()
+        uniq = []
+        for ts, close in bars:
+            if ts not in seen:
+                seen.add(ts)
+                uniq.append(close)
+        if len(uniq) < warmup_hours + 24:
+            return None
+        closes = uniq
+        # Classify each bar in the WINDOW (not the warmup) using the live engine's logic.
+        # We use the same arithmetic the engine's _classify_regime uses, inlined to
+        # avoid instantiating a SniperSignalEngine for every cache miss.
+        regimes = {"up": 0, "down": 0, "sideways": 0}
+        window = config.regime_window_hours
+        start_idx = max(window, len(closes) - REGIME_GATE_WINDOW_DAYS * 24)
+        for j in range(start_idx, len(closes)):
+            recent = closes[j - window:j]
+            if len(recent) < 48:
+                continue
+            start_price = sum(recent[:24]) / 24
+            end_price = sum(recent[-24:]) / 24
+            change = (end_price - start_price) / start_price if start_price else 0
+            if change > config.regime_up_threshold:
+                regimes["up"] += 1
+            elif change < config.regime_down_threshold:
+                regimes["down"] += 1
+            else:
+                regimes["sideways"] += 1
+        total = sum(regimes.values()) or 1
+        up_pct = regimes["up"] / total * 100
+        down_pct = regimes["down"] / total * 100
+        gap = up_pct - down_pct
+        if gap > REGIME_GATE_DOMINANCE_PCT:
+            verdict = ("up_dominant", up_pct, down_pct)
+        elif gap < -REGIME_GATE_DOMINANCE_PCT:
+            verdict = ("down_dominant", up_pct, down_pct)
+        else:
+            verdict = ("neutral", up_pct, down_pct)
+        _regime_gate_cache["ts"] = now
+        _regime_gate_cache["verdict"] = verdict
+        _regime_gate_cache["last_success_ts"] = now
+        return verdict
+    except Exception as e:
+        logger.warning(f"[SNIPER] Regime gate compute failed: {e}")
+        # Watchdog: if the gate is enabled and hasn't successfully computed
+        # in REGIME_GATE_STALE_SECONDS, scream loudly. fail-open means we keep
+        # trading, but we want a paper trail so a silently dead gate doesn't
+        # masquerade as "everything fine".
+        if REGIME_GATE_ENABLED:
+            last_ok = _regime_gate_cache.get("last_success_ts", 0)
+            stale = now - last_ok if last_ok else float("inf")
+            if stale > REGIME_GATE_STALE_SECONDS:
+                # rate-limit the loud warning to once per hour
+                if now - _regime_gate_cache.get("last_warn_ts", 0) > 3600:
+                    age_h = stale / 3600 if stale != float("inf") else -1
+                    logger.error(
+                        f"[SNIPER] Regime gate STALE: no successful verdict in "
+                        f"{age_h:.1f}h (threshold {REGIME_GATE_STALE_SECONDS/3600:.0f}h). "
+                        f"Gate is failing-open — trades are NOT being filtered."
+                    )
+                    _regime_gate_cache["last_warn_ts"] = now
+        return None
+
+
+def regime_gate_blocks(direction, exchange, config):
+    """Return (blocked: bool, reason: str). Off when REGIME_GATE_ENABLED=False."""
+    if not REGIME_GATE_ENABLED:
+        return (False, "")
+    verdict = _compute_regime_verdict(exchange, config)
+    if not verdict:
+        return (False, "")  # fail-open: if we can't compute, don't block
+    label, up_pct, down_pct = verdict
+    if label == "up_dominant" and direction == "short":
+        return (True, f"30d up-dominant ({up_pct:.0f}% up vs {down_pct:.0f}% down) — short refused")
+    if label == "down_dominant" and direction == "long":
+        return (True, f"30d down-dominant ({down_pct:.0f}% down vs {up_pct:.0f}% up) — long refused")
+    return (False, "")
+
+# ── Logging ──
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+    ],
+)
+logger = logging.getLogger(__name__)
+
+running = True
+
+
+def signal_handler(sig, frame):
+    global running
+    # Capture WHO sent the signal so the next "mystery shutdown" doesn't
+    # require log forensics. PPID-cmdline tells us if it was launchctl
+    # (kickstart -k), the ghost-watchdog (bootout), a script in scripts/,
+    # or an ad-hoc operator kill. macOS lacks /proc, so use `ps -p`.
+    # Two unexplained kills (2026-04-30 02:34 EDT and 2026-05-01 15:40 EDT)
+    # left a forensic gap that this 8-line patch closes once and for all.
+    try:
+        import signal as _s, subprocess as _sp
+        sig_name = _s.Signals(sig).name
+        ppid = os.getppid()
+        ppid_cmd = _sp.run(["ps", "-p", str(ppid), "-o", "command="],
+                           capture_output=True, text=True, timeout=2).stdout.strip()
+        logger.info(f"[SNIPER] Received shutdown signal {sig} ({sig_name}) "
+                    f"from PPID={ppid} cmd={ppid_cmd!r}, my PID={os.getpid()}, "
+                    f"preparing to exit...")
+    except Exception as _e:
+        logger.info(f"[SNIPER] Received shutdown signal (sig={sig}, "
+                    f"ppid-introspect-failed: {_e}), preparing to exit...")
+    running = False
+
+
+sig_module.signal(sig_module.SIGINT, signal_handler)
+sig_module.signal(sig_module.SIGTERM, signal_handler)
+
+
+class DailyTracker:
+    """Daily trade statistics"""
+    def __init__(self):
+        self.date = time.strftime("%Y-%m-%d")
+        self.trades = 0
+        self.wins = 0
+        self.losses = 0
+        self.pnl = 0.0
+
+    def check_new_day(self):
+        today = time.strftime("%Y-%m-%d")
+        if today != self.date:
+            if self.trades > 0:
+                wr = self.wins / self.trades * 100
+                logger.info(
+                    f"[SNIPER DAILY] {self.date} | "
+                    f"Trades: {self.trades} | Win rate: {wr:.0f}% | "
+                    f"PnL: ${self.pnl:+.2f}"
+                )
+            self.date = today
+            self.trades = 0
+            self.wins = 0
+            self.losses = 0
+            self.pnl = 0.0
+
+    def record(self, pnl: float):
+        self.trades += 1
+        self.pnl += pnl
+        if pnl > 0:
+            self.wins += 1
+        else:
+            self.losses += 1
+
+    def win_rate(self) -> float:
+        return (self.wins / self.trades * 100) if self.trades > 0 else 0
+
+    def total(self) -> int:
+        return self.trades
+
+GATE_STATE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "sol_sniper_gate_state.json")
+
+
+def _write_gate_state(*, now: float, cooldown_until: float, consecutive_sl: int,
+                      circuit_breaker_limit: int, reentry_gate_dir) -> None:
+    """Persist upstream gate state for the dashboard. Atomic write; never raises.
+    Daily-profit-target is intentionally not surfaced — the gate still runs
+    in the loop, just not exposed publicly."""
+    state = {
+        "ts": int(now),
+        "cooldown_until": int(cooldown_until),
+        "cooldown_remaining_sec": max(0, int(cooldown_until - now)),
+        "cooldown_active": now < cooldown_until,
+        "consecutive_sl": consecutive_sl,
+        "circuit_breaker_limit": circuit_breaker_limit,
+        "circuit_breaker_open": consecutive_sl >= circuit_breaker_limit,
+        "reentry_gate_dir": reentry_gate_dir,
+    }
+    try:
+        tmp = GATE_STATE_PATH + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(state, f)
+        os.replace(tmp, GATE_STATE_PATH)
+    except Exception as e:
+        logger.debug(f"[SNIPER] gate_state write failed: {e}")
+
+
+def create_exchange(config: SniperConfig) -> CoinbaseExchange:
+    """Create Coinbase Advanced Trade exchange instance"""
+    exchange = CoinbaseExchange(
+        api_key=config.api_key,
+        api_secret=config.api_secret,
+    )
+    return exchange
+
+
+def main():
+    # ── Mode selection ──
+    paper_mode = not _args.live  # Default paper unless --live
+
+    config = config_for(_args.symbol, instance_name=_args.instance_name)
+    # Apply CLI overrides
+    if _args.db:
+        config.db_path = _args.db
+    if _args.trailing_activate is not None:
+        config.trailing_activate_pct = _args.trailing_activate
+    if _args.trailing_stop is not None:
+        config.trailing_stop_pct = _args.trailing_stop
+
+    if not paper_mode:
+        try:
+            config.validate()
+        except ValueError as e:
+            logger.error(e)
+            sys.exit(1)
+
+    mode_str = "PAPER" if paper_mode else "LIVE"
+
+    # ── Initialize ──
+    logger.info("=" * 55)
+    logger.info(f"  iBitLabs ALPHA V5 — [{mode_str}] Mode")
+    logger.info(f"  Coinbase Futures | {_args.symbol} PERP ({config.symbol}) | {config.leverage}x Leverage")
+    logger.info(f"  Hybrid MR+Grid | TP {config.tp_pct*100:.1f}% SL {config.sl_pct*100:.1f}% | Backtest +66%")
+    logger.info("=" * 55)
+
+    exchange = create_exchange(config)
+
+    try:
+        exchange.load_markets()
+        logger.info(f"[SNIPER] Exchange connected: Coinbase")
+        # Verify trading pair
+        if config.symbol not in exchange.markets:
+            avail = [s for s in exchange.markets if "SOL" in s][:5]
+            logger.error(f"[SNIPER] {config.symbol} not found. Available: {avail}")
+            sys.exit(1)
+    except Exception as e:
+        logger.error(f"[SNIPER] Exchange failed: {e}")
+        sys.exit(1)
+
+    db = StateDB(config.db_path)
+    signals_engine = SniperSignalEngine(exchange, config)
+
+    if paper_mode:
+        executor = PaperExecutor(exchange, config, db)
+        free_usd = executor.get_balance()
+        logger.info(f"[PAPER] Starting capital: ${free_usd:.2f}")
+    else:
+        executor = SniperExecutor(exchange, config, db)
+        try:
+            balance = exchange.fetch_balance()
+            free_usd = float(balance.get("free", {}).get("USD", 0) or 0)
+            logger.info(f"[SNIPER] Futures buying power: ${free_usd:.2f}")
+        except Exception as e:
+            logger.error(f"[SNIPER] Balance fetch failed: {e}")
+            free_usd = config.capital
+
+    tracker = DailyTracker()
+    STARTUP_COOLDOWN_SECONDS = 300  # 5min warmup after restart before new entries
+    cooldown_until = time.time() + STARTUP_COOLDOWN_SECONDS
+    logger.info(f"[SNIPER] Startup cooldown: no new entries for 5min "
+                f"(until {time.strftime('%H:%M', time.localtime(cooldown_until))})")
+
+    # Cancel all open orders on startup (clean slate)
+    if not paper_mode:
+        try:
+            open_orders = exchange.fetch_open_orders(config.symbol)
+            if open_orders:
+                order_ids = [o["id"] for o in open_orders]
+                exchange.cancel_orders(order_ids)
+                logger.info(f"[SNIPER] Startup: cancelled {len(order_ids)} open orders")
+            else:
+                logger.info("[SNIPER] Startup: no open orders to cancel")
+        except Exception as e:
+            logger.warning(f"[SNIPER] Failed to cancel open orders on startup: {e}")
+    consecutive_sl = 0          # Circuit breaker: count consecutive SLs
+    CIRCUIT_BREAKER_LIMIT = 3   # Pause after 3 consecutive SLs
+    CIRCUIT_BREAKER_HOURS = 24  # Pause duration
+    ATR_VOLATILITY_GATE = 0.04  # Skip signals when ATR > 4%
+    TP_COOLDOWN_SECONDS = 900   # 15min cooldown after TP/trailing close
+    GRID_LOSS_PCT = 0.01        # Skip Grid→Sniper if Grid unrealized loss > 1% of GRID_SIZE per level
+    grid_disabled = _args.no_grid
+    grid = None if grid_disabled else MicroGrid(exchange, config, paper_mode=paper_mode)
+    grid_notifier = Notifier()
+    grid_was_active = False
+
+    logger.info(f"[SNIPER] Symbol: {config.symbol}")
+    logger.info(f"[SNIPER] TP={config.tp_pct:.1%} SL={config.sl_pct:.1%} "
+                f"Trail={config.trailing_activate_pct:.1%}/{config.trailing_stop_pct:.1%}")
+    if REGIME_GATE_ENABLED:
+        logger.info(f"[SNIPER] Regime gate: ON | window={REGIME_GATE_WINDOW_DAYS}d "
+                    f"dominance={REGIME_GATE_DOMINANCE_PCT:.0f}pp refresh={REGIME_GATE_REFRESH_SECONDS}s")
+    else:
+        logger.info(f"[SNIPER] Regime gate: OFF (set STRATEGY_REGIME_GATE=1 to enable)")
+    if grid:
+        logger.info(f"[SNIPER] Micro-grid: {GRID_LEVELS*2} levels x ${GRID_SIZE:.0f} | 0.5% spacing | {GRID_SIDE} | 3x leverage")
+    else:
+        logger.info("[SNIPER] Grid: DISABLED (--no-grid)")
+    logger.info(f"[SNIPER] Scanning...")
+
+    # ── Main loop ──
+    last_scan = 0
+
+    # Reverse-signal exit (shadow feature, env-gated). Live plist does not
+    # set these, so reverse_exit_enabled is False and behavior is unchanged.
+    reverse_exit_enabled = os.environ.get("SNIPER_REVERSE_EXIT") == "1"
+    reverse_exit_mode_c = os.environ.get("SNIPER_REVERSE_EXIT_MODE") == "C"
+    last_reverse_check = 0
+    reentry_gate_dir = None  # mode C: opposite direction to wait out before re-entering
+    if reverse_exit_enabled:
+        logger.info(
+            f"[SNIPER] Reverse-signal exit: ON | mode={'C' if reverse_exit_mode_c else 'A'}"
+        )
+
+    while running:
+        try:
+            now = time.time()
+            tracker.check_new_day()
+
+            # Surface upstream gate state for the dashboard (cooldown,
+            # circuit breaker, Mode C reentry). ATR is computed per-loop
+            # in the no-position branch and read by the dashboard
+            # independently. Daily-profit-target gate runs in the loop
+            # but is not surfaced publicly.
+            _write_gate_state(
+                now=now,
+                cooldown_until=cooldown_until,
+                consecutive_sl=consecutive_sl,
+                circuit_breaker_limit=CIRCUIT_BREAKER_LIMIT,
+                reentry_gate_dir=reentry_gate_dir,
+            )
+
+            # ── Has position: high-frequency check ──
+            if executor.has_position():
+                # Optional reverse-signal exit (throttled to scan_interval so the
+                # extra scan_entry() call doesn't hammer the API on every tick).
+                if reverse_exit_enabled and (now - last_reverse_check) >= config.scan_interval_seconds:
+                    last_reverse_check = now
+                    pos_dir = executor.position.get("direction") if executor.position else None
+                    if pos_dir and signals_engine.check_reverse_exit(pos_dir):
+                        check = {
+                            "action": "close_reverse",
+                            "reason": f"Reverse signal ({'short' if pos_dir=='long' else 'long'}) fired",
+                            "pnl_pct": 0,
+                            "pnl_usd": 0,
+                            "current_price": 0,
+                        }
+                    else:
+                        check = executor.check_position()
+                else:
+                    check = executor.check_position()
+                action = check["action"]
+
+                if action == "hold":
+                    pnl_pct = check.get("pnl_pct", 0)
+                    pnl_usd = check.get("pnl_usd", 0)
+                    cur = check.get("current_price", 0)
+                    if int(now) % 60 < config.price_check_seconds:
+                        logger.info(
+                            f"[SNIPER] {executor.get_position_info()} | "
+                            f"Current: ${cur:.2f} | PnL: {pnl_pct:+.2%} (${pnl_usd:+.2f})"
+                        )
+
+                elif action.startswith("close_"):
+                    # TP/trailing stop = limit, SL/timeout = market
+                    use_market = action in ("close_sl", "close_timeout")
+                    result = executor.close_position(check["reason"], use_market=use_market)
+
+                    pnl = result.get("pnl_usd", 0)
+                    tracker.record(pnl)
+
+                    # Update balance for daily target calculation
+                    try:
+                        _bal = exchange.fetch_balance()
+                        free_usd = float(_bal.get("total", {}).get("USD", 0) or free_usd)
+                    except Exception:
+                        pass
+
+                    # Broadcast close to users (skipped in quiet/shadow mode)
+                    if not QUIET_MODE:
+                        try:
+                            broadcast_close(
+                                direction=result.get("direction", "unknown"),
+                                entry_price=result.get("entry_price", 0),
+                                exit_price=result.get("fill_price", check.get("current_price", 0)),
+                                pnl_usd=pnl,
+                                pnl_pct=result.get("pnl_pct", check.get("pnl_pct", 0)) * 100,
+                                reason=action.replace("close_", ""),
+                            )
+                        except Exception as e:
+                            logger.debug(f"[BROADCAST] Close broadcast error: {e}")
+
+                    # Resume Grid if it was paused during handoff
+                    if grid and grid.paused:
+                        grid.resume()
+                        logger.info("[GRID] Resumed after Sniper exit")
+
+                    # Cooldown after stop loss + circuit breaker
+                    if action == "close_sl":
+                        consecutive_sl += 1
+                        if consecutive_sl >= CIRCUIT_BREAKER_LIMIT:
+                            cooldown_until = now + CIRCUIT_BREAKER_HOURS * 3600
+                            logger.warning(
+                                f"[SNIPER] CIRCUIT BREAKER — {consecutive_sl} consecutive SLs! "
+                                f"Pausing {CIRCUIT_BREAKER_HOURS}h until "
+                                f"{time.strftime('%m-%d %H:%M', time.localtime(cooldown_until))}"
+                            )
+                            if not QUIET_MODE:
+                                send_push("CIRCUIT BREAKER",
+                                          f"{consecutive_sl} consecutive SLs — pausing {CIRCUIT_BREAKER_HOURS}h")
+                        else:
+                            cooldown_until = now + config.cooldown_seconds
+                            logger.info(
+                                f"[SNIPER] Cooldown {config.cooldown_seconds // 3600}h "
+                                f"(SL #{consecutive_sl}, breaker at {CIRCUIT_BREAKER_LIMIT}) "
+                                f"(until {time.strftime('%H:%M', time.localtime(cooldown_until))})"
+                            )
+                    elif action in ("close_tp", "close_trailing", "close_reverse"):
+                        # TP/trailing/reverse: short cooldown to avoid chasing
+                        cooldown_until = now + TP_COOLDOWN_SECONDS
+                        logger.info(
+                            f"[SNIPER] Post-{action.replace('close_','')} cooldown "
+                            f"{TP_COOLDOWN_SECONDS // 60}min "
+                            f"(until {time.strftime('%H:%M', time.localtime(cooldown_until))})"
+                        )
+                        # Mode C: record opposite direction so we refuse re-entry
+                        # until that signal stops firing.
+                        if action == "close_reverse" and reverse_exit_mode_c:
+                            closed_dir = result.get("direction")
+                            reentry_gate_dir = "short" if closed_dir == "long" else "long"
+                            logger.info(
+                                f"[SNIPER] Mode C gate armed: blocking {reentry_gate_dir} "
+                                f"entries until reverse signal clears"
+                            )
+                        if pnl > 0:
+                            consecutive_sl = 0
+                    else:
+                        # Win or non-SL close resets the counter
+                        if pnl > 0:
+                            consecutive_sl = 0
+
+                # Persist state during position hold (trailing, highest_pnl, etc.)
+                if hasattr(executor, '_save_state'):
+                    try:
+                        executor._save_state(grid.get_status() if grid else {})
+                    except Exception:
+                        pass
+
+                time.sleep(config.price_check_seconds)
+                continue
+
+            # ── No position: scan for signals ──
+            if now - last_scan < config.scan_interval_seconds:
+                time.sleep(1)
+                continue
+
+            last_scan = now
+
+            # In cooldown
+            if now < cooldown_until:
+                remaining = int(cooldown_until - now)
+                if remaining % 300 < config.scan_interval_seconds:
+                    logger.info(f"[SNIPER] In cooldown, {remaining // 60} min remaining")
+                time.sleep(config.scan_interval_seconds)
+                continue
+
+            # ── ATR volatility gate: skip signals in extreme volatility ──
+            atr_blocked = False
+            try:
+                atr_info = grid.get_atr_info() if grid else {"atr_pct": 0}
+                atr_pct = atr_info.get("atr_pct", 0)
+                if atr_pct > ATR_VOLATILITY_GATE:
+                    atr_blocked = True
+                    if int(now) % 300 < config.scan_interval_seconds:
+                        logger.info(
+                            f"[SNIPER] Volatility gate: ATR {atr_pct:.2%} > {ATR_VOLATILITY_GATE:.0%} — "
+                            f"skipping signals (mean reversion unreliable)"
+                        )
+            except Exception:
+                pass
+
+            # Scan for sniper signal
+            signal = signals_engine.scan_entry() if not atr_blocked else None
+
+            # Mode C re-entry gate: after a reverse-signal exit, refuse new
+            # entries in the direction that triggered the reverse until the
+            # opposite signal stops firing. Once scan_entry() returns None
+            # (or the same side we closed on), the gate clears.
+            if signal and reentry_gate_dir is not None:
+                if signal["direction"] == reentry_gate_dir:
+                    logger.info(
+                        f"[SNIPER] Mode C gate: skipping {reentry_gate_dir} — "
+                        f"reverse signal still firing"
+                    )
+                    time.sleep(config.scan_interval_seconds)
+                    continue
+                else:
+                    logger.info(
+                        f"[SNIPER] Mode C gate cleared: reverse signal stopped "
+                        f"(now firing {signal['direction']})"
+                    )
+                    reentry_gate_dir = None
+            elif not signal and reentry_gate_dir is not None:
+                # No signal at all — also clears the gate (opposite isn't firing)
+                reentry_gate_dir = None
+
+            if signal:
+                # ── Regime gate (off by default; opt in via env) ──
+                # Refuses signals whose direction conflicts with the dominant
+                # 30-day regime. Lets us run the same engine on shadow with
+                # gate=ON and live with gate=OFF, then compare which one wins.
+                blocked, gate_reason = regime_gate_blocks(
+                    signal["direction"], exchange, config
+                )
+                if blocked:
+                    logger.info(f"[SNIPER] Regime gate: {gate_reason} — skipping")
+                    time.sleep(config.scan_interval_seconds)
+                    continue
+
+                # ── Grid → Sniper handoff: use grid edge for better entry ──
+                grid_edge_price = None
+                if grid and grid.active and grid.grid_orders:
+                    # Short → use grid top (highest sell level) for better entry
+                    # Long  → use grid bottom (lowest buy level) for better entry
+                    if signal["direction"] == "short":
+                        sell_prices = [o["price"] for o in grid.grid_orders.values()
+                                       if o["side"] == "sell"]
+                        if sell_prices:
+                            grid_edge_price = max(sell_prices)
+                    else:
+                        buy_prices = [o["price"] for o in grid.grid_orders.values()
+                                      if o["side"] == "buy"]
+                        if buy_prices:
+                            grid_edge_price = min(buy_prices)
+
+                # Smart Grid → Sniper handoff
+                if grid and (grid.active or grid.grid_orders):
+                    handoff_trades = []
+                    skip_signal = False
+                    try:
+                        t = exchange.fetch_ticker(config.symbol)
+                        cur_price = t["last"]
+
+                        # P2: Check Grid unrealized loss — skip handoff if too painful
+                        # Threshold scales with GRID_SIZE (1% per filled level)
+                        filled_count = sum(
+                            1 for o in grid.grid_orders.values()
+                            if o.get("filled") and o.get("entry_price")
+                        )
+                        loss_threshold = GRID_LOSS_PCT * GRID_SIZE * max(filled_count, 1)
+                        grid_upnl = grid.get_unrealized_pnl(cur_price)
+                        if grid_upnl < -loss_threshold:
+                            logger.info(
+                                f"[GRID] Handoff skipped — unrealized ${grid_upnl:+.2f} "
+                                f"exceeds -${loss_threshold:.2f} threshold ({filled_count} levels), keeping Grid"
+                            )
+                            skip_signal = True
+                        else:
+                            # P0: Only close opposite-direction positions, keep same-direction
+                            handoff_trades = grid.close_opposite_positions(
+                                cur_price, signal["direction"]
+                            ) or []
+
+                            # Check if any same-direction positions remain
+                            same_filled = sum(
+                                1 for o in grid.grid_orders.values()
+                                if o.get("filled") and o.get("entry_price")
+                            )
+                            if same_filled == 0:
+                                # No positions left, fully deactivate grid
+                                grid.grid_orders = {}
+                                grid.active = False
+                                grid._clear_state_file()
+                                logger.info("[GRID] No same-direction positions, fully deactivated")
+                            else:
+                                # Pause grid (keep same-direction positions alive)
+                                grid.pause()
+                                logger.info(
+                                    f"[GRID] Paused — kept {same_filled} same-direction positions"
+                                )
+                    except Exception as e:
+                        logger.warning(f"[GRID] Handoff close failed: {e}")
+                        grid.grid_orders = {}
+                        grid.active = False
+
+                    if skip_signal:
+                        time.sleep(config.scan_interval_seconds)
+                        continue
+
+                    # Sync closed positions to balance + DB
+                    for gt in handoff_trades:
+                        tracker.record(gt["pnl"])
+                        if paper_mode and hasattr(executor, 'cash'):
+                            executor.cash += gt["pnl"]
+                        close_side = "GRID_CLOSE_BUY" if gt["side"] == "buy" else "GRID_CLOSE_SELL"
+                        db.log_trade(
+                            config.symbol, close_side,
+                            gt["entry"], GRID_SIZE / gt["entry"],
+                            GRID_SIZE, gt["pnl"],
+                            direction="long" if gt["side"] == "buy" else "short",
+                            entry_price=gt.get("entry"),
+                            exit_price=gt.get("exit"),
+                            exit_reason="grid_handoff",
+                            strategy_version="grid_v1",
+                            strategy_intent="grid_mean_reversion",
+                            trigger_rule="grid_level",
+                            instance_name=getattr(config, "instance_name", "live"),
+                        )
+                    # Notify
+                    if grid_was_active:
+                        if not QUIET_MODE:
+                            grid_notifier._send(
+                                "GRID → SNIPER",
+                                f"{signal['direction'].upper()} | Grid PnL ${grid.pnl:+.2f}",
+                            )
+                            try:
+                                broadcast_grid_event("to_sniper", {"direction": signal["direction"]})
+                            except Exception:
+                                pass
+                        grid_was_active = False
+
+                # Pass grid edge price to signal for better entry
+                if grid_edge_price:
+                    signal["grid_edge_price"] = grid_edge_price
+                    d_str = signal["direction"].upper()
+                    logger.info(f"[SNIPER] Using grid edge ${grid_edge_price:.2f} for {d_str} entry")
+
+                # Refresh balance + equity. The "floor" check uses TOTAL equity
+                # (cash + locked margin + unrealized PnL), not free cash —
+                # otherwise it would trip the moment a position locks margin.
+                equity_usd = 0.0
+                mark_price = signal.get("entry_price") or signal.get("price") or 0
+                if paper_mode:
+                    free_usd = executor.get_balance()
+                    try:
+                        equity_usd = executor.get_equity(mark_price)
+                    except Exception:
+                        equity_usd = free_usd
+                else:
+                    try:
+                        balance = exchange.fetch_balance()
+                        free_usd = float(balance.get("free", {}).get("USD", 0) or 0)
+                        equity_usd = float(balance.get("total", {}).get("USD", 0) or 0)
+                        if equity_usd <= 0:
+                            equity_usd = free_usd
+                    except Exception:
+                        pass
+
+                if free_usd < 10:
+                    logger.warning(f"[{mode_str}] Low balance: ${free_usd:.2f}")
+                    time.sleep(config.scan_interval_seconds)
+                    continue
+
+                # Capital safety floor: refuse to open new positions when total
+                # equity drops below the floor. Existing positions keep running
+                # (no panic exit). Push one alert on first breach.
+                if MIN_CASH_FLOOR > 0 and equity_usd < MIN_CASH_FLOOR:
+                    global _floor_alert_sent
+                    logger.warning(
+                        f"[{mode_str}] Equity floor breach: ${equity_usd:.2f} "
+                        f"< ${MIN_CASH_FLOOR:.2f} — refusing new positions"
+                    )
+                    if not _floor_alert_sent and not QUIET_MODE:
+                        try:
+                            send_push(
+                                f"SNIPER PAUSED — equity floor",
+                                f"Equity ${equity_usd:.2f} < floor ${MIN_CASH_FLOOR:.2f}. "
+                                f"No new positions opening. Existing trades unaffected.",
+                            )
+                        except Exception as e:
+                            logger.debug(f"[FLOOR] push failed: {e}")
+                        _floor_alert_sent = True
+                    time.sleep(config.scan_interval_seconds)
+                    continue
+                # Reset the dedupe flag when we recover above the floor.
+                if _floor_alert_sent and equity_usd >= MIN_CASH_FLOOR:
+                    _floor_alert_sent = False
+                    logger.info(f"[{mode_str}] Equity recovered above floor — resuming opens")
+
+                # Fetch real-time buying power (accounts for grid margin usage)
+                if not paper_mode:
+                    try:
+                        _live_bal = exchange.fetch_balance()
+                        _open_balance = float(_live_bal.get("free", {}).get("USD", 0) or 0)
+                    except Exception:
+                        _open_balance = free_usd
+                else:
+                    _open_balance = executor.get_balance() if hasattr(executor, 'get_balance') else free_usd
+                success = executor.open_position(signal, _open_balance)
+                if success:
+                    d = signal["direction"].upper()
+                    # Report total equity (cash + locked margin + unrealized PnL),
+                    # not pre-trade free_usd. free_usd was fetched before
+                    # executor.open_position() locked margin, so it overstates
+                    # the post-open free cash. Total equity is what /api/live-status
+                    # publishes and is what the close-side notification uses.
+                    bal_after = executor.get_balance() if paper_mode else equity_usd
+                    logger.info(
+                        f"[{mode_str}] {d} opened | "
+                        f"Balance: ${bal_after:.2f} | "
+                        f"Reasons: {', '.join(signal['reasons'])}"
+                    )
+                    if not QUIET_MODE:
+                        grid_notifier.on_position_opened(
+                            signal["direction"],
+                            signal.get("entry_price", signal.get("price", 0)),
+                            signal.get("reasons", []), bal_after,
+                        )
+                        # Broadcast open signal to Telegram subscribers
+                        try:
+                            broadcast_signal(signal)
+                        except Exception as e:
+                            logger.debug(f"[BROADCAST] Signal broadcast error: {e}")
+            else:
+                # No sniper signal — run micro-grid (regime-adaptive direction)
+                # Get current regime for grid direction control
+                _grid_regime = "sideways"
+                try:
+                    _1h = exchange.fetch_ohlcv(config.symbol, config.trend_timeframe, limit=300)
+                    _c1h = [c[4] for c in _1h]
+                    _grid_regime = signals_engine._classify_regime(_c1h)
+                except Exception:
+                    pass
+                if grid and grid.should_activate(_grid_regime):
+                    # Notify on grid activation
+                    if grid.active and not grid_was_active:
+                        if not QUIET_MODE:
+                            grid_notifier.on_grid_created("SOL", 6, "sideways")
+                            try:
+                                broadcast_grid_event("activated", {"mid_price": grid.mid_price})
+                            except Exception:
+                                pass
+                        grid_was_active = True
+
+                    grid_result = grid.check_and_execute()
+                    if grid_result:
+                        # Record fills (entries) to DB + notify
+                        for gf in grid_result.get("fills", []):
+                            gf_side = "GRID_BUY" if gf["side"] == "buy" else "GRID_SELL"
+                            db.log_trade(
+                                config.symbol, gf_side,
+                                gf["price"], GRID_SIZE / gf["price"],
+                                GRID_SIZE, 0,  # pnl=0, open position
+                                direction="long" if gf["side"] == "buy" else "short",
+                                entry_price=gf["price"],
+                                exit_reason="grid_open",
+                                strategy_version="grid_v1",
+                                strategy_intent="grid_mean_reversion",
+                                trigger_rule="grid_level",
+                                instance_name=getattr(config, "instance_name", "live"),
+                            )
+                            # Push grid fill notification
+                            if not QUIET_MODE:
+                                grid_notifier._send(
+                                    f"GRID FILL {gf['side'].upper()}",
+                                    f"SOL @ ${gf['price']:.2f} | ${gf['size']:.0f} | TP ${gf['tp']:.2f}",
+                                )
+                                try:
+                                    broadcast_grid_event("fill", {"side": gf["side"], "price": gf["price"], "size": gf["size"], "tp": gf["tp"]})
+                                except Exception:
+                                    pass
+
+                        # Record completed trades (TP/drift close)
+                        for gt in grid_result.get("trades", []):
+                            tracker.record(gt["pnl"])
+
+                            # Sync PnL to executor balance
+                            if paper_mode and hasattr(executor, 'cash'):
+                                executor.cash += gt["pnl"]
+
+                            # Write completed trade to DB (entry price as price, pnl filled)
+                            gt_side = "GRID_BUY_TP" if gt["side"] == "buy" else "GRID_SELL_TP"
+                            if gt.get("reason") == "drift_close":
+                                gt_side = "GRID_CLOSE_BUY" if gt["side"] == "buy" else "GRID_CLOSE_SELL"
+                            db.log_trade(
+                                config.symbol, gt_side,
+                                gt["entry"], GRID_SIZE / gt["entry"],
+                                GRID_SIZE, gt["pnl"],
+                                direction="long" if gt["side"] == "buy" else "short",
+                                entry_price=gt.get("entry"),
+                                exit_price=gt.get("exit"),
+                                exit_reason="grid_drift" if gt.get("reason") == "drift_close" else "grid_tp",
+                                strategy_version="grid_v1",
+                                strategy_intent="grid_mean_reversion",
+                                trigger_rule="grid_level",
+                                instance_name=getattr(config, "instance_name", "live"),
+                            )
+
+                            # Notify each grid trade (audience-facing)
+                            try:
+                                if paper_mode:
+                                    _bal = executor.cash if hasattr(executor, 'cash') else 0
+                                else:
+                                    _bal = float(exchange.fetch_balance().get("total", {}).get("USD", 0) or 0)
+                            except Exception:
+                                _bal = 0
+                            _reason = "DRIFT" if gt.get("reason") == "drift_close" else "TP"
+                            if not QUIET_MODE:
+                                grid_notifier.on_trade_closed(
+                                    gt["side"], gt["entry"], gt["exit"],
+                                    gt["pnl"], _bal, tracker.win_rate(),
+                                    tracker.total(), _reason,
+                                )
+                                try:
+                                    broadcast_grid_event("trade", {"side": gt["side"], "entry": gt["entry"], "exit": gt["exit"], "pnl": gt["pnl"], "total_pnl": grid.pnl})
+                                except Exception:
+                                    pass
+                elif grid:
+                    # Grid deactivated by ATR — close all open positions
+                    if grid_was_active and not grid.active:
+                        try:
+                            t = exchange.fetch_ticker(config.symbol)
+                            deact_trades = grid.deactivate(t["last"]) or []
+                        except Exception:
+                            deact_trades = []
+                        for gt in deact_trades:
+                            tracker.record(gt["pnl"])
+                            if paper_mode and hasattr(executor, 'cash'):
+                                executor.cash += gt["pnl"]
+                            close_side = "GRID_CLOSE_BUY" if gt["side"] == "buy" else "GRID_CLOSE_SELL"
+                            db.log_trade(
+                                config.symbol, close_side,
+                                gt["entry"], GRID_SIZE / gt["entry"],
+                                GRID_SIZE, gt["pnl"],
+                                direction="long" if gt["side"] == "buy" else "short",
+                                entry_price=gt.get("entry"),
+                                exit_price=gt.get("exit"),
+                                exit_reason="grid_deactivate",
+                                strategy_version="grid_v1",
+                                strategy_intent="grid_mean_reversion",
+                                trigger_rule="grid_level",
+                                instance_name=getattr(config, "instance_name", "live"),
+                            )
+                        # Push grid deactivation notification
+                        if not QUIET_MODE:
+                            grid_notifier._send(
+                                "GRID OFF",
+                                f"SOL PnL ${grid.pnl:+.2f} | {grid.trades} trades",
+                            )
+                            try:
+                                broadcast_grid_event("deactivated", {"pnl": grid.pnl, "trades": grid.trades})
+                            except Exception:
+                                pass
+                        grid_was_active = False
+
+            # Save state file every loop (for crash recovery + dashboard)
+            if hasattr(executor, '_save_state'):
+                executor._save_state(grid.get_status() if grid else {})
+
+            # Publish to Cloudflare KV (for web dashboard) — never from shadow
+            if not QUIET_MODE:
+                try:
+                    publish_to_kv()
+                except Exception as e:
+                    logger.debug(f"[KV] Publish failed: {e}")
+
+            time.sleep(config.scan_interval_seconds)
+
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            logger.error(f"[SNIPER] Main loop error: {e}", exc_info=True)
+            time.sleep(10)
+
+    # ── Exit ──
+    logger.info("[SNIPER] Shutting down...")
+    # Save sniper position for recovery on restart (do NOT close)
+    executor._save_state()
+    logger.info(f"[SNIPER] Position state saved for restart")
+    # Save grid state for recovery on restart (do NOT close positions)
+    if grid:
+        try:
+            grid._save_state()
+            gs = grid.get_status()
+            filled = sum(1 for o in grid.grid_orders.values() if o.get("filled"))
+            logger.info(f"[GRID] State saved for restart | {filled} filled positions preserved | PnL ${gs['pnl']:+.2f} | Trades {gs['trades']}")
+        except Exception:
+            pass
+
+    if tracker.trades > 0:
+        wr = tracker.wins / tracker.trades * 100
+        logger.info(
+            f"[SNIPER DAILY] {tracker.date} | "
+            f"Trades: {tracker.trades} | Win rate: {wr:.0f}% | PnL: ${tracker.pnl:+.2f}"
+        )
+
+    total_pnl = db.get_total_pnl()
+    logger.info(f"[SNIPER] Total PnL: ${total_pnl:+.2f}")
+    logger.info("[SNIPER] Exited")
+
+
+if __name__ == "__main__":
+    main()
