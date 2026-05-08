@@ -147,14 +147,13 @@ Not every good idea gets promoted — the bar is high on purpose. But every good
 
 ## Quick start
 
-The strategy modules live in the curated public mirror — start there:
-
 ```bash
 git clone https://github.com/bbismm/ibitlabs-public.git
 cd ibitlabs-public
-pip install -r requirements.txt
-cp .env.example .env   # add your Coinbase API credentials
+python paper_quickstart.py    # see a full trade lifecycle, no API key needed
 ```
+
+Full walkthrough: **[STARTER.md on the mirror](https://github.com/bbismm/ibitlabs-public/blob/main/STARTER.md)** — clone, install, run, inspect the SQLite trade row, decide where to go next. ~30 minutes. No Coinbase API key needed for the quickstart (mock exchange).
 
 > **A note on backtests.** Don't trust any backtest narrower than 12 months of out-of-sample data, including ours. Older versions of this README cited 180-day numbers; we no longer believe in them as evidence. The honest current evidence is the live track record on `/signals`, which has been running for weeks, not months.
 
