@@ -37,7 +37,14 @@ OG_DIR = BASE_DIR / "og_images"
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID", "@ibitlabs_sniper")
-TWITTER_ENABLED = os.getenv("TWITTER_ENABLED", "0") == "1"
+# Twitter automation paused 2026-04-22 (memory feedback_social_paused.md).
+# Hard-disabled despite default "0" because prior runs hit the true branch
+# anyway (env inheritance from somewhere). Set MOLTBOOK_FORCE_TWITTER=1 to
+# explicitly re-enable when Bonny reactivates.
+TWITTER_ENABLED = os.getenv("MOLTBOOK_FORCE_TWITTER", "0") == "1"
+# Moltbook publishing — primary social surface post 2026-04-30.
+MOLTBOOK_PUBLISHER = str(Path.home() / "scripts" / "moltbook_publish.py")
+MOLTBOOK_KEYCHAIN_SERVICE = "ibitlabs-moltbook-agent"  # @ibitlabs_agent persona
 
 STARTING_CAPITAL = 1000.0
 LIVE_SINCE = "2026-04-07"
@@ -374,6 +381,9 @@ def format_telegram(stats: dict, week_label: str) -> str:
 def format_twitter(stats: dict, week_label: str) -> str:
     ps = "+" if stats["week_pnl"] >= 0 else ""
     emoji = "🟢" if stats["week_pnl"] >= 0 else "🔴"
+    # "AI built this. I can't code." dropped 2026-05-08 — out of step with
+    # 2026-05-04 README rewrite framing. Public-record + co-builder is the
+    # current voice (CLAUDE.md vision). Twitter is paused anyway.
     return (
         f"📊 Weekly Report — {week_label}\n\n"
         f"{emoji} Week: ${ps}{stats['week_pnl']:.2f} ({ps}{stats['week_pnl_pct']:.2f}%)\n"
@@ -383,10 +393,111 @@ def format_twitter(stats: dict, week_label: str) -> str:
         f"• Balance: ${stats['balance']:,.2f}\n"
         f"• {stats['cum_trades']} trades, WR {stats['cum_win_rate']:.1f}%\n"
         f"• {stats['days_live']} days live\n\n"
-        f"AI built this. I can't code.\n"
-        f"ibitlabs.com\n\n"
-        f"#AI #crypto #trading #SOL #buildinpublic"
+        f"$1,000 → $10,000 in public. Receipts: ibitlabs.com/signals\n\n"
+        f"#crypto #trading #SOL #buildinpublic"
     )
+
+
+def format_moltbook(stats: dict, week_label: str, week_start: str, week_end: str) -> tuple[str, str]:
+    """Returns (title, body) for the Moltbook weekly receipts post.
+
+    Polanyi-respecting: first-person uncertainty, no bullet-point wisdom,
+    receipts-centered narrative. Posts to s/general as @ibitlabs_agent.
+    """
+    ws_short = week_start[5:]  # MM-DD
+    we_short = week_end[5:]
+
+    title = f"Week {week_label} receipts"
+
+    pnl_sign = "+" if stats["week_pnl"] >= 0 else ""
+    cum_sign = "+" if stats["cum_pnl"] >= 0 else ""
+    real_sign = "+" if stats["cum_realized"] >= 0 else ""
+
+    body = (
+        f"Week {week_label} receipts ({ws_short} → {we_short}):\n"
+        f"\n"
+        f"This week\n"
+        f"  Closed trades: {stats['week_fills']}\n"
+        f"  Net P&L:       ${pnl_sign}{stats['week_pnl']:.2f} ({pnl_sign}{stats['week_pnl_pct']:.2f}%)\n"
+        f"  Win days:      {stats['week_win_days']}/{stats['week_days_traded']}\n"
+        f"\n"
+        f"Cumulative since 2026-04-07 ({stats['days_live']} days live)\n"
+        f"  Balance:    ${stats['balance']:,.2f}\n"
+        f"  Total P&L:  ${cum_sign}{stats['cum_pnl']:.2f} ({cum_sign}{stats['cum_pnl_pct']:.2f}%)\n"
+        f"  Realized:   ${real_sign}{stats['cum_realized']:.2f}\n"
+        f"  Carry cost: -${stats['carry_cost']:.2f} (fees + funding)\n"
+        f"  Trades:     {stats['cum_trades']}, WR {stats['cum_win_rate']:.1f}%\n"
+        f"  Max DD:     {stats['max_drawdown_pct']:.1f}%\n"
+        f"\n"
+        f"$1,000 → $10,000 in public. Every trade ID is on /signals; the "
+        f"chart attached on the Telegram channel is generated from the same "
+        f"SQLite DB the bot writes to. The numbers above are what stayed "
+        f"after the week was over — what didn't is also visible by diff.\n"
+        f"\n"
+        f"Full chart + per-trade detail: https://ibitlabs.com/signals"
+    )
+    return title, body
+
+
+def _moltbook_api_key() -> str:
+    """Fetch @ibitlabs_agent API key from macOS Keychain. Empty on failure."""
+    try:
+        import subprocess
+        return subprocess.check_output(
+            ["security", "find-generic-password",
+             "-s", MOLTBOOK_KEYCHAIN_SERVICE, "-a", "ibitlabs", "-w"],
+            text=True, timeout=5,
+        ).strip()
+    except Exception as e:
+        print(f"   ⚠️  Keychain fetch failed: {e}")
+        return ""
+
+
+def publish_moltbook(title: str, body: str) -> None:
+    import subprocess
+    import tempfile
+
+    api_key = _moltbook_api_key()
+    if not api_key:
+        print("   ⚠️  Moltbook skipped — no API key from Keychain")
+        return
+
+    # Write to temp files since the publisher uses --title-file/--body-file
+    title_path = body_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as tf:
+            tf.write(title)
+            title_path = tf.name
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as tf:
+            tf.write(body)
+            body_path = tf.name
+
+        result = subprocess.run(
+            ["python3", MOLTBOOK_PUBLISHER,
+             "--title-file", title_path,
+             "--body-file", body_path,
+             "--submolt", "general",
+             "--api-key", api_key],
+            capture_output=True, text=True, timeout=180,
+        )
+        if result.returncode == 0:
+            print("   ✅ Moltbook posted")
+            # Surface the URL if present in stdout
+            for line in result.stdout.splitlines():
+                if "moltbook.com/post/" in line:
+                    print(f"      {line.strip()}")
+                    break
+        else:
+            print(f"   ❌ Moltbook failed (exit {result.returncode}): {result.stderr[:300]}")
+    except Exception as e:
+        print(f"   ❌ Moltbook exception: {e}")
+    finally:
+        for p in (title_path, body_path):
+            if p:
+                try:
+                    os.unlink(p)
+                except OSError:
+                    pass
 
 
 # ---------- TELEGRAM ----------
@@ -426,12 +537,20 @@ def main():
         year_str, week_str = args.week.split("-W")
         year, week = int(year_str), int(week_str)
     else:
-        # Report on the week that JUST ENDED, not the one that just started.
-        # The launchd job fires Sunday 20:00 local (= Monday ~03:00 UTC), so
-        # `now()` would resolve to next-week's ISO number; back off 24h to
-        # land safely inside the week we want to summarize.
-        anchor = datetime.now(timezone.utc) - timedelta(days=1)
-        iso = anchor.isocalendar()
+        # Report on the week that JUST ENDED. Find the most recent Sunday
+        # (in UTC, ISO week ending day) and use its ISO week number.
+        #
+        # Robust to launchd timezone wobble:
+        #   Sunday 20:00 EDT → Mon 00:00 UTC → isoweekday=1 → days_back=1 → last Sun → W=just-ended
+        #   Sunday 20:00 EST → Mon 01:00 UTC → isoweekday=1 → days_back=1 → last Sun → W=just-ended
+        #   Manual run on Friday → isoweekday=5 → days_back=5 → last Sun → W=just-ended
+        # Fix 2026-05-08: prior `now() - 1d` then isocalendar() landed on the
+        # WRONG week when launchd fired ~midnight UTC, producing zero-data
+        # reports for the week that hadn't started yet (e.g. W19 on 5/3).
+        now_utc = datetime.now(timezone.utc)
+        days_back_to_sun = now_utc.isoweekday() % 7  # Sun=0, Mon=1, ..., Sat=6
+        last_sunday = now_utc - timedelta(days=days_back_to_sun)
+        iso = last_sunday.isocalendar()
         year, week = iso[0], iso[1]
     week_label = f"{year}-W{week:02d}"
     week_start, week_end = get_week_dates(year, week)
@@ -467,8 +586,11 @@ def main():
         f.write(f"--- TWITTER ---\n{tw}\n")
     print(f"   📝 Social copy: {social_file}")
 
+    mb_title, mb_body = format_moltbook(stats, week_label, week_start, week_end)
+
     if not args.dry_run:
         send_telegram(tg, photo=charts.get("chart"))
+        publish_moltbook(mb_title, mb_body)
         if TWITTER_ENABLED:
             try:
                 from twitter_auto_poster import post_tweet, upload_image
@@ -479,10 +601,11 @@ def main():
             except Exception as e:
                 print(f"   ⚠️  Twitter post skipped: {e}")
         else:
-            print("   🐦 Twitter post skipped (TWITTER_ENABLED=0).")
+            print("   🐦 Twitter post skipped (paused per feedback_social_paused.md).")
     else:
         print(f"\n--- TELEGRAM ---\n{tg}\n")
-        print(f"\n--- TWITTER ---\n{tw}\n")
+        print(f"\n--- MOLTBOOK ---\nTitle: {mb_title}\n\n{mb_body}\n")
+        print(f"\n--- TWITTER (paused — would not post) ---\n{tw}\n")
 
     print(f"\n✅ Done for {week_label}")
 
