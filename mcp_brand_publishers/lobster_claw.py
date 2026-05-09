@@ -27,7 +27,7 @@ NUMBER_WORDS: dict[str, int] = {
 
 ADD_VERBS = {"gains", "adds", "plus"}
 SUB_VERBS = {"loses", "drops", "molts", "slows"}
-MUL_VERBS = {"times", "multiplied", "multiply"}
+MUL_VERBS = {"times", "multiplied", "multiply", "multiplies"}
 SEPARATORS = {"and"}
 
 # Postfix math nouns: "what is the <noun> of A and B" → A <op> B.
@@ -176,8 +176,16 @@ def _postfix_solve(challenge: str, tokens: list[str]) -> str | None:
             buf.clear()
         last_num = None
 
-    for tok in tokens:
-        if tok in NUMBER_WORDS:
+    # Use gap-aware tokens so "thirty [notonswith] one" does not fold to 31:
+    # a gap between non-adjacent number tokens breaks the compound buffer.
+    gap_tokens = _tokenize_with_gaps(_clean(challenge))
+    for tok in gap_tokens:
+        if tok == "__GAP__":
+            # Non-adjacent gap: break compound if last_num is not a magnitude.
+            # Prevents "thirty [stuff] one" → 31; "twenty" + adjacent "two" → 22 still works.
+            if buf and NUMBER_WORDS.get(last_num, 0) not in (100, 1000):
+                flush()
+        elif tok in NUMBER_WORDS:
             buf.append(tok)
             last_num = tok
         elif tok in SEPARATORS:
@@ -194,6 +202,17 @@ def _postfix_solve(challenge: str, tokens: list[str]) -> str | None:
 
     if len(groups) < 2:
         return None  # need at least two operands to apply a postfix op
+
+    # Drop likely modifier-ones: "thirty Newtons with ONE claw" emits groups [30, 1, 22]
+    # when "one" refers to claw count, not force. Filter: if ≥3 groups exist, some are 1,
+    # and ≥2 others are ≥10, the 1-groups are count modifiers, not force operands.
+    if len(groups) >= 3:
+        non_one = [g for g in groups if g != 1]
+        if len(non_one) >= 2 and all(v >= 10 for v in non_one):
+            groups = non_one
+
+    if len(groups) < 2:
+        return None
 
     result: float = float(groups[0])
     for v in groups[1:]:
@@ -242,24 +261,11 @@ def _debug_log(challenge: str, cleaned: str, tokens: list[str],
         pass  # never break the executor
 
 
-def solve(challenge: str) -> str:
+def _infix_pairs(tokens: list[str]) -> list[tuple[str, int]]:
     """
-    Solve a lobster-claw challenge, return the answer formatted as "{:.2f}".
-
-    Raises ValueError if no operands are found.
+    Extract (op, value) pairs from a token list using infix parsing.
+    Returns [] if no number tokens are found.
     """
-    cleaned = _clean(challenge)
-    tokens = _tokenize(cleaned)
-
-    # Postfix-noun path takes priority: "what is the product of A and B".
-    postfix = _postfix_solve(challenge, tokens)
-    if postfix is not None:
-        _debug_log(challenge, cleaned, tokens, "postfix", postfix)
-        return postfix
-
-    # Group adjacent number tokens. Verbs and "and" act as boundaries.
-    # Build a sequence of (op, value) pairs, where op is the operator
-    # that PRECEDES the value. The first value is implicitly "+ value".
     pairs: list[tuple[str, int]] = []
     pending_op = "+"
     buf: list[str] = []
@@ -273,9 +279,6 @@ def solve(challenge: str) -> str:
         if tok in NUMBER_WORDS:
             buf.append(tok)
         elif tok in SEPARATORS:
-            # "and" inside a compound number ("twenty and one") is a no-op:
-            # the buffer keeps accumulating. Outside a number it is also
-            # harmless because no buffer means no flush.
             continue
         elif tok in ADD_VERBS or tok == "+":
             flush()
@@ -287,6 +290,113 @@ def solve(challenge: str) -> str:
             flush()
             pending_op = "*"
     flush()
+    return pairs
+
+
+def _tokenize_with_gaps(cleaned: str) -> list[str]:
+    """Like _tokenize but inserts '__GAP__' between tokens separated by non-matching chars.
+
+    Used by _postfix_solve to prevent "thirty [notons with] one" from being
+    folded into compound 31: the gap between 'thirty' and 'one' triggers a
+    buffer flush so they remain separate operand groups.
+    """
+    tokens: list[str] = []
+    i = 0
+    n = len(cleaned)
+    had_gap = False
+    while i < n:
+        matched: str | None = None
+        for tok in _ALL_TOKENS:
+            tlen = len(tok)
+            if cleaned[i : i + tlen] == tok:
+                matched = tok
+                break
+        if matched is None:
+            i += 1
+            had_gap = True
+        else:
+            if had_gap and tokens:
+                tokens.append("__GAP__")
+            tokens.append(matched)
+            had_gap = False
+            i += len(matched)
+    return tokens
+
+
+# Pre-built doubled-char token patterns (longest first) — cached at module load.
+# Each token char is wrapped in `char{1,2}` so "twenty" matches "twweennttyyy".
+# Used by _tokenize_doubled() as the fallback path for doubled-char obfuscation.
+_DOUBLED_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile("".join(f"{re.escape(c)}{{1,2}}" for c in tok)), tok)
+    for tok in _ALL_TOKENS
+]
+
+
+def _tokenize_doubled(cleaned: str) -> list[str]:
+    """
+    Tokenize a string where each character of the original word may appear
+    1 or 2 times consecutively (doubled-char obfuscation).
+
+    Examples:
+      "twweennttyyy"  → ["twenty"]   (each char doubled)
+      "thhree"        → ["three"]    (only 'h' doubled; 'ee' natural)
+      "fiivvee"       → ["five"]     (i,v,e each doubled)
+
+    Falls back to skip (i += 1) for unrecognised characters, same as _tokenize().
+    """
+    tokens: list[str] = []
+    i = 0
+    n = len(cleaned)
+    while i < n:
+        matched_tok: str | None = None
+        matched_len: int = 0
+        for pattern, tok in _DOUBLED_PATTERNS:
+            m = pattern.match(cleaned, i)
+            if m:
+                matched_tok = tok
+                matched_len = m.end() - m.start()
+                break
+        if matched_tok is None:
+            i += 1
+        else:
+            tokens.append(matched_tok)
+            i += matched_len
+    return tokens
+
+
+def solve(challenge: str) -> str:
+    """
+    Solve a lobster-claw challenge, return the answer formatted as "{:.2f}".
+
+    Two-pass strategy: standard clean first; if no operands, retry with
+    full-collapse clean that also handles doubled-consonant obfuscation.
+
+    Raises ValueError if no operands are found after both passes.
+    """
+    cleaned = _clean(challenge)
+    tokens = _tokenize(cleaned)
+
+    # Postfix-noun path takes priority: "what is the product of A and B".
+    postfix = _postfix_solve(challenge, tokens)
+    if postfix is not None:
+        _debug_log(challenge, cleaned, tokens, "postfix", postfix)
+        return postfix
+
+    pairs = _infix_pairs(tokens)
+
+    if not pairs:
+        # Fallback: doubled-char obfuscation (e.g. 'tWwEeNnTtYy' where each
+        # original char appears 1–2 times). Re-tokenize with char{1,2} patterns
+        # so "twenty" matches "twweennttyyy" and "three" still matches "thhree"
+        # without collapsing the natural 'ee' at the end of "three".
+        tokens2 = _tokenize_doubled(cleaned)
+
+        postfix2 = _postfix_solve(challenge, tokens2)
+        if postfix2 is not None:
+            _debug_log(challenge, cleaned, tokens2, "postfix_fallback", postfix2)
+            return postfix2
+
+        pairs = _infix_pairs(tokens2)
 
     if not pairs:
         _debug_log(challenge, cleaned, tokens, [], None,
