@@ -57,19 +57,60 @@ _ALL_TOKENS: list[str] = sorted(
 
 
 def _clean(challenge: str) -> str:
-    """Keep only [A-Za-z+*], lowercase. Per SKILL.md.
+    """Keep only [A-Za-z+*], lowercase, with per-word repeated-char collapse.
 
-    Also collapses repeated a/i/o/u (obfuscation artifact from the mixed-case
-    challenge style — e.g. "SlOoWs" cleans to "sloows"; normalizing gives
-    "slows" so the token matches). 'e' is excluded: number words like "fifteen"
-    and "seventeen" contain "ee" and must not be collapsed.
+    Splits on whitespace first so collapse applies within each original word,
+    not across word boundaries ("gains seven" keeps cross-boundary "ss" so
+    "seven" tokenises correctly).
+
+    Charset [a-cg-z] collapses all letters except d, e, f:
+      - d excluded: "adds" has natural "dd" and must survive unchanged.
+      - e excluded: "fifteen"/"seventeen" have natural "ee" and must survive.
+      - f excluded: "difference" has natural "ff" and must survive.
+    All other doubled consonants are obfuscation artifacts and are collapsed
+    (e.g. "fIiVvE" -> "fiivve" -> "five", "tWwO" -> "twwo" -> "two").
     """
-    s = re.sub(r"[^A-Za-z+*]", "", challenge).lower()
-    return re.sub(r"([aiou])\1+", r"\1", s)
+    result = []
+    for word in challenge.split():
+        s = re.sub(r"[^A-Za-z+*]", "", word).lower()
+        s = re.sub(r"([a-cg-z])\1+", r"\1", s)
+        result.append(s)
+    return "".join(result)
 
 
-def _tokenize(cleaned: str) -> list[str]:
-    """Greedy-match longest known token. Skip unknown chars."""
+def _valid_numbers(challenge: str) -> frozenset[str]:
+    """Return the set of NUMBER_WORDS that appear as whole words in *challenge*.
+
+    Handles two forms:
+    - Plain: ``\\bthirty\\b`` matches "ThIrTy" (word-boundary + IGNORECASE).
+    - Doubled-char obfuscated: each original character may appear 1–2 times,
+      surrounded by non-alpha boundaries — e.g. ``f{1,2}i{1,2}v{1,2}e{1,2}``
+      matches "fIiVvE" when preceded and followed by non-alpha chars.
+
+    Used by _tokenize to reject spurious substring matches such as "ten"
+    inside "antenna".
+    """
+    valid: set[str] = set()
+    for word in NUMBER_WORDS:
+        if re.search(rf"\b{word}\b", challenge, re.IGNORECASE):
+            valid.add(word)
+        else:
+            doubled_pat = "".join(f"{re.escape(c)}{{1,2}}" for c in word)
+            if re.search(
+                rf"(?<![A-Za-z]){doubled_pat}(?![A-Za-z])", challenge, re.IGNORECASE
+            ):
+                valid.add(word)
+    return frozenset(valid)
+
+
+def _tokenize(cleaned: str, valid_numbers: frozenset[str] | None = None) -> list[str]:
+    """Greedy-match longest known token. Skip unknown chars.
+
+    When *valid_numbers* is provided, NUMBER_WORD tokens that do not appear
+    as whole words in the original challenge are skipped — prevents "ten"
+    from being extracted as a number token when it appears as a substring
+    inside an unrelated word like "antenna".
+    """
     tokens: list[str] = []
     i = 0
     n = len(cleaned)
@@ -78,6 +119,8 @@ def _tokenize(cleaned: str) -> list[str]:
         for tok in _ALL_TOKENS:
             tlen = len(tok)
             if cleaned[i : i + tlen] == tok:
+                if valid_numbers is not None and tok in NUMBER_WORDS and tok not in valid_numbers:
+                    continue
                 matched = tok
                 break
         if matched is None:
@@ -413,8 +456,9 @@ def solve(challenge: str) -> str:
 
     Raises ValueError if no operands are found after both passes.
     """
+    valid = _valid_numbers(challenge)
     cleaned = _clean(challenge)
-    tokens = _tokenize(cleaned)
+    tokens = _tokenize(cleaned, valid)
 
     # Postfix-noun path takes priority: "what is the product of A and B".
     postfix = _postfix_solve(challenge, tokens)

@@ -308,5 +308,43 @@ class TestPostfixNouns(unittest.TestCase):
         )
 
 
+class TestSubstringFalsePositives(unittest.TestCase):
+    """Regression for two production bugs fixed 2026-05-11.
+
+    Bug 1 (antenna/ten): _tokenize greedily matched "ten" inside "antenna"
+    (a-n-t-e-n-n-a) giving 35+22=57 instead of 35+12=47.
+    Fix: _valid_numbers() pre-filter — only NUMBER_WORDS that appear as whole
+    words in the original challenge are accepted by _tokenize().
+
+    Bug 2 (doubled consonants: fIiVvE / tWwO): _clean() only collapsed
+    repeated vowels (a/i/o/u), leaving "fivve" and "twwo" unrecognised.
+    Fix: _clean() now collapses all non-'e' repeated chars so "fIiVvE" → "five"
+    and "tWwO" → "two" before tokenisation.
+    """
+
+    def test_ten_inside_antenna_ignored(self) -> None:
+        # "antenna" contains "ten" as a substring. Without the word-boundary
+        # filter _tokenize extracts [thirty, five, +, ten, twelve, total] and
+        # returns 35+10+12=57. Correct answer: 35+12=47.
+        self.assertEqual(
+            solve(
+                "ThIrTy FiVe NoOtOnS] + An TeNnA ExErTs/ TwElVe NeWtOnS~ HoW{ MaNy }ToTaL?"
+            ),
+            "47.00",
+        )
+
+    def test_doubled_consonants_thirty_five_plus_twenty_two(self) -> None:
+        # Heavy obfuscation: "fIiVvE" (doubled v) and "tWwO" (doubled w).
+        # Before fix: _clean collapsed only vowels → "fivve"/"twwo" not found →
+        # postfix path on partial tokens gave 30+20=50. Correct answer: 35+22=57.
+        self.assertEqual(
+            solve(
+                "tHiRtY fIiVvE ~ nOoOtOnS, uMm } lOoOobSsStEr\\ cLaW| fOrCe~ "
+                "iS tWeNtY tWwO < wHaT } iS~ tHe| ToTaL- FoRcE?"
+            ),
+            "57.00",
+        )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
