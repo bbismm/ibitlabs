@@ -150,6 +150,20 @@ def _postfix_solve(challenge: str, tokens: list[str]) -> str | None:
     if "+" in tokens or "*" in tokens:
         return None
 
+    # Same principle for verb operators: if a MUL/SUB verb appears with an
+    # operand AFTER it (i.e. mid-sequence, not postfix), the infix path will
+    # apply it correctly. Don't let a postfix noun shadow it.
+    # Added 2026-05-10: "thirty two MULTIPLIES four total" was returning
+    # 32+4=36 via postfix("total"→"+") instead of 32*4=128 via infix.
+    for idx, vtok in enumerate(tokens):
+        if vtok in MUL_VERBS or vtok in SUB_VERBS:
+            for after in tokens[idx + 1:]:
+                if after in NUMBER_WORDS:
+                    return None  # infix has an operand for this verb
+                if (after in MUL_VERBS or after in SUB_VERBS
+                        or after in ADD_VERBS or after in POSTFIX_NOUNS):
+                    break
+
     op_tokens = [t for t in tokens if t in POSTFIX_NOUNS]
     if not op_tokens:
         return None
@@ -164,6 +178,26 @@ def _postfix_solve(challenge: str, tokens: list[str]) -> str | None:
     if len(distinct_ops) > 1:
         return None
     op = POSTFIX_NOUNS[op_tokens[0]]
+
+    # Trailing-verb override (added 2026-05-10): when a MUL/SUB verb appears
+    # at the END of the token sequence (after the postfix noun, no operand
+    # following), the trailing verb is the actual instruction —
+    # "what is the TOTAL force, please MULTIPLY?" means × not +.
+    # Scan from end; stop at any number/and (operand region begins). Postfix
+    # nouns are skipped over (they're what we're potentially overriding).
+    for tok in reversed(tokens):
+        if tok in MUL_VERBS:
+            op = "*"
+            break
+        if tok in SUB_VERBS:
+            op = "-"
+            break
+        if tok in NUMBER_WORDS or tok == "and":
+            break
+        if tok in POSTFIX_NOUNS:
+            continue
+        if tok in ADD_VERBS:
+            break  # ADD verb at end is same as default +, no override
 
     groups: list[int] = []
     buf: list[str] = []

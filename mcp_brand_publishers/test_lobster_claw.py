@@ -221,6 +221,36 @@ class TestPostfixNouns(unittest.TestCase):
         self.assertEqual(solve("two hundred and three"), "203.00")
         self.assertEqual(solve("twenty and one gains seven"), "28.00")
 
+    # --- trailing-verb override (added 2026-05-10) ---
+    # Captured from co-founder review publish failure 2026-05-11 02:01 UTC:
+    # postfix "total" gave 35+2=37 instead of the intended 35*2=70.
+    # The trailing "please multiply" is the actual instruction.
+    def test_trailing_multiply_overrides_total_noun(self) -> None:
+        self.assertEqual(
+            solve("first claw force is thirty five newtons and other claw "
+                  "is two, what is the total force, please multiply?"),
+            "70.00",
+        )
+
+    def test_trailing_subtract_overrides_total_noun(self) -> None:
+        # Defensive: SUB verb at end should also override total→+.
+        self.assertEqual(
+            solve("lobster a has sixty newtons and lobster b has twenty, "
+                  "what is the difference please subtract?"),
+            "40.00",
+        )
+
+    def test_midsequence_multiplies_bypasses_postfix(self) -> None:
+        # Captured from successful publish 2026-05-11 02:01 UTC after
+        # persistent-script fix. The verb "multiplies" is NOT trailing —
+        # it has an operand ("four") after it, so infix should compute
+        # 32 * 4 = 128, NOT postfix("total"→"+") = 32+4 = 36.
+        self.assertEqual(
+            solve("claw force is thirty two newtons and during dominance "
+                  "fight it multiplies by four, what's total force?"),
+            "128.00",
+        )
+
     # --- false-positive substring tests ---
     # The greedy tokenizer matches "sum" inside "summons", "summer", "consumed",
     # and "total" inside "totally". Without the whole-word filter these would
