@@ -295,5 +295,18 @@ class TestPostfixNouns(unittest.TestCase):
         )
 
 
+    def test_space_obfuscated_product_postfix(self) -> None:
+        # "P]rO dUcT" has a SPACE inside the obfuscated token. Raw \b check fails
+        # because the letters are split. Compact-clean ends with "product" →
+        # compact-end fallback accepts it → postfix multiply applies.
+        self.assertEqual(
+            solve(
+                "A] lO b-StEr S^wImS[ aT/ tW eN tY tHrEe MeTeR sPeR SeCoNd]"
+                " aNd| iTs ClA w ExE rTs^ SeV eN N{eU}toNs, WhAt Is ThE P]rO dUcT?"
+            ),
+            "161.00",  # 23 * 7
+        )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

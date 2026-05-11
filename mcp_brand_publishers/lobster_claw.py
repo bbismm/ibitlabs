@@ -167,10 +167,16 @@ def _postfix_solve(challenge: str, tokens: list[str]) -> str | None:
     op_tokens = [t for t in tokens if t in POSTFIX_NOUNS]
     if not op_tokens:
         return None
-    # Whole-word filter against the raw challenge (case-insensitive).
+    # Whole-word filter: raw challenge handles "ToTaL" (single-char obfuscation with
+    # surrounding spaces/punctuation → \b match works). Compact fallback handles
+    # space-split obfuscation like "P]rO dUcT" where a SPACE inside the token
+    # breaks the raw \b match — but after removing all non-alpha the token lands at
+    # the end of the compact string (e.g. "whatistheproduct").
+    _compact = re.sub(r"[^A-Za-z+*]", "", challenge.lower())
     op_tokens = [
         t for t in op_tokens
-        if re.search(rf"\b{t}\b", challenge, re.IGNORECASE) is not None
+        if (re.search(rf"\b{t}\b", challenge, re.IGNORECASE) is not None
+            or re.search(rf"{re.escape(t)}$", _compact) is not None)
     ]
     if not op_tokens:
         return None
