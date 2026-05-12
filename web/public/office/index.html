@@ -9,7 +9,7 @@
     <meta property="og:description" content="Five agents in a pixel-art office. Real trading data, real supervisors, public supervision of the $1k → $10k experiment." />
     <meta property="og:image" content="/icon-512.png" />
     <title>Watch the lab live · iBitLabs</title>
-    <script type="module" crossorigin src="./assets/index-8AFpNMPG.js"></script>
+    <script type="module" crossorigin src="./assets/index-JImgcM8R.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Csbqynpm.css">
     <style>
       :root { color-scheme: dark; }
@@ -87,25 +87,63 @@
         height: 100vh; box-sizing: border-box;
       }
 
+      /* ── Mobile / narrow-viewport adaptation ───────────────────────────
+         Three breakpoints, layered:
+           ≤900px  : ticker becomes a bottom drawer (right rail too tight)
+           ≤768px  : leaderboard swaps to compact MobileLeaderBar (handled
+                     in App.tsx via matchMedia); OnAirStrip + banner
+                     re-flow without the 400px right-rail offset.
+           ≤640px  : tightest typography + nav text trimmed.
+      */
       @media (max-width: 900px) {
-        /* Ticker becomes a bottom drawer on narrow screens — see component CSS */
-        #root { padding-right: 0; padding-bottom: 280px; }
+        #root { padding-right: 0; padding-bottom: 260px; }
         .office-ticker {
           top: auto !important;
           left: 0 !important;
           right: 0 !important;
           width: auto !important;
-          height: 260px !important;
+          height: 240px !important;
           bottom: 0 !important;
           border-left: none !important;
           border-top: 1px solid #2a2a3a !important;
         }
       }
+      @media (max-width: 768px) {
+        /* OnAirStrip: full width, no right-rail offset, more compact */
+        .onair-strip {
+          right: 0 !important;
+          padding: 8px 14px !important;
+          gap: 14px !important;
+          top: 50px !important;
+        }
+        .onair-strip > span:last-child { display: none; } /* hide UTC clock */
+        /* AchievementBanner: re-center without the 400px right-rail offset */
+        .achievement-banner {
+          left: 50% !important;
+          min-width: 0 !important;
+          width: calc(100vw - 32px) !important;
+          max-width: 460px !important;
+          padding: 14px 18px !important;
+        }
+        /* Stack everything above the canvas: site-bar (50) + OnAirStrip (~40)
+           + MobileLeaderBar (~96) = ~186 top reservation. */
+        #root {
+          padding-top: 192px;
+          padding-right: 0;
+          padding-bottom: 240px;
+        }
+        /* Hide legend on phones — MobileLeaderBar already names every agent */
+        #legend { display: none !important; }
+        /* Tighter site-bar */
+        #site-bar { font-size: 14px; padding: 10px 14px; line-height: 1.35; }
+        #site-bar .sub { font-size: 12px; }
+      }
       @media (max-width: 640px) {
         #site-bar { font-size: 13px; padding: 10px 12px; }
         #site-bar .sub { display: none; }
-        #legend { max-width: 260px; font-size: 13px; padding: 12px 14px; bottom: 280px; }
-        #root { padding-top: 44px; }
+        .onair-strip > span:nth-child(4) { display: none; } /* hide TODAY ALERTS */
+        .office-ticker { height: 200px !important; }
+        #root { padding-bottom: 200px; }
       }
     </style>
   </head>
