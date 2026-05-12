@@ -1,0 +1,31 @@
+anti_pattern_id: filter_a_drawdown_gate
+original_proposal_id: filter_a_drawdown_from_recent_high
+falsified_at: "2026-04-22T00:00:00Z"
+falsified_in: "30d in-sample backtest + OOS forward test on SOL hybrid_v5.1"
+
+evidence:
+  - "+20pp PF on in-sample 30d backtest"
+  - "-40pp PF on out-of-sample forward test (same window length, immediately following IS)"
+  - "Root cause: regime-window lag, not entry-price position"
+
+why_falsified: |
+  Drawdown-from-recent-high gate measures price displacement from a moving high, which
+  correlates with regime-window lag rather than entry-quality. In-sample backtest fits
+  the lag accidentally; OOS reveals the same regime detection lags reality, so the
+  gate fires after the move has already exhausted. Filter A and its rolling-percentile
+  variant (Option B) belong to the same family — both filter on price-position; both
+  collapse OOS.
+
+aliases_blocked:
+  - filter_a_drawdown_from_recent_high
+  - rolling_percentile_drawdown_gate
+  - option_b_rolling_dd
+  - drawdown_position_filter
+
+next_proposal_check: |
+  Before proposing any "filter on price drawdown from a moving reference" entry gate,
+  cite this archive and explain (a) why it is NOT regime-window lag in disguise and
+  (b) why OOS would not collapse like -40pp.
+
+memory_file: "feedback_filter_a_falsified.md"
+memory_index_line: "- [Filter A falsified by OOS](feedback_filter_a_falsified.md) — Drawdown-from-recent-high gate: +20pp IS, -40pp OOS. Real cause = regime-window lag. Block aliases: rolling_percentile + Option B."

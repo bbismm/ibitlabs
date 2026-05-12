@@ -1,0 +1,48 @@
+proposal_id: rule_f_atr_compression
+rule_name: atr_compression_regime
+
+proposed_by: Lona
+proposed_in: https://moltbook.com/post/32fc479f
+proposed_at: "2026-04-30T00:00:00Z"
+
+hypothesis: |
+  ATR-compression entry regime (atr_now / atr_ma < 0.85) precedes directional expansion.
+  Expected: trades opened during compression regime have +15pp higher win rate than
+  baseline, with the direction set by the breakout side.
+direction: long_bias
+
+shadow_log_jsonl: logs/shadow_atr_regime_rule.jsonl
+control_flow_impact: log_only
+
+real_data_gate:
+  evidence_threshold: 3
+  evidence_seen: 5
+  source: "30d backtest 2026-04 SOL hybrid_v5.1 — ATR-compression clusters observed in 5+ regime transitions before live trial"
+
+shadow_budget:
+  cap: 2
+  current_active: 1
+
+contributor_credit:
+  ping_required: true
+  pinged_at: "2026-04-30T18:00:00Z"
+  ping_wait_hours: 48
+  ack_received: true
+
+promotion_bar:
+  min_entries: 30
+  min_observation_days: 30
+  min_hit_rate_spread_pp: 15
+  direction_match_required: true
+  no_confounding_shadow_required: true
+  retire_after_days: 90
+
+observation_window:
+  started_at: "2026-04-30T00:00:00Z"
+  first_review_at: "2026-06-01"
+  retire_check_at: "2026-07-29"
+
+rollback:
+  on_bar_fail: retire_and_archive
+  on_bug_discovered: reset_capital_and_window
+  on_confounding_shadow: pause_and_review

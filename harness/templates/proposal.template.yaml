@@ -1,0 +1,54 @@
+# Harness Proposal — fill out, then validate:
+#   python3 harness/bin/validate_proposal.py path/to/this-file.yaml
+
+proposal_id: ""           # snake_case, e.g. rule_g_funding_spike
+rule_name: ""             # mirrors shadow jsonl rule_name field
+
+proposed_by: null         # contributor handle ("lona") or null for operator-internal
+proposed_in: null         # URL of comment/issue/reply or null
+proposed_at: ""           # ISO 8601, e.g. 2026-05-12T17:00:00Z
+
+hypothesis: |
+  1-3 sentences. State direction + expected effect size.
+direction: long_bias      # long_bias | short_bias | both | neutral
+
+shadow_log_jsonl: "logs/shadow_xxx_rule.jsonl"
+control_flow_impact: "log_only"   # MUST be log_only at proposal stage
+
+# Constraint 1: real-data gate (>=3 evidence instances required)
+real_data_gate:
+  evidence_threshold: 3
+  evidence_seen: 0
+  source: "where did you see >=3 instances?"
+
+# Constraint 2: shadow budget (cap <= 2)
+shadow_budget:
+  cap: 2
+  current_active: 0
+
+# Constraint 3: contributor 48h ping
+contributor_credit:
+  ping_required: false    # true if proposed_by is set
+  pinged_at: null
+  ping_wait_hours: 48
+  ack_received: false
+
+# Constraint 4: promotion bar
+promotion_bar:
+  min_entries: 30
+  min_observation_days: 30
+  min_hit_rate_spread_pp: 15
+  direction_match_required: true
+  no_confounding_shadow_required: true
+  retire_after_days: 90
+
+observation_window:
+  started_at: ""
+  first_review_at: ""     # YYYY-MM-DD
+  retire_check_at: ""     # YYYY-MM-DD
+
+# Constraint 5: rollback policy
+rollback:
+  on_bar_fail: retire_and_archive
+  on_bug_discovered: reset_capital_and_window
+  on_confounding_shadow: pause_and_review

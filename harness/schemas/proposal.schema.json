@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ibitlabs.com/schemas/harness/proposal.json",
+  "title": "Harness Proposal",
+  "description": "Standardized input form for proposing a new rule on the iBitLabs trading harness. The 5 contributor-funnel constraints are encoded as required fields.",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "rule_name",
+    "hypothesis",
+    "direction",
+    "proposed_at",
+    "shadow_log_jsonl",
+    "control_flow_impact",
+    "real_data_gate",
+    "shadow_budget",
+    "contributor_credit",
+    "promotion_bar",
+    "rollback"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "Mirrors the rule_name field written into shadow jsonl events."
+    },
+    "proposed_by": {"type": ["string", "null"]},
+    "proposed_in": {"type": ["string", "null"]},
+    "proposed_at": {"type": "string", "format": "date-time"},
+    "hypothesis": {"type": "string", "minLength": 20},
+    "direction": {"enum": ["long_bias", "short_bias", "both", "neutral"]},
+    "shadow_log_jsonl": {
+      "type": "string",
+      "description": "Path relative to ~/ibitlabs/. Convention: logs/shadow_<name>_rule.jsonl"
+    },
+    "control_flow_impact": {
+      "enum": ["log_only"],
+      "description": "Mandatory at proposal stage. Promotion to entry gate requires explicit re-spec."
+    },
+    "real_data_gate": {
+      "type": "object",
+      "required": ["evidence_threshold", "evidence_seen", "source"],
+      "properties": {
+        "evidence_threshold": {"type": "integer", "minimum": 3},
+        "evidence_seen": {"type": "integer", "minimum": 0},
+        "source": {"type": "string", "minLength": 5}
+      }
+    },
+    "shadow_budget": {
+      "type": "object",
+      "required": ["cap", "current_active"],
+      "properties": {
+        "cap": {"type": "integer", "minimum": 1, "maximum": 2},
+        "current_active": {"type": "integer", "minimum": 0}
+      }
+    },
+    "contributor_credit": {
+      "type": "object",
+      "required": ["ping_required"],
+      "properties": {
+        "ping_required": {"type": "boolean"},
+        "pinged_at": {"type": ["string", "null"]},
+        "ping_wait_hours": {"type": "integer", "minimum": 48},
+        "ack_received": {"type": "boolean"}
+      }
+    },
+    "promotion_bar": {
+      "type": "object",
+      "required": [
+        "min_entries",
+        "min_observation_days",
+        "min_hit_rate_spread_pp",
+        "direction_match_required",
+        "retire_after_days"
+      ],
+      "properties": {
+        "min_entries": {"type": "integer", "minimum": 30},
+        "min_observation_days": {"type": "integer", "minimum": 30},
+        "min_hit_rate_spread_pp": {"type": "number", "minimum": 5},
+        "direction_match_required": {"type": "boolean"},
+        "no_confounding_shadow_required": {"type": "boolean"},
+        "retire_after_days": {"type": "integer", "minimum": 30}
+      }
+    },
+    "observation_window": {
+      "type": "object",
+      "properties": {
+        "started_at": {"type": "string"},
+        "first_review_at": {"type": "string"},
+        "retire_check_at": {"type": "string"}
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": ["on_bar_fail"],
+      "properties": {
+        "on_bar_fail": {
+          "enum": ["retire_and_archive", "extend_observation", "pause_and_review"]
+        },
+        "on_bug_discovered": {
+          "enum": ["reset_capital_and_window", "halt_immediately", "pause_and_review"]
+        },
+        "on_confounding_shadow": {
+          "enum": ["retire_and_archive", "pause_and_review", "isolate_and_continue"]
+        }
+      }
+    }
+  }
+}

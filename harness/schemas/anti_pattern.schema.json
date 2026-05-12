@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ibitlabs.com/schemas/harness/anti_pattern.json",
+  "title": "Harness Anti-Pattern Archive",
+  "description": "Standardized format for archiving a falsified rule. Written into memory as feedback_*.md so future prompts can reject the same proposal automatically.",
+  "type": "object",
+  "required": [
+    "anti_pattern_id",
+    "original_proposal_id",
+    "falsified_at",
+    "evidence",
+    "why_falsified",
+    "aliases_blocked",
+    "memory_file"
+  ],
+  "properties": {
+    "anti_pattern_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "original_proposal_id": {"type": "string"},
+    "falsified_at": {"type": "string", "format": "date-time"},
+    "falsified_in": {"type": "string"},
+    "evidence": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 5},
+      "minItems": 1
+    },
+    "why_falsified": {"type": "string", "minLength": 20},
+    "aliases_blocked": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "next_proposal_check": {"type": "string"},
+    "memory_file": {
+      "type": "string",
+      "pattern": "^feedback_[a-z0-9_]+\\.md$"
+    },
+    "memory_index_line": {"type": "string"}
+  }
+}
