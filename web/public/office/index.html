@@ -5,24 +5,90 @@
     <link rel="icon" type="image/png" href="/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Live view of the iBitLabs agent office — every trader, supervisor, and watchdog working in real time. Public supervision of the $1k → $10k automated trading experiment." />
+    <meta property="og:title" content="Watch the lab live · iBitLabs" />
+    <meta property="og:description" content="Five agents in a pixel-art office. Real trading data, real supervisors, public supervision of the $1k → $10k experiment." />
+    <meta property="og:image" content="/icon-512.png" />
     <title>Watch the lab live · iBitLabs</title>
     <script type="module" crossorigin src="./assets/index-sFU9HQ5S.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-BcFSIjXF.css">
     <style>
-      body { margin: 0; background: #14141c; color: #fff; font-family: system-ui, sans-serif; overflow: hidden; }
+      :root { color-scheme: dark; }
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body {
+        background: #14141c; color: #fff;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        overflow: hidden;
+      }
+
       #site-bar {
         position: fixed; top: 0; left: 0; right: 0;
-        padding: 8px 16px; background: rgba(20,20,28,0.85);
-        backdrop-filter: blur(4px);
+        padding: 10px 16px; background: rgba(20,20,28,0.92);
+        backdrop-filter: blur(6px);
         font-size: 13px; line-height: 1.4;
         display: flex; justify-content: space-between; align-items: center;
         border-bottom: 1px solid #2a2a3a;
         z-index: 100;
+        gap: 16px; flex-wrap: wrap;
       }
       #site-bar a { color: #9eb6ff; text-decoration: none; }
       #site-bar a:hover { text-decoration: underline; }
       #site-bar .sub { opacity: 0.6; font-size: 11px; }
-      #root { padding-top: 38px; height: 100vh; box-sizing: border-box; }
+      #site-bar .live-dot {
+        display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+        background: #2ecc71; margin-right: 6px;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      #legend {
+        position: fixed; right: 16px; bottom: 16px;
+        background: rgba(20,20,28,0.92);
+        backdrop-filter: blur(6px);
+        border: 1px solid #2a2a3a;
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 12px; line-height: 1.55;
+        max-width: 280px;
+        z-index: 90;
+      }
+      #legend h3 {
+        margin: 0 0 8px; font-size: 12px; font-weight: 600;
+        color: #9eb6ff; text-transform: uppercase; letter-spacing: 0.05em;
+      }
+      #legend dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; }
+      #legend dt { color: #fff; font-weight: 600; font-family: 'SF Mono', Menlo, monospace; font-size: 11px; }
+      #legend dd { margin: 0; opacity: 0.7; }
+      #legend .role { color: #ffa726; }
+      #legend .footer {
+        margin-top: 10px; padding-top: 8px; border-top: 1px solid #2a2a3a;
+        opacity: 0.55; font-size: 11px;
+      }
+      #legend.collapsed dl, #legend.collapsed .footer { display: none; }
+      #legend .toggle {
+        position: absolute; top: 8px; right: 10px;
+        background: none; border: none; color: #9eb6ff; cursor: pointer;
+        font-size: 16px; line-height: 1; padding: 0;
+      }
+
+      /* Public view: hide the in-app authoring controls. They're useful in
+         VS Code (the upstream extension's surface) but not on a public
+         supervision page. Targets pixel-agents' BottomToolbar (root has the
+         exact Tailwind class signature `absolute bottom-10 left-10 z-20`)
+         + the ZoomControls (top-right, root has `absolute top-10 right-10`). */
+      .absolute.bottom-10.left-10.z-20 { display: none !important; }
+      .absolute.top-10.right-10.z-20  { display: none !important; }
+
+      #root { padding-top: 44px; height: 100vh; box-sizing: border-box; }
+
+      @media (max-width: 640px) {
+        #site-bar { font-size: 11px; padding: 8px 10px; }
+        #site-bar .sub { display: none; }
+        #legend { max-width: 220px; font-size: 11px; padding: 10px 12px; }
+        #root { padding-top: 40px; }
+      }
     </style>
   </head>
   <body>
@@ -30,11 +96,34 @@
       <span>
         <a href="/">← iBitLabs</a>
         &nbsp;·&nbsp;
-        <strong>The Office</strong>
-        <span class="sub">&nbsp;5 agents · live · polls every 2s</span>
+        <span class="live-dot"></span><strong>The Office</strong>
+        <span class="sub">&nbsp;5 agents · polls every 2s</span>
       </span>
-      <span class="sub">$1k → $10k experiment</span>
+      <span class="sub">$1k → $10k experiment · <a href="/writing">read the story →</a></span>
     </div>
+
+    <aside id="legend">
+      <button class="toggle" onclick="document.getElementById('legend').classList.toggle('collapsed')" aria-label="Toggle legend">−</button>
+      <h3>who you're watching</h3>
+      <dl>
+        <dt>sniper_live</dt><dd><span class="role">trader</span> · live SOL perp bot</dd>
+        <dt>sniper_shadow</dt><dd><span class="role">paper trader</span> · regime-window shadow</dd>
+        <dt>sniper_eth</dt><dd><span class="role">paper trader</span> · ETH variant</dd>
+        <dt>rule_engine</dt><dd><span class="role">supervisor</span> · alert rules + heartbeat</dd>
+        <dt>ghost_watchdog</dt><dd><span class="role">supervisor</span> · position reconciler</dd>
+      </dl>
+      <div class="footer">
+        Hover any character for activity. Yellow / red dots are warn / error events; the red number is the session's incident count.
+      </div>
+    </aside>
+
     <div id="root"></div>
+
+    <script>
+      // Default the legend collapsed on narrow screens
+      if (window.innerWidth < 640) {
+        document.getElementById('legend').classList.add('collapsed');
+      }
+    </script>
   </body>
 </html>
