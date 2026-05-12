@@ -43,36 +43,6 @@
         50% { opacity: 0.4; }
       }
 
-      #legend {
-        position: fixed; left: 18px; bottom: 18px;
-        background: rgba(20,20,28,0.92);
-        backdrop-filter: blur(6px);
-        border: 1px solid #2a2a3a;
-        border-radius: 8px;
-        padding: 16px 18px;
-        font-size: 16px; line-height: 1.6;
-        max-width: 360px;
-        z-index: 90;
-      }
-      #legend h3 {
-        margin: 0 0 12px; font-size: 16px; font-weight: 600;
-        color: #9eb6ff; text-transform: uppercase; letter-spacing: 0.06em;
-      }
-      #legend dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 14px; }
-      #legend dt { color: #fff; font-weight: 600; font-family: 'SF Mono', Menlo, monospace; font-size: 15px; }
-      #legend dd { margin: 0; opacity: 0.85; font-size: 15px; }
-      #legend .role { color: #ffa726; }
-      #legend .footer {
-        margin-top: 14px; padding-top: 12px; border-top: 1px solid #2a2a3a;
-        opacity: 0.7; font-size: 14px;
-      }
-      #legend.collapsed dl, #legend.collapsed .footer { display: none; }
-      #legend .toggle {
-        position: absolute; top: 10px; right: 12px;
-        background: none; border: none; color: #9eb6ff; cursor: pointer;
-        font-size: 18px; line-height: 1; padding: 0;
-      }
-
       /* Public view: hide the in-app authoring controls. They're useful in
          VS Code (the upstream extension's surface) but not on a public
          supervision page. Targets pixel-agents' BottomToolbar (root has the
@@ -132,8 +102,6 @@
           padding-right: 0;
           padding-bottom: 240px;
         }
-        /* Hide legend on phones — MobileLeaderBar already names every agent */
-        #legend { display: none !important; }
         /* Tighter site-bar */
         #site-bar { font-size: 14px; padding: 10px 14px; line-height: 1.35; }
         #site-bar .sub { font-size: 12px; }
@@ -157,21 +125,6 @@
       </span>
       <span class="sub">$1k → $10k experiment · <a href="/writing">read the story →</a></span>
     </div>
-
-    <aside id="legend">
-      <button class="toggle" onclick="document.getElementById('legend').classList.toggle('collapsed')" aria-label="Toggle legend">−</button>
-      <h3>who you're watching</h3>
-      <dl>
-        <dt>sniper_live</dt><dd><span class="role">trader</span> · live SOL perp bot</dd>
-        <dt>sniper_shadow</dt><dd><span class="role">paper trader</span> · regime-window shadow</dd>
-        <dt>sniper_eth</dt><dd><span class="role">paper trader</span> · ETH variant</dd>
-        <dt>rule_engine</dt><dd><span class="role">supervisor</span> · alert rules + heartbeat</dd>
-        <dt>ghost_watchdog</dt><dd><span class="role">supervisor</span> · position reconciler</dd>
-      </dl>
-      <div class="footer">
-        Hover any character for activity. Yellow / red dots are warn / error events; the red number is the session's incident count.
-      </div>
-    </aside>
 
     <div id="root"></div>
 
@@ -225,11 +178,6 @@
     </style>
 
     <script>
-      // Default the legend collapsed on narrow screens
-      if (window.innerWidth < 640) {
-        document.getElementById('legend').classList.add('collapsed');
-      }
-
       // Loading overlay teardown: the webview-ui dispatches `layoutLoaded`
       // via window.postMessage once all PNG assets are decoded and the
       // office canvas can render. Fade the overlay then.
