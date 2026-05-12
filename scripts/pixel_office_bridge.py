@@ -186,23 +186,51 @@ _stats_cache: dict = {}
 _stats_tick_counter = 0
 
 
-# ── Achievements catalog (C.2) ──────────────────────────────────────────
-# Each entry: (id, label, icon, predicate(stats) -> bool).
-# Predicates are evaluated on the live stats snapshot. The same achievement
-# can be (re)unlocked across bridge restarts — we only emit an unlock event
-# the FIRST time we observe the transition in a given bridge run.
-# Keep cumulative-only (no "today" / "this week" achievements yet — those
-# need temporal state we don't persist).
+# ── Achievements catalog (C.2 + C.4 daily) ──────────────────────────────
+# Each entry: (id, label, icon, predicate(stats) -> bool, reset).
+# `reset: "never"` = cumulative; once earned, persisted forever.
+# `reset: "daily"` = resets at UTC midnight — Bridge clears stale entries
+#   whose unlock_ts is from a previous UTC day, then re-checks against
+#   current stats (today_pnl / today_trades), giving every UTC day a fresh
+#   shot at the daily trophies. Persists same as cumulative.
 ACHIEVEMENTS: list[dict] = [
-    {"id": "first_trade",      "label": "First trade",         "icon": "🚀", "check": lambda s: s.get("total_trades", 0) >= 1},
-    {"id": "ten_trades",       "label": "10 trades",           "icon": "🔟", "check": lambda s: s.get("total_trades", 0) >= 10},
-    {"id": "fifty_trades",     "label": "50 trades",           "icon": "📈", "check": lambda s: s.get("total_trades", 0) >= 50},
-    {"id": "hundred_trades",   "label": "100 trades",          "icon": "💯", "check": lambda s: s.get("total_trades", 0) >= 100},
-    {"id": "in_the_green",     "label": "In the green",        "icon": "💰", "check": lambda s: s.get("total_pnl", 0) > 0 and s.get("total_trades", 0) >= 1},
-    {"id": "wr_60",            "label": "60% win rate",        "icon": "🎯", "check": lambda s: s.get("win_rate", 0) >= 0.6 and s.get("total_trades", 0) >= 20},
-    {"id": "wr_80",            "label": "80% win rate",        "icon": "🏆", "check": lambda s: s.get("win_rate", 0) >= 0.8 and s.get("total_trades", 0) >= 20},
-    {"id": "comeback",         "label": "Comeback (PnL > $100)", "icon": "⚡", "check": lambda s: s.get("total_pnl", 0) >= 100 and s.get("total_trades", 0) >= 10},
+    # ── Cumulative ─────────────────────────────────────────────────────
+    {"id": "first_trade",      "label": "First trade",         "icon": "🚀", "reset": "never", "check": lambda s: s.get("total_trades", 0) >= 1},
+    {"id": "ten_trades",       "label": "10 trades",           "icon": "🔟", "reset": "never", "check": lambda s: s.get("total_trades", 0) >= 10},
+    {"id": "fifty_trades",     "label": "50 trades",           "icon": "📈", "reset": "never", "check": lambda s: s.get("total_trades", 0) >= 50},
+    {"id": "hundred_trades",   "label": "100 trades",          "icon": "💯", "reset": "never", "check": lambda s: s.get("total_trades", 0) >= 100},
+    {"id": "in_the_green",     "label": "In the green",        "icon": "💰", "reset": "never", "check": lambda s: s.get("total_pnl", 0) > 0 and s.get("total_trades", 0) >= 1},
+    {"id": "wr_60",            "label": "60% win rate",        "icon": "🎯", "reset": "never", "check": lambda s: s.get("win_rate", 0) >= 0.6 and s.get("total_trades", 0) >= 20},
+    {"id": "wr_80",            "label": "80% win rate",        "icon": "🏆", "reset": "never", "check": lambda s: s.get("win_rate", 0) >= 0.8 and s.get("total_trades", 0) >= 20},
+    {"id": "comeback",         "label": "Comeback (PnL > $100)", "icon": "⚡", "reset": "never", "check": lambda s: s.get("total_pnl", 0) >= 100 and s.get("total_trades", 0) >= 10},
+    # ── Daily (reset at UTC midnight) ───────────────────────────────────
+    {"id": "today_active",     "label": "Active day (3+ trades)", "icon": "🔥", "reset": "daily", "check": lambda s: s.get("today_trades", 0) >= 3},
+    {"id": "today_in_green",   "label": "Green day",              "icon": "🌱", "reset": "daily", "check": lambda s: s.get("today_pnl", 0) > 0 and s.get("today_trades", 0) >= 1},
+    {"id": "today_big_green",  "label": "Big green day ($20+)",   "icon": "🌴", "reset": "daily", "check": lambda s: s.get("today_pnl", 0) >= 20},
+    {"id": "today_huge_green", "label": "Huge green day ($100+)", "icon": "🎰", "reset": "daily", "check": lambda s: s.get("today_pnl", 0) >= 100},
 ]
+
+
+def _utc_today_start_ms() -> int:
+    """Unix ms timestamp of UTC midnight today."""
+    return int(
+        datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).timestamp() * 1000
+    )
+
+
+def reset_stale_daily_achievements() -> bool:
+    """Drop daily-resetting trophies whose unlock_ts is before today's UTC
+    midnight. Called at startup + before each check pass. Returns True if
+    anything was reset (caller can decide whether to persist)."""
+    today_start = _utc_today_start_ms()
+    daily_ids = {a["id"] for a in ACHIEVEMENTS if a.get("reset") == "daily"}
+    changed = False
+    for agent_id, m in _achievements_unlocked.items():
+        for ach_id in list(m.keys()):
+            if ach_id in daily_ids and m[ach_id] < today_start:
+                del m[ach_id]
+                changed = True
+    return changed
 
 # {agent_id_str: {ach_id: unlock_ts_ms}} — once unlocked, never removed even
 # if the underlying metric regresses. Persisted to disk so a bridge restart
@@ -224,10 +252,13 @@ def load_achievements_state() -> None:
             for aid, m in agents.items()
             if isinstance(m, dict)
         }
+        # Drop stale daily entries from previous UTC day(s) so they re-fire fresh.
+        if reset_stale_daily_achievements():
+            save_achievements_state()
         total = sum(len(m) for m in _achievements_unlocked.values())
         print(
             f"[bridge] loaded {total} unlocked achievements across "
-            f"{len(_achievements_unlocked)} agents",
+            f"{len(_achievements_unlocked)} agents (post-daily-reset)",
             file=sys.stderr,
         )
     except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
@@ -247,9 +278,12 @@ def save_achievements_state() -> None:
 def check_achievements(stats_by_agent: dict) -> list[tuple[str, str]]:
     """Walk each agent's stats against the catalog. Returns a list of
     (agent_id, achievement_id) tuples for NEWLY-unlocked achievements in
-    this pass. Adds-only — never removes a previously-unlocked entry."""
+    this pass. Cumulative entries are adds-only; daily entries get cleared
+    each UTC midnight and can re-unlock on the new day."""
     newly: list[tuple[str, str]] = []
     now_ms = int(time.time() * 1000)
+    # Roll over daily entries if we've crossed a UTC midnight.
+    daily_reset = reset_stale_daily_achievements()
     for agent_id, stats in stats_by_agent.items():
         prev = _achievements_unlocked.setdefault(agent_id, {})
         for a in ACHIEVEMENTS:
@@ -261,15 +295,17 @@ def check_achievements(stats_by_agent: dict) -> list[tuple[str, str]]:
                     newly.append((agent_id, a["id"]))
             except Exception:
                 continue
-    if newly:
+    if newly or daily_reset:
         save_achievements_state()
     return newly
 
 
 # Static, serializable view of the catalog — sent to the webapp so it can
-# render icons + labels without duplicating the predicate logic.
+# render icons + labels + distinguish daily vs cumulative without duplicating
+# the predicate logic.
 ACHIEVEMENTS_CATALOG = [
-    {"id": a["id"], "label": a["label"], "icon": a["icon"]} for a in ACHIEVEMENTS
+    {"id": a["id"], "label": a["label"], "icon": a["icon"], "reset": a.get("reset", "never")}
+    for a in ACHIEVEMENTS
 ]
 
 
