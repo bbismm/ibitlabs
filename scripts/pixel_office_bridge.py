@@ -186,6 +186,56 @@ _stats_cache: dict = {}
 _stats_tick_counter = 0
 
 
+# ── Achievements catalog (C.2) ──────────────────────────────────────────
+# Each entry: (id, label, icon, predicate(stats) -> bool).
+# Predicates are evaluated on the live stats snapshot. The same achievement
+# can be (re)unlocked across bridge restarts — we only emit an unlock event
+# the FIRST time we observe the transition in a given bridge run.
+# Keep cumulative-only (no "today" / "this week" achievements yet — those
+# need temporal state we don't persist).
+ACHIEVEMENTS: list[dict] = [
+    {"id": "first_trade",      "label": "First trade",         "icon": "🚀", "check": lambda s: s.get("total_trades", 0) >= 1},
+    {"id": "ten_trades",       "label": "10 trades",           "icon": "🔟", "check": lambda s: s.get("total_trades", 0) >= 10},
+    {"id": "fifty_trades",     "label": "50 trades",           "icon": "📈", "check": lambda s: s.get("total_trades", 0) >= 50},
+    {"id": "hundred_trades",   "label": "100 trades",          "icon": "💯", "check": lambda s: s.get("total_trades", 0) >= 100},
+    {"id": "in_the_green",     "label": "In the green",        "icon": "💰", "check": lambda s: s.get("total_pnl", 0) > 0 and s.get("total_trades", 0) >= 1},
+    {"id": "wr_60",            "label": "60% win rate",        "icon": "🎯", "check": lambda s: s.get("win_rate", 0) >= 0.6 and s.get("total_trades", 0) >= 20},
+    {"id": "wr_80",            "label": "80% win rate",        "icon": "🏆", "check": lambda s: s.get("win_rate", 0) >= 0.8 and s.get("total_trades", 0) >= 20},
+    {"id": "comeback",         "label": "Comeback (PnL > $100)", "icon": "⚡", "check": lambda s: s.get("total_pnl", 0) >= 100 and s.get("total_trades", 0) >= 10},
+]
+
+# {agent_id_str: set[achievement_id]} — tracks currently-unlocked per agent
+# in this bridge run. Bridge does NOT persist; the catalog is fully derived
+# from `_stats_cache` each refresh, so a restart simply re-derives the set.
+_achievements_unlocked: dict[str, set[str]] = {}
+
+
+def check_achievements(stats_by_agent: dict) -> list[tuple[str, str]]:
+    """Walk each agent's stats against the catalog. Returns a list of
+    (agent_id, achievement_id) tuples for NEWLY-unlocked achievements in
+    this pass (compared with `_achievements_unlocked` from prior pass)."""
+    newly: list[tuple[str, str]] = []
+    for agent_id, stats in stats_by_agent.items():
+        prev = _achievements_unlocked.setdefault(agent_id, set())
+        for a in ACHIEVEMENTS:
+            if a["id"] in prev:
+                continue
+            try:
+                if a["check"](stats):
+                    prev.add(a["id"])
+                    newly.append((agent_id, a["id"]))
+            except Exception:
+                continue
+    return newly
+
+
+# Static, serializable view of the catalog — sent to the webapp so it can
+# render icons + labels without duplicating the predicate logic.
+ACHIEVEMENTS_CATALOG = [
+    {"id": a["id"], "label": a["label"], "icon": a["icon"]} for a in ACHIEVEMENTS
+]
+
+
 def compute_strategy_stats() -> dict:
     """Read trade_log out of each strategy's SQLite and aggregate.
     Returns: {agent_id_str: {total_trades, total_pnl, today_trades,
@@ -326,6 +376,36 @@ def write_public_mirror() -> None:
         _stats_cache = compute_strategy_stats()
         _stats_tick_counter = 0
 
+        # Achievements pass — derives unlocked set from the fresh stats and
+        # emits a ticker-visible event for each newly-unlocked one.
+        try:
+            newly = check_achievements(_stats_cache)
+        except Exception as e:
+            newly = []
+            print(f"[bridge] achievement check failed: {e}", file=sys.stderr)
+        for agent_id, ach_id in newly:
+            cat_entry = next((a for a in ACHIEVEMENTS_CATALOG if a["id"] == ach_id), None)
+            if cat_entry is None:
+                continue
+            agent = next((a for a in AGENTS if a.get("public_id") == int(agent_id)), None)
+            if agent is None:
+                continue
+            label = cat_entry["label"]
+            icon = cat_entry["icon"]
+            record_public_event(
+                agent_name=agent["name"],
+                kind="tool_start",
+                tool_id=f"ach_{ach_id}_{agent_id}",
+                tool_name="Read",
+                status=f"{icon} Achievement: {label}",
+                severity="info",
+                payload={"achievement_id": ach_id, "label": label, "icon": icon},
+                source_kind="achievement",
+                ts_ms=int(time.time() * 1000),
+            )
+            print(f"[bridge] 🏆 achievement '{ach_id}' unlocked for agent {agent_id}",
+                  file=sys.stderr)
+
     public_agents = [
         {
             "id": a["public_id"],
@@ -339,6 +419,8 @@ def write_public_mirror() -> None:
         "agents": public_agents,
         "events": list(_public_events),
         "stats": _stats_cache,
+        "achievements_catalog": ACHIEVEMENTS_CATALOG,
+        "agents_achievements": {aid: sorted(v) for aid, v in _achievements_unlocked.items()},
     }
     body = json.dumps(payload, indent=2)
 
