@@ -204,28 +204,65 @@ ACHIEVEMENTS: list[dict] = [
     {"id": "comeback",         "label": "Comeback (PnL > $100)", "icon": "⚡", "check": lambda s: s.get("total_pnl", 0) >= 100 and s.get("total_trades", 0) >= 10},
 ]
 
-# {agent_id_str: set[achievement_id]} — tracks currently-unlocked per agent
-# in this bridge run. Bridge does NOT persist; the catalog is fully derived
-# from `_stats_cache` each refresh, so a restart simply re-derives the set.
-_achievements_unlocked: dict[str, set[str]] = {}
+# {agent_id_str: {ach_id: unlock_ts_ms}} — once unlocked, never removed even
+# if the underlying metric regresses. Persisted to disk so a bridge restart
+# (or a stat drop) doesn't lose hard-earned trophies. This is the load-bearing
+# C.2.1 fix — previously a set re-derived from current stats.
+_achievements_unlocked: dict[str, dict[str, int]] = {}
+ACHIEVEMENTS_STATE_PATH = HOME / "ibitlabs/receipt-viewer/data/achievements_state.json"
+
+
+def load_achievements_state() -> None:
+    global _achievements_unlocked
+    if not ACHIEVEMENTS_STATE_PATH.exists():
+        return
+    try:
+        raw = json.loads(ACHIEVEMENTS_STATE_PATH.read_text())
+        agents = raw.get("agents", {}) if isinstance(raw, dict) else {}
+        _achievements_unlocked = {
+            str(aid): {str(k): int(v) for k, v in m.items()}
+            for aid, m in agents.items()
+            if isinstance(m, dict)
+        }
+        total = sum(len(m) for m in _achievements_unlocked.values())
+        print(
+            f"[bridge] loaded {total} unlocked achievements across "
+            f"{len(_achievements_unlocked)} agents",
+            file=sys.stderr,
+        )
+    except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
+        print(f"[bridge] achievements_state load failed: {e}", file=sys.stderr)
+
+
+def save_achievements_state() -> None:
+    try:
+        ACHIEVEMENTS_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp = ACHIEVEMENTS_STATE_PATH.with_suffix(".json.tmp")
+        tmp.write_text(json.dumps({"agents": _achievements_unlocked}, indent=2))
+        tmp.replace(ACHIEVEMENTS_STATE_PATH)
+    except OSError as e:
+        print(f"[bridge] achievements_state save failed: {e}", file=sys.stderr)
 
 
 def check_achievements(stats_by_agent: dict) -> list[tuple[str, str]]:
     """Walk each agent's stats against the catalog. Returns a list of
     (agent_id, achievement_id) tuples for NEWLY-unlocked achievements in
-    this pass (compared with `_achievements_unlocked` from prior pass)."""
+    this pass. Adds-only — never removes a previously-unlocked entry."""
     newly: list[tuple[str, str]] = []
+    now_ms = int(time.time() * 1000)
     for agent_id, stats in stats_by_agent.items():
-        prev = _achievements_unlocked.setdefault(agent_id, set())
+        prev = _achievements_unlocked.setdefault(agent_id, {})
         for a in ACHIEVEMENTS:
             if a["id"] in prev:
                 continue
             try:
                 if a["check"](stats):
-                    prev.add(a["id"])
+                    prev[a["id"]] = now_ms
                     newly.append((agent_id, a["id"]))
             except Exception:
                 continue
+    if newly:
+        save_achievements_state()
     return newly
 
 
@@ -867,6 +904,11 @@ def main() -> None:
     WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
     AGENTS_DIR.mkdir(parents=True, exist_ok=True)
     cwd = str(WORKSPACE_DIR)
+
+    # Restore previously-unlocked achievements before stats begin computing.
+    # C.2.1: trophies are sticky — once earned, they stay even if the
+    # underlying metric regresses (e.g. WR slipping back below threshold).
+    load_achievements_state()
 
     state = load_state()
     state.setdefault("agents", {})
