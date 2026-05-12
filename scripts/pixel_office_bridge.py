@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 import sys
 import time
 import urllib.error
@@ -170,6 +171,88 @@ MAX_PUBLIC_EVENTS = 50
 _public_events: list[dict] = []
 _public_event_seq = 0
 
+# ── Strategy leaderboard (C.1) ──────────────────────────────────────────
+# Maps each trading-strategy public_id → SQLite path. Stats are recomputed
+# every STATS_REFRESH_TICKS bridge ticks (DB I/O isn't free). Supervisors
+# (rule_engine / ghost_watchdog) intentionally have no entry — they don't
+# trade and don't show on the leaderboard.
+STRATEGY_DB_PATHS: dict[int, Path] = {
+    101: HOME / "ibitlabs/sol_sniper.db",            # sniper-live
+    102: HOME / "ibitlabs/sol_sniper_shadow.db",     # sniper-shadow
+    103: HOME / "ibitlabs/sol_sniper_eth_paper.db",  # sniper-eth
+}
+STATS_REFRESH_TICKS = 8  # bridge ticks at 1.5s → recompute stats every ~12s
+_stats_cache: dict = {}
+_stats_tick_counter = 0
+
+
+def compute_strategy_stats() -> dict:
+    """Read trade_log out of each strategy's SQLite and aggregate.
+    Returns: {agent_id_str: {total_trades, total_pnl, today_trades,
+              today_pnl, win_count, loss_count, win_rate, last_pnl,
+              last_trade_ts}}.
+    Closed trades only (exit_price IS NOT NULL). Today = UTC midnight."""
+    utc_midnight = int(
+        datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
+    )
+    out: dict = {}
+    for agent_id, db_path in STRATEGY_DB_PATHS.items():
+        if not db_path.exists():
+            continue
+        try:
+            conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=2.0)
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT COUNT(*),
+                       COALESCE(SUM(pnl), 0),
+                       COALESCE(SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END), 0),
+                       COALESCE(SUM(CASE WHEN pnl < 0 THEN 1 ELSE 0 END), 0)
+                FROM trade_log
+                WHERE exit_price IS NOT NULL
+                """
+            )
+            total_n, total_pnl, win_n, loss_n = cur.fetchone()
+            cur.execute(
+                """
+                SELECT COUNT(*),
+                       COALESCE(SUM(pnl), 0)
+                FROM trade_log
+                WHERE exit_price IS NOT NULL
+                  AND timestamp >= ?
+                """,
+                (utc_midnight,),
+            )
+            today_n, today_pnl = cur.fetchone()
+            cur.execute(
+                """
+                SELECT pnl, timestamp
+                FROM trade_log
+                WHERE exit_price IS NOT NULL
+                ORDER BY timestamp DESC
+                LIMIT 1
+                """
+            )
+            last_row = cur.fetchone()
+            conn.close()
+        except (sqlite3.Error, OSError) as e:
+            print(f"[bridge] stats query failed for {db_path.name}: {e}", file=sys.stderr)
+            continue
+
+        win_rate = (win_n / total_n) if total_n else 0.0
+        out[str(agent_id)] = {
+            "total_trades": total_n,
+            "total_pnl": round(total_pnl, 4),
+            "today_trades": today_n,
+            "today_pnl": round(today_pnl, 4),
+            "win_count": win_n,
+            "loss_count": loss_n,
+            "win_rate": round(win_rate, 4),
+            "last_pnl": round(last_row[0], 4) if last_row else None,
+            "last_trade_ts": int(last_row[1] * 1000) if last_row else None,
+        }
+    return out
+
 
 def iso_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -237,6 +320,12 @@ def record_public_event(
 def write_public_mirror() -> None:
     """Serialize the current view of the office to events.json + dev mirror.
     Always overwrites both files atomically (.tmp + rename)."""
+    global _stats_cache, _stats_tick_counter
+    _stats_tick_counter += 1
+    if _stats_tick_counter >= STATS_REFRESH_TICKS or not _stats_cache:
+        _stats_cache = compute_strategy_stats()
+        _stats_tick_counter = 0
+
     public_agents = [
         {
             "id": a["public_id"],
@@ -249,6 +338,7 @@ def write_public_mirror() -> None:
         "cursor": _public_event_seq,
         "agents": public_agents,
         "events": list(_public_events),
+        "stats": _stats_cache,
     }
     body = json.dumps(payload, indent=2)
 
