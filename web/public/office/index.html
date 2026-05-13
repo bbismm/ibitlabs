@@ -9,7 +9,7 @@
     <meta property="og:description" content="Five agents in a pixel-art office. Real trading data, real supervisors, public supervision of the $1k → $10k experiment." />
     <meta property="og:image" content="/icon-512.png" />
     <title>Watch the lab live · iBitLabs</title>
-    <script type="module" crossorigin src="./assets/index-CZ6RBZ01.js"></script>
+    <script type="module" crossorigin src="./assets/index-BiN_PNqD.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-OsnrIge2.css">
     <style>
       :root { color-scheme: dark; }
@@ -24,7 +24,7 @@
         position: fixed; top: 0; left: 0; right: 0;
         padding: 14px 22px; background: rgba(20,20,28,0.92);
         backdrop-filter: blur(6px);
-        font-size: 17px; line-height: 1.45;
+        font-size: 19px; line-height: 1.45;
         display: flex; justify-content: space-between; align-items: center;
         border-bottom: 1px solid #2a2a3a;
         z-index: 100;
@@ -32,7 +32,7 @@
       }
       #site-bar a { color: #9eb6ff; text-decoration: none; }
       #site-bar a:hover { text-decoration: underline; }
-      #site-bar .sub { opacity: 0.75; font-size: 15px; }
+      #site-bar .sub { opacity: 0.88; font-size: 17px; }
       #site-bar .live-dot {
         display: inline-block; width: 11px; height: 11px; border-radius: 50%;
         background: #2ecc71; margin-right: 8px;
@@ -52,10 +52,49 @@
       .absolute.top-10.right-10.z-20  { display: none !important; }
 
       #root {
-        padding-top: 110px; /* clears site-bar (56) + OnAirStrip (~46) */
+        padding-top: 184px; /* clears site-bar (~60) + mission-bar (~58, bumped to 20px) + OnAirStrip (~56) + 10 gap */
         padding-right: 400px; /* reserve space for the right rail (leaderboard + ticker, 400px wide) */
         height: 100vh; box-sizing: border-box;
       }
+
+      /* ── Mission bar ─────────────────────────────────────────────────
+         Live progress against the $1k → $10k goal. Sits between #site-bar
+         (top: 0, ~56px tall) and OnAirStrip (originally top: 56, pushed
+         down via !important). Polls /api/live-status every 30s. ──────── */
+      #mission-bar {
+        position: fixed; top: 60px; left: 0; right: 0;
+        padding: 12px 22px;
+        background: rgba(20, 20, 28, 0.85);
+        border-bottom: 1px solid #2a2a3a;
+        z-index: 99;
+        display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+        font-family: 'SF Mono', Menlo, monospace;
+        font-size: 20px;
+        color: rgba(255,255,255,0.95);
+      }
+      #mb-track {
+        position: relative; flex: 0 1 320px; min-width: 160px;
+        height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px;
+        overflow: hidden;
+      }
+      #mb-fill {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 0%;
+        background: linear-gradient(90deg, #4a78d6, #9eb6ff);
+        transition: width 0.6s ease-out;
+      }
+      #mb-start {
+        position: absolute; top: -2px; bottom: -2px; left: 10%; width: 1px;
+        background: rgba(255,255,255,0.45);
+      }
+      #mb-stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+      #mb-stats strong { color: #fff; font-weight: 600; }
+      #mb-stats .mb-sep { opacity: 0.4; }
+      #mb-stats .mb-pnl-neg { color: #ff8a8a; }
+      #mb-stats .mb-pnl-pos { color: #2ecc71; }
+
+      /* OnAirStrip sits below the new mission-bar; React component sets
+         top: 56 inline, override here so it doesn't collide. */
+      .onair-strip { top: 122px !important; }
 
       /* ── Mobile / narrow-viewport adaptation ───────────────────────────
          Three breakpoints, layered:
@@ -79,14 +118,23 @@
         }
       }
       @media (max-width: 768px) {
-        /* OnAirStrip: full width, no right-rail offset, more compact */
+        /* OnAirStrip: full width, no right-rail offset, more compact.
+           Pushed below the mission-bar (site-bar ~46 + mission-bar ~62
+           when stats wrap to 2nd row at narrow widths). */
         .onair-strip {
           right: 0 !important;
           padding: 8px 14px !important;
           gap: 14px !important;
-          top: 50px !important;
+          top: 128px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
+        /* Mission bar: tighter padding on mobile, anchored under the compressed site-bar (~52) */
+        #mission-bar { top: 52px; padding: 9px 14px; font-size: 17px; gap: 12px; }
+        #mb-track { flex-basis: 200px; min-width: 120px; }
+        /* MobileLeaderBar hardcodes top: 88 in React. With mission-bar inserted
+           AND OnAirStrip + mission-bar both larger now, the cards live
+           below site-bar(~46) + mission-bar(~62) + onair-strip(~84, wraps). */
+        .office-leaderboard-mobile { top: 218px !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -95,23 +143,26 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack everything above the canvas: site-bar (50) + OnAirStrip (~40)
-           + MobileLeaderBar vertical stack (~240) = ~340 top reservation. */
+        /* Stack everything above the canvas: site-bar (~46) + mission-bar (~62)
+           + OnAirStrip (~84, wraps) + MobileLeaderBar (~250) = ~445 top reservation. */
         #root {
-          padding-top: 340px;
+          padding-top: 464px;
           padding-right: 0;
           padding-bottom: 240px;
         }
-        /* Tighter site-bar */
-        #site-bar { font-size: 14px; padding: 10px 14px; line-height: 1.35; }
-        #site-bar .sub { font-size: 12px; }
+        /* Site-bar on mobile: still readable */
+        #site-bar { font-size: 16px; padding: 11px 14px; line-height: 1.35; }
+        #site-bar .sub { font-size: 14px; }
       }
       @media (max-width: 640px) {
-        #site-bar { font-size: 13px; padding: 10px 12px; }
+        #site-bar { font-size: 15px; padding: 10px 12px; }
         #site-bar .sub { display: none; }
         .onair-strip > span:nth-child(4) { display: none; } /* hide TODAY ALERTS */
         .office-ticker { height: 200px !important; }
         #root { padding-bottom: 200px; }
+        /* Drop regime + WR on the tightest screens to keep mission-bar one line */
+        #mb-stats .mb-regime, #mb-stats .mb-wr,
+        #mb-stats .mb-sep-regime, #mb-stats .mb-sep-wr { display: none; }
       }
     </style>
   </head>
@@ -124,6 +175,30 @@
         <span class="sub">&nbsp;5 agents · polls every 2s</span>
       </span>
       <span class="sub">$1k → $10k experiment · <a href="/writing">read the story →</a></span>
+    </div>
+
+    <!-- ─ Mission bar ───────────────────────────────────────────────────
+         Live progress toward the $1k → $10k goal. Populated by the inline
+         script below from /api/live-status (also polled by the React app,
+         so this is a duplicate fetch — kept inline so the bar renders
+         before the React bundle parses, ≤1s after first paint).
+    -->
+    <div id="mission-bar" aria-live="polite">
+      <div id="mb-track" aria-label="progress from $1,000 to $10,000">
+        <div id="mb-fill"></div>
+        <div id="mb-start" title="starting capital: $1,000"></div>
+      </div>
+      <div id="mb-stats">
+        <span><strong id="mb-balance">$—</strong><span class="sub" style="opacity:.78"> / $10k</span></span>
+        <span class="mb-sep">·</span>
+        <span>day <strong id="mb-day">—</strong></span>
+        <span class="mb-sep">·</span>
+        <span><strong id="mb-trades">—</strong> trades</span>
+        <span class="mb-sep mb-sep-wr">·</span>
+        <span class="mb-wr">WR <strong id="mb-wr">—</strong>%</span>
+        <span class="mb-sep mb-sep-regime">·</span>
+        <span class="mb-regime">regime <strong id="mb-regime">—</strong></span>
+      </div>
     </div>
 
     <div id="root"></div>
@@ -202,5 +277,77 @@
         setTimeout(hide, 10000);
       })();
     </script>
+
+    <script>
+      // ─ Mission bar live updater ────────────────────────────────────────
+      // Polls /api/live-status every 30s, updates the progress bar + stats.
+      // Independent of the React app's own fetches (the bar renders before
+      // the React bundle parses, so first-paint shows real numbers ≤1s).
+      // Day count anchored to 2026-04-07 (live trading start, see CLAUDE.md
+      // feedback_no_inflated_experiment_age.md).
+      (function () {
+        var START_DATE_UTC = Date.UTC(2026, 3, 7); // 2026-04-07 (month is 0-indexed)
+        var TARGET = 10000;
+        var STARTING = 1000;
+
+        function $(id) { return document.getElementById(id); }
+        function fmtBalance(b) {
+          if (b == null || isNaN(b)) return '$—';
+          return '$' + b.toFixed(2);
+        }
+        function dayCount() {
+          return Math.max(1, Math.floor((Date.now() - START_DATE_UTC) / 86400000) + 1);
+        }
+
+        function paint(d) {
+          var balance = Number(d && d.balance);
+          var trades = Number(d && d.total_trades) || 0;
+          var wr = Number(d && d.win_rate) || 0;
+          var regime = (d && d.regime) || '—';
+          var fillPct = isFinite(balance) ? Math.max(0, Math.min(100, (balance / TARGET) * 100)) : 0;
+
+          var fillEl = $('mb-fill');
+          if (fillEl) fillEl.style.width = fillPct.toFixed(2) + '%';
+
+          var balEl = $('mb-balance');
+          if (balEl) {
+            balEl.textContent = fmtBalance(balance);
+            // Color the balance number green if above starting capital, red if below
+            balEl.classList.remove('mb-pnl-neg', 'mb-pnl-pos');
+            if (isFinite(balance)) {
+              balEl.classList.add(balance < STARTING ? 'mb-pnl-neg' : 'mb-pnl-pos');
+            }
+          }
+
+          var dayEl = $('mb-day'); if (dayEl) dayEl.textContent = dayCount();
+          var trEl = $('mb-trades'); if (trEl) trEl.textContent = trades;
+          var wrEl = $('mb-wr'); if (wrEl) wrEl.textContent = wr.toFixed(0);
+          var rgEl = $('mb-regime'); if (rgEl) rgEl.textContent = regime;
+        }
+
+        function refresh() {
+          // Day count is independent of API — set it every tick so the
+          // bar shows something useful even if /api/live-status is down.
+          var dayEl = $('mb-day');
+          if (dayEl) dayEl.textContent = dayCount();
+
+          fetch('/api/live-status', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) { if (d) paint(d); })
+            .catch(function () { /* swallow — bar stays at last value */ });
+        }
+
+        refresh();
+        setInterval(refresh, 30000);
+      })();
+    </script>
+
+    <style>.site-footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(139,92,246,0.18);color:#9898b0;font-size:0.85rem;font-family:'Inter',-apple-system,sans-serif}.site-footer p{margin:0.4rem 0}.site-footer a{color:#a8a8be;text-decoration:none;transition:color 0.2s}.site-footer a:hover{color:#a78bfa}.site-footer strong{color:#d0d0dc;font-weight:600}.site-footer .sf-row{font-size:0.78rem}.site-footer .sf-fine{font-size:0.72rem;max-width:600px;margin:1rem auto 0;line-height:1.6}</style>
+    <footer class="site-footer">
+      <p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>
+      <p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a></p>
+      <p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>
+      <p class="sf-fine">Educational experiment, not financial advice. Crypto trading involves significant risk. <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>
+    </footer>
   </body>
 </html>

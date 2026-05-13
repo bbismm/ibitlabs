@@ -858,6 +858,22 @@ def process_agent(agent: dict, agent_state: dict, now_ts: float) -> None:
         else:
             tool_name, desc, severity = mapping
 
+        # Hold-down for noisy ghost-watchdog alerts on the public surface.
+        # The watchdog already escalates internally (ntfy at 1, iMessage at 3,
+        # bootout at 5 per feedback_coinbase_ip_allowlist_signature.md), so a
+        # single transient GHOST tick is not actionable for a casual visitor.
+        # Downgrade severity error→warn until 3 consecutive alerts (matches
+        # the iMessage threshold — by then the operator is paying attention).
+        # Reset to 0 on any `ok` tick.
+        if name == "ghost-watchdog":
+            if kind == "alert":
+                streak = agent_state.get("ghost_alert_streak", 0) + 1
+                agent_state["ghost_alert_streak"] = streak
+                if streak < 3 and severity == "error":
+                    severity = "warn"
+            elif kind == "ok":
+                agent_state["ghost_alert_streak"] = 0
+
         # Close any in-flight tool before starting new one.
         if agent_state.get("active_tool_use_id"):
             close_active_tool(agent_state, jsonl_path, session_id, cwd, 600, name)
