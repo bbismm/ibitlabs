@@ -35,6 +35,21 @@ body:
       render: markdown
     validations:
       required: true
+  - type: dropdown
+    id: direction
+    attributes:
+      label: Direction bias
+      description: |
+        Maps to the harness `direction` field. Required by the promotion bar to do
+        a direction-match check (a +50pp spread in the WRONG direction counts as
+        falsified, not promoted).
+      options:
+        - long_bias
+        - short_bias
+        - both
+        - neutral
+    validations:
+      required: true
   - type: textarea
     id: hypothesis
     attributes:
@@ -45,6 +60,33 @@ body:
       placeholder: |
         Compression-regime entries should have ≥15pp higher hit-rate than
         expansion-regime entries (matched by direction and prior-trend).
+    validations:
+      required: true
+  - type: input
+    id: evidence_count
+    attributes:
+      label: Real-data evidence count
+      description: |
+        How many distinct historical instances of this pattern have you observed in
+        our public data (`/signals` / `audit_export/*.jsonl` / `sol_sniper.db` /
+        backtest snapshots)? The harness's `real_data_gate` requires ≥3 to open
+        a shadow; below that the proposal is parked as hypothesis-with-trigger.
+        Enter `0` if this is a first-principles hypothesis without observed instances yet.
+      placeholder: "3"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence_source
+    attributes:
+      label: Real-data evidence source
+      description: |
+        Point to the specific instances. URLs to /signals trade IDs, `audit_export`
+        line numbers, jsonl snippets, backtest bucket counts. If `evidence_count=0`,
+        explain the first-principles reasoning instead.
+      placeholder: |
+        - Trade #61 (2026-04-30): SOL ATR ratio 0.84 at entry, +1.3% follow-through
+        - Trade #54 (2026-04-26): SOL ATR ratio 0.81 at entry, +0.9% follow-through
+        - Trade #47 (2026-04-23): SOL ATR ratio 0.78 at entry, +1.1% follow-through
     validations:
       required: true
   - type: textarea
