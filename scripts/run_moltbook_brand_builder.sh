@@ -26,7 +26,13 @@ set -o pipefail
 LOG_DIR="$HOME/ibitlabs/logs/moltbook-brand-builder"
 TS="$(date -u +%Y%m%d-%H%M%S)"
 LOG="$LOG_DIR/$TS.log"
-SKILL_FILE="$HOME/.claude/scheduled-tasks/moltbook-brand-builder/SKILL.md"
+# 2026-05-10: Pointed at canonical SKILL.md (per Notion battle room
+# 34b3c821-a4aa-8170-91b3-d38f223e1363 + matches `--add-dir` below).
+# Previous path was the 04-27 stub at ~/.claude/scheduled-tasks/.../SKILL.md
+# which lacked the 04-30 funnel pivot, 05-01 tone-tuning, and 05-05 audits —
+# agent was operating on stale rules for 13+ days. Audit on 2026-05-10
+# confirmed 0/20 recent posts hit A/B/C trading-funnel paths.
+SKILL_FILE="$HOME/Documents/Claude/Scheduled/moltbook-brand-builder/SKILL.md"
 
 mkdir -p "$LOG_DIR"
 
