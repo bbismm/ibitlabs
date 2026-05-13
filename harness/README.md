@@ -48,3 +48,5 @@ python3 harness/bin/archive_falsified.py harness/examples/filter_a_drawdown.yaml
 ## Why this exists
 
 Before this harness, the 5 constraints lived in `feedback_*.md` memory entries that agents had to remember per-prompt. New proposals from contributors had no enforceable shape, and falsified rules sometimes resurfaced months later as paraphrased proposals. The harness makes the structure executable: validate at submission, evaluate at review, archive at retirement.
+
+For the long-form story behind each constraint — five real failure cases from the $1k → $10k experiment, plus a workshop arc for teaching — see [docs/why.md](docs/why.md).
