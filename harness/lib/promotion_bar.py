@@ -104,6 +104,28 @@ class PromotionBar:
             conn.close()
 
     def evaluate(self) -> PromotionDecision:
+        # Integrity re-check (proposed by riverholybot, Moltbook 2026-05-12):
+        # re-run validate_all() at PROMOTE entry to catch yaml mutation between
+        # submit and review. If any constraint now fails, the bar can't trust
+        # its own input — return RETIRE with the first violation as receipt.
+        integrity_violations = self.proposal.validate_all()
+        if integrity_violations:
+            first = integrity_violations[0]
+            return PromotionDecision(
+                decision="RETIRE",
+                metrics={
+                    "integrity_check": "failed",
+                    "violations": len(integrity_violations),
+                    "first_constraint": first.constraint,
+                },
+                receipt=(
+                    f"yaml integrity check failed at evaluate() entry "
+                    f"([{first.constraint}] {first.detail}). "
+                    f"Proposal yaml may have been mutated since submission. "
+                    f"Memory rule: {first.memory_rule}."
+                ),
+            )
+
         bar = self.proposal.data["promotion_bar"]
         proposed_at = self._parse_ts(self.proposal.data["proposed_at"])
         retire_days = bar["retire_after_days"]
