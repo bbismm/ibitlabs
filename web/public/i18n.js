@@ -7,6 +7,7 @@ const I18N = {
 
   // ──── Shared / Nav / Footer ────
   nav_signals: { en: 'Signals', zh: '信号' },
+  nav_lab:     { en: 'Lab',     zh: '实验室' },
   nav_writing: { en: 'Writing', zh: '文字' },
   nav_days: { en: 'Days', zh: '日记' },
   nav_learn: { en: 'Learn', zh: '学习' },

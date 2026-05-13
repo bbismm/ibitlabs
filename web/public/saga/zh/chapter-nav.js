@@ -1,12 +1,27 @@
-// chapter-nav.js (zh) — Chinese-locale chapter navigation.
+// chapter-nav.js (zh) — Chinese-locale site-bar + chapter navigation.
 // Same shape as /saga/en/chapter-nav.js but localized labels.
 (function () {
   'use strict';
 
+  // ── 1. 站点导航(总是显示)──────────────────────────────────────
+  const siteBar = document.createElement('nav');
+  siteBar.className = 'site-bar';
+  siteBar.innerHTML = `
+    <a href="/" class="site-bar-brand"><b>iBitLabs</b></a>
+    <div class="site-bar-links">
+      <a href="/signals">信号</a>
+      <a href="/lab">实验室</a>
+      <a href="/writing" class="active">文字</a>
+      <a href="/contributors">贡献者</a>
+    </div>
+  `;
+  document.body.insertBefore(siteBar, document.body.firstChild);
+
+  // ── 2. 章节导航(仅章节 / 序章页)────────────────────────────────
   const TOTAL = 19;
   const path = location.pathname.split('/').pop() || '';
-  const m = path.match(/chapter-(\d{2})\.html/);
-  const isProlog = /prologue/.test(path);
+  const m = path.match(/chapter-(\d{2})(?:\.html)?$/);
+  const isProlog = /^prologue(?:\.html)?$/.test(path);
   const n = m ? parseInt(m[1], 10) : null;
 
   let prev = null, next = null, label = '';
@@ -28,7 +43,7 @@
     <a class="chap-toc" href="./">${label}</a>
     ${next ? `<a href="${next}" rel="next">下一章 →</a>` : `<span class="chap-disabled">下一章 →</span>`}
   `;
-  document.body.insertBefore(top, document.body.firstChild);
+  siteBar.insertAdjacentElement('afterend', top);
 
   const bot = document.createElement('div');
   bot.className = 'chap-foot';
