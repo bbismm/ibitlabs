@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  com.ibitlabs.eth-cutover-reminder — one-shot reminder for 2026-05-20 cut-over
+
+  Fires at 2026-05-20 09:49 local (= 13:49 UTC), exactly T-1h before the
+  14:49 UTC Phase 3 review / cut-over moment per
+  docs/multi_symbol_live_cutover_checklist.md.
+
+  Why this plist exists when launchd has no Year key:
+    StartCalendarInterval supports Month/Day/Hour/Minute but NOT Year, so this
+    plist would naively refire on 5/20 each year. The wrapper script enforces
+    a one-shot via a TARGET_DATE="2026-05-20" guard — refires in 2027+ exit
+    silently with a one-line log entry.
+
+  To bootstrap:
+    cp ~/ibitlabs/launchd-templates/com.ibitlabs.eth-cutover-reminder.plist \
+       ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) \
+       ~/Library/LaunchAgents/com.ibitlabs.eth-cutover-reminder.plist
+
+  To verify scheduling:
+    launchctl print gui/$(id -u)/com.ibitlabs.eth-cutover-reminder
+
+  After 2026-05-20 fire, the plist is harmless dormant. Optional cleanup:
+    launchctl bootout gui/$(id -u)/com.ibitlabs.eth-cutover-reminder
+    rm ~/Library/LaunchAgents/com.ibitlabs.eth-cutover-reminder.plist
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.ibitlabs.eth-cutover-reminder</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>/Users/bonnyagent/ibitlabs/scripts/run_eth_cutover_reminder.sh</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/bonnyagent/ibitlabs</string>
+
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Month</key>
+		<integer>5</integer>
+		<key>Day</key>
+		<integer>20</integer>
+		<key>Hour</key>
+		<integer>9</integer>
+		<key>Minute</key>
+		<integer>49</integer>
+	</dict>
+
+	<key>RunAtLoad</key>
+	<false/>
+
+	<key>StandardOutPath</key>
+	<string>/Users/bonnyagent/ibitlabs/logs/eth_cutover_reminder_launchd.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>/Users/bonnyagent/ibitlabs/logs/eth_cutover_reminder_launchd_err.log</string>
+</dict>
+</plist>
