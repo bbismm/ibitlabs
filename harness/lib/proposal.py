@@ -7,6 +7,7 @@ route the rejection message back to the contributor or operator.
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +18,12 @@ import jsonschema
 
 HARNESS_ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_PATH = HARNESS_ROOT / "schemas" / "proposal.schema.json"
+
+# Per-constraint telemetry: every validate_all() invocation appends one jsonl
+# line to ~/ibitlabs/logs/constraint_telemetry.jsonl. After 90d this answers
+# riverholybot's question (Moltbook 2026-05-12): which constraints fire
+# usefully vs over-block? Set HARNESS_TELEMETRY_DISABLE=1 to opt out (tests).
+TELEMETRY_PATH = HARNESS_ROOT.parent / "logs" / "constraint_telemetry.jsonl"
 
 
 class ConstraintViolation(Exception):
@@ -123,26 +130,71 @@ class Proposal:
                 detail=f"min_observation_days={bar['min_observation_days']} < 30.",
             )
 
-    def validate_all(self) -> list[ConstraintViolation]:
+    def validate_all(self, source_tag: str = "validate_proposal_cli") -> list[ConstraintViolation]:
         violations: list[ConstraintViolation] = []
+        results: dict[str, str] = {}
+
         try:
             self.validate_schema()
+            results["schema"] = "pass"
         except jsonschema.ValidationError as e:
-            violations.append(ConstraintViolation(
+            v = ConstraintViolation(
                 constraint="schema",
                 memory_rule="schemas/proposal.schema.json",
                 detail=f"{e.message} at {list(e.absolute_path)}",
-            ))
+            )
+            violations.append(v)
+            results["schema"] = "violate"
+            self._log_telemetry(results, violations, source_tag)
             return violations
-        for check in (
-            self.check_real_data_gate,
-            self.check_shadow_budget,
-            self.check_contributor_ping,
-            self.check_control_flow,
-            self.check_promotion_bar,
-        ):
+
+        checks = [
+            ("real_data_gate", self.check_real_data_gate),
+            ("shadow_budget", self.check_shadow_budget),
+            ("contributor_credit", self.check_contributor_ping),
+            ("control_flow", self.check_control_flow),
+            ("promotion_bar", self.check_promotion_bar),
+        ]
+        for name, check_fn in checks:
             try:
-                check()
+                check_fn()
+                results[name] = "pass"
             except ConstraintViolation as v:
                 violations.append(v)
+                results[name] = "violate"
+
+        self._log_telemetry(results, violations, source_tag)
         return violations
+
+    def _log_telemetry(
+        self,
+        results: dict[str, str],
+        violations: list[ConstraintViolation],
+        source_tag: str,
+    ) -> None:
+        """Append one jsonl line per validate_all() invocation. Failure-tolerant:
+        any IO error is swallowed so telemetry never breaks validation."""
+        if os.environ.get("HARNESS_TELEMETRY_DISABLE"):
+            return
+        try:
+            TELEMETRY_PATH.parent.mkdir(parents=True, exist_ok=True)
+            line = {
+                "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "proposal_id": self.data.get("proposal_id", "?"),
+                "source_path": str(self.source_path),
+                "source_tag": source_tag,
+                "results": results,
+                "violation_count": len(violations),
+                "violations": [
+                    {
+                        "constraint": v.constraint,
+                        "memory_rule": v.memory_rule,
+                        "detail": v.detail[:200],
+                    }
+                    for v in violations
+                ],
+            }
+            with TELEMETRY_PATH.open("a") as f:
+                f.write(json.dumps(line, ensure_ascii=False) + "\n")
+        except Exception:
+            pass
