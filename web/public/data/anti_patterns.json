@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-05-13T02:06:05+00:00",
+  "count": 3,
+  "by_domain": {
+    "brand_builder": 2,
+    "trading": 1
+  },
+  "anti_patterns": [
+    {
+      "anti_pattern_id": "brand_builder_i_thought_x_title_template",
+      "domain": "brand_builder",
+      "original_proposal_id": "brand_builder_v3_title_template_personal_revelation",
+      "falsified_at": "2026-05-01T00:00:00Z",
+      "falsified_in": "11-post tone audit (2026-04-29 → 2026-05-01)",
+      "evidence": [
+        "4 of 11 posts in the audit window opened with 'I thought X' framing",
+        "Repetition broke the per-template freshness signal — agent-echo-chamber pattern",
+        "Posts using this template plateaued in karma vs posts using other openers"
+      ],
+      "why_falsified": "When the same opener appears in >2 posts per 7-day window, readers (and the\nMoltbook recommendation algorithm) treat it as a cliché. The template tic\nbecomes a signature that anti-recommends the agent. Worst case: 4/11 in a 3-day\nwindow meant >36% of recent posts felt identical, which suppressed reach AND\ncontributor engagement.\n\nThe deeper issue is template gravity: any template that produces \"good first\ndraft\" results gets reused, until reuse itself becomes the signal. Need a hard\nper-template cap at the gate, not a soft \"try to vary.\"",
+      "aliases_blocked": [
+        "i_realized_x_title_template",
+        "i_assumed_x_title_template",
+        "i_was_wrong_about_x_template",
+        "opening_with_personal_revelation",
+        "confession_style_opening",
+        "i_thought_x_template_relaxed_cap"
+      ],
+      "next_proposal_check": "Before proposing any opener template that mirrors \"I [past-tense-cognitive-verb]\nX\", check this archive AND the per-template ≤2/7 cap codified in\nbrand-builder SKILL.md. If your template would land outside the cap given\ncurrent 7-day post history, the proposal is auto-rejected — that's the gate.",
+      "memory_file": "feedback_brand_builder_i_thought_x_falsified.md",
+      "source_yaml": "https://github.com/bbismm/ibitlabs/blob/main/harness/examples/brand_builder_i_thought_x_template.yaml"
+    },
+    {
+      "anti_pattern_id": "brand_builder_stub_skill_md_drift",
+      "domain": "brand_builder",
+      "original_proposal_id": "stub_skill_md_alongside_canonical_for_quick_load",
+      "falsified_at": "2026-05-10T00:00:00Z",
+      "falsified_in": "13-day silent drift audit; 20/20 most recent posts had 0 trading content + 0 fenced code + 0 A/B/C path coverage",
+      "evidence": [
+        "Runner read ~/.claude/scheduled-tasks/<task>/SKILL.md (4-27 stub) instead of canonical 65K SKILL.md for 13+ days",
+        "Agent drifted into AI-meta-philosophy posts; 20 consecutive posts contained 0 trading anchors",
+        "Karma still grew 370 → 457 in the same window, masking the drift via agent-echo-chamber local maximum",
+        "Same pattern hit saga-daily 2026-05-10 (sibling incident, same root cause: stub SKILL.md aging out of sync with canonical)"
+      ],
+      "why_falsified": "Two SKILL.md copies for the same skill (a slim \"stub\" alongside the canonical)\nfeels like a cache optimization but is actually a drift bomb. The runner loads\nthe stub by path; the canonical is what gets edited when rules change. Edits to\nthe canonical do NOT propagate to the stub, so the agent reads a stale version\nwhile the operator believes the new rules are live.\n\nWorst-case observed: 13 days of drift, only caught when content quality\nobviously degraded. Karma growth masked the drift (agents echo-chamber other\nagents, so meta-philosophy posts get upvoted by other meta-philosophy bots) —\nmeaning the lagging metric LOOKED fine while the leading metric (trading\ncontent + A/B/C path coverage) was at 0.\n\nThis anti-pattern applies broadly to any skill with a runner script that\nhard-codes a SKILL.md path. The fix is one-canonical-per-skill enforced at the\nrunner layer.",
+      "aliases_blocked": [
+        "dual_skill_md_files_for_same_skill",
+        "summary_stub_alongside_canonical",
+        "mirror_skill_md_for_quick_load",
+        "cached_skill_md_in_claude_dir",
+        "lightweight_skill_alongside_full_version"
+      ],
+      "next_proposal_check": "Before proposing any \"lightweight skill summary\" / \"stub for quick load\" /\n\"mirror SKILL.md to a faster path\" — verify there is exactly ONE SKILL.md per\nskill, and the runner reads from the canonical location. If you find yourself\nwriting \"for performance, let's keep a slim copy at X\" — STOP. The performance\ngain is dwarfed by the eventual drift cost.",
+      "memory_file": "feedback_brand_builder_stub_skill_drift_falsified.md",
+      "source_yaml": "https://github.com/bbismm/ibitlabs/blob/main/harness/examples/brand_builder_stub_skill_drift.yaml"
+    },
+    {
+      "anti_pattern_id": "filter_a_drawdown_gate",
+      "domain": "trading",
+      "original_proposal_id": "filter_a_drawdown_from_recent_high",
+      "falsified_at": "2026-04-22T00:00:00Z",
+      "falsified_in": "30d in-sample backtest + OOS forward test on SOL hybrid_v5.1",
+      "evidence": [
+        "+20pp PF on in-sample 30d backtest",
+        "-40pp PF on out-of-sample forward test (same window length, immediately following IS)",
+        "Root cause: regime-window lag, not entry-price position"
+      ],
+      "why_falsified": "Drawdown-from-recent-high gate measures price displacement from a moving high, which\ncorrelates with regime-window lag rather than entry-quality. In-sample backtest fits\nthe lag accidentally; OOS reveals the same regime detection lags reality, so the\ngate fires after the move has already exhausted. Filter A and its rolling-percentile\nvariant (Option B) belong to the same family — both filter on price-position; both\ncollapse OOS.",
+      "aliases_blocked": [
+        "filter_a_drawdown_from_recent_high",
+        "rolling_percentile_drawdown_gate",
+        "option_b_rolling_dd",
+        "drawdown_position_filter"
+      ],
+      "next_proposal_check": "Before proposing any \"filter on price drawdown from a moving reference\" entry gate,\ncite this archive and explain (a) why it is NOT regime-window lag in disguise and\n(b) why OOS would not collapse like -40pp.",
+      "memory_file": "feedback_filter_a_falsified.md",
+      "source_yaml": "https://github.com/bbismm/ibitlabs/blob/main/harness/examples/filter_a_drawdown.yaml"
+    }
+  ]
+}
