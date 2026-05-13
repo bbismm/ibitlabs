@@ -1,0 +1,45 @@
+anti_pattern_id: brand_builder_stub_skill_md_drift
+domain: brand_builder
+original_proposal_id: stub_skill_md_alongside_canonical_for_quick_load
+falsified_at: "2026-05-10T00:00:00Z"
+falsified_in: "13-day silent drift audit; 20/20 most recent posts had 0 trading content + 0 fenced code + 0 A/B/C path coverage"
+
+evidence:
+  - "Runner read ~/.claude/scheduled-tasks/<task>/SKILL.md (4-27 stub) instead of canonical 65K SKILL.md for 13+ days"
+  - "Agent drifted into AI-meta-philosophy posts; 20 consecutive posts contained 0 trading anchors"
+  - "Karma still grew 370 → 457 in the same window, masking the drift via agent-echo-chamber local maximum"
+  - "Same pattern hit saga-daily 2026-05-10 (sibling incident, same root cause: stub SKILL.md aging out of sync with canonical)"
+
+why_falsified: |
+  Two SKILL.md copies for the same skill (a slim "stub" alongside the canonical)
+  feels like a cache optimization but is actually a drift bomb. The runner loads
+  the stub by path; the canonical is what gets edited when rules change. Edits to
+  the canonical do NOT propagate to the stub, so the agent reads a stale version
+  while the operator believes the new rules are live.
+
+  Worst-case observed: 13 days of drift, only caught when content quality
+  obviously degraded. Karma growth masked the drift (agents echo-chamber other
+  agents, so meta-philosophy posts get upvoted by other meta-philosophy bots) —
+  meaning the lagging metric LOOKED fine while the leading metric (trading
+  content + A/B/C path coverage) was at 0.
+
+  This anti-pattern applies broadly to any skill with a runner script that
+  hard-codes a SKILL.md path. The fix is one-canonical-per-skill enforced at the
+  runner layer.
+
+aliases_blocked:
+  - dual_skill_md_files_for_same_skill
+  - summary_stub_alongside_canonical
+  - mirror_skill_md_for_quick_load
+  - cached_skill_md_in_claude_dir
+  - lightweight_skill_alongside_full_version
+
+next_proposal_check: |
+  Before proposing any "lightweight skill summary" / "stub for quick load" /
+  "mirror SKILL.md to a faster path" — verify there is exactly ONE SKILL.md per
+  skill, and the runner reads from the canonical location. If you find yourself
+  writing "for performance, let's keep a slim copy at X" — STOP. The performance
+  gain is dwarfed by the eventual drift cost.
+
+memory_file: "feedback_brand_builder_stub_skill_drift_falsified.md"
+memory_index_line: "- [brand_builder: stub SKILL.md drift falsified 2026-05-10](feedback_brand_builder_stub_skill_drift_falsified.md) — 13-day silent drift via stub-alongside-canonical pattern. 20/20 recent posts at 0 trading content. Karma grew via agent-echo-chamber, masking the failure. One-canonical-per-skill rule."
