@@ -72,7 +72,7 @@ HARNESS_FREEZE_TEST_NOW=2026-05-31 bash harness/scripts/pre-commit-freeze
 
 ## Real examples shipped
 
-The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-13, the harness governs proposals from 2 domains:
+The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-14, the harness governs proposals from 3 domains:
 
 **`trading` domain:**
 
@@ -84,7 +84,11 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 - `examples/brand_builder_i_thought_x_template.yaml` — Falsified opener template (4/11 posts in 3-day audit window used same "I thought X..." framing → algo down-weight + cliché-collapse). Blocks 6 paraphrase aliases.
 - `examples/brand_builder_stub_skill_drift.yaml` — Falsified "stub SKILL.md alongside canonical" pattern (13-day silent drift, 20/20 recent posts at 0 trading content; karma kept growing via agent-echo-chamber, masking the failure). Blocks 5 paraphrase aliases. Generalizable to any skill with a runner-loaded SKILL.md.
 
-The other allowed domains in the schema (`saga`, `harness_meta`, `ops`) are reserved for future use. Adding a new domain means: (a) author the example yamls, (b) the rollback ladder picks them up automatically — no schema change needed beyond the enum.
+**`harness_meta` domain** (added 2026-05-14 — governance-of-governance proposals):
+
+- `examples/harness_meta_schema_freeze.yaml` — Proposal that introduced Operator Rule O1 (the schema-freeze monitor). Self-referential: the harness's own foundational rule submitted through the harness's own funnel, passing the same 5 constraints any contributor rule must pass. Currently in 30d shadow (first review 2026-06-15).
+
+The other allowed domains in the schema (`saga`, `ops`) are reserved for future use. Adding a new domain means: (a) author the example yamls, (b) the rollback ladder picks them up automatically — no schema change needed beyond the enum.
 
 ## Why this exists
 

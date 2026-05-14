@@ -1,0 +1,70 @@
+# Self-referential: this is the harness's first harness_meta-domain proposal,
+# documenting the schema-freeze rule that shipped 2026-05-14. Demonstrates
+# domain portability — same 5 constraints apply to governance-of-governance,
+# not just trading. See docs/why.md §Operator Rule O1 for the failure story.
+
+proposal_id: harness_meta_schema_freeze
+rule_name: schema_freeze_during_review_clusters
+domain: harness_meta
+
+proposed_by: null   # operator-proposed; not contributor-credited
+proposed_in: null
+proposed_at: "2026-05-14T00:00:00Z"
+
+hypothesis: |
+  Schema mutations during scheduled review clusters destabilize contributor
+  contracts. When >=2 reviews close within 7 days of each other, the act of
+  looking at evidence surfaces "schema-tightening" ideas, and operators
+  unilaterally land them. Past contributors who submitted under the prior
+  schema find their proposal semantics shifted mid-flight.
+
+  Expected: a freeze window of [first_cluster_review - 7d, last + 14d]
+  reduces schema mutations during clusters to zero (vs prior 90d baseline
+  rate of ~1 mutation per cluster), while parked-and-resubmitted ideas
+  survive past freeze close at >= the rate of un-parked schema proposals.
+
+direction: neutral   # governance rule, not a directional trading signal
+
+shadow_log_jsonl: logs/shadow_schema_freeze_meta_rule.jsonl
+control_flow_impact: log_only
+
+real_data_gate:
+  evidence_threshold: 3
+  evidence_seen: 4
+  source: |
+    Four observed incidents of review-window schema drift in prior ~90d:
+    (1) brand_builder template per-cap added 2026-05-01 mid tone-audit;
+    (2) lobster_claw verb-parser fix 2026-05-13 during agent-funnel review;
+    (3) sniper trailing trade_log filter schema tightened 2026-05-06 during
+        v5.2 architecture review;
+    (4) close_verify path tightening 2026-05-02 during ghost-watchdog scan.
+    Each was operator-correct in isolation, but each produced a schema that
+    no longer matched contributor-submitted proposals from before the
+    cluster started.
+
+shadow_budget:
+  cap: 2
+  current_active: 1   # this rule's own shadow opens here; counts itself
+
+contributor_credit:
+  ping_required: false
+
+promotion_bar:
+  min_entries: 30                    # 30 logged review-cluster occurrences
+  min_observation_days: 30           # 30d post-shadow-open
+  min_hit_rate_spread_pp: 15         # 15pp reduction in cluster-window
+                                     # schema-mutation rate vs prior 90d baseline
+  direction_match_required: true     # direction = "fewer mutations during clusters"
+  no_confounding_shadow_required: true
+  retire_after_days: 90
+
+observation_window:
+  started_at: "2026-05-14T00:00:00Z"
+  first_review_at: "2026-06-15"      # post-first freeze cycle (5-24 -> 6-19)
+  retire_check_at: "2026-08-12"      # ~90d after shadow open
+
+rollback:
+  on_bar_fail: retire_and_archive    # 30d no improvement -> drop the rule
+  on_bug_discovered: pause_and_review # governance bugs aren't $$-losing like
+                                     # trading bugs; review before resetting
+  on_confounding_shadow: pause_and_review
