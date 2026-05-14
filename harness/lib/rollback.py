@@ -1,4 +1,4 @@
-"""RollbackLadder: unified status interface over the three rollback layers.
+"""RollbackLadder: unified status interface over the four rollback layers.
 
 Layer 1 - Realtime (minute scale):
   - ghost-watchdog (60s loop)
@@ -10,7 +10,12 @@ Layer 2 - Observation (month scale):
   - shadow rule 30d review → delegates to PromotionBar
   - retire-by-deadline → routes to archive_falsified
 
-Layer 3 - Proposal (second-to-day scale):
+Layer 3 - Decay (multi-month scale):
+  - rolling 30/60/90d hit_rate + PF for live baseline + each shadow rule
+  - flags edges decaying faster than the review cadence catches
+  - delegates to EdgeHalflifeMonitor
+
+Layer 4 - Proposal (second-to-day scale):
   - anti-patterns currently armed to reject lookalike proposals
 """
 from __future__ import annotations
@@ -25,7 +30,7 @@ import yaml
 
 IBITLABS_ROOT = Path("/Users/bonnyagent/ibitlabs")
 
-Layer = Literal["realtime", "observation", "proposal"]
+Layer = Literal["realtime", "observation", "decay", "proposal"]
 Status = Literal["healthy", "degraded", "alarm", "unknown"]
 
 
@@ -168,6 +173,79 @@ class ObservationLayer:
         return out
 
 
+class DecayLayer:
+    """Rolling 30/60/90d edge half-life signal for baseline + each proposal yaml.
+
+    Status mapping:
+      healthy           -> "healthy"
+      degrading         -> "degraded"
+      decayed           -> "alarm"
+      insufficient_data -> "unknown"
+    """
+
+    DECAY_STATUS_MAP: dict[str, Status] = {
+        "healthy": "healthy",
+        "degrading": "degraded",
+        "decayed": "alarm",
+        "insufficient_data": "unknown",
+    }
+
+    def __init__(self, proposals_dir: Path | None = None):
+        self.proposals_dir = proposals_dir or (
+            Path(__file__).resolve().parent.parent / "examples"
+        )
+
+    def list_monitors(self) -> list[Monitor]:
+        from .edge_halflife import EdgeHalflifeMonitor
+        from .proposal import Proposal
+
+        monitor = EdgeHalflifeMonitor()
+        out: list[Monitor] = []
+
+        baseline = monitor.baseline()
+        out.append(self._to_monitor(baseline, description="v5.1 live baseline (trade_log filter)"))
+
+        for yaml_file in sorted(self.proposals_dir.glob("*.yaml")):
+            with yaml_file.open() as f:
+                raw = yaml.safe_load(f)
+            if not isinstance(raw, dict) or "proposal_id" not in raw:
+                continue
+            try:
+                p = Proposal.from_yaml(yaml_file)
+                es = monitor.for_proposal(p)
+                desc = p.data["hypothesis"].strip().splitlines()[0][:80]
+                out.append(self._to_monitor(es, description=desc))
+            except Exception as e:  # noqa: BLE001
+                out.append(Monitor(
+                    id=yaml_file.stem, layer="decay",
+                    description=f"failed to evaluate {yaml_file.name}",
+                    status="unknown", last_check=_now_iso(), detail=str(e),
+                ))
+        return out
+
+    @classmethod
+    def _to_monitor(cls, es, *, description: str) -> Monitor:
+        w30 = next((w for w in es.windows if w.window_days == 30), None)
+        if w30 and w30.n_paired:
+            hr = "n/a" if w30.hit_rate is None else f"{w30.hit_rate:.1%}"
+            pf = (
+                "n/a" if w30.profit_factor is None
+                else "inf" if w30.profit_factor == float("inf")
+                else f"{w30.profit_factor:.2f}"
+            )
+            head = f"30d: n={w30.n_paired} HR={hr} PF={pf}"
+        else:
+            head = "30d: no paired closes"
+        return Monitor(
+            id=es.target_id,
+            layer="decay",
+            description=description,
+            status=cls.DECAY_STATUS_MAP.get(es.status, "unknown"),
+            last_check=_now_iso(),
+            detail=f"{head} -- {es.receipt}",
+        )
+
+
 class ProposalLayer:
     """Lists anti-patterns currently armed to reject lookalike proposals."""
 
@@ -199,11 +277,13 @@ class RollbackLadder:
     def __init__(self):
         self.realtime = RealtimeLayer()
         self.observation = ObservationLayer()
+        self.decay = DecayLayer()
         self.proposal = ProposalLayer()
 
     def list_all(self) -> list[Monitor]:
         return (
             self.realtime.list_monitors()
             + self.observation.list_monitors()
+            + self.decay.list_monitors()
             + self.proposal.list_monitors()
         )

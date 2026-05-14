@@ -20,7 +20,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--layer",
-        choices=["realtime", "observation", "proposal", "all"],
+        choices=["realtime", "observation", "decay", "proposal", "all"],
         default="all",
     )
     ap.add_argument("--json", action="store_true")
@@ -33,17 +33,19 @@ def main() -> int:
         monitors = ladder.realtime.list_monitors()
     elif args.layer == "observation":
         monitors = ladder.observation.list_monitors()
+    elif args.layer == "decay":
+        monitors = ladder.decay.list_monitors()
     else:
         monitors = ladder.proposal.list_monitors()
 
     if args.json:
         print(json.dumps([m.to_dict() for m in monitors], indent=2))
     else:
-        by_layer: dict[str, list] = {"realtime": [], "observation": [], "proposal": []}
+        by_layer: dict[str, list] = {"realtime": [], "observation": [], "decay": [], "proposal": []}
         for m in monitors:
             by_layer[m.layer].append(m)
         badge_map = {"healthy": "OK   ", "degraded": "WARN ", "alarm": "ALARM", "unknown": "?    "}
-        for layer in ("realtime", "observation", "proposal"):
+        for layer in ("realtime", "observation", "decay", "proposal"):
             ms = by_layer[layer]
             if not ms:
                 continue
