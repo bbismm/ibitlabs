@@ -97,6 +97,7 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 **`saga` domain** (added 2026-05-14 — narrative / chapter-cadence rules):
 
 - `examples/saga_focal_moment_tier_priority.yaml` — Proposal that gates saga-daily chapter focal-moment selection through an explicit Tier priority list (Tier-1 trading events take precedence; Tier-2 ops events allowed only after ≥2 prior Tier-1 chapters; Tier-3 meta-events parked). Grounded in 3 path-drift incidents 2026-05-06 → 2026-05-10. Retro-documents the priority gate that shipped to saga-daily `SKILL.md` on 2026-05-10 as defense-in-depth. Currently in 30d shadow (first review 2026-06-15).
+- `examples/saga_plumbing_focal_moment_drift.yaml` — Falsified anti-pattern: picking non-trading focal moments (plumbing bugs, infrastructure refactors, internal tooling) for serialized chapters without a Tier priority gate. 3 path-drift incidents 5-06 → 5-10 + sibling Moltbook drift. Karma growth (370→457) masked the drift for 13 days — growing metrics are NOT evidence the serial is on-axis. Generalizable to any content generator with feedback loops.
 
 All 5 allowed domains in the schema now have at least one example. Adding a 6th domain means: (a) extend the `domain` enum in `schemas/proposal.schema.json`, (b) author the example yamls, (c) the rollback ladder picks them up automatically.
 

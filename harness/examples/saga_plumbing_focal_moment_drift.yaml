@@ -1,0 +1,63 @@
+# saga domain anti-pattern: picking non-trading focal moments (plumbing
+# bugs, internal tooling, infrastructure refactors) for serialized
+# chapters without a Tier priority gate. Falsified retrospectively by 3
+# path-drift incidents 2026-05-06 -> 2026-05-10 — the same incidents that
+# motivated the `saga_focal_moment_tier_priority` proposal. This entry
+# archives the failure mode that the Tier gate was designed to prevent.
+
+anti_pattern_id: saga_plumbing_focal_moment_drift
+domain: saga
+original_proposal_id: saga_pick_any_recent_event_as_focal_moment
+falsified_at: "2026-05-14T00:00:00Z"
+falsified_in: "Retrospective audit of saga-daily output 2026-05-06 → 2026-05-10"
+
+evidence:
+  - "2026-05-09 — saga-daily picked the lobster_claw.py verb-parser plumbing-bug fix as the chapter's focal moment, 0 trading anchor. No Tier priority gate in SKILL.md, no Tier-1 event in the lookback window."
+  - "2026-05-10 — saga-daily picked the SAME plumbing-bug fix as focal moment the next day, two consecutive days now non-trading. Reader signal (Moltbook reply count, spine-thread carry-over) dropped relative to trading-focal days."
+  - "2026-05-06 → 2026-05-10 — saga-daily SKILL.md kept stale Position #63 spine-thread guidance for 4 days after #63 had closed on 5-06. With no Tier check, the chapter generator kept reaching for a non-existent spine, producing low-tension prose."
+  - "2026-05-10 sibling — Moltbook brand-builder had the same root pattern in a different domain (stub SKILL.md with no topic priority gate → 20/20 recent posts drifted into AI-meta-philosophy, 0 trading content, but karma kept growing 370→457 via agent-echo-chamber). Karma's growth masked the drift for 13 days."
+
+why_falsified: |
+  3 of 3 path-drift incidents (4 of 4 if counting the sibling Moltbook
+  case) traced to the same root: a chapter / post generator without an
+  explicit Tier priority gate falls back to recent operational events
+  when no domain-canonical event is available. Each individual chapter
+  feels justified ("there was just no big trade today, the bug fix IS
+  what happened"), but the compounding effect teaches the reader the
+  serial is about engineering, not the domain it advertises.
+
+  The failure is invisible at chapter-level (each one looks reasonable
+  in isolation) and only emerges in aggregate over 2-5 chapters. Karma
+  / view metrics don't catch it — they continue to grow during drift
+  via echo-chamber and SEO-tail effects, which is what makes the drift
+  insidious. Growing metrics are NOT evidence the serial is on-axis.
+
+  Generalizable beyond saga: any content generator (newsletter,
+  podcast, agent post stream) that auto-picks topics needs an explicit
+  domain-canonical Tier list, OR a manual sanity check, OR both.
+
+aliases_blocked:
+  - saga_pick_any_recent_event
+  - saga_no_tier_gate_needed
+  - saga_plumbing_bug_as_focal
+  - saga_infrastructure_refactor_as_focal
+  - saga_trust_generator_to_pick
+  - saga_karma_growth_proves_on_axis
+  - saga_echo_chamber_validates_drift
+
+next_proposal_check: |
+  Before saga-daily (or any equivalent serialized-content generator)
+  emits a chapter where the focal moment is non-trading (plumbing /
+  infrastructure / meta-tooling), check this archive AND the
+  `saga_focal_moment_tier_priority` proposal in the same examples/
+  directory. The Tier priority gate must be in SKILL.md: Tier-1
+  trading events take precedence; Tier-2 ops events allowed only
+  after ≥2 prior Tier-1 chapters; Tier-3 meta-events parked.
+
+  If your generator is producing growing metrics but you can't tell
+  if it's on-axis — assume drift until you check the Tier distribution
+  of the last N chapters. Karma is lagging, drift is leading.
+
+memory_file: "feedback_no_plumbing_focal_drift.md"
+
+memory_index_line: "- [No plumbing/infra focal-moment drift in serialized content](feedback_no_plumbing_focal_drift.md) — saga-daily 5-09/5-10 picked plumbing-bug as focal 2 days; stale Position #63 spine guidance for 4 days; sibling Moltbook stub-SKILL drift 13 days. Generators without Tier gate fall back to ops events; karma growth masks the drift. Tier-1 trading events take precedence in SKILL.md."
