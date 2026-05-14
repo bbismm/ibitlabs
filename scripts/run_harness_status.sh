@@ -38,26 +38,34 @@ mkdir -p "$LOG_DIR" "$(dirname "$TARGET")"
   GIT_HEAD="$(cd "$REPO" && git rev-parse --short HEAD 2>/dev/null || echo unknown)"
   GIT_BRANCH="$(cd "$REPO" && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
 
-  # Capture monitors JSON
-  MONITORS_JSON="$(python3 "$HARNESS/bin/rollback_status.py" --json 2>>"$LOG")"
-  if [[ -z "$MONITORS_JSON" ]]; then
+  # Capture monitors JSON to a temp file (avoids shell + heredoc double-escape
+  # that mangled `\"stub\"`-style escaped quotes in receipt text -- 2026-05-14).
+  MONITORS_FILE="$(mktemp -t harness_status_monitors.XXXXXX.json)"
+  trap 'rm -f "$MONITORS_FILE"' EXIT
+  if ! python3 "$HARNESS/bin/rollback_status.py" --json >"$MONITORS_FILE" 2>>"$LOG"; then
+    echo "FATAL: rollback_status.py exited non-zero (exit codes 1/2 are status,"
+    echo "       not errors, but produced no JSON or invalid JSON)."
+  fi
+  if [[ ! -s "$MONITORS_FILE" ]]; then
     echo "FATAL: rollback_status.py produced empty output"
     exit 2
   fi
 
-  # Enrich + summarize via inline Python (one tool, no jq dep)
-  python3 - <<PYEOF >"$TARGET"
+  # Enrich + summarize via Python reading the temp file (one tool, no jq dep)
+  python3 - "$MONITORS_FILE" "$GENERATED_AT" "$GIT_HEAD" "$GIT_BRANCH" <<'PYEOF' >"$TARGET"
 import json, sys
-monitors = json.loads('''$MONITORS_JSON''')
+monitors_file, generated_at, git_head, git_branch = sys.argv[1:5]
+with open(monitors_file) as f:
+    monitors = json.load(f)
 counts = {"healthy": 0, "degraded": 0, "alarm": 0, "unknown": 0}
-by_layer = {"realtime": 0, "observation": 0, "proposal": 0}
+by_layer = {"realtime": 0, "observation": 0, "decay": 0, "proposal": 0}
 for m in monitors:
     counts[m.get("status", "unknown")] = counts.get(m.get("status", "unknown"), 0) + 1
     by_layer[m.get("layer", "?")] = by_layer.get(m.get("layer", "?"), 0) + 1
 out = {
-    "generated_at": "$GENERATED_AT",
-    "git_head": "$GIT_HEAD",
-    "git_branch": "$GIT_BRANCH",
+    "generated_at": generated_at,
+    "git_head": git_head,
+    "git_branch": git_branch,
     "summary": {
         "total_monitors": len(monitors),
         "by_status": counts,
