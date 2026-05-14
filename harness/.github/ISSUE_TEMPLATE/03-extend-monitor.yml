@@ -1,0 +1,72 @@
+name: 📜 Extend a monitor
+description: Build a tool that uses harness output (monitor, archive query, CI check, badge, dashboard)
+title: "[extend] "
+labels: ["extension", "monitor"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The harness exposes structured output via CLI and library. If you
+        build something on top — alternative monitor, anti-pattern visualizer,
+        third-party CI check, IDE plugin, dashboard, badge generator — you're
+        extending the framework's reach.
+
+        Exposed surfaces:
+        - **CLI (all support `--json`):** `validate_proposal.py`, `promote_bar.py`, `rollback_status.py`, `archive_falsified.py`, `freeze_status.py`
+        - **Library:** `lib.proposal`, `lib.promotion_bar`, `lib.rollback`, `lib.anti_pattern`, `lib.freeze`
+        - **Data:** `governance/reviews.yaml`, `schemas/*.schema.json`, `examples/*.yaml`
+        - **Live snapshot (iBitLabs deployment):** https://ibitlabs.com/data/harness_status.json
+
+        Examples of valid extensions:
+        - GitHub Action for server-side freeze enforcement (complement to local pre-commit hook)
+        - IDE plugin that runs `validate_proposal.py` on yaml save
+        - Anti-pattern visualizer / search
+        - README badge generator ("harness-governed", "30d shadow active", etc.)
+        - Alternative rollback monitor implementations
+        - Dashboards that visualize a slice of `harness_status.json` differently
+
+  - type: textarea
+    id: what_you_built
+    attributes:
+      label: What you built
+      description: |
+        Brief description. Link to code or hosted version if available.
+      placeholder: |
+        Built: a GitHub Action that runs `bin/freeze_status.py` on every PR
+        and posts a comment if the PR touches schemas/bin/lib during a
+        freeze window.
+        Source: https://github.com/<you>/harness-freeze-action
+    validations:
+      required: true
+
+  - type: textarea
+    id: which_outputs
+    attributes:
+      label: Which harness outputs does it use?
+      description: |
+        Files, JSON fields, CLI exit codes. Specificity helps us understand
+        what depends on what — important when we change a schema (subject to
+        the schema-freeze rule).
+      placeholder: |
+        - bin/freeze_status.py --json (parsed for `frozen`, `active_window`)
+        - schemas/proposal.schema.json (read for required-field list)
+        - exit code 1 (FROZEN) used as the action's failure signal
+    validations:
+      required: true
+
+  - type: textarea
+    id: how_others_use_it
+    attributes:
+      label: How would others use it?
+      description: Install / run / wire-up instructions in one or two lines.
+      placeholder: |
+        Add to .github/workflows/freeze-check.yml:
+          uses: <you>/harness-freeze-action@v1
+          with:
+            harness-dir: harness/
+
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit (optional)
+      placeholder: "@your-handle"

@@ -95,3 +95,9 @@ The other allowed domains in the schema (`saga`, `ops`) are reserved for future 
 Before this harness, the 5 constraints lived in `feedback_*.md` memory entries that agents had to remember per-prompt. New proposals from contributors had no enforceable shape, and falsified rules sometimes resurfaced months later as paraphrased proposals. The harness makes the structure executable: validate at submission, evaluate at review, archive at retirement.
 
 For the long-form story behind each constraint — five real failure cases from the $1k → $10k experiment, plus a workshop arc for teaching — see [docs/why.md](docs/why.md).
+
+## Contributing
+
+Three contribution shapes earn permanent credit: propose a rule, falsify a constraint, or extend a monitor. See [CONTRIBUTING.md](CONTRIBUTING.md) for the funnel + self-check workflow (`validate_proposal.py` before opening an issue). Three issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) map to the three shapes.
+
+Licensed under [MIT](LICENSE), same as the parent iBitLabs repo.

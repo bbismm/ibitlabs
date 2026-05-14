@@ -1,0 +1,145 @@
+name: 🪪 Propose a rule
+description: Suggest a new governance rule for any domain the harness serves
+title: "[propose] "
+labels: ["proposal", "rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing.
+
+        Adopted rules earn permanent credit. The 5 contributor-funnel constraints must all be satisfied; the bar is high on purpose. See [`docs/why.md`](../../docs/why.md) for the 5 real failure stories.
+
+        **Self-check before opening:** `python3 harness/bin/validate_proposal.py your_proposal.yaml`
+
+        If your rule is similar to an existing one, mention it explicitly — paraphrase floods earn nothing.
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      description: Which surface does this rule apply to?
+      options:
+        - trading
+        - brand_builder
+        - harness_meta
+        - saga
+        - ops
+    validations:
+      required: true
+
+  - type: input
+    id: rule_handle
+    attributes:
+      label: Rule handle
+      description: One-word, snake_case identifier for this rule
+      placeholder: "e.g. funding_pullback_entry"
+    validations:
+      required: true
+
+  - type: textarea
+    id: condition
+    attributes:
+      label: The condition (precise)
+      description: |
+        Specify the rule formally enough that we could implement it directly.
+        Use math, code, or pseudo-code. Vague proposals get pushed back.
+      placeholder: |
+        Trigger when:
+          • atr(14, 1H) / sma(28, atr_series) < 0.95   (compression)
+          • AND prior 4 candles in same direction
+        Direction: enter long if upper-wick frequency > 60% in compression window.
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: direction
+    attributes:
+      label: Direction
+      description: Maps to `direction` field in proposal.schema.json. Required by the promotion bar for direction-match check.
+      options:
+        - long_bias
+        - short_bias
+        - both
+        - neutral
+    validations:
+      required: true
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis (what would the data show if this works?)
+      description: |
+        State the falsifiable prediction. Specific enough that 30 days of
+        shadow data can confirm or refute.
+      placeholder: |
+        Compression-regime entries should have ≥15pp higher hit-rate than
+        expansion-regime entries, matched by direction and prior-trend.
+    validations:
+      required: true
+
+  - type: input
+    id: evidence_count
+    attributes:
+      label: Real-data evidence count
+      description: |
+        Distinct historical instances of this pattern observed in public data.
+        `real_data_gate` requires ≥3; below 3 the proposal is parked as
+        hypothesis-with-trigger until evidence accumulates.
+      placeholder: "3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_source
+    attributes:
+      label: Real-data evidence source
+      description: |
+        Point to the specific instances. URLs, log line numbers, file paths.
+        Trading: /signals trade IDs, jsonl snippets, backtest bucket counts.
+        Non-trading: equivalent grounded examples in your domain.
+      placeholder: |
+        - Trade #61 (2026-04-30): SOL ATR ratio 0.84 at entry, +1.3% follow-through
+        - Trade #54 (2026-04-26): SOL ATR ratio 0.81 at entry, +0.9% follow-through
+        - Trade #47 (2026-04-23): SOL ATR ratio 0.78 at entry, +1.1% follow-through
+    validations:
+      required: true
+
+  - type: textarea
+    id: not_duplicate
+    attributes:
+      label: Why this isn't a paraphrase of existing rules
+      description: |
+        Cite which active/retired rules you considered and what makes this
+        substantively different. One rule = one credit.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Promotion criteria (sample × effect × direction)
+      description: |
+        What evidence would clear this from shadow → live gate?
+        Must specify: minimum sample (≥30), minimum effect (≥15pp), direction match.
+      placeholder: |
+        Sample: ≥30 entries per (compression / expansion) bucket
+        Effect: ≥15pp hit-rate spread between best and worst bucket
+        Direction: compression bucket must have HIGHER hit rate
+    validations:
+      required: true
+
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit (optional)
+      description: GitHub username, Moltbook handle, or other public identity. Leave blank for no public attribution.
+      placeholder: "@your-handle"
+
+  - type: input
+    id: source_post
+    attributes:
+      label: Source post / discussion (optional)
+      description: If this idea originated elsewhere (Moltbook, blog, paper, another issue), link it here. We cite sources.
+      placeholder: "https://www.moltbook.com/p/... or any URL"

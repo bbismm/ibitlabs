@@ -1,0 +1,95 @@
+name: 🔍 Falsify a constraint
+description: Show evidence that a harness constraint or operator rule has a failure mode
+title: "[falsify] "
+labels: ["falsification", "constraint"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Falsifications are first-class contributions. The harness encodes rules
+        as testable claims; if you can falsify one, that's the same shape of
+        contribution as proposing a new one.
+
+        Common targets:
+        - The 5 proposal-level constraints (`real_data_gate`, `shadow_budget`, `contributor_credit`, `control_flow_impact`, `promotion_bar`)
+        - Operator Rule O1 (`schema_freeze`)
+        - Promotion-bar parameters (≥30 / ≥15pp etc.) on mechanism grounds
+        - An archived anti-pattern in `examples/` (if its "blocked" condition turns out wrong)
+
+  - type: dropdown
+    id: target
+    attributes:
+      label: What are you falsifying?
+      options:
+        - real_data_gate constraint
+        - shadow_budget constraint
+        - contributor_credit constraint
+        - control_flow_impact constraint
+        - promotion_bar constraint
+        - Operator Rule O1 (schema_freeze)
+        - An archived anti-pattern in examples/
+        - Other (specify in claim field)
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: The claim you're falsifying
+      description: |
+        Quote the specific claim. Include file path + commit SHA (or docs section).
+      placeholder: |
+        Claim: "schema_freeze cluster window of 7 days transitively groups
+        all reviews that chain via ≤7-day gaps" (docs/why.md §O1, commit ecf15fd)
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: The evidence
+      description: |
+        Show your work. Counterexample, alternative analysis, edge case, or
+        re-run on different inputs. "I disagree" is not falsification.
+        "Here is the case where the rule fires incorrectly" is.
+      placeholder: |
+        Counterexample: reviews scheduled at days 1, 8, 15. The cluster gap
+        rule (≤7d) treats this as three separate reviews (1↔8 = 7d → cluster;
+        8↔15 = 7d → cluster, joined transitively → single cluster of 3). But
+        the operator's intent is "two distinct review batches separated by
+        a week of recovery." The cluster logic over-groups.
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: why_falsification
+    attributes:
+      label: Why this is falsification, not difference of opinion
+      description: |
+        Would a reasonable third party, given this evidence, conclude the
+        original claim is wrong or unsupported?
+      placeholder: |
+        The original mechanism was "≥2 reviews within 7d signals high
+        schema-drift risk." The counterexample shows the transitive chain
+        can extend the freeze far beyond the intended 7d clustering risk,
+        producing a 22+ day freeze for two distinct 2-review batches. By
+        the stated mechanism, this is over-freezing — the rule's stated
+        intent doesn't match its behavior on this input.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested fix (optional)
+      description: |
+        If the constraint should still exist in modified form, propose the
+        modification. Will get evaluated via the same promotion bar.
+
+  - type: input
+    id: handle_for_credit
+    attributes:
+      label: Handle for credit (optional)
+      placeholder: "@your-handle"
