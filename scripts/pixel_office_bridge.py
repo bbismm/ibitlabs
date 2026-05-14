@@ -140,6 +140,23 @@ AGENTS = [
         "default_tool": "Read",
         "default_severity": "info",
     },
+    {
+        # H4 sideways-only paper bot (added 2026-05-14, auto-retire 2026-06-14).
+        # Plist `com.ibitlabs.sniper-sideways-paper` writes state_sideways_paper.json
+        # on each bot loop — same file_mtime pattern as sniper-eth. Plist sets
+        # SNIPER_RECEIPT=0, so there's no receipt chain to follow.
+        # Leaderboard pulls trade stats from sol_sniper_sideways_paper.db (see
+        # STRATEGY_DB_PATHS below).
+        "name": "sniper-sideways-paper",
+        "public_id": 106,
+        "source_type": "file_mtime",
+        "source_path": HOME / "ibitlabs/sol_sniper_state_sideways_paper.json",
+        "kind_map": {
+            "tick": ("Read", "sideways: state updated (H4 paper)", "info"),
+        },
+        "default_tool": "Read",
+        "default_severity": "info",
+    },
 ]
 
 
@@ -154,6 +171,7 @@ PUBLIC_WHITELIST: frozenset[str] = frozenset(
         "sniper-live",
         "sniper-shadow",
         "sniper-eth",
+        "sniper-sideways-paper",
         "rule-engine",
         "ghost-watchdog",
     }
@@ -177,9 +195,20 @@ _public_event_seq = 0
 # (rule_engine / ghost_watchdog) intentionally have no entry — they don't
 # trade and don't show on the leaderboard.
 STRATEGY_DB_PATHS: dict[int, Path] = {
-    101: HOME / "ibitlabs/sol_sniper.db",            # sniper-live
-    102: HOME / "ibitlabs/sol_sniper_shadow.db",     # sniper-shadow
-    103: HOME / "ibitlabs/sol_sniper_eth_paper.db",  # sniper-eth
+    101: HOME / "ibitlabs/sol_sniper.db",                    # sniper-live
+    102: HOME / "ibitlabs/sol_sniper_shadow.db",             # sniper-shadow
+    103: HOME / "ibitlabs/sol_sniper_eth_paper.db",          # sniper-eth
+    106: HOME / "ibitlabs/sol_sniper_sideways_paper.db",     # sniper-sideways-paper (H4)
+}
+# Without this filter, leaderboard SUM(pnl) mashes every strategy_version ever
+# written to a db (breakout_v3.4 + grid_v1 + hybrid_v5.0 + hybrid_v5.1, etc).
+# Live trader showed -$36/62 trades when v5.1 honest = +$0.60/18. See
+# feedback_total_trades_not_v51_baseline.md. None → no filter (debug only).
+STRATEGY_VERSION_FILTER: dict[int, str | None] = {
+    101: "hybrid_v5.1",
+    102: "hybrid_v5.1",
+    103: "hybrid_v5.1",
+    106: "hybrid_v5.1",
 }
 STATS_REFRESH_TICKS = 8  # bridge ticks at 1.5s → recompute stats every ~12s
 _stats_cache: dict = {}
@@ -322,39 +351,44 @@ def compute_strategy_stats() -> dict:
     for agent_id, db_path in STRATEGY_DB_PATHS.items():
         if not db_path.exists():
             continue
+        strat = STRATEGY_VERSION_FILTER.get(agent_id)
+        strat_clause = " AND strategy_version = ?" if strat else ""
+        strat_args: tuple = (strat,) if strat else ()
         try:
             conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=2.0)
             cur = conn.cursor()
             cur.execute(
-                """
+                f"""
                 SELECT COUNT(*),
                        COALESCE(SUM(pnl), 0),
                        COALESCE(SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END), 0),
                        COALESCE(SUM(CASE WHEN pnl < 0 THEN 1 ELSE 0 END), 0)
                 FROM trade_log
-                WHERE exit_price IS NOT NULL
-                """
+                WHERE exit_price IS NOT NULL{strat_clause}
+                """,
+                strat_args,
             )
             total_n, total_pnl, win_n, loss_n = cur.fetchone()
             cur.execute(
-                """
+                f"""
                 SELECT COUNT(*),
                        COALESCE(SUM(pnl), 0)
                 FROM trade_log
                 WHERE exit_price IS NOT NULL
-                  AND timestamp >= ?
+                  AND timestamp >= ?{strat_clause}
                 """,
-                (utc_midnight,),
+                (utc_midnight, *strat_args),
             )
             today_n, today_pnl = cur.fetchone()
             cur.execute(
-                """
+                f"""
                 SELECT pnl, timestamp
                 FROM trade_log
-                WHERE exit_price IS NOT NULL
+                WHERE exit_price IS NOT NULL{strat_clause}
                 ORDER BY timestamp DESC
                 LIMIT 1
-                """
+                """,
+                strat_args,
             )
             last_row = cur.fetchone()
             conn.close()

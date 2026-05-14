@@ -301,8 +301,6 @@
 
         function paint(d) {
           var balance = Number(d && d.balance);
-          var trades = Number(d && d.total_trades) || 0;
-          var wr = Number(d && d.win_rate) || 0;
           var regime = (d && d.regime) || '—';
           var fillPct = isFinite(balance) ? Math.max(0, Math.min(100, (balance / TARGET) * 100)) : 0;
 
@@ -320,9 +318,21 @@
           }
 
           var dayEl = $('mb-day'); if (dayEl) dayEl.textContent = dayCount();
-          var trEl = $('mb-trades'); if (trEl) trEl.textContent = trades;
-          var wrEl = $('mb-wr'); if (wrEl) wrEl.textContent = wr.toFixed(0);
           var rgEl = $('mb-regime'); if (rgEl) rgEl.textContent = regime;
+        }
+
+        // trades + WR come from /api/office-events stats["101"] (strategy_version
+        // filtered to hybrid_v5.1 in pixel_office_bridge.compute_strategy_stats —
+        // same source as the leaderboard). /api/live-status.total_trades and
+        // .win_rate are cross-strategy COUNT(*) including retired breakout_v3.4,
+        // grid_v1, hybrid_v5.0 rows; do not read them here.
+        function paintV51(stats) {
+          var s = stats && stats['101'];
+          if (!s) return;
+          var trEl = $('mb-trades');
+          if (trEl) trEl.textContent = (s.total_trades != null) ? s.total_trades : 0;
+          var wrEl = $('mb-wr');
+          if (wrEl) wrEl.textContent = ((Number(s.win_rate) || 0) * 100).toFixed(0);
         }
 
         function refresh() {
@@ -335,6 +345,11 @@
             .then(function (r) { return r.ok ? r.json() : null; })
             .then(function (d) { if (d) paint(d); })
             .catch(function () { /* swallow — bar stays at last value */ });
+
+          fetch('/api/office-events', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) { if (d) paintV51(d.stats); })
+            .catch(function () { /* swallow */ });
         }
 
         refresh();
