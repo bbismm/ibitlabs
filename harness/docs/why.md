@@ -102,6 +102,30 @@ The four sub-floors interlock: 30 trades alone isn't enough (could be all in 5 d
 
 ---
 
+## Operator-level governance rules
+
+The five constraints above validate someone *using* the harness — a contributor or operator submitting a proposal. The harness also has one **operator-level rule** that validates someone *changing the harness itself*. It does not live in `schemas/proposal.schema.json` (it doesn't apply to proposals); it lives in its own component, `bin/freeze_status.py` + `lib/freeze.py`, driven by `governance/reviews.yaml`.
+
+If you fork the harness for your own project, this is the one rule whose timing parameters you should expect to retune. The shape generalizes; the cluster window does not.
+
+---
+
+## Operator Rule O1: `schema_freeze` — no schema changes during review clusters
+
+**The rule:** When ≥2 scheduled reviews close within 7 days of each other (a "cluster"), the harness schema, CLI, and library freeze for `[first cluster review − 7d, last cluster review + 14d]`. During the freeze, mutations to `schemas/`, `bin/`, `lib/` must be parked as hypothesis-with-trigger and re-submitted after the window closes.
+
+**Why this exists.** Reviews force you to look at a rule's evidence and make a promote/retire decision. The act of looking is the most common moment to want to change the rule's *schema* — add a new sub-floor, add a new field, tighten a bound — because that's when the gap shows. The trap is that every review-driven schema tweak makes the harness slightly less interpretable to past contributors. Their proposals were submitted under one shape; under a new shape, their proposals may no longer mean what they meant at submit time. Worse, review-driven schema changes are usually optimizing-for-the-last-bad-case, not for general durability.
+
+In the 2026-05-31 → 2026-06-05 window, three reviews land in five days: Rule F (promotion), SL hypotheses H1/H2/H3 (promotion), and the four-gate review for `--no-grid` reactivation. Each review will surface ≥1 thing that *could* be encoded in the schema. If each review drives a schema change, contributors who submitted under the 2026-05-13 schema have their proposal semantics shift while their proposal is still in flight.
+
+**With the gate:** `bin/freeze_status.py` reports the harness as `[FROZEN]` for 22 days (2026-05-24 → 2026-06-19, padding included). Schema-tightening ideas surfaced during the freeze get parked. They get re-proposed under the standard 5-constraint funnel *after* the freeze ends. Most parked ideas will not survive 14 days of distance — which is the right outcome.
+
+**Memory file:** `project_harness_public_split_2026_05_13.md` lists the prerequisite "schema must survive ≥2 review cycles unchanged before public split." This rule is the operational version of that prerequisite. The freeze monitor makes the prerequisite enforceable instead of aspirational.
+
+**Teaching prompt:** Take a project where the data schema has been changed during an active code review. What broke that wasn't supposed to break? What would a 7-day freeze have prevented? Where would you set the cluster gap in your domain?
+
+---
+
 ## How to teach this
 
 If you're using this in a curriculum or workshop, the natural arc is:

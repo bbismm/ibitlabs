@@ -41,7 +41,8 @@ mkdir -p "$LOG_DIR" "$(dirname "$TARGET")"
   # Capture monitors JSON to a temp file (avoids shell + heredoc double-escape
   # that mangled `\"stub\"`-style escaped quotes in receipt text -- 2026-05-14).
   MONITORS_FILE="$(mktemp -t harness_status_monitors.XXXXXX.json)"
-  trap 'rm -f "$MONITORS_FILE"' EXIT
+  FREEZE_FILE="$(mktemp -t harness_status_freeze.XXXXXX.json)"
+  trap 'rm -f "$MONITORS_FILE" "$FREEZE_FILE"' EXIT
   if ! python3 "$HARNESS/bin/rollback_status.py" --json >"$MONITORS_FILE" 2>>"$LOG"; then
     echo "FATAL: rollback_status.py exited non-zero (exit codes 1/2 are status,"
     echo "       not errors, but produced no JSON or invalid JSON)."
@@ -51,12 +52,23 @@ mkdir -p "$LOG_DIR" "$(dirname "$TARGET")"
     exit 2
   fi
 
-  # Enrich + summarize via Python reading the temp file (one tool, no jq dep)
-  python3 - "$MONITORS_FILE" "$GENERATED_AT" "$GIT_HEAD" "$GIT_BRANCH" <<'PYEOF' >"$TARGET"
+  # Capture schema-freeze state (operator-level governance, harness/docs/why.md §O1).
+  # freeze_status exits: 0=unfrozen, 1=frozen, 2=error. Treat 0/1 as success.
+  FREEZE_EXIT=0
+  python3 "$HARNESS/bin/freeze_status.py" --json >"$FREEZE_FILE" 2>>"$LOG" || FREEZE_EXIT=$?
+  if [[ "$FREEZE_EXIT" != "0" && "$FREEZE_EXIT" != "1" ]]; then
+    echo "warning: freeze_status.py exit=$FREEZE_EXIT, recording schema_freeze as null"
+    echo "null" > "$FREEZE_FILE"
+  fi
+
+  # Enrich + summarize via Python reading the temp files (one tool, no jq dep)
+  python3 - "$MONITORS_FILE" "$GENERATED_AT" "$GIT_HEAD" "$GIT_BRANCH" "$FREEZE_FILE" <<'PYEOF' >"$TARGET"
 import json, sys
-monitors_file, generated_at, git_head, git_branch = sys.argv[1:5]
+monitors_file, generated_at, git_head, git_branch, freeze_file = sys.argv[1:6]
 with open(monitors_file) as f:
     monitors = json.load(f)
+with open(freeze_file) as f:
+    schema_freeze = json.load(f)
 counts = {"healthy": 0, "degraded": 0, "alarm": 0, "unknown": 0}
 by_layer = {"realtime": 0, "observation": 0, "decay": 0, "proposal": 0}
 for m in monitors:
@@ -77,10 +89,11 @@ out = {
             "healthy"
         ),
     },
+    "schema_freeze": schema_freeze,
     "monitors": monitors,
     "source": {
         "generator": "scripts/run_harness_status.sh",
-        "underlying_cli": "harness/bin/rollback_status.py --json",
+        "underlying_cli": "harness/bin/rollback_status.py --json + harness/bin/freeze_status.py --json",
         "repo": "https://github.com/bbismm/ibitlabs",
         "harness_dir": "https://github.com/bbismm/ibitlabs/tree/main/harness",
     },

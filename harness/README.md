@@ -4,16 +4,21 @@ iBitLabs trading-bot governance harness. Codifies the contributor-funnel constra
 
 ## What it gives you
 
-| Stage              | CLI                              | Library                       |
-|--------------------|----------------------------------|-------------------------------|
-| Propose            | `bin/validate_proposal.py`       | `lib.proposal.Proposal`       |
-| Observe & evaluate | `bin/promote_bar.py`             | `lib.promotion_bar.PromotionBar` |
-| Rollback monitor   | `bin/rollback_status.py`         | `lib.rollback.RollbackLadder` |
-| Archive falsified  | `bin/archive_falsified.py`       | `lib.anti_pattern.AntiPattern`|
+| Stage                 | CLI                              | Library                          |
+|-----------------------|----------------------------------|----------------------------------|
+| Propose               | `bin/validate_proposal.py`       | `lib.proposal.Proposal`          |
+| Observe & evaluate    | `bin/promote_bar.py`             | `lib.promotion_bar.PromotionBar` |
+| Rollback monitor      | `bin/rollback_status.py`         | `lib.rollback.RollbackLadder`    |
+| Archive falsified     | `bin/archive_falsified.py`       | `lib.anti_pattern.AntiPattern`   |
+| Schema-freeze monitor | `bin/freeze_status.py`           | `lib.freeze.current_status`      |
 
-Use any subset — the four components are independent.
+Use any subset — the five components are independent. The first four handle proposal lifecycle (propose → observe → rollback → archive). The fifth is operator-level: it tells you whether the harness *itself* may be mutated right now (see [docs/why.md](docs/why.md) §Operator Rule O1).
 
-## The 5 constraints encoded in `schemas/proposal.schema.json`
+## Constraints: 5 proposal-level + 1 operator-level
+
+### Proposal-level (encoded in `schemas/proposal.schema.json`)
+
+These five validate *someone using the harness* (a contributor or operator submitting a proposal). A proposal failing any of them is rejected at validate time with a memory-rule citation.
 
 1. **real_data_gate** — `evidence_seen >= 3` (memory: `feedback_real_data_before_features.md`)
 2. **shadow_budget** — `current_active < cap`, `cap <= 2` (memory: `feedback_shadow_budget.md`)
@@ -21,7 +26,11 @@ Use any subset — the four components are independent.
 4. **control_flow_impact** — must be `log_only` at proposal stage (CLAUDE.md observation-period contract)
 5. **promotion_bar** — `min_entries >= 30` and `min_observation_days >= 30` (memory: `project_rule_f_promotion_criteria.md`)
 
-A proposal failing any of these is rejected at validate time with a memory-rule citation.
+### Operator-level (encoded in `governance/reviews.yaml`)
+
+This one validates *whether the harness itself may be mutated*. Run `bin/freeze_status.py` for current state.
+
+6. **schema_freeze** — When ≥2 reviews close within 7 days of each other, the harness schema, CLI, and library freeze for `[first.closes_at − 7d, last.closes_at + 14d]`. Mutations to `schemas/`, `bin/`, `lib/` during the freeze must be parked as hypothesis-with-trigger and re-submitted post-freeze. (memory: `project_harness_public_split_2026_05_13.md` — operational version of "schema must survive ≥2 review cycles unchanged before public split". Full story: [docs/why.md](docs/why.md) §Operator Rule O1)
 
 ## Quickstart
 
@@ -38,6 +47,27 @@ python3 harness/bin/rollback_status.py
 # 4. Archive a falsified rule (dry-run by default; pass --write to commit)
 python3 harness/bin/archive_falsified.py harness/examples/filter_a_drawdown.yaml
 python3 harness/bin/archive_falsified.py harness/examples/filter_a_drawdown.yaml --write
+
+# 5. Check whether the harness itself is in schema freeze (operator-level)
+python3 harness/bin/freeze_status.py
+python3 harness/bin/freeze_status.py --now 2026-05-31    # what-if a future date
+python3 harness/bin/freeze_status.py --json              # machine-readable for /lab dashboard
+```
+
+## Pre-commit hook (optional, recommended for active contributors)
+
+Install the schema-freeze pre-commit hook so accidental mutations to `schemas/`, `bin/`, or `lib/` during a freeze window get blocked at commit time, not review time:
+
+```bash
+bash harness/scripts/install_pre_commit_hook.sh
+```
+
+The hook is a symlink to `harness/scripts/pre-commit-freeze`. Re-running the installer just refreshes the symlink. To bypass on a single operator-level call: `git commit --no-verify` (use sparingly — every bypass is a vote against the rule).
+
+Audit the hook without waiting for a real freeze window:
+
+```bash
+HARNESS_FREEZE_TEST_NOW=2026-05-31 bash harness/scripts/pre-commit-freeze
 ```
 
 ## Real examples shipped

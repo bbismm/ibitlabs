@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# pre-commit-freeze — block commits during harness schema-freeze windows.
+#
+# Behavior:
+#   1. If freeze_status.py says UNFROZEN (exit 0): allow commit.
+#   2. If FROZEN (exit 1) AND staged changes touch harness/schemas|bin|lib:
+#      block commit, print explanation + bypass options.
+#   3. If FROZEN but staged changes don't touch protected paths: allow.
+#   4. If freeze_status.py errors (exit 2+): warn, fail-open.
+#
+# Install: bash harness/scripts/install_pre_commit_hook.sh
+# Bypass:  git commit --no-verify  (operator-level, use sparingly)
+# Test:    HARNESS_FREEZE_TEST_NOW=2026-05-31 bash harness/scripts/pre-commit-freeze
+#
+set -u
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -z "$REPO_ROOT" ]; then
+    exit 0  # not in a git repo somehow, nothing to check
+fi
+
+HARNESS_DIR="$REPO_ROOT/harness"
+FREEZE_BIN="$HARNESS_DIR/bin/freeze_status.py"
+if [ ! -f "$FREEZE_BIN" ]; then
+    exit 0  # no harness in this repo, hook is inactive
+fi
+
+# Optional --now override for hook-itself testing (not for normal commits)
+TEST_NOW="${HARNESS_FREEZE_TEST_NOW:-}"
+
+FREEZE_EXIT=0
+if [ -n "$TEST_NOW" ]; then
+    python3 "$FREEZE_BIN" --now "$TEST_NOW" --json >/dev/null 2>&1 || FREEZE_EXIT=$?
+else
+    python3 "$FREEZE_BIN" --json >/dev/null 2>&1 || FREEZE_EXIT=$?
+fi
+
+if [ "$FREEZE_EXIT" = "0" ]; then
+    exit 0  # UNFROZEN
+fi
+
+if [ "$FREEZE_EXIT" != "1" ]; then
+    # Error (exit 2+) — fail-open with a warning rather than block legit work
+    echo "warning: pre-commit-freeze: freeze_status.py exit=$FREEZE_EXIT, allowing commit" >&2
+    exit 0
+fi
+
+# FROZEN — check if any staged change touches protected paths
+PROTECTED_RE='^harness/(schemas|bin|lib)/'
+STAGED_PROTECTED="$(git diff --cached --name-only --diff-filter=ACMR | grep -E "$PROTECTED_RE" || true)"
+
+if [ -z "$STAGED_PROTECTED" ]; then
+    exit 0  # frozen but staged changes are outside protected paths
+fi
+
+# BLOCK
+{
+    echo ""
+    echo "============================================================"
+    echo "  COMMIT BLOCKED — harness is in schema-freeze"
+    echo "============================================================"
+    echo ""
+    if [ -n "$TEST_NOW" ]; then
+        python3 "$FREEZE_BIN" --now "$TEST_NOW"
+    else
+        python3 "$FREEZE_BIN"
+    fi
+    echo ""
+    echo "Staged changes touching protected paths (harness/schemas|bin|lib):"
+    echo "$STAGED_PROTECTED" | sed 's/^/  /'
+    echo ""
+    echo "Options:"
+    echo "  1. Park the change as hypothesis-with-trigger; re-submit post-freeze"
+    echo "  2. Unstage these files:  git restore --staged <file>"
+    echo "  3. Operator override:    git commit --no-verify  (use sparingly)"
+    echo ""
+    echo "Rule: harness/docs/why.md  §Operator Rule O1"
+    echo ""
+} >&2
+exit 1

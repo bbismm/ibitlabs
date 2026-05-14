@@ -1,0 +1,36 @@
+# Scheduled reviews — drives bin/freeze_status.py
+#
+# Rule (docs/why.md Operator Rule O1):
+#   >=2 reviews close within 7 days = cluster
+#   Cluster -> freeze window [first.closes_at - 7d, last.closes_at + 14d]
+#   During freeze, changes to schemas/ + bin/ + lib/ must be parked
+#
+# Update when: a new review is scheduled, or a closed review is no longer
+# load-bearing on the freeze (e.g. completed reviews stay listed for at
+# least 14d post-close so the freeze tail still applies).
+
+reviews:
+  - name: 24h_compound_shadow
+    closes_at: 2026-05-23
+    kind: shadow_review
+    memory: feedback_12h_cap_rejected.md
+
+  - name: rule_f_promotion
+    closes_at: 2026-05-31
+    kind: promotion_review
+    memory: project_rule_f_promotion_criteria.md
+
+  - name: sl_hypotheses_h1_h2_h3
+    closes_at: 2026-06-01
+    kind: promotion_review
+    memory: project_sl_hypotheses_2026_05_11.md
+
+  - name: gate_4_review
+    closes_at: 2026-06-05
+    kind: promotion_review
+    memory: feedback_no_grid_reenable_without_review.md
+
+  - name: h4_sideways_paper_auto_retire
+    closes_at: 2026-06-14
+    kind: auto_retire
+    memory: project_h4_sideways_paper_override_2026_05_14.md
