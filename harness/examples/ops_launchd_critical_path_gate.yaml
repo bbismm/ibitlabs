@@ -1,0 +1,88 @@
+# Cross-domain demonstration #2: same 5 constraints applied to "shipping a
+# new launchd job to critical path (ntfy / iMessage / bootout escalation)."
+# Different surface from trading + brand_builder + harness_meta. Grounded in
+# 5 recent critical-path additions in operator's stack; the pattern
+# generalizes to any alert/escalation/pager system. See docs/why.md for the
+# proposal-level constraints' general failure stories.
+
+proposal_id: ops_launchd_critical_path_gate
+rule_name: launchd_shadow_to_critical_path_gate
+domain: ops
+
+proposed_by: null    # operator-proposed; not contributor-credited
+proposed_in: null
+proposed_at: "2026-05-14T00:00:00Z"
+
+hypothesis: |
+  A new launchd job promoted directly to critical-path escalation (ntfy /
+  iMessage / bootout) without a shadow observation period has high
+  false-positive-induced retune rate in its first 30 days. Recurring failure
+  mode in one-person ops stacks: cron added in response to 1 incident,
+  escalation configured at instinct-level threshold, operator attention
+  gets paged at noise, threshold quietly relaxed within 14 days. The rule
+  got falsified by use, not by review.
+
+  Expected: launchd jobs that pass through a 30-day log-only observation
+  window (writing to jsonl, not paging) with >=30 distinct fires AND a
+  >=15pp signal-to-noise improvement vs a generic ungated baseline (plain
+  cron-tail comparator) survive at higher long-term retention than jobs
+  shipped escalating from day one. Failure mode behind the failure mode:
+  operator attention is the scarce resource; one bad alert ratchets down
+  trust in the next good one.
+
+direction: long_bias   # gated promotions -> longer service life
+
+shadow_log_jsonl: logs/shadow_launchd_promotion_rule.jsonl
+control_flow_impact: log_only
+
+real_data_gate:
+  evidence_threshold: 3
+  evidence_seen: 5
+  source: |
+    Five critical-path additions in operator's stack 2026-04 -> 2026-05,
+    each grounded in real incident observation rather than first-principles:
+    (1) ghost-position-watchdog added 2026-04-29 after a 35h Coinbase 401
+        IP-allowlist blind flight; 1/3/5 tier escalation chosen by
+        threshold-tuning on the real 35h timeline (project_ghost_position_watchdog.md).
+    (2) auth_fail_streak extension to ghost-watchdog 2026-05-08 (commit
+        7aef4b3) after the 401 signature was reliably distinguishable from
+        other failure modes (feedback_coinbase_ip_allowlist_signature.md).
+    (3) close_verify added 2026-05-01 to sol_sniper_executor.py after the
+        04-29 close_position 404 / 04-30 reduce_only SDK rejection chain
+        produced the alpha/alpha1/alpha2 path saga (reference_close_position_sdk_404.md).
+    (4) reporter-reply-check added 2026-05-13 to close the reporter-side
+        engagement gap flagged across multiple Moltbook scans (project_moltbook_2026_04_27_reset.md).
+    (5) risk_officer wired 2026-05-08 on portfolio-level entry gating after
+        7d DD brake thresholds (-5/-10/-15 -> 1.0/0.5/0.0x cap) were modeled
+        on real DD windows from trade_log (project_risk_officer_wired_2026_05_08.md).
+    All five were promoted through an "observe-in-code, turn on, retune"
+    pattern, but only ghost-watchdog had a clean pre-promotion log-only
+    phase. The other four required minor post-ship retunings within 14
+    days. A pre-shadow gate would have caught all four retunings.
+
+shadow_budget:
+  cap: 2
+  current_active: 0   # opens the first ops-domain shadow
+
+contributor_credit:
+  ping_required: false
+
+promotion_bar:
+  min_entries: 30                    # 30 distinct fires in log-only mode
+  min_observation_days: 30
+  min_hit_rate_spread_pp: 15         # 15pp S/N improvement vs ungated baseline
+  direction_match_required: true
+  no_confounding_shadow_required: true
+  retire_after_days: 90
+
+observation_window:
+  started_at: "2026-05-14T00:00:00Z"
+  first_review_at: "2026-06-15"      # post first freeze cycle (5-24 -> 6-19)
+  retire_check_at: "2026-08-12"      # ~90d after shadow open
+
+rollback:
+  on_bar_fail: retire_and_archive
+  on_bug_discovered: halt_immediately    # bad alert wakes operator at 3am;
+                                         # blast radius is human attention,
+                                         # heavier than governance-meta bugs
+  on_confounding_shadow: retire_and_archive

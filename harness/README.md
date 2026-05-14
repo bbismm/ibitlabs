@@ -72,7 +72,7 @@ HARNESS_FREEZE_TEST_NOW=2026-05-31 bash harness/scripts/pre-commit-freeze
 
 ## Real examples shipped
 
-The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-14, the harness governs proposals from 3 domains:
+The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-14, the harness governs proposals from 4 domains:
 
 **`trading` domain:**
 
@@ -88,7 +88,11 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 
 - `examples/harness_meta_schema_freeze.yaml` — Proposal that introduced Operator Rule O1 (the schema-freeze monitor). Self-referential: the harness's own foundational rule submitted through the harness's own funnel, passing the same 5 constraints any contributor rule must pass. Currently in 30d shadow (first review 2026-06-15).
 
-The other allowed domains in the schema (`saga`, `ops`) are reserved for future use. Adding a new domain means: (a) author the example yamls, (b) the rollback ladder picks them up automatically — no schema change needed beyond the enum.
+**`ops` domain** (added 2026-05-14 — operational gates):
+
+- `examples/ops_launchd_critical_path_gate.yaml` — Proposal that gates new launchd jobs into critical-path escalation (ntfy / iMessage / bootout) behind a 30d shadow + 30 distinct fires + 15pp signal-to-noise improvement vs ungated baseline. Grounded in 5 real critical-path additions in operator's stack 2026-04 → 2026-05 (ghost-watchdog, auth_fail_streak, close_verify, reporter-reply-check, risk_officer). Currently in 30d shadow (first review 2026-06-15).
+
+The other allowed domain in the schema (`saga`) is reserved for future use. Adding a new domain means: (a) author the example yamls, (b) the rollback ladder picks them up automatically — no schema change needed beyond the enum.
 
 ## Why this exists
 
