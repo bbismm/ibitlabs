@@ -212,7 +212,31 @@ STRATEGY_VERSION_FILTER: dict[int, str | None] = {
 }
 STATS_REFRESH_TICKS = 8  # bridge ticks at 1.5s → recompute stats every ~12s
 _stats_cache: dict = {}
+_open_positions_cache: dict = {}
 _stats_tick_counter = 0
+
+# ── Paper-agent open positions (C.5) ────────────────────────────────────
+# Bridge exposes each paper bot's currently-open position (entry / current /
+# unrealized PnL / elapsed) so the /office leaderboard can show MTM, not
+# only realized PnL. Recomputed on the same tick cadence as stats.
+#
+# Live agent 101 is INTENTIONALLY not in this map — the frontend gets that
+# from /api/live-status, which is real-time vs the bridge's ~12s recompute.
+# Adding 101 here would duplicate sources of truth and downgrade freshness.
+OPEN_POS_STATE_PATHS: dict[int, Path] = {
+    102: HOME / "ibitlabs/sol_sniper_state_shadow.json",
+    103: HOME / "ibitlabs/sol_sniper_state_eth_paper.json",
+    106: HOME / "ibitlabs/sol_sniper_state_sideways_paper.json",
+}
+# (display_symbol, contract_size, coinbase_spot_product_id)
+# contract_size source: ~/ibitlabs/v5_1_config.py (SOL=5.0, ETH=0.1).
+OPEN_POS_SYMBOL_CFG: dict[int, tuple[str, float, str]] = {
+    102: ("SLP-20DEC30-CDE", 5.0, "SOL-USD"),
+    103: ("ETP-20DEC30-CDE", 0.1, "ETH-USD"),
+    106: ("SLP-20DEC30-CDE", 5.0, "SOL-USD"),
+}
+_price_cache: dict[str, tuple[float, float]] = {}  # product_id → (price, ts_unix)
+_PRICE_TTL_SEC = 10.0
 
 
 # ── Achievements catalog (C.2 + C.4 daily) ──────────────────────────────
@@ -411,6 +435,85 @@ def compute_strategy_stats() -> dict:
     return out
 
 
+def _fetch_spot_price(product_id: str) -> float | None:
+    """Coinbase public spot ticker, cached for _PRICE_TTL_SEC. Returns None on
+    network/parse failure — never raises. The bridge keeps serving stale
+    open-position data on a transient outage rather than crashing the tick."""
+    now = time.time()
+    cached = _price_cache.get(product_id)
+    if cached and (now - cached[1]) < _PRICE_TTL_SEC:
+        return cached[0]
+    url = f"https://api.exchange.coinbase.com/products/{product_id}/ticker"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ibitlabs-office-bridge/1.0"})
+        with urllib.request.urlopen(req, timeout=2.0) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        price = float(data["price"])
+    except (urllib.error.URLError, ValueError, KeyError, TimeoutError, OSError) as e:
+        print(f"[bridge] spot price fetch failed for {product_id}: {e}", file=sys.stderr)
+        # Return last known price if we ever had one — beats serving null.
+        return cached[0] if cached else None
+    _price_cache[product_id] = (price, now)
+    return price
+
+
+def compute_open_positions() -> dict:
+    """For each paper agent with an open position, compute MTM and return
+    {agent_id_str: {direction, entry_price, current_price, unrealized_pnl,
+                    unrealized_pct, elapsed_mins, symbol}}.
+    Agents with no open position are omitted (frontend treats absence as flat).
+    Never raises; failures per-agent log to stderr and skip."""
+    out: dict = {}
+    now_ts = time.time()
+    for agent_id, state_path in OPEN_POS_STATE_PATHS.items():
+        try:
+            if not state_path.exists():
+                continue
+            state = json.loads(state_path.read_text())
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"[bridge] paper state read failed for {state_path.name}: {e}", file=sys.stderr)
+            continue
+        pos = state.get("position")
+        if not pos:
+            continue
+        direction = pos.get("direction")
+        entry = pos.get("entry_price")
+        qty = pos.get("quantity")
+        entry_ts = pos.get("timestamp")
+        if direction not in ("long", "short") or not isinstance(entry, (int, float)) \
+                or not isinstance(qty, (int, float)) or not isinstance(entry_ts, (int, float)):
+            continue
+
+        cfg = OPEN_POS_SYMBOL_CFG.get(agent_id)
+        if cfg is None:
+            continue
+        display_symbol, contract_size, product_id = cfg
+        cur_price = _fetch_spot_price(product_id)
+        if cur_price is None:
+            continue
+
+        if direction == "long":
+            unrealized = (cur_price - entry) * qty * contract_size
+        else:
+            unrealized = (entry - cur_price) * qty * contract_size
+        # Pct relative to notional value at entry (consistent with /api/live-status).
+        notional_at_entry = entry * qty * contract_size
+        unrealized_pct = (unrealized / notional_at_entry) if notional_at_entry else 0.0
+        elapsed_mins = max(0.0, (now_ts - entry_ts) / 60.0)
+
+        out[str(agent_id)] = {
+            "active": True,
+            "symbol": display_symbol,
+            "direction": direction,
+            "entry_price": round(entry, 4),
+            "current_price": round(cur_price, 4),
+            "unrealized_pnl": round(unrealized, 4),
+            "unrealized_pct": round(unrealized_pct, 6),
+            "elapsed_mins": round(elapsed_mins, 1),
+        }
+    return out
+
+
 def iso_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -477,10 +580,16 @@ def record_public_event(
 def write_public_mirror() -> None:
     """Serialize the current view of the office to events.json + dev mirror.
     Always overwrites both files atomically (.tmp + rename)."""
-    global _stats_cache, _stats_tick_counter
+    global _stats_cache, _open_positions_cache, _stats_tick_counter
     _stats_tick_counter += 1
     if _stats_tick_counter >= STATS_REFRESH_TICKS or not _stats_cache:
         _stats_cache = compute_strategy_stats()
+        try:
+            _open_positions_cache = compute_open_positions()
+        except Exception as e:
+            # Never let an MTM hiccup take down the rest of the mirror write.
+            print(f"[bridge] open-positions compute failed: {e}", file=sys.stderr)
+            # Keep prior cache rather than zeroing it.
         _stats_tick_counter = 0
 
         # Achievements pass — derives unlocked set from the fresh stats and
@@ -526,6 +635,7 @@ def write_public_mirror() -> None:
         "agents": public_agents,
         "events": list(_public_events),
         "stats": _stats_cache,
+        "open_positions": _open_positions_cache,
         "achievements_catalog": ACHIEVEMENTS_CATALOG,
         "agents_achievements": {aid: sorted(v) for aid, v in _achievements_unlocked.items()},
     }
