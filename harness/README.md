@@ -87,6 +87,7 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 **`harness_meta` domain** (added 2026-05-14 — governance-of-governance proposals):
 
 - `examples/harness_meta_schema_freeze.yaml` — Proposal that introduced Operator Rule O1 (the schema-freeze monitor). Self-referential: the harness's own foundational rule submitted through the harness's own funnel, passing the same 5 constraints any contributor rule must pass. Currently in 30d shadow (first review 2026-06-15).
+- `examples/harness_meta_review_driven_schema_drift.yaml` — Falsified anti-pattern: mutating the harness schema during a scheduled review cluster, driven by "the review surfaced a gap, let's just tighten this real quick" instinct. 4 of 4 mutations 2026-05-01 → 2026-05-13 shifted semantics for in-flight contributor proposals. Blocks 7 paraphrase aliases including "operator just tweak" and "small additive change during review". The anti-pattern that Operator Rule O1 was built to prevent.
 
 **`ops` domain** (added 2026-05-14 — operational gates):
 

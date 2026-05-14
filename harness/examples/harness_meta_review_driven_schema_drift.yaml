@@ -1,0 +1,64 @@
+# harness_meta domain anti-pattern: mutating the harness schema during a
+# scheduled review cluster, driven by "the review surfaced a gap, let's
+# just tighten this real quick" instinct. Falsified retrospectively by 4
+# incidents 2026-05-01 -> 2026-05-13 — the same incidents that motivated
+# Operator Rule O1 (the schema-freeze monitor). This entry archives the
+# failure mode that O1 was designed to prevent.
+
+anti_pattern_id: harness_meta_review_driven_schema_drift
+domain: harness_meta
+original_proposal_id: harness_meta_review_window_schema_tightening
+falsified_at: "2026-05-14T00:00:00Z"
+falsified_in: "Retrospective audit of 4 review-window schema mutations 2026-05-01 → 2026-05-13"
+
+evidence:
+  - "brand_builder template per-cap added 2026-05-01 mid tone-audit — the audit surfaced 'I thought X' template overuse, operator added a hard per-template ≤2/7 cap to SKILL.md the same day. Existing contributor proposals submitted before 5-01 had implicitly assumed no cap."
+  - "lobster_claw verb-parser fix 2026-05-13 during the agent-funnel review — parser short-word Lev collision found ('then'→'ten' / 'ter'→'ten'), fix landed mid-review. Comments depending on the old solver behavior would have given wrong answers."
+  - "sniper trailing trade_log filter schema tightened 2026-05-06 during the v5.2 architecture review — filter rule extended to exclude grid-leg rows. v5.1 proposals submitted before 5-06 saw a different `trade_log` shape than after."
+  - "close_verify path tightening 2026-05-02 during the ghost-watchdog scan — added `_verify_close_exposure_shrank` to sol_sniper_executor.py the day after the ghost-watchdog incident audit. The audit's findings were the proximal cause; the schema implicitly changed before any proposal cycle could see the new shape."
+
+why_falsified: |
+  4 of 4 schema mutations during review clusters in the audit window were
+  operator-correct in isolation — each surfaced a real gap the review had
+  found. But each produced a schema that no longer matched contributor-
+  submitted proposals from before the cluster. The contributor's proposal
+  was tested against one schema; the operator's decision used another;
+  the gap between them is invisible until a contributor checks back and
+  finds their original spec has shifted.
+
+  The mechanism is psychological, not technical: reviews force you to
+  look at evidence, and the act of looking is the moment most rich in
+  "I should also tighten this" surface. The same focus that makes a
+  review valuable is the focus that makes schema-drift feel justified.
+
+  Operator Rule O1 (`bin/freeze_status.py` + `governance/reviews.yaml`)
+  encodes the freeze window [first cluster review − 7d, last + 14d] to
+  hold this discipline in code. Without the gate, this anti-pattern
+  recurs reliably whenever reviews cluster — the audit found 4 in 12
+  days, roughly one per 3 days of review density.
+
+aliases_blocked:
+  - harness_meta_operator_just_tweak
+  - harness_meta_small_additive_change_during_review
+  - harness_meta_no_one_will_notice_schema_tighten
+  - harness_meta_review_findings_can_ship_immediately
+  - harness_meta_freeze_too_conservative
+  - harness_meta_cluster_gap_extension_to_14d
+  - harness_meta_skip_park_and_resubmit
+
+next_proposal_check: |
+  Before mutating `schemas/`, `bin/`, or `lib/` during a scheduled review
+  window — check `python3 harness/bin/freeze_status.py` first. If
+  `[FROZEN]`, park the change as hypothesis-with-trigger and re-submit
+  after the freeze window closes. Even if the change looks additive
+  (new optional field, new enum value) — additive-during-freeze still
+  shifts proposal semantics for in-flight proposals.
+
+  The pre-commit hook (`bash harness/scripts/install_pre_commit_hook.sh`)
+  enforces this at commit time. Override only with `--no-verify` AND a
+  commit message line explaining why; every override is a vote against
+  the rule and should be visible in `git log`.
+
+memory_file: "feedback_no_schema_mutation_during_review_cluster.md"
+
+memory_index_line: "- [No schema mutation during review cluster](feedback_no_schema_mutation_during_review_cluster.md) — 4 of 4 review-window schema changes 2026-05-01 to 2026-05-13 shifted semantics for in-flight contributor proposals. Operator Rule O1 (bin/freeze_status.py) encodes the freeze window; pre-commit hook enforces at commit. Don't park 'just additive' schema changes during freeze."
