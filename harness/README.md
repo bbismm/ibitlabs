@@ -91,6 +91,7 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 **`ops` domain** (added 2026-05-14 — operational gates):
 
 - `examples/ops_launchd_critical_path_gate.yaml` — Proposal that gates new launchd jobs into critical-path escalation (ntfy / iMessage / bootout) behind a 30d shadow + 30 distinct fires + 15pp signal-to-noise improvement vs ungated baseline. Grounded in 5 real critical-path additions in operator's stack 2026-04 → 2026-05 (ghost-watchdog, auth_fail_streak, close_verify, reporter-reply-check, risk_officer). Currently in 30d shadow (first review 2026-06-15).
+- `examples/ops_ungated_critical_path_promotion.yaml` — Falsified anti-pattern: blanket-promoting new launchd jobs to critical-path without a log-only observation phase. 4 of 5 recent promotions required retunings within 14d (only ghost-watchdog, the one with a clean log-only pre-phase, survived without retune). Blocks 7 paraphrase aliases. Generalizable to any alert / escalation system.
 
 **`saga` domain** (added 2026-05-14 — narrative / chapter-cadence rules):
 
