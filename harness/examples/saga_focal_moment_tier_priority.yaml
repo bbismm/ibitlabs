@@ -1,0 +1,87 @@
+# Cross-domain demonstration #3: same 5 constraints applied to "saga chapter
+# selection without a focal-moment Tier priority gate." Different surface
+# from trading + brand_builder + harness_meta + ops. Grounded in 3 real
+# path-drift incidents in saga-daily output 2026-05-06 -> 2026-05-10.
+# This rule retro-documents the Tier priority gate that was added to
+# saga-daily SKILL.md on 2026-05-10 as defense-in-depth.
+
+proposal_id: saga_focal_moment_tier_priority
+rule_name: saga_chapter_focal_priority_gate
+domain: saga
+
+proposed_by: null    # operator-proposed; not contributor-credited
+proposed_in: null
+proposed_at: "2026-05-14T00:00:00Z"
+
+hypothesis: |
+  saga-daily chapter selection without an explicit Tier priority list
+  drifts into low-energy non-trading focal moments (plumbing bugs,
+  internal tooling changes, infrastructure refactors) when no Tier-1
+  event (live trade, position resolution, contributor adoption) is
+  available in the lookback window. Drift compounds over consecutive
+  days because each non-trading chapter teaches the reader that this
+  saga is about engineering, not trading. Karma / view metrics don't
+  catch the drift — they grow even during drift via agent-echo-chamber
+  and SEO-tail effects, masking the failure.
+
+  Expected: chapters selected through a Tier priority gate (Tier-1
+  trading events take precedence; Tier-2 ops events allowed only after
+  >=2 prior chapters had Tier-1 content; Tier-3 meta-events parked)
+  maintain >=15pp higher chapter-mention rate (Moltbook reply count +
+  contributor-credit references + spine-thread carry-over count) over
+  a 30-chapter window vs ungated baseline.
+
+direction: long_bias
+
+shadow_log_jsonl: logs/shadow_saga_focal_priority_rule.jsonl
+control_flow_impact: log_only
+
+real_data_gate:
+  evidence_threshold: 3
+  evidence_seen: 3
+  source: |
+    Three observed path-drift incidents in saga-daily 2026-05:
+    (1) 2026-05-09 + 2026-05-10 — saga-daily picked the lobster_claw.py
+        verb-parser plumbing-bug fix as the chapter focal moment two
+        consecutive days, with 0 trading anchor in either chapter.
+        Same root cause: no Tier priority gate in SKILL.md, no Tier-1
+        event in the lookback window. Caught + documented in
+        project_saga_2026_05_10_path_drift.md.
+    (2) 2026-05-06 -> 2026-05-10 — saga-daily SKILL.md kept Position
+        #63 spine-thread guidance for 4 days after #63 had actually
+        closed on 2026-05-06. Stale focal-moment guidance + no Tier
+        check meant the chapter generator kept reaching for a
+        non-existent spine.
+    (3) 2026-05-10 sibling — Moltbook brand-builder had the same root
+        pattern (stub SKILL.md without topic priority gate; runner read
+        stub for 13 days; agent drifted into AI-meta-philosophy posts).
+        Sibling surface, same meta-pattern: domain-relevant priority
+        gate absent -> drift compounds via echo-chamber metric growth,
+        masking the failure for as long as the metrics keep growing.
+
+shadow_budget:
+  cap: 2
+  current_active: 0   # opens the first saga-domain shadow
+
+contributor_credit:
+  ping_required: false
+
+promotion_bar:
+  min_entries: 30                    # 30 saga chapters observed
+  min_observation_days: 30
+  min_hit_rate_spread_pp: 15
+  direction_match_required: true
+  no_confounding_shadow_required: true
+  retire_after_days: 90
+
+observation_window:
+  started_at: "2026-05-14T00:00:00Z"
+  first_review_at: "2026-06-15"      # post first freeze cycle
+  retire_check_at: "2026-08-12"
+
+rollback:
+  on_bar_fail: retire_and_archive
+  on_bug_discovered: pause_and_review    # bad gate would suppress real
+                                         # trading chapters; pause for
+                                         # review rather than auto-halt
+  on_confounding_shadow: retire_and_archive

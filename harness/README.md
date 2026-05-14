@@ -72,7 +72,7 @@ HARNESS_FREEZE_TEST_NOW=2026-05-31 bash harness/scripts/pre-commit-freeze
 
 ## Real examples shipped
 
-The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-14, the harness governs proposals from 4 domains:
+The schema's `domain` field marks which iBitLabs surface each rule applies to. As of 2026-05-14, the harness governs proposals from all 5 declared domains:
 
 **`trading` domain:**
 
@@ -92,7 +92,11 @@ The schema's `domain` field marks which iBitLabs surface each rule applies to. A
 
 - `examples/ops_launchd_critical_path_gate.yaml` — Proposal that gates new launchd jobs into critical-path escalation (ntfy / iMessage / bootout) behind a 30d shadow + 30 distinct fires + 15pp signal-to-noise improvement vs ungated baseline. Grounded in 5 real critical-path additions in operator's stack 2026-04 → 2026-05 (ghost-watchdog, auth_fail_streak, close_verify, reporter-reply-check, risk_officer). Currently in 30d shadow (first review 2026-06-15).
 
-The other allowed domain in the schema (`saga`) is reserved for future use. Adding a new domain means: (a) author the example yamls, (b) the rollback ladder picks them up automatically — no schema change needed beyond the enum.
+**`saga` domain** (added 2026-05-14 — narrative / chapter-cadence rules):
+
+- `examples/saga_focal_moment_tier_priority.yaml` — Proposal that gates saga-daily chapter focal-moment selection through an explicit Tier priority list (Tier-1 trading events take precedence; Tier-2 ops events allowed only after ≥2 prior Tier-1 chapters; Tier-3 meta-events parked). Grounded in 3 path-drift incidents 2026-05-06 → 2026-05-10. Retro-documents the priority gate that shipped to saga-daily `SKILL.md` on 2026-05-10 as defense-in-depth. Currently in 30d shadow (first review 2026-06-15).
+
+All 5 allowed domains in the schema now have at least one example. Adding a 6th domain means: (a) extend the `domain` enum in `schemas/proposal.schema.json`, (b) author the example yamls, (c) the rollback ladder picks them up automatically.
 
 ## Why this exists
 
