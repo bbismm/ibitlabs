@@ -31,6 +31,7 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path("/Users/bonnyagent/ibitlabs")
@@ -76,7 +77,10 @@ def _is_auth_failure(err_str: str) -> bool:
 
 
 def log(msg: str) -> None:
-    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {LOG_PREFIX} {msg}", flush=True)
+    # Local time with TZ abbrev (EDT/EST). Bot runs on Bonny's Mac so local
+    # IS NY; the explicit %Z removes any "is this UTC?" ambiguity for tail readers.
+    stamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+    print(f"{stamp} {LOG_PREFIX} {msg}", flush=True)
 
 
 def read_bot_state() -> dict:

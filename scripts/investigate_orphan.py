@@ -24,6 +24,8 @@ import sys
 import time
 from datetime import datetime
 
+from tz_format import format_utc_edt
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import Config
@@ -256,7 +258,7 @@ def main():
         close_side = "RECONCILE_CLOSE"
 
     notes = (
-        f"Orphan reconciled {datetime.now():%Y-%m-%d %H:%M} from exchange fills: "
+        f"Orphan reconciled {format_utc_edt()} from exchange fills: "
         f"DB open id={orphan['id']} ({orig_side} @ {orphan['price']}) had no "
         f"matching close. Exchange fills show real close at "
         f"{datetime.fromtimestamp(result['close_ts'])} — weighted avg "

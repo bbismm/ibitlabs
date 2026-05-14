@@ -11,6 +11,10 @@ import plotly.graph_objects as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
 
+# tz_format lives in scripts/; ensure importable when run from any cwd.
+sys.path.insert(0, str(Path.home() / "ibitlabs" / "scripts"))
+from tz_format import format_html_time  # noqa: E402
+
 # ============================================================================
 # constants
 # ============================================================================
@@ -845,7 +849,7 @@ if PUBLIC_MODE:
                    "Live, shadow, and paper streams · every trade in the open.")
     mission_html = ('<div class="mission">We run this in public. '
                     '$1,000 → $10,000 · every trade, every dollar.</div>')
-    meta_line   = (f'Snapshot {NOW.strftime("%Y-%m-%d %H:%M UTC")} · regenerated daily · '
+    meta_line   = (f'Snapshot {format_html_time(NOW.to_pydatetime(), mode="local")} · regenerated daily · '
                    f'live state at <a href="/signals">/signals</a>')
     site_nav_html = (
         '<nav class="site-nav">'
@@ -880,8 +884,8 @@ else:
     page_h1     = "Live · Shadow · Paper"
     description = ""
     mission_html = ""
-    meta_line = (f'Generated {NOW.strftime("%Y-%m-%d %H:%M UTC")} · '
-                 f'data through {trades["exit_dt"].max():%Y-%m-%d %H:%M UTC}')
+    meta_line = (f'Generated {format_html_time(NOW.to_pydatetime(), mode="local")} · '
+                 f'data through {format_html_time(trades["exit_dt"].max().to_pydatetime(), mode="local")}')
     site_nav_html = ""
     site_footer_html = (
         '<footer style="color:var(--dim);padding:22px 36px 22px var(--tocw);font-size:11.5px;'
@@ -902,6 +906,7 @@ html = f"""<!doctype html>
   <meta name="description" content="{description}">
   <meta name="theme-color" content="#0a0e1a">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="/tz.js" defer></script>
   <style>{CSS}</style>
 </head>
 <body id="top">
@@ -910,7 +915,7 @@ html = f"""<!doctype html>
     <ol>{toc_items}</ol>
     <div class="toc-foot">
       <a href="#top">↑ top</a> ·
-      generated {NOW.strftime('%H:%M UTC')}
+      generated {format_html_time(NOW.to_pydatetime(), mode='time-local')}
     </div>
   </aside>
 

@@ -31,6 +31,8 @@ import sys
 import time
 from datetime import datetime
 
+from tz_format import format_utc_edt
+
 STATE_FILE = "/Users/bonnyagent/ibitlabs/state/reconciliation_status.json"
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -475,7 +477,7 @@ def main():
     for op in orphans_without_fill:
         reason = "reconciler_orphan_no_fill"
         notes = (
-            f"Orphan reconciled {datetime.now():%Y-%m-%d %H:%M}: "
+            f"Orphan reconciled {format_utc_edt()}: "
             f"DB {op['side']} recorded @ {op['timestamp']} never filled on exchange "
             f"(confirmed via fills API, window {args.days}d). "
             f"Zero-PnL close inserted to preserve FIFO pairing."

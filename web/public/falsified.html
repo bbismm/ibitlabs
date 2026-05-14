@@ -80,6 +80,7 @@ details summary:hover{color:var(--purple)}
 .signoff a:hover{color:var(--purple)}
 @media(max-width:640px){.nav{padding:0.6rem 1rem}.nav-links{gap:0.9rem}.nav-links a{font-size:0.82rem}.wrap{padding:5rem 1.1rem 2rem}h1{font-size:1.85rem}.card{padding:1.1rem 1.2rem}}
 </style>
+<script src="/tz.js" defer></script>
 </head>
 <body>
 
@@ -133,13 +134,17 @@ details summary:hover{color:var(--purple)}
     const summary = document.getElementById('summary');
     const byDomain = data.by_domain || {};
     const totalAliases = (data.anti_patterns || []).reduce((acc, ap) => acc + (ap.aliases_blocked || []).length, 0);
-    const generated = data.generated_at ? new Date(data.generated_at).toISOString().slice(0, 10) : '?';
+    const genIso = data.generated_at ? new Date(data.generated_at).toISOString() : null;
+    const genHtml = genIso
+      ? `<time datetime="${genIso}" data-tz="date-local">${genIso.slice(0,10)}</time>`
+      : '?';
     summary.innerHTML = `
       <div class="summary-stat"><strong>${data.count}</strong> falsified rules archived</div>
       <div class="summary-stat"><strong>${totalAliases}</strong> paraphrase aliases blocked</div>
       <div class="summary-stat">By domain: ${Object.entries(byDomain).map(([d,n]) => `<strong>${n}</strong> ${d}`).join(' · ')}</div>
-      <div class="summary-stat">Last refreshed: <strong>${generated}</strong></div>
+      <div class="summary-stat">Last refreshed: <strong>${genHtml}</strong></div>
     `;
+    if (window.tzApply) window.tzApply(summary);
 
     const list = document.getElementById('archive-list');
     list.innerHTML = '';
