@@ -12,7 +12,59 @@
 // ═══════════════════════════════════════════════════════════════
 
 const ORIGIN = 'https://trade.bibsus.com/api/status';
-const CACHE_TTL = 5; // seconds
+// 2026-05-14: dropped 5s → 1s so the /office MTM row updates visibly. The
+// front-end polls every 2s; with TTL=5 the user saw the same number for
+// long stretches even though the bot's price was moving. TTL=1 still
+// absorbs traffic bursts (single-digit RPS) but stays imperceptible to
+// the human eye.
+const CACHE_TTL = 1; // seconds
+
+// 2026-05-14: bot's scan loop only writes current_price every ~20-30s, so
+// even with TTL=1 the public MTM looked frozen. Fix: fetch Coinbase spot
+// ticker in parallel and overwrite position.current_price + pnl_usd with
+// the edge-fresh value. Bot's entry/qty/direction stay canonical; only the
+// mark price gets refreshed. SOL only — when a live ETH/BTC bot ships,
+// extend SPOT_PRODUCT_BY_SYMBOL accordingly.
+const SPOT_PRODUCT_BY_SYMBOL = {
+  'SLP-20DEC30-CDE': 'SOL-USD',
+  'ETP-20DEC30-CDE': 'ETH-USD',
+};
+
+async function fetchSpotPrice(productId) {
+  try {
+    const res = await fetch(
+      `https://api.exchange.coinbase.com/products/${productId}/ticker`,
+      { cf: { cacheTtl: 0 }, headers: { 'User-Agent': 'ibitlabs-pages/1.0' } }
+    );
+    if (!res.ok) return null;
+    const j = await res.json();
+    const p = parseFloat(j.price);
+    return Number.isFinite(p) ? p : null;
+  } catch {
+    return null;
+  }
+}
+
+function freshenPosition(data, spotPrice) {
+  const pos = data && data.position;
+  if (!pos || !pos.active || typeof pos.entry_price !== 'number'
+      || typeof pos.contracts !== 'number' || typeof pos.notional !== 'number'
+      || (pos.direction !== 'long' && pos.direction !== 'short')
+      || spotPrice === null) {
+    return data;
+  }
+  // contract_size = notional / (entry × qty) — derived so we don't hardcode per symbol.
+  const denom = pos.entry_price * pos.contracts;
+  if (denom <= 0) return data;
+  const contractSize = pos.notional / denom;
+  const sign = pos.direction === 'long' ? 1 : -1;
+  const freshPnl = sign * (spotPrice - pos.entry_price) * pos.contracts * contractSize;
+  const freshPct = freshPnl / pos.notional;
+  pos.current_price = spotPrice;
+  pos.pnl_usd = Math.round(freshPnl * 100) / 100;
+  pos.pnl_pct = Math.round(freshPct * 100000) / 100000;
+  return data;
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -57,31 +109,57 @@ export async function onRequestGet(context) {
   if (cached) {
     body = await cached.text();
   } else {
-    // Cache miss → fetch from origin
+    // Cache miss → fetch bot status + Coinbase spot price in parallel.
+    // The bot's current_price ticks every ~20-30s (slow scan loop); the spot
+    // ticker is real-time and lets us recompute MTM at edge cadence.
     try {
-      const res = await fetch(ORIGIN, {
+      const origPromise = fetch(ORIGIN, {
         headers: { 'Accept': 'application/json' },
         cf: { cacheTtl: 0 },
       });
 
+      const res = await origPromise;
       if (!res.ok) {
         return new Response(JSON.stringify({ error: 'origin_error', status: res.status }), {
           status: 502,
           headers: { 'Content-Type': 'application/json', ...CORS_HEADERS },
         });
       }
+      const rawBody = await res.text();
+      let parsed;
+      try {
+        parsed = JSON.parse(rawBody);
+      } catch {
+        // Origin returned non-JSON — pass through unchanged.
+        body = rawBody;
+        const cacheResp = new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': `public, s-maxage=${CACHE_TTL}, max-age=${CACHE_TTL}`,
+          },
+        });
+        context.waitUntil(cache.put(cacheKey, cacheResp));
+        parsed = null;
+      }
 
-      body = await res.text();
-
-      // Store full response in edge cache
-      const cacheResp = new Response(body, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Cache-Control': `public, s-maxage=${CACHE_TTL}, max-age=${CACHE_TTL}`,
-        },
-      });
-      context.waitUntil(cache.put(cacheKey, cacheResp));
+      if (parsed) {
+        const sym = parsed?.position?.symbol;
+        const productId = sym ? SPOT_PRODUCT_BY_SYMBOL[sym] : null;
+        if (productId && parsed?.position?.active) {
+          const spot = await fetchSpotPrice(productId);
+          if (spot !== null) freshenPosition(parsed, spot);
+        }
+        body = JSON.stringify(parsed);
+        const cacheResp = new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': `public, s-maxage=${CACHE_TTL}, max-age=${CACHE_TTL}`,
+          },
+        });
+        context.waitUntil(cache.put(cacheKey, cacheResp));
+      }
     } catch (e) {
       return new Response(JSON.stringify({ error: 'fetch_failed', message: e.message }), {
         status: 502,
