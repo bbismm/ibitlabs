@@ -380,10 +380,18 @@ ACHIEVEMENTS_CATALOG = [
 
 def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
                      utc_midnight: int) -> dict | None:
-    """Run the 3 aggregate queries against trade_log under a given filter set
-    (strategy_version + optional timestamp anchor) and return the same dict
-    shape compute_strategy_stats has always emitted. Returns None on SQL
-    failure; caller decides whether to skip the agent."""
+    """Run the aggregate queries against trade_log under a given filter set
+    (strategy_version + optional timestamp anchor) and return the dict shape
+    compute_strategy_stats emits.
+
+    `total_pnl` (and `today_pnl`) are NET — gross pnl from closed exits
+    MINUS fees PLUS funding from ALL rows (BUY entry + SELL exit) under the
+    same filter. Matches the build_report.py:build_round_trips convention so
+    /office strategy-row + /lab hero-cards show the same equity number.
+    `total_pnl_gross` is also exposed for any consumer that needs the raw
+    figure. Caveat: an entry opened post-anchor with no matching exit yet
+    contributes its entry fee without offsetting gross — slight transient
+    understatement of net for closed trades; corrects on close."""
     extra_clauses: list[str] = []
     extra_args: list = []
     if strat:
@@ -394,6 +402,7 @@ def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
         extra_args.append(anchor_ts)
     where_extra = "".join(f" AND {c}" for c in extra_clauses)
     extra_args_tuple = tuple(extra_args)
+    # Closed-trade aggregates (exit-side rows only)
     cur.execute(
         f"""
         SELECT COUNT(*),
@@ -405,7 +414,21 @@ def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
         """,
         extra_args_tuple,
     )
-    total_n, total_pnl, win_n, loss_n = cur.fetchone()
+    total_n, total_pnl_gross, win_n, loss_n = cur.fetchone()
+    # Fees + funding across BOTH entry and exit rows under the same filter
+    # — covers both legs of every round trip so net matches build_report.py.
+    cur.execute(
+        f"""
+        SELECT COALESCE(SUM(fees), 0),
+               COALESCE(SUM(funding), 0)
+        FROM trade_log
+        WHERE 1=1{where_extra}
+        """,
+        extra_args_tuple,
+    )
+    total_fees, total_funding = cur.fetchone()
+    total_pnl_net = total_pnl_gross - total_fees + total_funding
+    # Today's closed-trade gross + count
     cur.execute(
         f"""
         SELECT COUNT(*),
@@ -416,7 +439,19 @@ def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
         """,
         (utc_midnight, *extra_args_tuple),
     )
-    today_n, today_pnl = cur.fetchone()
+    today_n, today_pnl_gross = cur.fetchone()
+    # Today's fees + funding across both legs (filter on timestamp ≥ midnight)
+    cur.execute(
+        f"""
+        SELECT COALESCE(SUM(fees), 0),
+               COALESCE(SUM(funding), 0)
+        FROM trade_log
+        WHERE timestamp >= ?{where_extra}
+        """,
+        (utc_midnight, *extra_args_tuple),
+    )
+    today_fees, today_funding = cur.fetchone()
+    today_pnl_net = today_pnl_gross - today_fees + today_funding
     cur.execute(
         f"""
         SELECT pnl, timestamp
@@ -431,9 +466,13 @@ def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
     win_rate = (win_n / total_n) if total_n else 0.0
     return {
         "total_trades": total_n,
-        "total_pnl": round(total_pnl, 4),
+        "total_pnl": round(total_pnl_net, 4),
+        "total_pnl_gross": round(total_pnl_gross, 4),
+        "total_fees": round(total_fees, 4),
+        "total_funding": round(total_funding, 4),
         "today_trades": today_n,
-        "today_pnl": round(today_pnl, 4),
+        "today_pnl": round(today_pnl_net, 4),
+        "today_pnl_gross": round(today_pnl_gross, 4),
         "win_count": win_n,
         "loss_count": loss_n,
         "win_rate": round(win_rate, 4),
