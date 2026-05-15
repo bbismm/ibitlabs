@@ -37,19 +37,23 @@ DBS = {
 }
 SYMBOL_MAP   = {"SLP-20DEC30-CDE": "SOL", "ETP-20DEC30-CDE": "ETH"}
 STREAM_COLOR = {"live": "#22c55e", "shadow": "#a855f7", "paper": "#0ea5e9"}
-STREAMS_ORDER = ["live", "shadow", "paper"]
+# shadow1.0 (post-swap paper-shadow) was retired 2026-05-15 after ~24h —
+# real LIVE data on the same config already exists, paper duplicate was
+# redundant + diluted attribution value. Removed from public analytics
+# surfaces; pre-swap "v5.1 shadow" retired card preserves the 23-trade
+# pre-swap history. ANCHORED_STREAMS keeps "shadow" so trips_preswap
+# still feeds that retired card.
+STREAMS_ORDER = ["live", "paper"]
 PRODUCT = {"live": "SOL-USD", "shadow": "SOL-USD", "paper": "ETH-USD"}
 # Display label per stream — used in hero-cards + chart legends + section
 # headings. 2026-05-14 21:19 EDT swap: live became v5.3 (regime_gate +
-# reverse_exit_C + grid_what_if + trailing 0.005 + --no-grid); shadow
-# became the bare hybrid_v5.1 baseline (shadow1.0). See
-# project_swap_live_shadow_2026_05_14.md.
-STREAM_LABEL = {"live": "v5.3", "shadow": "shadow1.0", "paper": "paper · ETH"}
+# reverse_exit_C + grid_what_if + trailing 0.005 + --no-grid).
+STREAM_LABEL = {"live": "v5.3", "paper": "paper · ETH"}
 # Streams whose data is re-anchored to SWAP_TS — only trades closed at or
 # after this moment count toward equity / KPIs / charts. The paper (ETH)
 # stream is unrelated and remains full-history.
 SWAP_TS = pd.Timestamp("2026-05-15T01:19:00Z")  # 2026-05-14 21:19 EDT
-ANCHORED_STREAMS = {"live", "shadow"}
+ANCHORED_STREAMS = {"live", "shadow"}  # "shadow" stays for retired-card preswap split
 INITIAL_CAPITAL = 1000.0
 NOW = pd.Timestamp.now(tz="UTC")
 
@@ -490,7 +494,12 @@ raw_preswap = {s: raw[s][raw[s]["dt"] < SWAP_TS].copy()
 trips_per_stream = {k: build_round_trips(df) for k, df in raw.items()}
 trips_postswap = {k: build_round_trips(df) for k, df in raw_postswap.items()}
 trips_preswap = {k: build_round_trips(df) for k, df in raw_preswap.items()}
-trades = pd.concat([t for t in trips_per_stream.values() if not t.empty],
+# Trades for analytics (groupby stream charts) — filter to public streams
+# only so dropped streams (shadow post-2026-05-15 retirement) don't appear
+# as a phantom series in PnL/exit/regime breakdowns. trips_per_stream
+# itself stays cumulative for any caller that wants the full picture.
+trades = pd.concat([trips_per_stream[s] for s in STREAMS_ORDER
+                    if not trips_per_stream[s].empty],
                    ignore_index=True)
 kpi_df = pd.DataFrame([kpis(trips_per_stream[s], s) for s in STREAMS_ORDER]).set_index("stream")
 
@@ -1207,7 +1216,7 @@ html = f"""<!doctype html>
   <header class="top">
     <h1>{page_h1}</h1>
     {mission_html}
-    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005/0.004 (--no-grid kept) · <strong>shadow1.0</strong> = pre-swap LIVE config (Path A: --no-grid + trailing 0.004), kept running as paper-shadow control · ETH sniper (paper). Cards above show post-2026-05-14-swap data (equity = realized + open-position MTM where present); charts + tables below span the full v5.1 history with a marker at the cutover.</div>
+    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005/0.004 (--no-grid kept) · ETH sniper (paper). v5.3 card shows post-2026-05-14-swap data with open-position MTM; charts + tables below span the full v5.1 history with a marker at the cutover. Pre-swap shadow1.0 paper-control ran ~24h and was retired 2026-05-15 (redundant with real LIVE data on same config) — see the v5.1 shadow retired card for the 23-trade pre-swap shadow history.</div>
     <div class="meta">{meta_line}</div>
   </header>
 
