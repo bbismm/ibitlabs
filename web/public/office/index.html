@@ -52,7 +52,7 @@
       .absolute.top-10.right-10.z-20  { display: none !important; }
 
       #root {
-        padding-top: 258px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~70, 2-line pill) + OnAirStrip (~56) + 14 gap */
+        padding-top: 314px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~104, 4 wrapped 2-line pills) + OnAirStrip (~56) + 36 gap */
         padding-right: 400px; /* reserve space for the right rail (leaderboard + ticker, 400px wide) */
         height: 100vh; box-sizing: border-box;
       }
@@ -94,9 +94,11 @@
 
       /* OnAirStrip sits below mission-bar + strategy-row; React component
          sets top: 56 inline, override here so it doesn't collide.
-         Strategy-row pills are 2-line (post + pre-swap) — bumped from 178
-         to 192 to clear the taller pill height. */
-      .onair-strip { top: 192px !important; }
+         Strategy-row pills are 2-line (post + pre-swap) AND wrap to a 2nd
+         row at mid-widths since we now show 4 pills (active v5.3 +
+         shadow1.0 + retired v5.1 live + v5.1 shadow). Bumped to 248 to
+         clear the wrapped strategy-row at 1280px viewport. */
+      .onair-strip { top: 248px !important; }
 
       /* ── Strategy row ──────────────────────────────────────────────────
          Anchored to the 2026-05-14 21:19 EDT swap. Two pills side by side:
@@ -153,6 +155,21 @@
         letter-spacing: 0.02em;
         padding-top: 1px;
       }
+      /* Retired pills — frozen pre-swap state for live + shadow, kept
+         visible as historical reference next to the active v5.3 +
+         shadow1.0. Muted (opacity 0.55) + dashed border + RETIRED tag so
+         they read as historical, not active. */
+      .strat-card.strat-retired {
+        opacity: 0.55;
+        border-style: dashed;
+        background: rgba(255,255,255,0.012);
+      }
+      .strat-card.strat-retired:hover { opacity: 0.85; background: rgba(255,255,255,0.04); }
+      .strat-card.strat-retired .strat-tag {
+        background: rgba(100,116,139,0.18);
+        color: rgba(255,255,255,0.75);
+        letter-spacing: 0.14em;
+      }
       .strat-anchor {
         font-size: 12px; opacity: 0.55;
         margin-left: auto;
@@ -187,7 +204,7 @@
           right: 0 !important;
           padding: 8px 14px !important;
           gap: 14px !important;
-          top: 230px !important;
+          top: 380px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
         /* Mission bar: tighter padding on mobile, anchored under the compressed site-bar (~52) */
@@ -198,9 +215,10 @@
           top: 122px; padding: 7px 14px; gap: 10px; font-size: 13px;
         }
         .strat-anchor { display: none; }
-        /* MobileLeaderBar hardcodes top: 88 in React. Pushed further down to
-           clear strategy-row (now 2-line pill + pre-swap subline) insertion. */
-        .office-leaderboard-mobile { top: 320px !important; }
+        /* MobileLeaderBar hardcodes top: 88 in React. Pushed further down
+           to clear strategy-row (4 pills × 2-line, all stacked on mobile)
+           + OnAirStrip insertion. */
+        .office-leaderboard-mobile { top: 470px !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -209,11 +227,11 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~98,
-           2-line pills × 2 stacked) + OnAirStrip (~84, wraps) +
+        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~250,
+           4 pills × 2-line all stacked) + OnAirStrip (~84, wraps) +
            MobileLeaderBar (~250). */
         #root {
-          padding-top: 562px;
+          padding-top: 712px;
           padding-right: 0;
           padding-bottom: 240px;
         }
@@ -290,6 +308,20 @@
         <span class="strat-meta"><span id="sr-sh10-trades">0</span>t · WR <span id="sr-sh10-wr">—</span>%</span>
         <span class="strat-tag">SHADOW · paper</span>
         <span class="strat-preswap">↳ pre-swap (v5.1): $1,135.42 / 23t</span>
+      </a>
+      <a class="strat-card strat-live strat-retired" href="/lab" title="v5.1 live — retired at 2026-05-14 21:19 EDT swap, succeeded by v5.3. Frozen 2026-04-20 → 2026-05-14.">
+        <span class="strat-name">v5.1 live</span>
+        <span class="strat-equity">$986.84</span>
+        <span class="strat-delta down">−1.32%</span>
+        <span class="strat-meta">17t · WR 76%</span>
+        <span class="strat-tag">RETIRED</span>
+      </a>
+      <a class="strat-card strat-shadow strat-retired" href="/lab" title="v5.1 shadow — retired at 2026-05-14 21:19 EDT swap, succeeded by shadow1.0. Frozen 2026-05-07 → 2026-05-14.">
+        <span class="strat-name">v5.1 shadow</span>
+        <span class="strat-equity">$1,135.42</span>
+        <span class="strat-delta up">+13.54%</span>
+        <span class="strat-meta">23t · WR 78%</span>
+        <span class="strat-tag">RETIRED</span>
       </a>
       <span class="strat-anchor">since 2026-05-14 21:19 EDT swap</span>
     </div>

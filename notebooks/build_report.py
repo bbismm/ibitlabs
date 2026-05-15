@@ -281,6 +281,43 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
     )
 
 
+def retired_card(label, trips_df, color, product, window_label):
+    """Compact frozen-historical card for retired strategies. Smaller than
+    hero_card, muted style, no sparkline / open-position badge / pre-swap
+    footer. Equity = $1k + net pnl summed over the entire trips_df (which is
+    already pre-swap-scoped by the caller). The window_label describes the
+    date range these stats cover, e.g. "2026-04-20 → 2026-05-14 swap"."""
+    n = len(trips_df)
+    if n == 0:
+        equity = INITIAL_CAPITAL
+        delta_pct = 0.0
+        last_close = "—"
+    else:
+        equity = INITIAL_CAPITAL + trips_df["pnl_net"].sum()
+        delta_pct = (equity / INITIAL_CAPITAL - 1) * 100
+        last_close = trips_df["exit_dt"].max().strftime("%Y-%m-%d")
+    delta_class = "up" if delta_pct >= 0 else "down"
+    delta_sign  = "+" if delta_pct >= 0 else ""
+    return (
+        f'<div class="retired-card" style="--accent: {color}">'
+        f'  <div class="retired-top">'
+        f'    <span class="stream-name">{label}</span>'
+        f'    <span class="retired-tag">RETIRED</span>'
+        f'  </div>'
+        f'  <div class="retired-equity">${equity:,.2f}</div>'
+        f'  <div class="retired-meta">'
+        f'    <span class="retired-delta {delta_class}">'
+        f'{delta_sign}{delta_pct:.2f}%</span>'
+        f'    <span class="retired-dim">·</span>'
+        f'    <span>{n} closed trades</span>'
+        f'    <span class="retired-dim">·</span>'
+        f'    <span>{product}</span>'
+        f'  </div>'
+        f'  <div class="retired-window">{window_label}</div>'
+        f'</div>'
+    )
+
+
 def fmt_cell(v):
     if pd.isna(v) or v is None:
         return '<td class="dim">—</td>'
@@ -721,6 +758,30 @@ hero_html = "\n".join(
     for s in STREAMS_ORDER
 )
 
+# Retired strategy cards — frozen pre-swap state for live + shadow.
+# Visually muted (smaller, opacity, RETIRED tag) so they read as historical
+# reference, not active. v5.3 / shadow1.0 succeed these; they don't update
+# anymore. Each card spans its real running window (live since v5.1 go-live
+# 2026-04-20; shadow since the 2026-05-06 regime-window reset).
+RETIRED_LABEL  = {"live": "v5.1 live",  "shadow": "v5.1 shadow"}
+RETIRED_WINDOW = {
+    "live":   "2026-04-20 go-live → 2026-05-14 21:19 EDT swap",
+    "shadow": "2026-05-07 reset → 2026-05-14 21:19 EDT swap",
+}
+retired_html_parts = []
+for s in ("live", "shadow"):
+    df = trips_preswap.get(s)
+    if df is None or df.empty:
+        continue
+    retired_html_parts.append(
+        retired_card(RETIRED_LABEL[s], df, STREAM_COLOR[s], PRODUCT[s],
+                     RETIRED_WINDOW[s])
+    )
+retired_row_html = (
+    f'<div class="retired-row">{"".join(retired_html_parts)}</div>'
+    if retired_html_parts else ""
+)
+
 # TOC
 toc_items = "\n".join(
     f'<li><a href="#{sid}"><span class="tn">{i+1:02d}</span>{label}</a></li>'
@@ -853,6 +914,37 @@ main > div.inner { padding-left: 28px; }
   font-family: ui-monospace, Menlo, monospace; line-height: 1.45; }
 .hero-preswap strong { color: var(--text); font-weight: 600; }
 
+/* === Retired strategy cards === */
+.retired-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  margin: -8px 0 24px; padding: 0; }
+.retired-card { position: relative; background: rgba(13,18,32,0.55);
+  border: 1px solid var(--border); border-radius: 6px;
+  border-left: 3px solid var(--accent);
+  padding: 11px 14px; opacity: 0.78; transition: opacity 0.15s; }
+.retired-card:hover { opacity: 1; }
+.retired-top { display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 5px; }
+.retired-top .stream-name { color: var(--accent); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600;
+  font-family: ui-monospace, Menlo, monospace; }
+.retired-tag { font-size: 9.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--dim);
+  padding: 2px 7px; border-radius: 3px;
+  border: 1px solid var(--border-2);
+  background: rgba(100,116,139,0.08);
+  font-family: ui-monospace, Menlo, monospace; }
+.retired-equity { font-size: 19px; font-weight: 600; color: var(--text);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: -0.005em; }
+.retired-meta { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+  font-size: 11.5px; color: var(--muted); margin-top: 3px;
+  font-family: ui-monospace, Menlo, monospace; }
+.retired-delta { font-weight: 500; }
+.retired-delta.up   { color: var(--green); }
+.retired-delta.down { color: var(--danger); }
+.retired-dim { opacity: 0.4; }
+.retired-window { font-size: 10.5px; color: var(--dim); margin-top: 6px;
+  font-family: ui-monospace, Menlo, monospace; line-height: 1.4; }
+
 /* === Sections === */
 section { margin: 36px 0; scroll-margin-top: 16px; }
 section h2 { font-size: 16.5px; font-weight: 600; margin: 0 0 4px;
@@ -908,6 +1000,7 @@ a:hover { text-decoration: underline; }
   .site-nav { padding-left: 16px; padding-right: 16px; flex-wrap: wrap; gap: 8px; }
   .site-nav .links { gap: 12px; flex-wrap: wrap; }
   .hero-row { grid-template-columns: 1fr; }
+  .retired-row { grid-template-columns: 1fr; }
 }
 """
 
@@ -1021,6 +1114,7 @@ html = f"""<!doctype html>
   <main><div class="inner">
 
     <div class="hero-row">{hero_html}</div>
+    {retired_row_html}
 
     <section id="kpi">
       <h2><span class="sn">01</span>Headline KPIs<span class="tag">all v5.1 closed trades · pre + post swap</span></h2>
