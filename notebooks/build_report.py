@@ -216,7 +216,12 @@ def sparkline_svg(values, color, width=240, height=44):
     )
 
 
-def hero_card(stream, trips_df, raw_df, color, product, label=None):
+def hero_card(stream, trips_df, raw_df, color, product, label=None,
+              preswap_summary=None):
+    """preswap_summary, when given, is (equity_float, trade_count_int) of the
+    pre-2026-05-14-swap hybrid_v5.1 history for this stream. Rendered as a
+    small footer line inside the card so the anchored equity has its
+    historical reference attached, not buried in a separate page-level note."""
     n = len(trips_df)
     display_name = label or stream
     if n == 0:
@@ -246,6 +251,16 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None):
     delta_class = "up" if delta_pct >= 0 else "down"
     delta_sign  = "+" if delta_pct >= 0 else ""
 
+    preswap_html = ""
+    if preswap_summary is not None:
+        pre_eq, pre_n = preswap_summary
+        preswap_html = (
+            f'  <div class="hero-preswap">'
+            f'    pre-swap baseline (v5.1): '
+            f'<strong>${pre_eq:,.2f}</strong> over {pre_n} trades'
+            f'  </div>'
+        )
+
     return (
         f'<div class="hero-card" style="--accent: {color}">'
         f'  <div class="hero-top">'
@@ -261,6 +276,7 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None):
         f'    <span>{n} closed trades · last {last_close}</span>'
         f'    <span class="badge-row">{" ".join(badges)}</span>'
         f'  </div>'
+        f'{preswap_html}'
         f'</div>'
     )
 
@@ -677,46 +693,24 @@ SECTIONS = [
     ("recent",    "Recent activity"),
 ]
 
-# Build the hero card row (post-swap data for v5.3 + shadow1.0; full for paper)
-hero_html = "\n".join(
-    hero_card(s, trips_per_stream[s], raw[s], STREAM_COLOR[s], PRODUCT[s],
-              label=STREAM_LABEL.get(s))
-    for s in STREAMS_ORDER
-)
-
-# Pre-swap baseline pointer — small line under the hero-row showing the
-# final pre-swap equity for live + shadow, so the historical cumulative
-# isn't lost from view. Only emits if there ARE pre-swap trips.
+# Pre-swap baseline (equity, trade_count) per anchored stream — attached to
+# the matching hero-card as a footer line so the historical reference lives
+# next to the anchored number, not in a separate page-level note.
 def _preswap_equity(name):
     df = trips_preswap.get(name)
     if df is None or df.empty:
         return None
     return INITIAL_CAPITAL + df["pnl_net"].sum(), len(df)
 
-_pre_live   = _preswap_equity("live")
-_pre_shadow = _preswap_equity("shadow")
-if _pre_live or _pre_shadow:
-    _parts = []
-    if _pre_live:
-        eq, n = _pre_live
-        _parts.append(
-            f'live: <strong>${eq:,.2f}</strong> over {n} trades'
-        )
-    if _pre_shadow:
-        eq, n = _pre_shadow
-        _parts.append(
-            f'shadow: <strong>${eq:,.2f}</strong> over {n} trades'
-        )
-    preswap_note_html = (
-        '<div class="preswap-note">'
-        'Before the 2026-05-14 21:19 EDT swap (cumulative hybrid_v5.1 since '
-        '2026-04-20 go-live): ' + ' · '.join(_parts) +
-        '. The cards above are fresh from the swap; full v5.1 history still '
-        'powers the charts below with a marker at the cutover.'
-        '</div>'
-    )
-else:
-    preswap_note_html = ""
+_preswap_by_stream = {s: _preswap_equity(s) for s in ANCHORED_STREAMS}
+
+# Build the hero card row (post-swap data for v5.3 + shadow1.0; full for paper)
+hero_html = "\n".join(
+    hero_card(s, trips_per_stream[s], raw[s], STREAM_COLOR[s], PRODUCT[s],
+              label=STREAM_LABEL.get(s),
+              preswap_summary=_preswap_by_stream.get(s))
+    for s in STREAMS_ORDER
+)
 
 # TOC
 toc_items = "\n".join(
@@ -844,11 +838,11 @@ main > div.inner { padding-left: 28px; }
   border: 1px solid rgba(245,158,11,0.35); }
 .badge-flat { background: rgba(100,116,139,0.15); color: var(--dim);
   border: 1px solid var(--border-2); }
-.preswap-note { margin: -10px 0 24px; padding: 10px 14px;
-  background: rgba(148,163,184,0.06); border-left: 3px solid var(--border-2);
-  border-radius: 0 6px 6px 0; color: var(--muted); font-size: 12px;
-  font-family: ui-monospace, Menlo, monospace; line-height: 1.5; }
-.preswap-note strong { color: var(--text); font-weight: 600; }
+.hero-preswap { margin: 8px -18px -16px; padding: 8px 18px;
+  background: rgba(148,163,184,0.05); border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 11.5px;
+  font-family: ui-monospace, Menlo, monospace; line-height: 1.45; }
+.hero-preswap strong { color: var(--text); font-weight: 600; }
 
 /* === Sections === */
 section { margin: 36px 0; scroll-margin-top: 16px; }
@@ -1018,7 +1012,6 @@ html = f"""<!doctype html>
   <main><div class="inner">
 
     <div class="hero-row">{hero_html}</div>
-    {preswap_note_html}
 
     <section id="kpi">
       <h2><span class="sn">01</span>Headline KPIs<span class="tag">post 2026-05-14 21:19 EDT swap · v5.3 + shadow1.0 + paper</span></h2>

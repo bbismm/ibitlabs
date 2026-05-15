@@ -52,7 +52,7 @@
       .absolute.top-10.right-10.z-20  { display: none !important; }
 
       #root {
-        padding-top: 244px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~50) + OnAirStrip (~56) + 20 gap */
+        padding-top: 258px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~70, 2-line pill) + OnAirStrip (~56) + 14 gap */
         padding-right: 400px; /* reserve space for the right rail (leaderboard + ticker, 400px wide) */
         height: 100vh; box-sizing: border-box;
       }
@@ -93,8 +93,10 @@
       #mb-stats .mb-pnl-pos { color: #2ecc71; }
 
       /* OnAirStrip sits below mission-bar + strategy-row; React component
-         sets top: 56 inline, override here so it doesn't collide. */
-      .onair-strip { top: 178px !important; }
+         sets top: 56 inline, override here so it doesn't collide.
+         Strategy-row pills are 2-line (post + pre-swap) — bumped from 178
+         to 192 to clear the taller pill height. */
+      .onair-strip { top: 192px !important; }
 
       /* ── Strategy row ──────────────────────────────────────────────────
          Anchored to the 2026-05-14 21:19 EDT swap. Two pills side by side:
@@ -116,7 +118,8 @@
         color: rgba(255,255,255,0.92);
       }
       .strat-card {
-        display: flex; align-items: baseline; gap: 10px;
+        display: flex; flex-wrap: wrap; align-items: baseline;
+        column-gap: 10px; row-gap: 3px;
         padding: 6px 12px;
         border: 1px solid rgba(255,255,255,0.08);
         border-left: 3px solid var(--accent);
@@ -143,6 +146,12 @@
         padding: 2px 6px; border-radius: 3px;
         background: rgba(255,255,255,0.05);
         color: rgba(255,255,255,0.65);
+      }
+      .strat-preswap {
+        flex-basis: 100%;
+        font-size: 10.5px; opacity: 0.5;
+        letter-spacing: 0.02em;
+        padding-top: 1px;
       }
       .strat-anchor {
         font-size: 12px; opacity: 0.55;
@@ -178,7 +187,7 @@
           right: 0 !important;
           padding: 8px 14px !important;
           gap: 14px !important;
-          top: 196px !important;
+          top: 230px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
         /* Mission bar: tighter padding on mobile, anchored under the compressed site-bar (~52) */
@@ -190,8 +199,8 @@
         }
         .strat-anchor { display: none; }
         /* MobileLeaderBar hardcodes top: 88 in React. Pushed further down to
-           clear strategy-row insertion. */
-        .office-leaderboard-mobile { top: 286px !important; }
+           clear strategy-row (now 2-line pill + pre-swap subline) insertion. */
+        .office-leaderboard-mobile { top: 320px !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -200,10 +209,11 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~64,
-           wraps) + OnAirStrip (~84, wraps) + MobileLeaderBar (~250). */
+        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~98,
+           2-line pills × 2 stacked) + OnAirStrip (~84, wraps) +
+           MobileLeaderBar (~250). */
         #root {
-          padding-top: 528px;
+          padding-top: 562px;
           padding-right: 0;
           padding-bottom: 240px;
         }
@@ -271,6 +281,7 @@
         <span class="strat-delta flat" id="sr-v53-delta">—</span>
         <span class="strat-meta"><span id="sr-v53-trades">0</span>t · WR <span id="sr-v53-wr">—</span>%</span>
         <span class="strat-tag">LIVE</span>
+        <span class="strat-preswap">↳ pre-swap (v5.1): $986.84 / 17t</span>
       </a>
       <a class="strat-card strat-shadow" href="/lab" title="shadow1.0 — bare hybrid_v5.1 baseline, since 2026-05-14 21:19 EDT swap">
         <span class="strat-name">shadow1.0</span>
@@ -278,6 +289,7 @@
         <span class="strat-delta flat" id="sr-sh10-delta">—</span>
         <span class="strat-meta"><span id="sr-sh10-trades">0</span>t · WR <span id="sr-sh10-wr">—</span>%</span>
         <span class="strat-tag">SHADOW · paper</span>
+        <span class="strat-preswap">↳ pre-swap (v5.1): $1,135.42 / 23t</span>
       </a>
       <span class="strat-anchor">since 2026-05-14 21:19 EDT swap</span>
     </div>
