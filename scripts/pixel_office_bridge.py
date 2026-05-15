@@ -378,12 +378,83 @@ ACHIEVEMENTS_CATALOG = [
 ]
 
 
+def _query_one_block(cur, strat: str | None, anchor_ts: int | None,
+                     utc_midnight: int) -> dict | None:
+    """Run the 3 aggregate queries against trade_log under a given filter set
+    (strategy_version + optional timestamp anchor) and return the same dict
+    shape compute_strategy_stats has always emitted. Returns None on SQL
+    failure; caller decides whether to skip the agent."""
+    extra_clauses: list[str] = []
+    extra_args: list = []
+    if strat:
+        extra_clauses.append("strategy_version = ?")
+        extra_args.append(strat)
+    if anchor_ts is not None:
+        extra_clauses.append("timestamp >= ?")
+        extra_args.append(anchor_ts)
+    where_extra = "".join(f" AND {c}" for c in extra_clauses)
+    extra_args_tuple = tuple(extra_args)
+    cur.execute(
+        f"""
+        SELECT COUNT(*),
+               COALESCE(SUM(pnl), 0),
+               COALESCE(SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END), 0),
+               COALESCE(SUM(CASE WHEN pnl < 0 THEN 1 ELSE 0 END), 0)
+        FROM trade_log
+        WHERE exit_price IS NOT NULL{where_extra}
+        """,
+        extra_args_tuple,
+    )
+    total_n, total_pnl, win_n, loss_n = cur.fetchone()
+    cur.execute(
+        f"""
+        SELECT COUNT(*),
+               COALESCE(SUM(pnl), 0)
+        FROM trade_log
+        WHERE exit_price IS NOT NULL
+          AND timestamp >= ?{where_extra}
+        """,
+        (utc_midnight, *extra_args_tuple),
+    )
+    today_n, today_pnl = cur.fetchone()
+    cur.execute(
+        f"""
+        SELECT pnl, timestamp
+        FROM trade_log
+        WHERE exit_price IS NOT NULL{where_extra}
+        ORDER BY timestamp DESC
+        LIMIT 1
+        """,
+        extra_args_tuple,
+    )
+    last_row = cur.fetchone()
+    win_rate = (win_n / total_n) if total_n else 0.0
+    return {
+        "total_trades": total_n,
+        "total_pnl": round(total_pnl, 4),
+        "today_trades": today_n,
+        "today_pnl": round(today_pnl, 4),
+        "win_count": win_n,
+        "loss_count": loss_n,
+        "win_rate": round(win_rate, 4),
+        "last_pnl": round(last_row[0], 4) if last_row else None,
+        "last_trade_ts": int(last_row[1] * 1000) if last_row else None,
+    }
+
+
 def compute_strategy_stats() -> dict:
     """Read trade_log out of each strategy's SQLite and aggregate.
     Returns: {agent_id_str: {total_trades, total_pnl, today_trades,
               today_pnl, win_count, loss_count, win_rate, last_pnl,
-              last_trade_ts}}.
-    Closed trades only (exit_price IS NOT NULL). Today = UTC midnight."""
+              last_trade_ts, [label], [anchored: {...}, anchor_ts]}}.
+
+    Top-level fields are CUMULATIVE (strategy_version filter only) — that's
+    what the leaderboard + mission-bar read. When STRATEGY_ANCHOR_TS is set
+    for an agent (101 + 102 after the 2026-05-14 21:19 EDT swap), a nested
+    `anchored` block carries the same shape filtered to post-anchor rows
+    — that's what the /office strategy-row pills + /lab hero-cards consume
+    for the v5.3 / shadow1.0 cards. Closed trades only (exit_price IS NOT
+    NULL). Today = UTC midnight."""
     utc_midnight = int(
         datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
     )
@@ -394,73 +465,24 @@ def compute_strategy_stats() -> dict:
         strat = STRATEGY_VERSION_FILTER.get(agent_id)
         anchor_ts = STRATEGY_ANCHOR_TS.get(agent_id)
         label = STRATEGY_LABEL.get(agent_id)
-        extra_clauses: list[str] = []
-        extra_args: list = []
-        if strat:
-            extra_clauses.append("strategy_version = ?")
-            extra_args.append(strat)
-        if anchor_ts is not None:
-            extra_clauses.append("timestamp >= ?")
-            extra_args.append(anchor_ts)
-        where_extra = "".join(f" AND {c}" for c in extra_clauses)
-        extra_args_tuple = tuple(extra_args)
         try:
             conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=2.0)
             cur = conn.cursor()
-            cur.execute(
-                f"""
-                SELECT COUNT(*),
-                       COALESCE(SUM(pnl), 0),
-                       COALESCE(SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END), 0),
-                       COALESCE(SUM(CASE WHEN pnl < 0 THEN 1 ELSE 0 END), 0)
-                FROM trade_log
-                WHERE exit_price IS NOT NULL{where_extra}
-                """,
-                extra_args_tuple,
-            )
-            total_n, total_pnl, win_n, loss_n = cur.fetchone()
-            cur.execute(
-                f"""
-                SELECT COUNT(*),
-                       COALESCE(SUM(pnl), 0)
-                FROM trade_log
-                WHERE exit_price IS NOT NULL
-                  AND timestamp >= ?{where_extra}
-                """,
-                (utc_midnight, *extra_args_tuple),
-            )
-            today_n, today_pnl = cur.fetchone()
-            cur.execute(
-                f"""
-                SELECT pnl, timestamp
-                FROM trade_log
-                WHERE exit_price IS NOT NULL{where_extra}
-                ORDER BY timestamp DESC
-                LIMIT 1
-                """,
-                extra_args_tuple,
-            )
-            last_row = cur.fetchone()
+            entry = _query_one_block(cur, strat, anchor_ts=None,
+                                     utc_midnight=utc_midnight)
+            anchored = None
+            if anchor_ts is not None:
+                anchored = _query_one_block(cur, strat, anchor_ts=anchor_ts,
+                                            utc_midnight=utc_midnight)
             conn.close()
         except (sqlite3.Error, OSError) as e:
             print(f"[bridge] stats query failed for {db_path.name}: {e}", file=sys.stderr)
             continue
 
-        win_rate = (win_n / total_n) if total_n else 0.0
-        entry: dict = {
-            "total_trades": total_n,
-            "total_pnl": round(total_pnl, 4),
-            "today_trades": today_n,
-            "today_pnl": round(today_pnl, 4),
-            "win_count": win_n,
-            "loss_count": loss_n,
-            "win_rate": round(win_rate, 4),
-            "last_pnl": round(last_row[0], 4) if last_row else None,
-            "last_trade_ts": int(last_row[1] * 1000) if last_row else None,
-        }
         if label is not None:
             entry["label"] = label
-        if anchor_ts is not None:
+        if anchored is not None:
+            entry["anchored"] = anchored
             entry["anchor_ts"] = anchor_ts * 1000  # ms for frontend consistency
         out[str(agent_id)] = entry
     return out

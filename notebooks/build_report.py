@@ -342,19 +342,19 @@ def fig_html(fig, div_id):
 # data prep
 # ============================================================================
 print("loading DBs ...")
-raw_full = {k: load_raw(k, v) for k, v in DBS.items()}
-# Split anchored streams (live + shadow) at SWAP_TS. raw[] used everywhere
-# downstream contains only post-swap rows for those streams; raw_preswap[]
-# powers the pre-swap baseline footer line under the hero-cards.
-raw = {}
-raw_preswap = {}
-for name, df in raw_full.items():
-    if name in ANCHORED_STREAMS:
-        raw[name] = df[df["dt"] >= SWAP_TS].copy()
-        raw_preswap[name] = df[df["dt"] < SWAP_TS].copy()
-    else:
-        raw[name] = df
+# Cumulative raw (full hybrid_v5.1 lineage) feeds the leaderboard + KPI table
+# + equity curve + price/PnL/exit/regime/MFE charts — the whole experiment
+# history. The 2026-05-14 21:19 EDT mode swap toggled flags but didn't reset
+# the lineage; downstream views show pre+post as one curve with a marker.
+raw = {k: load_raw(k, v) for k, v in DBS.items()}
+# Anchored slices for hero-cards only (v5.3 + shadow1.0 are strategy bundles,
+# scoped to post-swap). Paper unchanged.
+raw_postswap = {s: raw[s][raw[s]["dt"] >= SWAP_TS].copy()
+                for s in ANCHORED_STREAMS if s in raw}
+raw_preswap = {s: raw[s][raw[s]["dt"] < SWAP_TS].copy()
+               for s in ANCHORED_STREAMS if s in raw}
 trips_per_stream = {k: build_round_trips(df) for k, df in raw.items()}
+trips_postswap = {k: build_round_trips(df) for k, df in raw_postswap.items()}
 trips_preswap = {k: build_round_trips(df) for k, df in raw_preswap.items()}
 trades = pd.concat([t for t in trips_per_stream.values() if not t.empty],
                    ignore_index=True)
@@ -433,7 +433,7 @@ fig_equity.add_annotation(
     showarrow=False, yanchor="bottom", xanchor="right",
     font=dict(color="#f59e0b", size=10),
 )
-finish(fig_equity, 420, "Equity · normalized to $1,000 (post-swap anchor for v5.3 + shadow1.0)")
+finish(fig_equity, 420, "Equity · normalized to $1,000 (full v5.1 history; dashed line marks the 2026-05-14 mode swap)")
 fig_equity.update_yaxes(title="Account equity ($)")
 
 
@@ -704,9 +704,18 @@ def _preswap_equity(name):
 
 _preswap_by_stream = {s: _preswap_equity(s) for s in ANCHORED_STREAMS}
 
-# Build the hero card row (post-swap data for v5.3 + shadow1.0; full for paper)
+# Build the hero card row — v5.3 + shadow1.0 use POST-SWAP slices so the
+# strategy-specific equity + open-position badge reflects the new bundle
+# only; paper stays full-history. KPI table + charts below use cumulative.
+def _hero_trips(s):
+    return trips_postswap.get(s, trips_per_stream[s]) if s in ANCHORED_STREAMS \
+        else trips_per_stream[s]
+
+def _hero_raw(s):
+    return raw_postswap.get(s, raw[s]) if s in ANCHORED_STREAMS else raw[s]
+
 hero_html = "\n".join(
-    hero_card(s, trips_per_stream[s], raw[s], STREAM_COLOR[s], PRODUCT[s],
+    hero_card(s, _hero_trips(s), _hero_raw(s), STREAM_COLOR[s], PRODUCT[s],
               label=STREAM_LABEL.get(s),
               preswap_summary=_preswap_by_stream.get(s))
     for s in STREAMS_ORDER
@@ -1005,7 +1014,7 @@ html = f"""<!doctype html>
   <header class="top">
     <h1>{page_h1}</h1>
     {mission_html}
-    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if hook + trailing 0.005/0.004 (--no-grid preserved) · <strong>shadow1.0</strong> = bare hybrid_v5.1 baseline · ETH sniper (paper)</div>
+    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if hook + trailing 0.005/0.004 (--no-grid preserved) · <strong>shadow1.0</strong> = bare hybrid_v5.1 baseline · ETH sniper (paper). Cards above show post-2026-05-14-swap data; charts + tables below span the full v5.1 history with a marker at the cutover.</div>
     <div class="meta">{meta_line}</div>
   </header>
 
@@ -1014,7 +1023,7 @@ html = f"""<!doctype html>
     <div class="hero-row">{hero_html}</div>
 
     <section id="kpi">
-      <h2><span class="sn">01</span>Headline KPIs<span class="tag">post 2026-05-14 21:19 EDT swap · v5.3 + shadow1.0 + paper</span></h2>
+      <h2><span class="sn">01</span>Headline KPIs<span class="tag">all v5.1 closed trades · pre + post swap</span></h2>
       <div class="lede">PF &gt; 1.0 = profitable. &gt; 1.5 = good. &gt; 2.0 = rare. Max DD is peak-to-trough on the equity curve.</div>
       {colored_df_html(kpi_for_table, pnl_cols=kpi_pnl_cols, index=False)}
     </section>

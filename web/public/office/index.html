@@ -414,12 +414,12 @@
           var rgEl = $('mb-regime'); if (rgEl) rgEl.textContent = regime;
         }
 
-        // trades + WR come from /api/office-events stats["101"] (strategy_version
-        // filtered to hybrid_v5.1 + post-2026-05-14-swap-anchored in
-        // pixel_office_bridge.compute_strategy_stats — same source as the
-        // leaderboard). /api/live-status.total_trades and .win_rate are
-        // cross-strategy COUNT(*) including retired breakout_v3.4, grid_v1,
-        // hybrid_v5.0 rows; do not read them here.
+        // Mission-bar trades + WR — top-level stats[101] block from
+        // /api/office-events. CUMULATIVE (strategy_version filter only)
+        // since the mission-bar tracks the whole $1k→$10k experiment, not
+        // the post-2026-05-14-swap subset. /api/live-status.total_trades
+        // and .win_rate are cross-strategy COUNT(*) including retired
+        // breakout_v3.4, grid_v1, hybrid_v5.0 rows; do not read them here.
         function paintV51(stats) {
           var s = stats && stats['101'];
           if (!s) return;
@@ -429,12 +429,16 @@
           if (wrEl) wrEl.textContent = ((Number(s.win_rate) || 0) * 100).toFixed(0);
         }
 
-        // Strategy row painter — both cards seeded at $1k for normalized
-        // comparison. equity = $1000 + total_pnl (since anchor). Mirrors the
-        // /lab hero-card math in build_report.py:hero_card().
+        // Strategy row painter — reads the nested `.anchored` sub-block
+        // (post-2026-05-14-swap data) so the v5.3 / shadow1.0 pills show
+        // strategy-specific stats. Falls back to top-level for resilience
+        // if anchored is ever absent (e.g. mid-deploy). Both cards seeded
+        // at $1k for normalized comparison. equity = $1000 + total_pnl
+        // (since anchor). Mirrors /lab hero-card math in build_report.py.
         function paintStrategyCard(stats, agentId, prefix) {
-          var s = stats && stats[agentId];
-          if (!s) return;
+          var top = stats && stats[agentId];
+          if (!top) return;
+          var s = top.anchored || top;
           var pnl = Number(s.total_pnl) || 0;
           var equity = 1000 + pnl;
           var deltaPct = (equity / 1000 - 1) * 100;
