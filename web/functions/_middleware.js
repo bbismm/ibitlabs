@@ -23,8 +23,8 @@ const SECURITY_HEADERS = {
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   'Content-Security-Policy': [
     "default-src 'self'",
-    // script-src: self + inline + Stripe + Google Analytics (GA4) + Google Tag Manager
-    "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com",
+    // script-src: self + inline + Stripe + Google Analytics (GA4) + Google Tag Manager + Plotly CDN (/lab charts)
+    "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://cdn.plot.ly",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     // img-src already 'https:' so GA beacon pixels work
