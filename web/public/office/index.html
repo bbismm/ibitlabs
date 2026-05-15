@@ -155,6 +155,21 @@
         letter-spacing: 0.02em;
         padding-top: 1px;
       }
+      /* Real-time MTM badge — shown only when the strategy is holding an
+         open position. Populated from /api/office-events open_positions[102]
+         (shadow) or /api/live-status position (live). When visible, the
+         pill's main equity number INCLUDES this unrealized value (MTM
+         convention) so the card reflects the actual position value, not
+         just realized PnL. */
+      .strat-open {
+        flex-basis: 100%;
+        font-size: 11px; font-weight: 500;
+        letter-spacing: 0.01em;
+        color: #f59e0b;
+        padding-top: 1px;
+      }
+      .strat-open.open-positive { color: #2ecc71; }
+      .strat-open[hidden] { display: none; }
       /* Retired pills — frozen pre-swap state for live + shadow, kept
          visible as historical reference next to the active v5.3 +
          shadow1.0. Muted (opacity 0.55) + dashed border + RETIRED tag so
@@ -293,20 +308,22 @@
          /api/office-events stats[101] (v5.3) and stats[102] (shadow1.0).
     -->
     <div id="strategy-row" aria-live="polite">
-      <a class="strat-card strat-live" href="/lab" title="v5.3 — live, since 2026-05-14 21:19 EDT swap">
+      <a class="strat-card strat-live" href="/lab" title="v5.3 — live, since 2026-05-14 21:19 EDT swap. Bundle: regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005, --no-grid kept.">
         <span class="strat-name">v5.3</span>
         <span class="strat-equity" id="sr-v53-equity">$1,000.00</span>
         <span class="strat-delta flat" id="sr-v53-delta">—</span>
         <span class="strat-meta"><span id="sr-v53-trades">0</span>t · WR <span id="sr-v53-wr">—</span>%</span>
         <span class="strat-tag">LIVE</span>
+        <span class="strat-open" id="sr-v53-open" hidden></span>
         <span class="strat-preswap">↳ pre-swap (v5.1): $986.84 / 17t</span>
       </a>
-      <a class="strat-card strat-shadow" href="/lab" title="shadow1.0 — bare hybrid_v5.1 baseline, since 2026-05-14 21:19 EDT swap">
+      <a class="strat-card strat-shadow" href="/lab" title="shadow1.0 — paper-shadow running the pre-swap LIVE config (Path A: --no-grid --trailing-activate 0.004). Control group for v5.3's added features.">
         <span class="strat-name">shadow1.0</span>
         <span class="strat-equity" id="sr-sh10-equity">$1,000.00</span>
         <span class="strat-delta flat" id="sr-sh10-delta">—</span>
         <span class="strat-meta"><span id="sr-sh10-trades">0</span>t · WR <span id="sr-sh10-wr">—</span>%</span>
         <span class="strat-tag">SHADOW · paper</span>
+        <span class="strat-open" id="sr-sh10-open" hidden></span>
         <span class="strat-preswap">↳ pre-swap (v5.1): $1,135.42 / 23t</span>
       </a>
       <a class="strat-card strat-live strat-retired" href="/lab" title="v5.1 live — retired at 2026-05-14 21:19 EDT swap, succeeded by v5.3. Frozen 2026-04-20 → 2026-05-14.">
@@ -465,14 +482,64 @@
         // (post-2026-05-14-swap data) so the v5.3 / shadow1.0 pills show
         // strategy-specific stats. Falls back to top-level for resilience
         // if anchored is ever absent (e.g. mid-deploy). Both cards seeded
-        // at $1k for normalized comparison. equity = $1000 + total_pnl
-        // (since anchor). Mirrors /lab hero-card math in build_report.py.
-        function paintStrategyCard(stats, agentId, prefix) {
+        // at $1k for normalized comparison.
+        //
+        // Equity = $1000 + total_pnl (realized closed-trade NET, since the
+        // 2026-05-14 swap) + unrealized open-position MTM (when present).
+        // The MTM source differs per agent: live (101) reads /api/live-status
+        // position.pnl_usd; shadow (102) reads /api/office-events
+        // open_positions[102].unrealized_pnl. When an open position exists
+        // the .strat-open subline shows the position detail in orange (or
+        // green if unrealized > 0).
+        function _normalizeMtm(mtm) {
+          // Normalize the differing field names between /api/live-status
+          // position {pnl_usd, pnl_pct} and bridge open_positions
+          // {unrealized_pnl, unrealized_pct} so downstream code reads one shape.
+          if (!mtm || !mtm.active) return null;
+          var pnl = (mtm.unrealized_pnl != null) ? mtm.unrealized_pnl
+                  : (mtm.pnl_usd != null) ? mtm.pnl_usd
+                  : null;
+          var pct = (mtm.unrealized_pct != null) ? mtm.unrealized_pct
+                  : (mtm.pnl_pct != null) ? mtm.pnl_pct
+                  : null;
+          if (pnl == null) return null;
+          return {
+            direction: mtm.direction,
+            entry_price: mtm.entry_price,
+            current_price: mtm.current_price,
+            unrealized_pnl: Number(pnl),
+            unrealized_pct: pct != null ? Number(pct) : null,
+            elapsed_mins: mtm.elapsed_mins != null ? Number(mtm.elapsed_mins) : null,
+          };
+        }
+        function _paintOpenBadge(prefix, mtm) {
+          var el = $(prefix + '-open');
+          if (!el) return;
+          if (!mtm) { el.hidden = true; el.textContent = ''; return; }
+          el.hidden = false;
+          el.classList.remove('open-positive');
+          if (mtm.unrealized_pnl > 0) el.classList.add('open-positive');
+          var sign = mtm.unrealized_pnl >= 0 ? '+' : '−';
+          var absPnl = Math.abs(mtm.unrealized_pnl);
+          var entryStr = (mtm.entry_price != null) ? '$' + Number(mtm.entry_price).toFixed(2) : '—';
+          var curStr = (mtm.current_price != null) ? '$' + Number(mtm.current_price).toFixed(2) : '—';
+          var pctStr = (mtm.unrealized_pct != null) ? ' (' + sign + (Math.abs(mtm.unrealized_pct) * 100).toFixed(2) + '%)' : '';
+          var elapsedStr = '';
+          if (mtm.elapsed_mins != null) {
+            var hrs = mtm.elapsed_mins / 60;
+            elapsedStr = hrs >= 1 ? ' · ' + hrs.toFixed(1) + 'h held' : ' · ' + Math.round(mtm.elapsed_mins) + 'm held';
+          }
+          el.textContent = '⚡ OPEN ' + mtm.direction + ' @ ' + entryStr + ' → ' + curStr
+            + '  ' + sign + '$' + absPnl.toFixed(2) + pctStr + elapsedStr;
+        }
+        function paintStrategyCard(stats, agentId, prefix, rawMtm) {
           var top = stats && stats[agentId];
           if (!top) return;
           var s = top.anchored || top;
-          var pnl = Number(s.total_pnl) || 0;
-          var equity = 1000 + pnl;
+          var realized = Number(s.total_pnl) || 0;
+          var mtm = _normalizeMtm(rawMtm);
+          var unrealized = mtm ? mtm.unrealized_pnl : 0;
+          var equity = 1000 + realized + unrealized;
           var deltaPct = (equity / 1000 - 1) * 100;
           var eqEl = $(prefix + '-equity');
           if (eqEl) eqEl.textContent = '$' + equity.toFixed(2);
@@ -495,10 +562,16 @@
             var n = Number(s.total_trades) || 0;
             wEl.textContent = n === 0 ? '—' : ((Number(s.win_rate) || 0) * 100).toFixed(0);
           }
+          _paintOpenBadge(prefix, mtm);
         }
-        function paintStrategyRow(stats) {
-          paintStrategyCard(stats, '101', 'sr-v53');
-          paintStrategyCard(stats, '102', 'sr-sh10');
+        function paintStrategyRow(eventsData, liveStatus) {
+          var stats = (eventsData && eventsData.stats) || {};
+          var openPositions = (eventsData && eventsData.open_positions) || {};
+          // Live (101) MTM lives on /api/live-status (real-time tick via
+          // Coinbase spot in the Cloudflare worker), not on bridge's slower
+          // open_positions which only covers paper agents.
+          paintStrategyCard(stats, '101', 'sr-v53', liveStatus && liveStatus.position);
+          paintStrategyCard(stats, '102', 'sr-sh10', openPositions['102']);
         }
 
         function refresh() {
@@ -507,19 +580,24 @@
           var dayEl = $('mb-day');
           if (dayEl) dayEl.textContent = dayCount();
 
-          fetch('/api/live-status', { cache: 'no-store' })
+          // Fetch both endpoints in parallel; strategy-row needs both
+          // (events for stats + shadow open position; live-status for v5.3
+          // open position). Join via Promise.all so paintStrategyRow has
+          // both pieces in one shot — avoids two-phase paint flicker.
+          var liveP = fetch('/api/live-status', { cache: 'no-store' })
             .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) { if (d) paint(d); })
-            .catch(function () { /* swallow — bar stays at last value */ });
+            .catch(function () { return null; });
+          var eventsP = fetch('/api/office-events', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
 
-          fetch('/api/office-events', { cache: 'no-store' })
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) {
-              if (!d) return;
-              paintV51(d.stats);
-              paintStrategyRow(d.stats);
-            })
-            .catch(function () { /* swallow */ });
+          liveP.then(function (d) { if (d) paint(d); });
+          Promise.all([eventsP, liveP]).then(function (results) {
+            var eventsData = results[0];
+            var liveStatus = results[1];
+            if (eventsData) paintV51(eventsData.stats);
+            paintStrategyRow(eventsData, liveStatus);
+          });
         }
 
         refresh();

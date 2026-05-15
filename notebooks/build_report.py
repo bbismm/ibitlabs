@@ -1107,7 +1107,7 @@ html = f"""<!doctype html>
   <header class="top">
     <h1>{page_h1}</h1>
     {mission_html}
-    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if hook + trailing 0.005/0.004 (--no-grid preserved) · <strong>shadow1.0</strong> = bare hybrid_v5.1 baseline · ETH sniper (paper). Cards above show post-2026-05-14-swap data; charts + tables below span the full v5.1 history with a marker at the cutover.</div>
+    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005/0.004 (--no-grid kept) · <strong>shadow1.0</strong> = pre-swap LIVE config (Path A: --no-grid + trailing 0.004), kept running as paper-shadow control · ETH sniper (paper). Cards above show post-2026-05-14-swap data (equity = realized + open-position MTM where present); charts + tables below span the full v5.1 history with a marker at the cutover.</div>
     <div class="meta">{meta_line}</div>
   </header>
 
