@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Generate report.html — three-way (live / shadow / paper) analysis.
 # v2: hero KPI cards, sticky TOC, unified plotly theme, colored PnL cells.
-import json, sqlite3, urllib.request, time as _time, subprocess, sys
+import json, sqlite3, urllib.request, urllib.error, time as _time, subprocess, sys
 from pathlib import Path
 
 import numpy as np
@@ -217,36 +217,87 @@ def sparkline_svg(values, color, width=240, height=44):
 
 
 def hero_card(stream, trips_df, raw_df, color, product, label=None,
-              preswap_summary=None):
+              preswap_summary=None, mtm=None):
     """preswap_summary, when given, is (equity_float, trade_count_int) of the
     pre-2026-05-14-swap hybrid_v5.1 history for this stream. Rendered as a
     small footer line inside the card so the anchored equity has its
-    historical reference attached, not buried in a separate page-level note."""
+    historical reference attached, not buried in a separate page-level note.
+
+    mtm, when given, is a dict matching the bridge open_positions shape
+    ({direction, entry_price, current_price, unrealized_pnl, unrealized_pct,
+    elapsed_mins, active}) OR the /api/live-status position shape
+    ({direction, entry_price, current_price, pnl_usd, pnl_pct, active}).
+    When active, its unrealized is added to equity (MTM convention) and a
+    detailed "⚡ OPEN X @ entry → current, ±$Y" badge replaces the plain
+    "OPEN long/short" placeholder so the card reflects actual position
+    value, not just realized PnL."""
     n = len(trips_df)
     display_name = label or stream
+    realized_net = trips_df["pnl_net"].sum() if n > 0 else 0.0
+
+    # Normalize MTM shape (bridge open_positions vs /api/live-status position)
+    mtm_active = bool(mtm and mtm.get("active"))
+    if mtm_active:
+        unrealized = mtm.get("unrealized_pnl")
+        if unrealized is None:
+            unrealized = mtm.get("pnl_usd")
+        unrealized_pct = mtm.get("unrealized_pct")
+        if unrealized_pct is None:
+            unrealized_pct = mtm.get("pnl_pct")
+        unrealized = float(unrealized or 0)
+    else:
+        unrealized = 0.0
+        unrealized_pct = None
+
+    equity = INITIAL_CAPITAL + realized_net + unrealized
+    delta_pct = (equity / INITIAL_CAPITAL - 1) * 100
     if n == 0:
-        equity = INITIAL_CAPITAL
-        delta_pct = 0.0
         spark_html = ""
         last_close = "—"
     else:
-        equity = INITIAL_CAPITAL + trips_df["pnl_net"].sum()
-        delta_pct = (equity / INITIAL_CAPITAL - 1) * 100
         eq_series = [INITIAL_CAPITAL] + (INITIAL_CAPITAL + trips_df["pnl_net"].cumsum()).tolist()
+        if mtm_active:
+            eq_series.append(equity)  # MTM tip
         spark_html = sparkline_svg(eq_series, color)
         last_close = trips_df["exit_dt"].max().strftime("%m-%d %H:%M")
 
-    n_long_open  = (((raw_df["direction"] == "long")  & raw_df["exit_price"].isna()).sum()
-                    - ((raw_df["direction"] == "long")  & raw_df["exit_price"].notna()).sum())
-    n_short_open = (((raw_df["direction"] == "short") & raw_df["exit_price"].isna()).sum()
-                    - ((raw_df["direction"] == "short") & raw_df["exit_price"].notna()).sum())
     badges = []
-    if n_long_open > 0:
-        badges.append('<span class="badge badge-open">⚡ OPEN long</span>')
-    if n_short_open > 0:
-        badges.append('<span class="badge badge-open">⚡ OPEN short</span>')
-    if not badges:
-        badges.append('<span class="badge badge-flat">flat</span>')
+    if mtm_active:
+        direction = mtm.get("direction", "?")
+        entry = mtm.get("entry_price")
+        cur = mtm.get("current_price")
+        elapsed_min = mtm.get("elapsed_mins")
+        sign = "+" if unrealized >= 0 else "−"
+        pct_str = (
+            f" ({sign}{abs(unrealized_pct) * 100:.2f}%)"
+            if unrealized_pct is not None else ""
+        )
+        elapsed_str = ""
+        if elapsed_min is not None:
+            hrs = elapsed_min / 60
+            elapsed_str = (
+                f" · {hrs:.1f}h held" if hrs >= 1
+                else f" · {int(elapsed_min)}m held"
+            )
+        entry_str = f"${entry:.2f}" if entry is not None else "—"
+        cur_str = f"${cur:.2f}" if cur is not None else "—"
+        cls = "badge-open-positive" if unrealized > 0 else "badge-open"
+        badges.append(
+            f'<span class="badge {cls}">⚡ {direction} @ {entry_str} → {cur_str} '
+            f'{sign}${abs(unrealized):.2f}{pct_str}{elapsed_str}</span>'
+        )
+    else:
+        # No MTM data — fall back to the legacy open-position-from-raw_df logic
+        n_long_open  = (((raw_df["direction"] == "long")  & raw_df["exit_price"].isna()).sum()
+                        - ((raw_df["direction"] == "long")  & raw_df["exit_price"].notna()).sum())
+        n_short_open = (((raw_df["direction"] == "short") & raw_df["exit_price"].isna()).sum()
+                        - ((raw_df["direction"] == "short") & raw_df["exit_price"].notna()).sum())
+        if n_long_open > 0:
+            badges.append('<span class="badge badge-open">⚡ OPEN long</span>')
+        if n_short_open > 0:
+            badges.append('<span class="badge badge-open">⚡ OPEN short</span>')
+        if not badges:
+            badges.append('<span class="badge badge-flat">flat</span>')
 
     delta_class = "up" if delta_pct >= 0 else "down"
     delta_sign  = "+" if delta_pct >= 0 else ""
@@ -378,6 +429,52 @@ def fig_html(fig, div_id):
 # ============================================================================
 # data prep
 # ============================================================================
+# Load open-position MTM at build time so hero-cards reflect actual position
+# value (realized + unrealized) instead of realized-only. Sources:
+#   - bridge office-events.json → open_positions[102/103/106] for paper agents
+#   - /api/live-status → position for live (101, real money)
+# Both fall back to None on failure; hero_card silently degrades to
+# realized-only equity + the legacy "OPEN long/short" badge in that case.
+def _load_bridge_open_positions():
+    bridge_path = ROOT / "receipt-viewer/data/office-events.json"
+    try:
+        return json.loads(bridge_path.read_text()).get("open_positions", {}) or {}
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"  bridge events unreadable, MTM skipped: {e}", file=sys.stderr)
+        return {}
+
+
+def _fetch_live_position():
+    try:
+        req = urllib.request.Request(
+            "https://www.ibitlabs.com/api/live-status",
+            headers={"User-Agent": "ibitlabs-build-report/1.0"},
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            data = json.loads(r.read())
+        pos = data.get("position") or {}
+        return pos if pos.get("active") else None
+    except (urllib.error.URLError, ValueError, KeyError, OSError) as e:
+        print(f"  live-status fetch failed, v5.3 MTM skipped: {e}", file=sys.stderr)
+        return None
+
+
+# stream → bridge agent_id (None = no bridge entry, use live-status instead)
+STREAM_AGENT_ID = {"live": None, "shadow": "102", "paper": "103"}
+
+print("loading open positions ...")
+_bridge_open = _load_bridge_open_positions()
+_live_open = _fetch_live_position()
+
+def _mtm_for(stream):
+    if stream == "live":
+        return _live_open
+    aid = STREAM_AGENT_ID.get(stream)
+    if not aid:
+        return None
+    pos = _bridge_open.get(aid) or {}
+    return pos if pos.get("active") else None
+
 print("loading DBs ...")
 # Cumulative raw (full hybrid_v5.1 lineage) feeds the leaderboard + KPI table
 # + equity curve + price/PnL/exit/regime/MFE charts — the whole experiment
@@ -754,7 +851,8 @@ def _hero_raw(s):
 hero_html = "\n".join(
     hero_card(s, _hero_trips(s), _hero_raw(s), STREAM_COLOR[s], PRODUCT[s],
               label=STREAM_LABEL.get(s),
-              preswap_summary=_preswap_by_stream.get(s))
+              preswap_summary=_preswap_by_stream.get(s),
+              mtm=_mtm_for(s))
     for s in STREAMS_ORDER
 )
 
@@ -906,6 +1004,8 @@ main > div.inner { padding-left: 28px; }
   letter-spacing: 0.04em; }
 .badge-open { background: rgba(245,158,11,0.15); color: var(--warn);
   border: 1px solid rgba(245,158,11,0.35); }
+.badge-open-positive { background: rgba(34,197,94,0.12); color: var(--green);
+  border: 1px solid rgba(34,197,94,0.32); }
 .badge-flat { background: rgba(100,116,139,0.15); color: var(--dim);
   border: 1px solid var(--border-2); }
 .hero-preswap { margin: 8px -18px -16px; padding: 8px 18px;
