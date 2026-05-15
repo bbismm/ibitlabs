@@ -1653,6 +1653,10 @@ body{
 </div>
 </section>
 
+<aside class="essay-addendum" style="margin-top:3rem;padding:1rem 1.25rem;border-left:3px solid var(--purple);background:rgba(139,92,246,0.06);font-size:0.95em">
+<p><strong>Update — 2026-05-14:</strong> Several parameters quoted in the body have moved on. Trailing-activate is now <strong>0.4%</strong> (down from 1.5%). StochRSI gates are <strong>0.25 / 0.95</strong> (relaxed from 0.10 / 0.90). The regime gate, reverse-exit Mode C, and grid-what-if observation hook layered onto LIVE in the 5-14 swap are not reflected in the body's "Trade #337" walkthrough. Treat the essay as a snapshot of the strategy's working tone at the time of writing, not the present runtime config. The current canonical strategy line lives on <a href="/contributors">/contributors</a>.</p>
+</aside>
+
 </article>
 
 <div class="live-stats">
@@ -1708,7 +1712,9 @@ body{
   const goalPct = (bal / 10000 * 100).toFixed(1);
   document.getElementById('m-days').textContent = days;
   document.getElementById('m-bal').textContent = '$' + Math.round(bal);
-  document.getElementById('m-trades').textContent = d.total_trades || 0;
+  // Use v5.1 (current strategy) count, not legacy cross-strategy total_trades.
+  const _tt = d.total_trades_v51 != null ? d.total_trades_v51 : (d.total_trades || 0);
+  document.getElementById('m-trades').textContent = _tt;
   document.getElementById('m-goal').textContent = goalPct + '%';
 }catch(e){}})();
 </script>
