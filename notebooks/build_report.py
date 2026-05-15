@@ -39,6 +39,17 @@ SYMBOL_MAP   = {"SLP-20DEC30-CDE": "SOL", "ETP-20DEC30-CDE": "ETH"}
 STREAM_COLOR = {"live": "#22c55e", "shadow": "#a855f7", "paper": "#0ea5e9"}
 STREAMS_ORDER = ["live", "shadow", "paper"]
 PRODUCT = {"live": "SOL-USD", "shadow": "SOL-USD", "paper": "ETH-USD"}
+# Display label per stream — used in hero-cards + chart legends + section
+# headings. 2026-05-14 21:19 EDT swap: live became v5.3 (regime_gate +
+# reverse_exit_C + grid_what_if + trailing 0.005 + --no-grid); shadow
+# became the bare hybrid_v5.1 baseline (shadow1.0). See
+# project_swap_live_shadow_2026_05_14.md.
+STREAM_LABEL = {"live": "v5.3", "shadow": "shadow1.0", "paper": "paper · ETH"}
+# Streams whose data is re-anchored to SWAP_TS — only trades closed at or
+# after this moment count toward equity / KPIs / charts. The paper (ETH)
+# stream is unrelated and remains full-history.
+SWAP_TS = pd.Timestamp("2026-05-15T01:19:00Z")  # 2026-05-14 21:19 EDT
+ANCHORED_STREAMS = {"live", "shadow"}
 INITIAL_CAPITAL = 1000.0
 NOW = pd.Timestamp.now(tz="UTC")
 
@@ -71,6 +82,9 @@ pio.templates.default = "ibit"
 # data loaders
 # ============================================================================
 def load_raw(name, db_path):
+    """Read trade_log + filter to hybrid_v5.1. The anchor split (SWAP_TS)
+    happens in the caller so the pre-swap rows can power the footer
+    historical pointer."""
     con = sqlite3.connect(db_path)
     df = pd.read_sql("SELECT * FROM trade_log", con)
     con.close()
@@ -202,8 +216,9 @@ def sparkline_svg(values, color, width=240, height=44):
     )
 
 
-def hero_card(stream, trips_df, raw_df, color, product):
+def hero_card(stream, trips_df, raw_df, color, product, label=None):
     n = len(trips_df)
+    display_name = label or stream
     if n == 0:
         equity = INITIAL_CAPITAL
         delta_pct = 0.0
@@ -234,7 +249,7 @@ def hero_card(stream, trips_df, raw_df, color, product):
     return (
         f'<div class="hero-card" style="--accent: {color}">'
         f'  <div class="hero-top">'
-        f'    <span class="stream-name">{stream}</span>'
+        f'    <span class="stream-name">{display_name}</span>'
         f'    <span class="product">{product}</span>'
         f'  </div>'
         f'  <div class="hero-equity">${equity:,.2f}</div>'
@@ -311,8 +326,20 @@ def fig_html(fig, div_id):
 # data prep
 # ============================================================================
 print("loading DBs ...")
-raw = {k: load_raw(k, v) for k, v in DBS.items()}
+raw_full = {k: load_raw(k, v) for k, v in DBS.items()}
+# Split anchored streams (live + shadow) at SWAP_TS. raw[] used everywhere
+# downstream contains only post-swap rows for those streams; raw_preswap[]
+# powers the pre-swap baseline footer line under the hero-cards.
+raw = {}
+raw_preswap = {}
+for name, df in raw_full.items():
+    if name in ANCHORED_STREAMS:
+        raw[name] = df[df["dt"] >= SWAP_TS].copy()
+        raw_preswap[name] = df[df["dt"] < SWAP_TS].copy()
+    else:
+        raw[name] = df
 trips_per_stream = {k: build_round_trips(df) for k, df in raw.items()}
+trips_preswap = {k: build_round_trips(df) for k, df in raw_preswap.items()}
 trades = pd.concat([t for t in trips_per_stream.values() if not t.empty],
                    ignore_index=True)
 kpi_df = pd.DataFrame([kpis(trips_per_stream[s], s) for s in STREAMS_ORDER]).set_index("stream")
@@ -322,7 +349,9 @@ PRICE = {}
 for s in STREAMS_ORDER:
     df = trips_per_stream[s]
     raw_df = raw[s]
-    times = list(df["entry_dt"].dropna()) + list(df["exit_dt"].dropna())
+    times = []
+    if not df.empty:
+        times = list(df["entry_dt"].dropna()) + list(df["exit_dt"].dropna())
     times.extend(raw_df[raw_df["exit_price"].isna()]["dt"].tolist())
     if not times:
         print(f"  {s:7s}: no trades, skip")
@@ -371,7 +400,24 @@ for s in STREAMS_ORDER:
 fig_equity.add_hline(y=INITIAL_CAPITAL, line_dash="dot", line_color="#475569",
                      annotation_text="$1,000 seed",
                      annotation_font=dict(color="#94a3b8"))
-finish(fig_equity, 420, "Equity · normalized to $1,000")
+# Swap marker — only meaningful here when paper's full-history curve
+# extends back before SWAP_TS; live + shadow curves already start at the
+# anchor. Plotly's add_vline auto-annotation can't sum Timestamps cleanly,
+# so we add the line + annotation separately and use a Python datetime for
+# the shape x.
+fig_equity.add_shape(
+    type="line", xref="x", yref="paper",
+    x0=SWAP_TS.to_pydatetime(), x1=SWAP_TS.to_pydatetime(),
+    y0=0, y1=1,
+    line=dict(color="#f59e0b", width=1.2, dash="dash"),
+)
+fig_equity.add_annotation(
+    x=SWAP_TS.to_pydatetime(), y=1, xref="x", yref="paper",
+    text="2026-05-14 21:19 EDT swap → v5.3 + shadow1.0",
+    showarrow=False, yanchor="bottom", xanchor="right",
+    font=dict(color="#f59e0b", size=10),
+)
+finish(fig_equity, 420, "Equity · normalized to $1,000 (post-swap anchor for v5.3 + shadow1.0)")
 fig_equity.update_yaxes(title="Account equity ($)")
 
 
@@ -631,11 +677,46 @@ SECTIONS = [
     ("recent",    "Recent activity"),
 ]
 
-# Build the hero card row
+# Build the hero card row (post-swap data for v5.3 + shadow1.0; full for paper)
 hero_html = "\n".join(
-    hero_card(s, trips_per_stream[s], raw[s], STREAM_COLOR[s], PRODUCT[s])
+    hero_card(s, trips_per_stream[s], raw[s], STREAM_COLOR[s], PRODUCT[s],
+              label=STREAM_LABEL.get(s))
     for s in STREAMS_ORDER
 )
+
+# Pre-swap baseline pointer — small line under the hero-row showing the
+# final pre-swap equity for live + shadow, so the historical cumulative
+# isn't lost from view. Only emits if there ARE pre-swap trips.
+def _preswap_equity(name):
+    df = trips_preswap.get(name)
+    if df is None or df.empty:
+        return None
+    return INITIAL_CAPITAL + df["pnl_net"].sum(), len(df)
+
+_pre_live   = _preswap_equity("live")
+_pre_shadow = _preswap_equity("shadow")
+if _pre_live or _pre_shadow:
+    _parts = []
+    if _pre_live:
+        eq, n = _pre_live
+        _parts.append(
+            f'live: <strong>${eq:,.2f}</strong> over {n} trades'
+        )
+    if _pre_shadow:
+        eq, n = _pre_shadow
+        _parts.append(
+            f'shadow: <strong>${eq:,.2f}</strong> over {n} trades'
+        )
+    preswap_note_html = (
+        '<div class="preswap-note">'
+        'Before the 2026-05-14 21:19 EDT swap (cumulative hybrid_v5.1 since '
+        '2026-04-20 go-live): ' + ' · '.join(_parts) +
+        '. The cards above are fresh from the swap; full v5.1 history still '
+        'powers the charts below with a marker at the cutover.'
+        '</div>'
+    )
+else:
+    preswap_note_html = ""
 
 # TOC
 toc_items = "\n".join(
@@ -763,6 +844,11 @@ main > div.inner { padding-left: 28px; }
   border: 1px solid rgba(245,158,11,0.35); }
 .badge-flat { background: rgba(100,116,139,0.15); color: var(--dim);
   border: 1px solid var(--border-2); }
+.preswap-note { margin: -10px 0 24px; padding: 10px 14px;
+  background: rgba(148,163,184,0.06); border-left: 3px solid var(--border-2);
+  border-radius: 0 6px 6px 0; color: var(--muted); font-size: 12px;
+  font-family: ui-monospace, Menlo, monospace; line-height: 1.5; }
+.preswap-note strong { color: var(--text); font-weight: 600; }
 
 /* === Sections === */
 section { margin: 36px 0; scroll-margin-top: 16px; }
@@ -860,6 +946,7 @@ if PUBLIC_MODE:
         '<a href="/office">Office</a>'
         '<a href="/writing">Writing</a>'
         '<a href="/contributors">Contributors</a>'
+        '<a href="/rules">Rules</a>'
         '</div>'
         '</nav>'
     )
@@ -873,9 +960,9 @@ if PUBLIC_MODE:
         '.site-footer .sf-fine{font-size:0.72rem;max-width:600px;margin:1rem auto 0;line-height:1.6}</style>'
         '<footer class="site-footer">'
         '<p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>'
-        '<p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a></p>'
+        '<p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a> &middot; <a href="/rules">Rules</a></p>'
         '<p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>'
-        f'<p class="sf-fine">Snapshot regenerated daily &middot; $1,000 seed since 2026-04-20 (hybrid_v5.1 go-live). Educational experiment, not financial advice. '
+        f'<p class="sf-fine">Snapshot regenerated daily &middot; $1,000 seed since 2026-04-20 (hybrid_v5.1 go-live); v5.3 + shadow1.0 cards anchored from the 2026-05-14 21:19 EDT mode swap. Educational experiment, not financial advice. '
         '<a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>'
         '</footer>'
     )
@@ -924,16 +1011,17 @@ html = f"""<!doctype html>
   <header class="top">
     <h1>{page_h1}</h1>
     {mission_html}
-    <div class="sub">hybrid_v5.1 · SOL sniper (live + shadow) + ETH sniper (paper)</div>
+    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if hook + trailing 0.005/0.004 (--no-grid preserved) · <strong>shadow1.0</strong> = bare hybrid_v5.1 baseline · ETH sniper (paper)</div>
     <div class="meta">{meta_line}</div>
   </header>
 
   <main><div class="inner">
 
     <div class="hero-row">{hero_html}</div>
+    {preswap_note_html}
 
     <section id="kpi">
-      <h2><span class="sn">01</span>Headline KPIs<span class="tag">all v5.1 closed trades</span></h2>
+      <h2><span class="sn">01</span>Headline KPIs<span class="tag">post 2026-05-14 21:19 EDT swap · v5.3 + shadow1.0 + paper</span></h2>
       <div class="lede">PF &gt; 1.0 = profitable. &gt; 1.5 = good. &gt; 2.0 = rare. Max DD is peak-to-trough on the equity curve.</div>
       {colored_df_html(kpi_for_table, pnl_cols=kpi_pnl_cols, index=False)}
     </section>
@@ -982,8 +1070,8 @@ html = f"""<!doctype html>
     </section>
 
     <section id="regime">
-      <h2><span class="sn">08</span>Regime × stream<span class="tag">shadow's primary signal</span></h2>
-      <div class="lede">Shadow exists to test whether the regime-window classifier improves entry quality. Promotion bar: ≥ 30 entries/bucket with ≥ 15pp WR spread (per 2026-05-06 reset memo). Not there yet — this is the diagnostic.</div>
+      <h2><span class="sn">08</span>Regime × stream<span class="tag">live: gated · shadow: baseline</span></h2>
+      <div class="lede">After the 2026-05-14 LIVE↔shadow swap, shadow runs the bare hybrid_v5.1 baseline (no regime gate, no reverse-exit, no grid-what-if). The split lets us measure whether the live-side mode flags actually improve outcomes vs the unmodified strategy. Promotion bar still applies for any new mode flag we may want to A/B.</div>
       <div class="plot">{fig_html(fig_regime, 'fig-regime')}</div>
       {colored_df_html(rg_for_table, pnl_cols=["pnl", "avg"], index=False)}
     </section>

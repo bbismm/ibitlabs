@@ -52,7 +52,7 @@
       .absolute.top-10.right-10.z-20  { display: none !important; }
 
       #root {
-        padding-top: 184px; /* clears site-bar (~60) + mission-bar (~58, bumped to 20px) + OnAirStrip (~56) + 10 gap */
+        padding-top: 244px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~50) + OnAirStrip (~56) + 20 gap */
         padding-right: 400px; /* reserve space for the right rail (leaderboard + ticker, 400px wide) */
         height: 100vh; box-sizing: border-box;
       }
@@ -92,9 +92,62 @@
       #mb-stats .mb-pnl-neg { color: #ff8a8a; }
       #mb-stats .mb-pnl-pos { color: #2ecc71; }
 
-      /* OnAirStrip sits below the new mission-bar; React component sets
-         top: 56 inline, override here so it doesn't collide. */
-      .onair-strip { top: 122px !important; }
+      /* OnAirStrip sits below mission-bar + strategy-row; React component
+         sets top: 56 inline, override here so it doesn't collide. */
+      .onair-strip { top: 178px !important; }
+
+      /* ── Strategy row ──────────────────────────────────────────────────
+         Anchored to the 2026-05-14 21:19 EDT swap. Two pills side by side:
+         left = v5.3 (live: regime_gate + reverse_exit_C + grid_what_if +
+         trailing 0.005, --no-grid kept) → stats[101]; right = shadow1.0
+         (bare hybrid_v5.1 baseline) → stats[102]. Both seeded at $1k for
+         normalized comparison; the mission-bar above shows the real live
+         account balance separately. Polls /api/office-events on the same
+         30s cadence as the mission-bar. ──────────────────────────────── */
+      #strategy-row {
+        position: fixed; top: 122px; left: 0; right: 0;
+        padding: 8px 22px;
+        background: rgba(20, 20, 28, 0.85);
+        border-bottom: 1px solid #2a2a3a;
+        z-index: 99;
+        display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+        font-family: 'SF Mono', Menlo, monospace;
+        font-size: 14px;
+        color: rgba(255,255,255,0.92);
+      }
+      .strat-card {
+        display: flex; align-items: baseline; gap: 10px;
+        padding: 6px 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-left: 3px solid var(--accent);
+        border-radius: 4px;
+        background: rgba(255,255,255,0.02);
+        text-decoration: none; color: inherit;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .strat-card:hover { background: rgba(255,255,255,0.05); }
+      .strat-live   { --accent: #22c55e; }
+      .strat-shadow { --accent: #a855f7; }
+      .strat-name {
+        font-weight: 600; letter-spacing: 0.03em;
+        color: var(--accent);
+      }
+      .strat-equity { font-weight: 600; color: #fff; }
+      .strat-delta { font-size: 13px; opacity: 0.85; }
+      .strat-delta.up   { color: #2ecc71; }
+      .strat-delta.down { color: #ff8a8a; }
+      .strat-delta.flat { color: rgba(255,255,255,0.45); }
+      .strat-meta { font-size: 12px; opacity: 0.7; }
+      .strat-tag {
+        font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+        padding: 2px 6px; border-radius: 3px;
+        background: rgba(255,255,255,0.05);
+        color: rgba(255,255,255,0.65);
+      }
+      .strat-anchor {
+        font-size: 12px; opacity: 0.55;
+        margin-left: auto;
+      }
 
       /* ── Mobile / narrow-viewport adaptation ───────────────────────────
          Three breakpoints, layered:
@@ -125,16 +178,20 @@
           right: 0 !important;
           padding: 8px 14px !important;
           gap: 14px !important;
-          top: 128px !important;
+          top: 196px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
         /* Mission bar: tighter padding on mobile, anchored under the compressed site-bar (~52) */
         #mission-bar { top: 52px; padding: 9px 14px; font-size: 17px; gap: 12px; }
         #mb-track { flex-basis: 200px; min-width: 120px; }
-        /* MobileLeaderBar hardcodes top: 88 in React. With mission-bar inserted
-           AND OnAirStrip + mission-bar both larger now, the cards live
-           below site-bar(~46) + mission-bar(~62) + onair-strip(~84, wraps). */
-        .office-leaderboard-mobile { top: 218px !important; }
+        /* Strategy row: compact on mobile, sits between mission-bar and OnAirStrip. */
+        #strategy-row {
+          top: 122px; padding: 7px 14px; gap: 10px; font-size: 13px;
+        }
+        .strat-anchor { display: none; }
+        /* MobileLeaderBar hardcodes top: 88 in React. Pushed further down to
+           clear strategy-row insertion. */
+        .office-leaderboard-mobile { top: 286px !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -143,10 +200,10 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack everything above the canvas: site-bar (~46) + mission-bar (~62)
-           + OnAirStrip (~84, wraps) + MobileLeaderBar (~250) = ~445 top reservation. */
+        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~64,
+           wraps) + OnAirStrip (~84, wraps) + MobileLeaderBar (~250). */
         #root {
-          padding-top: 464px;
+          padding-top: 528px;
           padding-right: 0;
           padding-bottom: 240px;
         }
@@ -199,6 +256,30 @@
         <span class="mb-sep mb-sep-regime">·</span>
         <span class="mb-regime">regime <strong id="mb-regime">—</strong></span>
       </div>
+    </div>
+
+    <!-- ─ Strategy row ──────────────────────────────────────────────────
+         Two strategy cards anchored to the 2026-05-14 21:19 EDT swap.
+         Both seeded at $1k for normalized comparison; the mission-bar
+         above shows the real live account balance separately. Polled from
+         /api/office-events stats[101] (v5.3) and stats[102] (shadow1.0).
+    -->
+    <div id="strategy-row" aria-live="polite">
+      <a class="strat-card strat-live" href="/lab" title="v5.3 — live, since 2026-05-14 21:19 EDT swap">
+        <span class="strat-name">v5.3</span>
+        <span class="strat-equity" id="sr-v53-equity">$1,000.00</span>
+        <span class="strat-delta flat" id="sr-v53-delta">—</span>
+        <span class="strat-meta"><span id="sr-v53-trades">0</span>t · WR <span id="sr-v53-wr">—</span>%</span>
+        <span class="strat-tag">LIVE</span>
+      </a>
+      <a class="strat-card strat-shadow" href="/lab" title="shadow1.0 — bare hybrid_v5.1 baseline, since 2026-05-14 21:19 EDT swap">
+        <span class="strat-name">shadow1.0</span>
+        <span class="strat-equity" id="sr-sh10-equity">$1,000.00</span>
+        <span class="strat-delta flat" id="sr-sh10-delta">—</span>
+        <span class="strat-meta"><span id="sr-sh10-trades">0</span>t · WR <span id="sr-sh10-wr">—</span>%</span>
+        <span class="strat-tag">SHADOW · paper</span>
+      </a>
+      <span class="strat-anchor">since 2026-05-14 21:19 EDT swap</span>
     </div>
 
     <div id="root"></div>
@@ -322,10 +403,11 @@
         }
 
         // trades + WR come from /api/office-events stats["101"] (strategy_version
-        // filtered to hybrid_v5.1 in pixel_office_bridge.compute_strategy_stats —
-        // same source as the leaderboard). /api/live-status.total_trades and
-        // .win_rate are cross-strategy COUNT(*) including retired breakout_v3.4,
-        // grid_v1, hybrid_v5.0 rows; do not read them here.
+        // filtered to hybrid_v5.1 + post-2026-05-14-swap-anchored in
+        // pixel_office_bridge.compute_strategy_stats — same source as the
+        // leaderboard). /api/live-status.total_trades and .win_rate are
+        // cross-strategy COUNT(*) including retired breakout_v3.4, grid_v1,
+        // hybrid_v5.0 rows; do not read them here.
         function paintV51(stats) {
           var s = stats && stats['101'];
           if (!s) return;
@@ -333,6 +415,42 @@
           if (trEl) trEl.textContent = (s.total_trades != null) ? s.total_trades : 0;
           var wrEl = $('mb-wr');
           if (wrEl) wrEl.textContent = ((Number(s.win_rate) || 0) * 100).toFixed(0);
+        }
+
+        // Strategy row painter — both cards seeded at $1k for normalized
+        // comparison. equity = $1000 + total_pnl (since anchor). Mirrors the
+        // /lab hero-card math in build_report.py:hero_card().
+        function paintStrategyCard(stats, agentId, prefix) {
+          var s = stats && stats[agentId];
+          if (!s) return;
+          var pnl = Number(s.total_pnl) || 0;
+          var equity = 1000 + pnl;
+          var deltaPct = (equity / 1000 - 1) * 100;
+          var eqEl = $(prefix + '-equity');
+          if (eqEl) eqEl.textContent = '$' + equity.toFixed(2);
+          var dEl = $(prefix + '-delta');
+          if (dEl) {
+            dEl.classList.remove('up', 'down', 'flat');
+            if (Math.abs(deltaPct) < 0.005) {
+              dEl.classList.add('flat');
+              dEl.textContent = '—';
+            } else {
+              dEl.classList.add(deltaPct >= 0 ? 'up' : 'down');
+              var sign = deltaPct >= 0 ? '+' : '';
+              dEl.textContent = sign + deltaPct.toFixed(2) + '%';
+            }
+          }
+          var tEl = $(prefix + '-trades');
+          if (tEl) tEl.textContent = (s.total_trades != null) ? s.total_trades : 0;
+          var wEl = $(prefix + '-wr');
+          if (wEl) {
+            var n = Number(s.total_trades) || 0;
+            wEl.textContent = n === 0 ? '—' : ((Number(s.win_rate) || 0) * 100).toFixed(0);
+          }
+        }
+        function paintStrategyRow(stats) {
+          paintStrategyCard(stats, '101', 'sr-v53');
+          paintStrategyCard(stats, '102', 'sr-sh10');
         }
 
         function refresh() {
@@ -348,7 +466,11 @@
 
           fetch('/api/office-events', { cache: 'no-store' })
             .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (d) { if (d) paintV51(d.stats); })
+            .then(function (d) {
+              if (!d) return;
+              paintV51(d.stats);
+              paintStrategyRow(d.stats);
+            })
             .catch(function () { /* swallow */ });
         }
 
@@ -360,7 +482,7 @@
     <style>.site-footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(139,92,246,0.18);color:#9898b0;font-size:0.85rem;font-family:'Inter',-apple-system,sans-serif}.site-footer p{margin:0.4rem 0}.site-footer a{color:#a8a8be;text-decoration:none;transition:color 0.2s}.site-footer a:hover{color:#a78bfa}.site-footer strong{color:#d0d0dc;font-weight:600}.site-footer .sf-row{font-size:0.78rem}.site-footer .sf-fine{font-size:0.72rem;max-width:600px;margin:1rem auto 0;line-height:1.6}</style>
     <footer class="site-footer">
       <p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>
-      <p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a></p>
+      <p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a> &middot; <a href="/rules">Rules</a></p>
       <p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>
       <p class="sf-fine">Educational experiment, not financial advice. Crypto trading involves significant risk. <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>
     </footer>

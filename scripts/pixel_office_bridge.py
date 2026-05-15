@@ -210,6 +210,22 @@ STRATEGY_VERSION_FILTER: dict[int, str | None] = {
     103: "hybrid_v5.1",
     106: "hybrid_v5.1",
 }
+# Per-strategy data anchor (unix seconds). Closed trades older than this are
+# excluded from the leaderboard / mission-bar stats. Absent = full history.
+# 2026-05-14 21:19 EDT (= 2026-05-15 01:19:00 UTC) swap: live absorbed
+# regime_gate + reverse_exit_C + grid_what_if + trailing 0.005 (--no-grid
+# kept) and was relabeled v5.3; shadow became the bare hybrid_v5.1 baseline
+# and was relabeled shadow1.0. See project_swap_live_shadow_2026_05_14.md.
+STRATEGY_ANCHOR_TS: dict[int, int] = {
+    101: int(datetime(2026, 5, 15, 1, 19, 0, tzinfo=timezone.utc).timestamp()),
+    102: int(datetime(2026, 5, 15, 1, 19, 0, tzinfo=timezone.utc).timestamp()),
+}
+# Display label for the strategy card on /office + /lab. Falls back to the
+# agent's name if absent.
+STRATEGY_LABEL: dict[int, str] = {
+    101: "v5.3",
+    102: "shadow1.0",
+}
 STATS_REFRESH_TICKS = 8  # bridge ticks at 1.5s → recompute stats every ~12s
 _stats_cache: dict = {}
 _open_positions_cache: dict = {}
@@ -376,8 +392,18 @@ def compute_strategy_stats() -> dict:
         if not db_path.exists():
             continue
         strat = STRATEGY_VERSION_FILTER.get(agent_id)
-        strat_clause = " AND strategy_version = ?" if strat else ""
-        strat_args: tuple = (strat,) if strat else ()
+        anchor_ts = STRATEGY_ANCHOR_TS.get(agent_id)
+        label = STRATEGY_LABEL.get(agent_id)
+        extra_clauses: list[str] = []
+        extra_args: list = []
+        if strat:
+            extra_clauses.append("strategy_version = ?")
+            extra_args.append(strat)
+        if anchor_ts is not None:
+            extra_clauses.append("timestamp >= ?")
+            extra_args.append(anchor_ts)
+        where_extra = "".join(f" AND {c}" for c in extra_clauses)
+        extra_args_tuple = tuple(extra_args)
         try:
             conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=2.0)
             cur = conn.cursor()
@@ -388,9 +414,9 @@ def compute_strategy_stats() -> dict:
                        COALESCE(SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END), 0),
                        COALESCE(SUM(CASE WHEN pnl < 0 THEN 1 ELSE 0 END), 0)
                 FROM trade_log
-                WHERE exit_price IS NOT NULL{strat_clause}
+                WHERE exit_price IS NOT NULL{where_extra}
                 """,
-                strat_args,
+                extra_args_tuple,
             )
             total_n, total_pnl, win_n, loss_n = cur.fetchone()
             cur.execute(
@@ -399,20 +425,20 @@ def compute_strategy_stats() -> dict:
                        COALESCE(SUM(pnl), 0)
                 FROM trade_log
                 WHERE exit_price IS NOT NULL
-                  AND timestamp >= ?{strat_clause}
+                  AND timestamp >= ?{where_extra}
                 """,
-                (utc_midnight, *strat_args),
+                (utc_midnight, *extra_args_tuple),
             )
             today_n, today_pnl = cur.fetchone()
             cur.execute(
                 f"""
                 SELECT pnl, timestamp
                 FROM trade_log
-                WHERE exit_price IS NOT NULL{strat_clause}
+                WHERE exit_price IS NOT NULL{where_extra}
                 ORDER BY timestamp DESC
                 LIMIT 1
                 """,
-                strat_args,
+                extra_args_tuple,
             )
             last_row = cur.fetchone()
             conn.close()
@@ -421,7 +447,7 @@ def compute_strategy_stats() -> dict:
             continue
 
         win_rate = (win_n / total_n) if total_n else 0.0
-        out[str(agent_id)] = {
+        entry: dict = {
             "total_trades": total_n,
             "total_pnl": round(total_pnl, 4),
             "today_trades": today_n,
@@ -432,6 +458,11 @@ def compute_strategy_stats() -> dict:
             "last_pnl": round(last_row[0], 4) if last_row else None,
             "last_trade_ts": int(last_row[1] * 1000) if last_row else None,
         }
+        if label is not None:
+            entry["label"] = label
+        if anchor_ts is not None:
+            entry["anchor_ts"] = anchor_ts * 1000  # ms for frontend consistency
+        out[str(agent_id)] = entry
     return out
 
 
