@@ -221,7 +221,8 @@ def sparkline_svg(values, color, width=240, height=44):
 
 
 def hero_card(stream, trips_df, raw_df, color, product, label=None,
-              preswap_summary=None, mtm=None):
+              preswap_summary=None, mtm=None,
+              live_snapshot=None, preswap_v51_raw=0):
     """preswap_summary, when given, is (equity_float, trade_count_int) of the
     pre-2026-05-14-swap hybrid_v5.1 history for this stream. Rendered as a
     small footer line inside the card so the anchored equity has its
@@ -234,7 +235,16 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
     When active, its unrealized is added to equity (MTM convention) and a
     detailed "⚡ OPEN X @ entry → current, ±$Y" badge replaces the plain
     "OPEN long/short" placeholder so the card reflects actual position
-    value, not just realized PnL."""
+    value, not just realized PnL.
+
+    live_snapshot, when given (only for the live stream), is the full
+    /api/live-status payload. When present, the card switches to REAL-ACCOUNT
+    anchoring (Bonny's directive 2026-05-15): equity = api.balance; delta is
+    re-framed as "since swap" using strategy_pnl_v51 / swap_balance; trade
+    count = total_trades_v51 − preswap_v51_raw (raw close-row count for
+    pre-swap v5.1 lineage, passed in by caller). preswap-footer gains a
+    second line surfacing the real-account-at-swap so the synthetic-v5.1
+    vs real-Coinbase gap is visible, not hidden."""
     n = len(trips_df)
     display_name = label or stream
     realized_net = trips_df["pnl_net"].sum() if n > 0 else 0.0
@@ -255,6 +265,8 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
 
     equity = INITIAL_CAPITAL + realized_net + unrealized
     delta_pct = (equity / INITIAL_CAPITAL - 1) * 100
+    delta_anchor_label = "vs $1,000"
+    swap_balance = None
     if n == 0:
         spark_html = ""
         last_close = "—"
@@ -264,6 +276,34 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
             eq_series.append(equity)  # MTM tip
         spark_html = sparkline_svg(eq_series, color)
         last_close = trips_df["exit_dt"].max().strftime("%m-%d %H:%M")
+
+    # Live-stream real-account override — Bonny directive 2026-05-15.
+    # v5.3 hero shows actual Coinbase balance (api.balance) and re-frames the
+    # delta as "since swap" using strategy_pnl_v51 + unrealized over the real
+    # account balance at SWAP_TS. Trade count uses total_trades_v51 minus the
+    # pre-swap raw close-row count so post-swap closes (incl. carryover exits
+    # that build_round_trips drops as orphans) are surfaced. Sparkline becomes
+    # a 2-point baseline → current curve so the +/- since swap is visible.
+    if live_snapshot is not None and stream == "live":
+        api_balance = float(live_snapshot.get("balance") or 0)
+        api_strat_pnl = float(live_snapshot.get("strategy_pnl_v51") or 0)
+        api_unrealized = float(live_snapshot.get("unrealized_pnl") or 0)
+        api_total_v51 = int(live_snapshot.get("total_trades_v51") or 0)
+        swap_balance = api_balance - api_strat_pnl - api_unrealized
+        equity = api_balance
+        delta_pct = ((api_strat_pnl + api_unrealized) / swap_balance * 100
+                     if swap_balance > 0 else 0.0)
+        delta_anchor_label = "since swap"
+        n = max(api_total_v51 - preswap_v51_raw, 0)
+        if swap_balance > 0:
+            spark_html = sparkline_svg([swap_balance, equity], color)
+        # Surface latest close timestamp from the API (covers the carryover
+        # trade that build_round_trips drops as an orphan exit).
+        watermark = live_snapshot.get("source_watermark") or {}
+        latest_ts = watermark.get("latest_trade_ts")
+        if n > 0 and latest_ts:
+            last_close = pd.Timestamp(int(latest_ts), unit="s", tz="UTC") \
+                .strftime("%m-%d %H:%M")
 
     badges = []
     if mtm_active:
@@ -309,10 +349,16 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
     preswap_html = ""
     if preswap_summary is not None:
         pre_eq, pre_n = preswap_summary
+        real_swap_html = (
+            f'<span class="hero-preswap-real"> · actual account at swap: '
+            f'<strong>${swap_balance:,.2f}</strong></span>'
+            if swap_balance is not None else ""
+        )
         preswap_html = (
             f'  <div class="hero-preswap">'
-            f'    pre-swap baseline (v5.1): '
+            f'    pre-swap baseline (v5.1 strategy): '
             f'<strong>${pre_eq:,.2f}</strong> over {pre_n} trades'
+            f'{real_swap_html}'
             f'  </div>'
         )
 
@@ -324,7 +370,7 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
         f'  </div>'
         f'  <div class="hero-equity">${equity:,.2f}</div>'
         f'  <div class="hero-delta {delta_class}">'
-        f'    {delta_sign}{delta_pct:.2f}% <span class="dim">vs $1,000</span>'
+        f'    {delta_sign}{delta_pct:.2f}% <span class="dim">{delta_anchor_label}</span>'
         f'  </div>'
         f'  <div class="hero-spark">{spark_html}</div>'
         f'  <div class="hero-meta">'
@@ -336,12 +382,14 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
     )
 
 
-def retired_card(label, trips_df, color, product, window_label):
+def retired_card(label, trips_df, color, product, window_label, reason=None):
     """Compact frozen-historical card for retired strategies. Smaller than
     hero_card, muted style, no sparkline / open-position badge / pre-swap
     footer. Equity = $1k + net pnl summed over the entire trips_df (which is
     already pre-swap-scoped by the caller). The window_label describes the
-    date range these stats cover, e.g. "2026-04-20 → 2026-05-14 swap"."""
+    date range these stats cover, e.g. "2026-04-20 → 2026-05-14 swap". The
+    reason, when given, is one short sentence explaining WHY the strategy
+    retired (e.g. shadow's variant Y outperformed and was promoted to LIVE)."""
     n = len(trips_df)
     if n == 0:
         equity = INITIAL_CAPITAL
@@ -353,6 +401,9 @@ def retired_card(label, trips_df, color, product, window_label):
         last_close = trips_df["exit_dt"].max().strftime("%Y-%m-%d")
     delta_class = "up" if delta_pct >= 0 else "down"
     delta_sign  = "+" if delta_pct >= 0 else ""
+    reason_html = (
+        f'  <div class="retired-reason">{reason}</div>' if reason else ""
+    )
     return (
         f'<div class="retired-card" style="--accent: {color}">'
         f'  <div class="retired-top">'
@@ -368,6 +419,7 @@ def retired_card(label, trips_df, color, product, window_label):
         f'    <span class="retired-dim">·</span>'
         f'    <span>{product}</span>'
         f'  </div>'
+        f'{reason_html}'
         f'  <div class="retired-window">{window_label}</div>'
         f'</div>'
     )
@@ -448,19 +500,29 @@ def _load_bridge_open_positions():
         return {}
 
 
-def _fetch_live_position():
+def _fetch_live_snapshot():
+    """Fetch the full /api/live-status payload. Returns dict or None.
+    Used for v5.3 hero card real-account anchoring (balance, strategy_pnl_v51,
+    total_trades_v51, etc.) — see hero_card live_snapshot branch.
+    The MTM-only position is extracted in a separate helper below."""
     try:
         req = urllib.request.Request(
             "https://www.ibitlabs.com/api/live-status",
             headers={"User-Agent": "ibitlabs-build-report/1.0"},
         )
         with urllib.request.urlopen(req, timeout=5) as r:
-            data = json.loads(r.read())
-        pos = data.get("position") or {}
-        return pos if pos.get("active") else None
+            return json.loads(r.read())
     except (urllib.error.URLError, ValueError, KeyError, OSError) as e:
-        print(f"  live-status fetch failed, v5.3 MTM skipped: {e}", file=sys.stderr)
+        print(f"  live-status fetch failed, v5.3 real-balance skipped: {e}",
+              file=sys.stderr)
         return None
+
+
+def _active_position(snapshot):
+    if not snapshot:
+        return None
+    pos = snapshot.get("position") or {}
+    return pos if pos.get("active") else None
 
 
 # stream → bridge agent_id (None = no bridge entry, use live-status instead)
@@ -468,7 +530,8 @@ STREAM_AGENT_ID = {"live": None, "shadow": "102", "paper": "103"}
 
 print("loading open positions ...")
 _bridge_open = _load_bridge_open_positions()
-_live_open = _fetch_live_position()
+_live_snapshot = _fetch_live_snapshot()
+_live_open = _active_position(_live_snapshot)
 
 def _mtm_for(stream):
     if stream == "live":
@@ -847,9 +910,25 @@ def _preswap_equity(name):
 
 _preswap_by_stream = {s: _preswap_equity(s) for s in ANCHORED_STREAMS}
 
+# Pre-swap raw close-row count per stream (used by hero_card's live-snapshot
+# branch to derive post-swap close count: total_trades_v51 − this value).
+# Raw rows include orphan exits that build_round_trips drops, so this matches
+# /api/live-status's total_trades_v51 semantics exactly.
+def _preswap_v51_raw_closes(name):
+    df = raw_preswap.get(name)
+    if df is None or df.empty:
+        return 0
+    return int(df["exit_price"].notna().sum())
+
+_preswap_v51_raw_by_stream = {
+    s: _preswap_v51_raw_closes(s) for s in ANCHORED_STREAMS
+}
+
 # Build the hero card row — v5.3 + shadow1.0 use POST-SWAP slices so the
 # strategy-specific equity + open-position badge reflects the new bundle
 # only; paper stays full-history. KPI table + charts below use cumulative.
+# The live stream additionally gets live_snapshot to re-anchor equity to
+# real Coinbase balance (Bonny directive 2026-05-15).
 def _hero_trips(s):
     return trips_postswap.get(s, trips_per_stream[s]) if s in ANCHORED_STREAMS \
         else trips_per_stream[s]
@@ -861,7 +940,9 @@ hero_html = "\n".join(
     hero_card(s, _hero_trips(s), _hero_raw(s), STREAM_COLOR[s], PRODUCT[s],
               label=STREAM_LABEL.get(s),
               preswap_summary=_preswap_by_stream.get(s),
-              mtm=_mtm_for(s))
+              mtm=_mtm_for(s),
+              live_snapshot=(_live_snapshot if s == "live" else None),
+              preswap_v51_raw=_preswap_v51_raw_by_stream.get(s, 0))
     for s in STREAMS_ORDER
 )
 
@@ -875,6 +956,12 @@ RETIRED_WINDOW = {
     "live":   "2026-04-20 go-live → 2026-05-14 21:19 EDT swap",
     "shadow": "2026-05-07 reset → 2026-05-14 21:19 EDT swap",
 }
+RETIRED_REASON = {
+    "live":   ("Replaced by v5.3 at the swap — shadow's variant Y "
+               "outperformed (+13.54% vs −1.32%) and was promoted to LIVE."),
+    "shadow": ("Promoted to v5.3 LIVE at the swap — variant Y "
+               "absorbed into the live config."),
+}
 retired_html_parts = []
 for s in ("live", "shadow"):
     df = trips_preswap.get(s)
@@ -882,7 +969,7 @@ for s in ("live", "shadow"):
         continue
     retired_html_parts.append(
         retired_card(RETIRED_LABEL[s], df, STREAM_COLOR[s], PRODUCT[s],
-                     RETIRED_WINDOW[s])
+                     RETIRED_WINDOW[s], reason=RETIRED_REASON.get(s))
     )
 retired_row_html = (
     f'<div class="retired-row">{"".join(retired_html_parts)}</div>'
@@ -1022,6 +1109,8 @@ main > div.inner { padding-left: 28px; }
   color: var(--muted); font-size: 11.5px;
   font-family: ui-monospace, Menlo, monospace; line-height: 1.45; }
 .hero-preswap strong { color: var(--text); font-weight: 600; }
+.hero-preswap-real { color: var(--dim); }
+.hero-preswap-real strong { color: var(--muted); }
 
 /* === Retired strategy cards === */
 .retired-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
@@ -1051,7 +1140,9 @@ main > div.inner { padding-left: 28px; }
 .retired-delta.up   { color: var(--green); }
 .retired-delta.down { color: var(--danger); }
 .retired-dim { opacity: 0.4; }
-.retired-window { font-size: 10.5px; color: var(--dim); margin-top: 6px;
+.retired-reason { font-size: 11.5px; color: var(--muted); margin-top: 7px;
+  font-family: ui-monospace, Menlo, monospace; line-height: 1.45; }
+.retired-window { font-size: 10.5px; color: var(--dim); margin-top: 4px;
   font-family: ui-monospace, Menlo, monospace; line-height: 1.4; }
 
 /* === Sections === */
