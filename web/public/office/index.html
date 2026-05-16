@@ -212,26 +212,32 @@
       }
       @media (max-width: 768px) {
         /* OnAirStrip: full width, no right-rail offset, more compact.
-           Pushed below the mission-bar (site-bar ~46 + mission-bar ~62
-           when stats wrap to 2nd row at narrow widths). */
+           Pushed below mission-bar + the (now slim) strategy-row. */
         .onair-strip {
           right: 0 !important;
           padding: 8px 14px !important;
           gap: 14px !important;
-          top: 270px !important;
+          top: 165px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
-        /* Mission bar: tighter padding on mobile, anchored under the compressed site-bar (~52) */
-        #mission-bar { top: 52px; padding: 9px 14px; font-size: 17px; gap: 12px; }
-        #mb-track { flex-basis: 200px; min-width: 120px; }
-        /* Strategy row: compact on mobile, sits between mission-bar and OnAirStrip. */
+        /* Mission bar on mobile: anchored right under site-bar (~41 at
+           375px; site-bar's own font/padding rules apply below).
+           Tighter font so stats fit ≤2 rows at narrow widths (WR/regime
+           hidden at ≤640px below). */
+        #mission-bar { top: 41px; padding: 9px 14px; font-size: 15px; gap: 10px; }
+        #mb-track { flex-basis: 100%; min-width: 0; }
+        /* Strategy row: hide the 2 retired pills on mobile — only the
+           live v5.3 card stays. The retired cards link to /lab via the
+           same href, so no info is lost. Without this, 3 cards stack to
+           ~178px and overlap the mission-bar. */
+        .strat-card.strat-retired { display: none; }
         #strategy-row {
-          top: 122px; padding: 7px 14px; gap: 10px; font-size: 13px;
+          top: 108px; padding: 7px 14px; gap: 10px; font-size: 13px;
         }
         .strat-anchor { display: none; }
-        /* MobileLeaderBar hardcodes top: 88 in React. Strategy-row on
-           mobile = v5.3 (2-line) + 2 retired (1-line) stacked. */
-        .office-leaderboard-mobile { top: 360px !important; }
+        /* MobileLeaderBar hardcodes top: 88 in React. With retired pills
+           hidden the strategy-row is now just v5.3 (~52px). */
+        .office-leaderboard-mobile { top: 225px !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -240,11 +246,11 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack: site-bar (~46) + mission-bar (~62) + strategy-row (~150,
-           v5.3 2-line + 2 retired 1-line stacked) + OnAirStrip (~84,
-           wraps) + MobileLeaderBar (~250). */
+        /* Stack on mobile: site-bar (~41) + mission-bar (~62, stats wrap
+           1 row at 375px) + strategy-row (~52, v5.3 only — retired
+           hidden) + OnAirStrip (~56) + MobileLeaderBar (~250). */
         #root {
-          padding-top: 602px;
+          padding-top: 480px;
           padding-right: 0;
           padding-bottom: 240px;
         }
