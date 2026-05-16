@@ -9,8 +9,8 @@
     <meta property="og:description" content="Six agents in a pixel-art office. Real trading data, real supervisors, public supervision of the $1k → $10k experiment." />
     <meta property="og:image" content="/icon-512.png" />
     <title>Watch the lab live · iBitLabs</title>
-    <script type="module" crossorigin src="./assets/index-CL4RNI_D.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-OsnrIge2.css">
+    <script type="module" crossorigin src="./assets/index-e0MnCve2.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DoBzFPeH.css">
     <style>
       :root { color-scheme: dark; }
       html, body { margin: 0; padding: 0; height: 100%; }
@@ -94,19 +94,27 @@
 
       /* OnAirStrip sits below mission-bar + strategy-row; React component
          sets top: 56 inline, override here so it doesn't collide.
-         After shadow1.0 retirement 2026-05-15, strategy-row holds 3 pills
-         (v5.3 active 2-line + 2 retired 1-line) — fits one row at 1280px,
-         so OnAirStrip can sit at 192 again. */
-      .onair-strip { top: 192px !important; }
+         After 2026-05-15 shadow rebuild, strategy-row holds 4 pills (3
+         active 2-line + 1 retired 1-line). On a ~1280-1400px viewport with
+         the right-rail eating ~400px, the row wraps to 2 lines (~122px
+         tall); OnAirStrip absorbs the wrap via top: 250px. At ≥1920px
+         everything fits in one row; the extra gap is harmless. */
+      .onair-strip { top: 250px !important; }
 
       /* ── Strategy row ──────────────────────────────────────────────────
-         Anchored to the 2026-05-14 21:19 EDT swap. Two pills side by side:
-         left = v5.3 (live: regime_gate + reverse_exit_C + grid_what_if +
-         trailing 0.005, --no-grid kept) → stats[101]; right = shadow1.0
-         (bare hybrid_v5.1 baseline) → stats[102]. Both seeded at $1k for
-         normalized comparison; the mission-bar above shows the real live
-         account balance separately. Polls /api/office-events on the same
-         30s cadence as the mission-bar. ──────────────────────────────── */
+         Anchored to the 2026-05-14 21:19 EDT swap. Three active pills + 1
+         retired pre-swap pill:
+           • v5.3 LIVE (SOL, regime_gate + reverse_exit_C + grid_what_if +
+             trailing 0.005, --no-grid)              → stats[101]
+           • shadow_no_rev PAPER (SOL, v5.3 minus reverse_exit_C —
+             attribution test for Mode C)            → stats[102]
+           • v5.3-ETH PAPER (ETH, same v5.3 bundle — cross-symbol test)
+                                                     → stats[107]
+           • v5.1 live RETIRED (pre-swap reference, static)
+         All active pills seeded at $1k for normalized comparison; the
+         mission-bar above shows the real live account balance separately.
+         Polls /api/office-events on the same 30s cadence as the mission-bar.
+         ──────────────────────────────────────────────────────────────── */
       #strategy-row {
         position: fixed; top: 122px; left: 0; right: 0;
         padding: 8px 22px;
@@ -279,7 +287,7 @@
         <a href="/">← iBitLabs</a>
         &nbsp;·&nbsp;
         <span class="live-dot"></span><strong>The Office</strong>
-        <span class="sub">&nbsp;6 agents · polls every 2s</span>
+        <span class="sub">&nbsp;7 agents · polls every 2s</span>
       </span>
       <span class="sub">$1k → $10k experiment · <a href="/writing">read the story →</a></span>
     </div>
@@ -309,13 +317,15 @@
     </div>
 
     <!-- ─ Strategy row ──────────────────────────────────────────────────
-         Two strategy cards anchored to the 2026-05-14 21:19 EDT swap.
-         Both seeded at $1k for normalized comparison; the mission-bar
+         Three active strategy cards + one retired pre-swap reference.
+         All active seeded at $1k for normalized comparison; the mission-bar
          above shows the real live account balance separately. Polled from
-         /api/office-events stats[101] (v5.3) and stats[102] (shadow1.0).
+         /api/office-events stats[101] (v5.3 live), stats[102]
+         (shadow_no_rev — attribution test), stats[107] (v5.3-ETH —
+         cross-symbol test). v5.1 live retired card is static.
     -->
     <div id="strategy-row" aria-live="polite">
-      <a class="strat-card strat-live" href="/lab" title="v5.3 — live, since 2026-05-14 21:19 EDT swap. Bundle: regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005, --no-grid kept.">
+      <a class="strat-card strat-live" href="/lab" title="v5.3 — live on SOL, since 2026-05-14 21:19 EDT swap. Bundle: regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005, --no-grid kept.">
         <span class="strat-name">v5.3</span>
         <span class="strat-equity" id="sr-v53-equity">$1,000.00</span>
         <span class="strat-delta flat" id="sr-v53-delta">—</span>
@@ -324,18 +334,27 @@
         <span class="strat-open" id="sr-v53-open" hidden></span>
         <span class="strat-preswap">↳ pre-swap (v5.1): $986.84 / 17t</span>
       </a>
+      <a class="strat-card strat-shadow" href="/lab" title="shadow_no_rev — attribution shadow, paper, since 2026-05-15. Clone of LIVE v5.3 with SNIPER_REVERSE_EXIT=0. Tests whether Mode C is the #1 PnL driver. SOL, same regime gate as live. Review n≥30 or 2026-06-15.">
+        <span class="strat-name">shadow_no_rev</span>
+        <span class="strat-equity" id="sr-norev-equity">$1,000.00</span>
+        <span class="strat-delta flat" id="sr-norev-delta">—</span>
+        <span class="strat-meta"><span id="sr-norev-trades">0</span>t · WR <span id="sr-norev-wr">—</span>%</span>
+        <span class="strat-tag">PAPER</span>
+        <span class="strat-open" id="sr-norev-open" hidden></span>
+      </a>
+      <a class="strat-card strat-shadow" href="/lab" title="v5.3-ETH — cross-symbol shadow, paper, since 2026-05-15. Same v5.3 bundle as live but on ETH instead of SOL. Tests whether the v5.3 stack generalizes off SOL.">
+        <span class="strat-name">v5.3-ETH</span>
+        <span class="strat-equity" id="sr-eth53-equity">$1,000.00</span>
+        <span class="strat-delta flat" id="sr-eth53-delta">—</span>
+        <span class="strat-meta"><span id="sr-eth53-trades">0</span>t · WR <span id="sr-eth53-wr">—</span>%</span>
+        <span class="strat-tag">PAPER</span>
+        <span class="strat-open" id="sr-eth53-open" hidden></span>
+      </a>
       <a class="strat-card strat-live strat-retired" href="/lab" title="v5.1 live — retired at 2026-05-14 21:19 EDT swap, succeeded by v5.3. Frozen 2026-04-20 → 2026-05-14.">
         <span class="strat-name">v5.1 live</span>
         <span class="strat-equity">$986.84</span>
         <span class="strat-delta down">−1.32%</span>
         <span class="strat-meta">17t · WR 76%</span>
-        <span class="strat-tag">RETIRED</span>
-      </a>
-      <a class="strat-card strat-shadow strat-retired" href="/lab" title="v5.1 shadow — pre-swap shadow lineage (regime+reverse_exit+grid_what_if+trailing 0.005, --no-grid). Features promoted into v5.3 at 2026-05-14 21:19 EDT swap. Frozen 2026-05-07 → 2026-05-14.">
-        <span class="strat-name">v5.1 shadow</span>
-        <span class="strat-equity">$1,135.42</span>
-        <span class="strat-delta up">+13.54%</span>
-        <span class="strat-meta">23t · WR 78%</span>
         <span class="strat-tag">RETIRED</span>
       </a>
       <span class="strat-anchor">since 2026-05-14 21:19 EDT swap</span>
@@ -477,18 +496,18 @@
         }
 
         // Strategy row painter — reads the nested `.anchored` sub-block
-        // (post-2026-05-14-swap data) so the v5.3 / shadow1.0 pills show
-        // strategy-specific stats. Falls back to top-level for resilience
-        // if anchored is ever absent (e.g. mid-deploy). Both cards seeded
-        // at $1k for normalized comparison.
+        // (post-anchor data) so each card shows strategy-specific stats.
+        // Falls back to top-level for resilience if anchored is ever absent
+        // (e.g. mid-deploy). All active cards seeded at $1k for normalized
+        // comparison.
         //
-        // Equity = $1000 + total_pnl (realized closed-trade NET, since the
-        // 2026-05-14 swap) + unrealized open-position MTM (when present).
+        // Equity = $1000 + total_pnl (realized closed-trade NET since
+        // strategy anchor) + unrealized open-position MTM (when present).
         // The MTM source differs per agent: live (101) reads /api/live-status
-        // position.pnl_usd; shadow (102) reads /api/office-events
-        // open_positions[102].unrealized_pnl. When an open position exists
-        // the .strat-open subline shows the position detail in orange (or
-        // green if unrealized > 0).
+        // position.pnl_usd; shadow_no_rev (102) and v5.3-ETH (107) read
+        // /api/office-events open_positions[id].unrealized_pnl. When an open
+        // position exists the .strat-open subline shows the position detail
+        // in orange (or green if unrealized > 0).
         function _normalizeMtm(mtm) {
           // Normalize the differing field names between /api/live-status
           // position {pnl_usd, pnl_pct} and bridge open_positions
@@ -564,13 +583,15 @@
         }
         function paintStrategyRow(eventsData, liveStatus) {
           var stats = (eventsData && eventsData.stats) || {};
+          var openPos = (eventsData && eventsData.open_positions) || {};
           // Live (101) MTM lives on /api/live-status (real-time tick via
           // Coinbase spot in the Cloudflare worker), not on bridge's slower
-          // open_positions which only covers paper agents. shadow1.0 (102)
-          // was retired 2026-05-15; bridge still emits stats[102] but the
-          // active pill is dropped — v5.1 shadow retired card preserves the
-          // pre-swap lineage.
+          // open_positions which only covers paper agents. Paper shadows
+          // (102 shadow_no_rev, 107 v5.3-ETH) read MTM from
+          // /api/office-events open_positions[id].
           paintStrategyCard(stats, '101', 'sr-v53', liveStatus && liveStatus.position);
+          paintStrategyCard(stats, '102', 'sr-norev', openPos['102']);
+          paintStrategyCard(stats, '107', 'sr-eth53', openPos['107']);
         }
 
         function refresh() {

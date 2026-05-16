@@ -12,11 +12,14 @@ reading for Read) for a few seconds before settling back to idle.
 Phase A.0 agent inventory (all confidential ones — wallet_sniper, polymarket
 — deliberately excluded):
 
-  sniper-live      ← ~/ibitlabs/audit_export/sniper-v5.1.realtime.receipt.jsonl
-  sniper-shadow    ← ~/ibitlabs/audit_export/sniper-v5.1-shadow.realtime.receipt.jsonl
-  sniper-eth       ← ~/ibitlabs/logs/sniper_eth_paper_launchd.log
-  rule-engine      ← ~/ibitlabs/audit_export/rule-engine.realtime.receipt.jsonl  (supervisor #2)
-  ghost-watchdog   ← ~/ibitlabs/logs/ghost_watchdog.log                          (supervisor #1)
+  sniper-live          ← ~/ibitlabs/audit_export/sniper-v5.1.realtime.receipt.jsonl
+  sniper-shadow        ← ~/ibitlabs/audit_export/sniper-v5.1-shadow_no_rev.realtime.receipt.jsonl
+                          (attribution shadow: v5.3 minus reverse_exit_C; live since 2026-05-15)
+  sniper-shadow-eth-v53 ← ~/ibitlabs/audit_export/sniper-v5.1-shadow_eth_v53.realtime.receipt.jsonl
+                          (cross-symbol shadow: v5.3 on ETH; live since 2026-05-15)
+  sniper-eth           ← ~/ibitlabs/logs/sniper_eth_paper_launchd.log
+  rule-engine          ← ~/ibitlabs/audit_export/rule-engine.realtime.receipt.jsonl  (supervisor #2)
+  ghost-watchdog       ← ~/ibitlabs/logs/ghost_watchdog.log                          (supervisor #1)
 
 Open VS Code at  ~/ibitlabs/pixel-office  to see the office.
 
@@ -84,15 +87,19 @@ AGENTS = [
         "default_severity": "info",
     },
     {
+        # Slot 102 was shadow1.0 (bare hybrid_v5.1) until 2026-05-15; that bot
+        # retired and the slot was re-pointed to shadow_no_rev — a clone of
+        # LIVE v5.3 with SNIPER_REVERSE_EXIT=0, testing whether Mode C is the
+        # #1 PnL driver. SOL, paper mode, same regime gate as live.
         "name": "sniper-shadow",
         "public_id": 102,
         "source_type": "receipt_chain",
-        "source_path": HOME / "ibitlabs/audit_export/sniper-v5.1-shadow.realtime.receipt.jsonl",
+        "source_path": HOME / "ibitlabs/audit_export/sniper-v5.1-shadow_no_rev.realtime.receipt.jsonl",
         "kind_map": {
-            "claim":     ("Bash", "shadow: paper trade",  "info"),
-            "verified":  ("Read", "shadow: paper fill",   "info"),
-            "anchor":    ("Read", "shadow: anchor",       "info"),
-            "heartbeat": ("Read", "shadow: heartbeat",    "info"),
+            "claim":     ("Bash", "shadow_no_rev: paper trade",  "info"),
+            "verified":  ("Read", "shadow_no_rev: paper fill",   "info"),
+            "anchor":    ("Read", "shadow_no_rev: anchor",       "info"),
+            "heartbeat": ("Read", "shadow_no_rev: heartbeat",    "info"),
         },
         "default_tool": "Read",
         "default_severity": "info",
@@ -157,6 +164,25 @@ AGENTS = [
         "default_tool": "Read",
         "default_severity": "info",
     },
+    {
+        # Cross-symbol shadow: v5.3 strategy (same ENV as LIVE: regime gate +
+        # reverse_exit_C + grid_what_if + trailing 0.005, --no-grid) but on
+        # ETH instead of SOL. Tests whether the v5.3 bundle generalizes off
+        # SOL or is symbol-specific. Paper mode, instance `shadow_eth_v53`,
+        # live since 2026-05-15. Public id 107 (104-106 already taken).
+        "name": "sniper-shadow-eth-v53",
+        "public_id": 107,
+        "source_type": "receipt_chain",
+        "source_path": HOME / "ibitlabs/audit_export/sniper-v5.1-shadow_eth_v53.realtime.receipt.jsonl",
+        "kind_map": {
+            "claim":     ("Bash", "shadow_eth_v53: paper trade",  "info"),
+            "verified":  ("Read", "shadow_eth_v53: paper fill",   "info"),
+            "anchor":    ("Read", "shadow_eth_v53: anchor",       "info"),
+            "heartbeat": ("Read", "shadow_eth_v53: heartbeat",    "info"),
+        },
+        "default_tool": "Read",
+        "default_severity": "info",
+    },
 ]
 
 
@@ -170,6 +196,7 @@ PUBLIC_WHITELIST: frozenset[str] = frozenset(
     {
         "sniper-live",
         "sniper-shadow",
+        "sniper-shadow-eth-v53",
         "sniper-eth",
         "sniper-sideways-paper",
         "rule-engine",
@@ -195,10 +222,11 @@ _public_event_seq = 0
 # (rule_engine / ghost_watchdog) intentionally have no entry — they don't
 # trade and don't show on the leaderboard.
 STRATEGY_DB_PATHS: dict[int, Path] = {
-    101: HOME / "ibitlabs/sol_sniper.db",                    # sniper-live
-    102: HOME / "ibitlabs/sol_sniper_shadow.db",             # sniper-shadow
-    103: HOME / "ibitlabs/sol_sniper_eth_paper.db",          # sniper-eth
+    101: HOME / "ibitlabs/sol_sniper.db",                    # sniper-live (v5.3, SOL)
+    102: HOME / "ibitlabs/sol_sniper_shadow_no_rev.db",      # sniper-shadow (attribution: v5.3 -rev_C, SOL)
+    103: HOME / "ibitlabs/sol_sniper_eth_paper.db",          # sniper-eth (multi-symbol, ETH)
     106: HOME / "ibitlabs/sol_sniper_sideways_paper.db",     # sniper-sideways-paper (H4)
+    107: HOME / "ibitlabs/sol_sniper_shadow_eth_v53.db",     # sniper-shadow-eth-v53 (cross-symbol: v5.3, ETH)
 }
 # Without this filter, leaderboard SUM(pnl) mashes every strategy_version ever
 # written to a db (breakout_v3.4 + grid_v1 + hybrid_v5.0 + hybrid_v5.1, etc).
@@ -209,6 +237,7 @@ STRATEGY_VERSION_FILTER: dict[int, str | None] = {
     102: "hybrid_v5.1",
     103: "hybrid_v5.1",
     106: "hybrid_v5.1",
+    107: "hybrid_v5.1",
 }
 # Per-strategy data anchor (unix seconds). Closed trades older than this are
 # excluded from the leaderboard / mission-bar stats. Absent = full history.
@@ -216,15 +245,20 @@ STRATEGY_VERSION_FILTER: dict[int, str | None] = {
 # regime_gate + reverse_exit_C + grid_what_if + trailing 0.005 (--no-grid
 # kept) and was relabeled v5.3; shadow became the bare hybrid_v5.1 baseline
 # and was relabeled shadow1.0. See project_swap_live_shadow_2026_05_14.md.
+# 2026-05-15 19:33/19:58 UTC: shadow1.0 retired (too light, n=1/24h); slot
+# 102 re-pointed to shadow_no_rev (attribution test, drops reverse_exit_C);
+# slot 107 added for shadow_eth_v53 (cross-symbol v5.3 on ETH).
 STRATEGY_ANCHOR_TS: dict[int, int] = {
     101: int(datetime(2026, 5, 15, 1, 19, 0, tzinfo=timezone.utc).timestamp()),
-    102: int(datetime(2026, 5, 15, 1, 19, 0, tzinfo=timezone.utc).timestamp()),
+    102: int(datetime(2026, 5, 15, 19, 33, 0, tzinfo=timezone.utc).timestamp()),
+    107: int(datetime(2026, 5, 15, 19, 58, 0, tzinfo=timezone.utc).timestamp()),
 }
 # Display label for the strategy card on /office + /lab. Falls back to the
 # agent's name if absent.
 STRATEGY_LABEL: dict[int, str] = {
     101: "v5.3",
-    102: "shadow1.0",
+    102: "shadow_no_rev",
+    107: "v5.3-ETH",
 }
 STATS_REFRESH_TICKS = 8  # bridge ticks at 1.5s → recompute stats every ~12s
 _stats_cache: dict = {}
@@ -240,9 +274,10 @@ _stats_tick_counter = 0
 # from /api/live-status, which is real-time vs the bridge's ~12s recompute.
 # Adding 101 here would duplicate sources of truth and downgrade freshness.
 OPEN_POS_STATE_PATHS: dict[int, Path] = {
-    102: HOME / "ibitlabs/sol_sniper_state_shadow.json",
+    102: HOME / "ibitlabs/sol_sniper_state_shadow_no_rev.json",
     103: HOME / "ibitlabs/sol_sniper_state_eth_paper.json",
     106: HOME / "ibitlabs/sol_sniper_state_sideways_paper.json",
+    107: HOME / "ibitlabs/sol_sniper_state_shadow_eth_v53.json",
 }
 # (display_symbol, contract_size, coinbase_spot_product_id)
 # contract_size source: ~/ibitlabs/v5_1_config.py (SOL=5.0, ETH=0.1).
@@ -250,6 +285,7 @@ OPEN_POS_SYMBOL_CFG: dict[int, tuple[str, float, str]] = {
     102: ("SLP-20DEC30-CDE", 5.0, "SOL-USD"),
     103: ("ETP-20DEC30-CDE", 0.1, "ETH-USD"),
     106: ("SLP-20DEC30-CDE", 5.0, "SOL-USD"),
+    107: ("ETP-20DEC30-CDE", 0.1, "ETH-USD"),
 }
 _price_cache: dict[str, tuple[float, float]] = {}  # product_id → (price, ts_unix)
 _PRICE_TTL_SEC = 10.0
