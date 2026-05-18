@@ -22,9 +22,9 @@
 
       #site-bar {
         position: fixed; top: 0; left: 0; right: 0;
-        padding: 14px 22px; background: rgba(20,20,28,0.92);
+        padding: 10px 22px; background: rgba(20,20,28,0.92);
         backdrop-filter: blur(6px);
-        font-size: 19px; line-height: 1.45;
+        font-size: 14px; line-height: 1.4;
         display: flex; justify-content: space-between; align-items: center;
         border-bottom: 1px solid #2a2a3a;
         z-index: 100;
@@ -32,10 +32,13 @@
       }
       #site-bar a { color: #9eb6ff; text-decoration: none; }
       #site-bar a:hover { text-decoration: underline; }
-      #site-bar .sub { opacity: 0.88; font-size: 17px; }
+      #site-bar .sub {
+        opacity: 0.7; font-size: 11px;
+        letter-spacing: 0.16em; text-transform: uppercase;
+      }
       #site-bar .live-dot {
-        display: inline-block; width: 11px; height: 11px; border-radius: 50%;
-        background: #2ecc71; margin-right: 8px;
+        display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+        background: #2ecc71; margin-right: 7px;
         animation: pulse 2s infinite;
       }
       @keyframes pulse {
@@ -52,29 +55,55 @@
       .absolute.top-10.right-10.z-20  { display: none !important; }
 
       #root {
-        padding-top: 258px; /* clears site-bar (~60) + mission-bar (~58) + strategy-row (~70, v5.3 2-line + retired 1-line on 1 row) + OnAirStrip (~56) + 14 gap */
+        padding-top: 245px; /* clears site-bar (~36) + hero mission (~110) + strategy-row (~96 with subtitle) + small gap. .onair-strip now hidden — info absorbed into hero + strategy badges. */
         padding-right: 400px; /* reserve space for the right rail (leaderboard + ticker, 400px wide) */
         height: 100vh; box-sizing: border-box;
       }
 
-      /* ── Mission bar ─────────────────────────────────────────────────
-         Live progress against the $1k → $10k goal. Sits between #site-bar
-         (top: 0, ~56px tall) and OnAirStrip (originally top: 56, pushed
-         down via !important). Polls /api/live-status every 30s. ──────── */
+      /* ── Hero mission bar ─────────────────────────────────────────────
+         The page's north-star metric, promoted to hero typography
+         (was a 20px stats row buried under site-bar, now the visual
+         anchor). Big balance · → · target on row 1; thin progress bar
+         on row 2; meta (day / trades / WR / regime) on row 3. Polls
+         /api/live-status + /api/office-events every 30s via the inline
+         updater script below. top: 40px sits flush under site-bar's
+         40px height — change in lockstep. ──────────────────────────── */
       #mission-bar {
-        position: fixed; top: 60px; left: 0; right: 0;
-        padding: 12px 22px;
-        background: rgba(20, 20, 28, 0.85);
+        position: fixed; top: 40px; left: 0; right: 0;
+        padding: 16px 22px 14px;
+        background: linear-gradient(180deg, rgba(20,20,28,0.92), rgba(20,20,28,0.78));
         border-bottom: 1px solid #2a2a3a;
         z-index: 99;
-        display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
         font-family: 'SF Mono', Menlo, monospace;
-        font-size: 20px;
         color: rgba(255,255,255,0.95);
+        display: block;
+      }
+      .hero-headline {
+        display: flex; align-items: baseline;
+        gap: 12px; flex-wrap: wrap;
+        font-weight: 600; line-height: 1;
+        letter-spacing: -0.01em;
+        font-variant-numeric: tabular-nums;
+      }
+      .hero-headline #mb-balance { font-size: 38px; color: #fff; }
+      .hero-headline .hero-arrow {
+        opacity: 0.32; font-size: 28px; font-weight: 400;
+      }
+      .hero-headline .hero-target {
+        opacity: 0.42; font-size: 28px; font-weight: 400;
+      }
+      .hero-headline .hero-tag {
+        margin-left: auto;
+        font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
+        font-size: 11px; font-weight: 500;
+        letter-spacing: 0.18em; text-transform: uppercase;
+        opacity: 0.42;
+        align-self: center;
       }
       #mb-track {
-        position: relative; flex: 0 1 320px; min-width: 160px;
-        height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px;
+        position: relative; width: 100%;
+        margin-top: 11px;
+        height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px;
         overflow: hidden;
       }
       #mb-fill {
@@ -84,22 +113,26 @@
       }
       #mb-start {
         position: absolute; top: -2px; bottom: -2px; left: 10%; width: 1px;
-        background: rgba(255,255,255,0.45);
+        background: rgba(255,255,255,0.5);
       }
-      #mb-stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
-      #mb-stats strong { color: #fff; font-weight: 600; }
-      #mb-stats .mb-sep { opacity: 0.4; }
+      #mb-stats {
+        display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline;
+        margin-top: 9px;
+        font-size: 13px;
+        opacity: 0.88;
+        letter-spacing: 0.02em;
+      }
+      #mb-stats strong { color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; }
+      #mb-stats .mb-sep { opacity: 0.32; }
       #mb-stats .mb-pnl-neg { color: #ff8a8a; }
       #mb-stats .mb-pnl-pos { color: #2ecc71; }
 
-      /* OnAirStrip sits below mission-bar + strategy-row; React component
-         sets top: 56 inline, override here so it doesn't collide.
-         After 2026-05-15 shadow rebuild, strategy-row holds 4 pills (3
-         active 2-line + 1 retired 1-line). On a ~1280-1400px viewport with
-         the right-rail eating ~400px, the row wraps to 2 lines (~122px
-         tall); OnAirStrip absorbs the wrap via top: 250px. At ≥1920px
-         everything fits in one row; the extra gap is harmless. */
-      .onair-strip { top: 250px !important; }
+      /* OnAirStrip — hidden 2026-05-16 redesign. Its content (ON AIR
+         indicator + latest trade event + UTC clock + today's alerts)
+         is now redundant with: (1) site-bar .live-dot, (2) hero
+         mission's mb-day + open-position MTM badges on strategy cards.
+         Killing the strip reclaims ~56px of canvas vertical space. */
+      .onair-strip { display: none !important; }
 
       /* ── Strategy row ──────────────────────────────────────────────────
          Anchored to the 2026-05-14 21:19 EDT swap. Three active pills + 1
@@ -116,7 +149,7 @@
          Polls /api/office-events on the same 30s cadence as the mission-bar.
          ──────────────────────────────────────────────────────────────── */
       #strategy-row {
-        position: fixed; top: 122px; left: 0; right: 0;
+        position: fixed; top: 148px; left: 0; right: 0;
         padding: 8px 22px;
         background: rgba(20, 20, 28, 0.85);
         border-bottom: 1px solid #2a2a3a;
@@ -130,6 +163,7 @@
         display: flex; flex-wrap: wrap; align-items: baseline;
         column-gap: 10px; row-gap: 3px;
         padding: 6px 12px;
+        flex: 1 1 280px; min-width: 240px; max-width: 360px;
         border: 1px solid rgba(255,255,255,0.08);
         border-left: 3px solid var(--accent);
         border-radius: 4px;
@@ -162,6 +196,23 @@
         letter-spacing: 0.02em;
         padding-top: 1px;
       }
+      /* Plain-English subtitle under each strategy pill — added 2026-05-16
+         redesign per UIUX audit direction C. Lets a non-technical reader
+         understand what `v5.3` / `shadow_no_rev` / `v5.3-ETH` actually
+         compare without hovering for the tooltip (no tooltips on mobile).
+         Italic + low-contrast so the raw config name stays the dominant
+         signal — we still ship config diffs in public; subtitle is the
+         translation, not a replacement. */
+      .strat-subtitle {
+        flex-basis: 100%;
+        font-size: 11px; opacity: 0.7;
+        letter-spacing: 0.01em;
+        padding-top: 2px;
+        font-style: italic;
+        color: rgba(255,255,255,0.65);
+        font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
+      }
+      .strat-card.strat-retired .strat-subtitle { opacity: 0.45; }
       /* Real-time MTM badge — shown only when the strategy is holding an
          open position. Populated from /api/office-events open_positions[102]
          (shadow) or /api/live-status position (live). When visible, the
@@ -195,6 +246,163 @@
       .strat-anchor {
         font-size: 12px; opacity: 0.55;
         margin-left: auto;
+      }
+      .strat-more {
+        font-size: 11px; opacity: 0.55;
+        letter-spacing: 0.02em;
+        color: #9eb6ff; text-decoration: none;
+        margin-left: 4px;
+        font-family: -apple-system, system-ui, sans-serif;
+      }
+      .strat-more:hover { opacity: 0.85; text-decoration: underline; }
+
+      /* ── Desktop redesign (2026-05-16) ─────────────────────────────────
+         The audit found chrome was eating ~60% of the viewport on
+         desktop: leaderboard (400×694 right rail) + ticker (400×200
+         right rail bottom) + padding-right 400px reservation, leaving
+         the pixel office canvas — the page's only differentiated asset
+         — as a ~534×425 footnote.
+         Desktop pivot: kill both right-rail aside components and
+         reclaim the 400px horizontal reservation. The info they showed
+         is already in the hero (live trader stats) and the strategy
+         pills (per-strategy stats + MTM badges); ETH paper + Sideways
+         paper shadows now surface via the "+2 more on /lab" link.
+         Mobile keeps its existing flow — different constraints there.
+         The whiteboard overlay (#whiteboard) takes the upper-right
+         corner where the leaderboard used to be, showing the 30-trade
+         structural-change gate counter (Polanyi-style milestone, not
+         live trade ticker — that's surfaced enough on /lab). ─────── */
+      @media (min-width: 769px) {
+        #root { padding-right: 0; padding-top: 256px; }
+        .office-leaderboard, .office-ticker { display: none !important; }
+        .office-leaderboard-mobile { display: none !important; }
+      }
+
+      /* Whiteboard overlay — pixel-art-styled milestone tracker pinned
+         to the upper-right of the canvas region. Shows the 30-trade
+         gate (see feedback_real_data_before_features.md) so a casual
+         visitor immediately understands "we're not yet at the data
+         threshold for structural changes" without reading any prose.
+         Slight rotation + hard shadow signals it's an artifact in the
+         office, not browser chrome. Hidden on narrow viewports
+         (≤900px) where canvas is too tight to overlay. */
+      #whiteboard {
+        position: fixed;
+        top: 290px; right: 28px;
+        width: 260px;
+        padding: 14px 16px 12px;
+        background: #f5edd6;
+        color: #2a241a;
+        border: 3px solid #3a3020;
+        box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
+        font-family: 'SF Mono', Menlo, monospace;
+        z-index: 96;
+        transform: rotate(-1.6deg);
+        pointer-events: auto;
+      }
+      #whiteboard .wb-pin {
+        position: absolute;
+        top: -6px; left: 50%;
+        width: 14px; height: 14px;
+        background: #c84444;
+        border-radius: 50%;
+        border: 2px solid #4a2020;
+        transform: translateX(-50%);
+        box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+      }
+      #whiteboard .wb-header {
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 0.16em; text-transform: uppercase;
+        opacity: 0.78;
+        margin-bottom: 6px;
+      }
+      #whiteboard .wb-stats {
+        font-size: 28px; font-weight: 700;
+        line-height: 1; font-variant-numeric: tabular-nums;
+      }
+      #whiteboard .wb-stats .wb-target {
+        font-size: 18px; font-weight: 500; opacity: 0.55;
+      }
+      #whiteboard .wb-meter {
+        height: 8px; background: rgba(0,0,0,0.1);
+        border: 1px solid #3a3020;
+        margin: 9px 0 6px;
+        overflow: hidden;
+      }
+      #whiteboard .wb-meter-fill {
+        height: 100%; width: 63%;
+        background: repeating-linear-gradient(45deg, #2a241a, #2a241a 2px, #3a3020 2px, #3a3020 4px);
+        transition: width 0.6s ease-out;
+      }
+      #whiteboard .wb-footnote {
+        font-size: 10px; opacity: 0.72;
+        line-height: 1.4;
+        font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
+        font-style: italic;
+      }
+      @media (max-width: 900px) {
+        #whiteboard { display: none; }
+      }
+
+      /* Regime card — mirror of the whiteboard, pinned upper-LEFT of the
+         canvas region. Shows the current market regime + ATR so a casual
+         visitor reads "the bot is quiet because vol is compressed" rather
+         than "the bot is broken". Real-time same as the whiteboard:
+         polled from /api/live-status every 30s via the inline updater
+         below. Color of the regime word swaps:
+           up    → green
+           down  → red
+           sideways / range / flat → amber (the "we're flat, not broken")
+         Pixel-notepad styling intentionally distinct from whiteboard
+         (no pin, paper texture, opposite tilt) so they read as two
+         different artifacts in the office, not chrome twins. */
+      #regime-card {
+        position: fixed;
+        top: 290px; left: 28px;
+        width: 220px;
+        padding: 12px 14px 11px;
+        background: #ecf0e0;
+        color: #232820;
+        border: 3px solid #2a3520;
+        box-shadow: -5px 5px 0 rgba(0,0,0,0.32);
+        font-family: 'SF Mono', Menlo, monospace;
+        z-index: 96;
+        transform: rotate(1.4deg);
+        pointer-events: auto;
+      }
+      #regime-card .rc-corner {
+        position: absolute;
+        top: -2px; right: -2px;
+        width: 14px; height: 14px;
+        background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.18) 50%);
+      }
+      #regime-card .rc-header {
+        font-size: 10px; font-weight: 700;
+        letter-spacing: 0.18em; text-transform: uppercase;
+        opacity: 0.62;
+        margin-bottom: 5px;
+      }
+      #regime-card .rc-regime {
+        font-size: 22px; font-weight: 700;
+        line-height: 1; text-transform: lowercase;
+        letter-spacing: 0.005em;
+      }
+      #regime-card .rc-regime.r-up      { color: #1b6b2a; }
+      #regime-card .rc-regime.r-down    { color: #a02525; }
+      #regime-card .rc-regime.r-flat,
+      #regime-card .rc-regime.r-side    { color: #a06a08; }
+      #regime-card .rc-meta {
+        font-size: 11px; opacity: 0.72;
+        margin-top: 7px;
+        line-height: 1.45;
+        font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
+      }
+      #regime-card .rc-meta strong {
+        font-family: 'SF Mono', Menlo, monospace;
+        font-weight: 600; color: #232820;
+      }
+      @media (max-width: 900px) {
+        #regime-card { display: none; }
       }
 
       /* ── Mobile / narrow-viewport adaptation ───────────────────────────
@@ -230,23 +438,39 @@
           top: 175px !important;
         }
         .onair-strip > span:last-child { display: none; } /* hide UTC clock */
-        /* Mission bar on mobile: anchored right under site-bar (~41 at
-           375px). Tighter font + 100% progress bar so stats fit cleanly. */
-        #mission-bar { top: 41px; padding: 9px 14px; font-size: 15px; gap: 10px; }
-        #mb-track { flex-basis: 100%; min-width: 0; }
-        /* Strategy row: hide retired pills (still on /lab via same href). */
+        /* Hero on mobile — scaled-down typography to fit 375px without
+           wrapping the headline. Drop the .hero-tag (the framing line)
+           since it sits awkwardly under the headline once flex-wrap
+           kicks in. The site-bar's "read the story →" link still
+           carries the framing. */
+        #mission-bar { top: 38px; padding: 10px 14px 11px; }
+        .hero-headline { font-size: 18px; gap: 8px; }
+        .hero-headline #mb-balance { font-size: 22px; }
+        .hero-headline .hero-arrow { font-size: 16px; }
+        .hero-headline .hero-target { font-size: 16px; }
+        .hero-headline .hero-tag { display: none; }
+        #mb-track { margin-top: 8px; }
+        #mb-stats { font-size: 11px; gap: 7px; margin-top: 6px; }
+
+        /* Strategy row: hide retired pills (still on /lab via same href).
+           Subtitles tightened. Pills stretch full-row (no max-width).
+           +N-more link breaks to its own line. */
         .strat-card.strat-retired { display: none; }
+        .strat-card { max-width: none; min-width: 0; flex-basis: 100%; }
+        .strat-subtitle { font-size: 10px; opacity: 0.65; padding-top: 1px; }
+        .strat-more { display: block; flex-basis: 100%; padding-top: 4px; margin-left: 0; }
         #strategy-row {
-          top: 108px; padding: 7px 14px; gap: 10px; font-size: 13px;
+          top: 130px; padding: 7px 14px; gap: 8px; font-size: 13px;
         }
         .strat-anchor { display: none; }
-        /* MobileLeaderBar: native height is 402px (freshness + 4 cards)
-           which covers the entire mobile canvas region. Hide the 3 paper
-           agents (Shadow / ETH / Sideways) so only freshness + Live
-           trader remain — drops the bar to ~120px and frees the canvas.
-           Paper agents still visible on /lab. */
-        .office-leaderboard-mobile { top: 280px !important; }
-        .office-leaderboard-mobile > div:nth-child(n+3) { display: none !important; }
+
+        /* MobileLeaderBar killed entirely on mobile too — strategy-row
+           with subtitles now carries the same info per-strategy, and
+           the +N-more link covers ETH-paper + Sideways-paper. Reclaims
+           ~120px of canvas. Originally we kept freshness + Live trader
+           cards visible on mobile; that was pre-strategy-subtitle. */
+        .office-leaderboard, .office-ticker { display: none !important; }
+        .office-leaderboard-mobile { display: none !important; }
         /* AchievementBanner: re-center without the 400px right-rail offset */
         .achievement-banner {
           left: 50% !important;
@@ -255,19 +479,20 @@
           max-width: 460px !important;
           padding: 14px 18px !important;
         }
-        /* Stack on mobile (measured 375×812):
-             site-bar 41 + mission-bar 53 + strategy-row 62 + OnAirStrip 97
-             (wraps) + MobileLeaderBar 120 (Live-only) = 373 + gaps ≈ 405.
-           Canvas region on 812 viewport: 812 - 405 - 200 = 207px tall —
-           enough to render the pixel office at zoom 2-3. */
+        /* Stack on mobile (measured 375×812, post-2026-05-16 redesign):
+             site-bar 38 + hero ~80 (3-line: headline + progress + meta)
+             + strategy-row 3-pill stack with subtitles ~240 + +N-more
+             link 18 ≈ 376. Both onair + leaderboard hidden.
+           Canvas region on 812 viewport: 812 - 376 - 24 = 412px tall —
+           enough for the pixel office at zoom 2-3 with breathing room. */
         #root {
-          padding-top: 405px;
+          padding-top: 376px;
           padding-right: 0;
-          padding-bottom: 240px;
+          padding-bottom: 24px;
         }
-        /* Site-bar on mobile: still readable */
-        #site-bar { font-size: 16px; padding: 11px 14px; line-height: 1.35; }
-        #site-bar .sub { font-size: 14px; }
+        /* Site-bar on mobile: still readable, tighter than desktop */
+        #site-bar { font-size: 14px; padding: 9px 14px; line-height: 1.35; }
+        #site-bar .sub { font-size: 10px; letter-spacing: 0.14em; }
       }
       @media (max-width: 640px) {
         #site-bar { font-size: 15px; padding: 10px 12px; }
@@ -287,26 +512,31 @@
         <a href="/">← iBitLabs</a>
         &nbsp;·&nbsp;
         <span class="live-dot"></span><strong>The Office</strong>
-        <span class="sub">&nbsp;7 agents · polls every 2s</span>
       </span>
-      <span class="sub">$1k → $10k experiment · <a href="/writing">read the story →</a></span>
+      <span class="sub"><a href="/writing">read the story →</a></span>
     </div>
 
-    <!-- ─ Mission bar ───────────────────────────────────────────────────
-         Live progress toward the $1k → $10k goal. Populated by the inline
-         script below from /api/live-status (also polled by the React app,
-         so this is a duplicate fetch — kept inline so the bar renders
-         before the React bundle parses, ≤1s after first paint).
+    <!-- ─ Hero mission bar ──────────────────────────────────────────────
+         The page's north-star metric, promoted to hero typography in the
+         2026-05-16 UIUX redesign (was a buried 20px stats row, now the
+         visual anchor under site-bar). All `mb-*` IDs preserved so the
+         inline updater script below still wires balance/day/trades/WR
+         /regime without changes. The hero-tag absorbs the framing line
+         that used to sit in site-bar's right side.
     -->
     <div id="mission-bar" aria-live="polite">
+      <div class="hero-headline">
+        <strong id="mb-balance">$—</strong>
+        <span class="hero-arrow">→</span>
+        <span class="hero-target">$10,000</span>
+        <span class="hero-tag">$1k → $10k experiment, in public</span>
+      </div>
       <div id="mb-track" aria-label="progress from $1,000 to $10,000">
         <div id="mb-fill"></div>
         <div id="mb-start" title="starting capital: $1,000"></div>
       </div>
       <div id="mb-stats">
-        <span><strong id="mb-balance">$—</strong><span class="sub" style="opacity:.78"> / $10k</span></span>
-        <span class="mb-sep">·</span>
-        <span>day <strong id="mb-day">—</strong></span>
+        <span>Day <strong id="mb-day">—</strong></span>
         <span class="mb-sep">·</span>
         <span><strong id="mb-trades">—</strong> trades</span>
         <span class="mb-sep mb-sep-wr">·</span>
@@ -331,6 +561,7 @@
         <span class="strat-delta flat" id="sr-v53-delta">—</span>
         <span class="strat-meta"><span id="sr-v53-trades">0</span>t · WR <span id="sr-v53-wr">—</span>%</span>
         <span class="strat-tag">LIVE</span>
+        <span class="strat-subtitle">live on SOL — the bot actually running our money</span>
         <span class="strat-open" id="sr-v53-open" hidden></span>
         <span class="strat-preswap">↳ pre-swap (v5.1): $986.84 / 17t</span>
       </a>
@@ -340,6 +571,7 @@
         <span class="strat-delta flat" id="sr-norev-delta">—</span>
         <span class="strat-meta"><span id="sr-norev-trades">0</span>t · WR <span id="sr-norev-wr">—</span>%</span>
         <span class="strat-tag">PAPER</span>
+        <span class="strat-subtitle">no-exit-signal clone — is the exit the alpha?</span>
         <span class="strat-open" id="sr-norev-open" hidden></span>
       </a>
       <a class="strat-card strat-shadow" href="/lab" title="v5.3-ETH — cross-symbol shadow, paper, since 2026-05-15. Same v5.3 bundle as live but on ETH instead of SOL. Tests whether the v5.3 stack generalizes off SOL.">
@@ -348,6 +580,7 @@
         <span class="strat-delta flat" id="sr-eth53-delta">—</span>
         <span class="strat-meta"><span id="sr-eth53-trades">0</span>t · WR <span id="sr-eth53-wr">—</span>%</span>
         <span class="strat-tag">PAPER</span>
+        <span class="strat-subtitle">same bot on ETH — does v5.3 generalize off SOL?</span>
         <span class="strat-open" id="sr-eth53-open" hidden></span>
       </a>
       <a class="strat-card strat-live strat-retired" href="/lab" title="v5.1 live — retired at 2026-05-14 21:19 EDT swap, succeeded by v5.3. Frozen 2026-04-20 → 2026-05-14.">
@@ -356,11 +589,52 @@
         <span class="strat-delta down">−1.32%</span>
         <span class="strat-meta">17t · WR 76%</span>
         <span class="strat-tag">RETIRED</span>
+        <span class="strat-subtitle">what ran before the 5-14 swap</span>
       </a>
+      <!-- Compensation link for the 2026-05-16 right-rail removal:
+           ETH paper bot (Phase 3 re-barred) + Sideways paper (H4
+           sideways override) used to surface via the leaderboard rail.
+           Anyone supervising /office at that depth should land on /lab
+           for the full agent table. -->
+      <a class="strat-more" href="/lab" title="ETH paper bot (Phase 3 re-barred) + Sideways paper (H4 override) live on /lab">+&nbsp;2&nbsp;more&nbsp;paper&nbsp;shadows&nbsp;on&nbsp;/lab&nbsp;→</a>
       <span class="strat-anchor">since 2026-05-14 21:19 EDT swap</span>
     </div>
 
     <div id="root"></div>
+
+    <!-- ─ Whiteboard overlay ────────────────────────────────────────────
+         Pixel-art-styled milestone tracker pinned to the upper-right of
+         the canvas region (where the leaderboard used to live). Shows
+         the 30-trade structural-change gate (project_trading_optimization
+         _2026_04_21.md, feedback_real_data_before_features.md). A
+         casual visitor immediately reads "we're not at the data
+         threshold yet" without reading prose. JS painter below reads
+         stats[101].total_trades from /api/office-events.
+    -->
+    <div id="whiteboard" aria-live="polite">
+      <div class="wb-pin"></div>
+      <div class="wb-header">30-trade gate</div>
+      <div class="wb-stats"><span id="wb-count">—</span><span class="wb-target"> / 30</span></div>
+      <div class="wb-meter"><div class="wb-meter-fill" id="wb-fill-meter"></div></div>
+      <div class="wb-footnote">structural strategy changes pause until we hit 30 v5.1+ trades</div>
+    </div>
+
+    <!-- ─ Regime card ────────────────────────────────────────────────────
+         Mirror of the whiteboard, pinned upper-LEFT. Surfaces regime +
+         ATR so a casual visitor reads "the bot is quiet because vol is
+         compressed" rather than "the bot is broken / nothing happens".
+         Painter reads d.regime + d.atr from /api/live-status (atr is
+         already in the live snapshot, see reference_ibitlabs_analytics).
+    -->
+    <div id="regime-card" aria-live="polite">
+      <div class="rc-corner"></div>
+      <div class="rc-header">regime</div>
+      <div class="rc-regime r-flat" id="rc-regime">—</div>
+      <div class="rc-meta">
+        ATR <strong id="rc-atr">—</strong>
+        <span id="rc-atr-hint" style="opacity:.55"> · waiting</span>
+      </div>
+    </div>
 
     <!-- ─ Loading overlay ────────────────────────────────────────────────
          Shown by default (display: flex). Removed once the webapp emits a
@@ -478,6 +752,38 @@
 
           var dayEl = $('mb-day'); if (dayEl) dayEl.textContent = dayCount();
           var rgEl = $('mb-regime'); if (rgEl) rgEl.textContent = regime;
+
+          // Regime card overlay — color-codes regime (up green / down red
+          // / sideways amber) so a casual visitor reads the state
+          // visually. ATR with a one-word hint ("low vol — waiting" vs
+          // "elevated — eligible") so the absence of trades reads as
+          // explainable, not broken. Threshold 0.04 is the live ATR
+          // entry gate (see sniper.plist + memory: 0.0016 vs 0.04).
+          var rcRegime = $('rc-regime');
+          if (rcRegime && regime && regime !== '—') {
+            rcRegime.textContent = regime;
+            rcRegime.className = 'rc-regime';
+            var r = String(regime).toLowerCase();
+            if (r.indexOf('up') === 0)                rcRegime.classList.add('r-up');
+            else if (r.indexOf('down') === 0)         rcRegime.classList.add('r-down');
+            else                                      rcRegime.classList.add('r-side');
+          }
+          var atr = Number(d && d.atr);
+          var rcAtr = $('rc-atr');
+          var rcAtrHint = $('rc-atr-hint');
+          if (rcAtr) {
+            if (isFinite(atr) && atr > 0) {
+              rcAtr.textContent = atr.toFixed(4);
+              if (rcAtrHint) {
+                if (atr < 0.02)      rcAtrHint.textContent = ' · low vol — waiting';
+                else if (atr < 0.04) rcAtrHint.textContent = ' · building';
+                else                 rcAtrHint.textContent = ' · eligible';
+              }
+            } else {
+              rcAtr.textContent = '—';
+              if (rcAtrHint) rcAtrHint.textContent = ' · waiting';
+            }
+          }
         }
 
         // Mission-bar trades + WR — top-level stats[101] block from
@@ -490,9 +796,19 @@
           var s = stats && stats['101'];
           if (!s) return;
           var trEl = $('mb-trades');
-          if (trEl) trEl.textContent = (s.total_trades != null) ? s.total_trades : 0;
+          var trades = (s.total_trades != null) ? s.total_trades : 0;
+          if (trEl) trEl.textContent = trades;
           var wrEl = $('mb-wr');
           if (wrEl) wrEl.textContent = ((Number(s.win_rate) || 0) * 100).toFixed(0);
+          // Whiteboard overlay — 30-trade structural-change gate. Same
+          // source as mb-trades (stats[101] cumulative since 2026-04-20
+          // v5.1+ anchor), so the two numbers always agree. At 30 the
+          // meter caps and we can flip the footnote to "gate cleared".
+          var GATE = 30;
+          var wbCount = $('wb-count');
+          if (wbCount) wbCount.textContent = trades;
+          var wbFill = $('wb-fill-meter');
+          if (wbFill) wbFill.style.width = Math.min(100, (trades / GATE) * 100).toFixed(1) + '%';
         }
 
         // Strategy row painter — reads the nested `.anchored` sub-block
