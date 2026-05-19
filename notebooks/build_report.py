@@ -31,24 +31,44 @@ else:
     OUT = NB_DIR / "report.html"
 
 DBS = {
-    "live":   ROOT / "sol_sniper.db",
-    "shadow": ROOT / "sol_sniper_shadow.db",
-    "paper":  ROOT / "sol_sniper_eth_paper.db",
+    "live":           ROOT / "sol_sniper.db",
+    "shadow":         ROOT / "sol_sniper_shadow.db",        # retired 5-15, feeds preswap card
+    "shadow_no_rev":  ROOT / "sol_sniper_shadow_no_rev.db", # attribution clone, /office slot 102
+    "shadow_eth_v53": ROOT / "sol_sniper_shadow_eth_v53.db",# cross-symbol clone, /office slot 107
+    "paper":          ROOT / "sol_sniper_eth_paper.db",
 }
 SYMBOL_MAP   = {"SLP-20DEC30-CDE": "SOL", "ETP-20DEC30-CDE": "ETH"}
-STREAM_COLOR = {"live": "#22c55e", "shadow": "#a855f7", "paper": "#0ea5e9"}
+STREAM_COLOR = {
+    "live":           "#22c55e",
+    "shadow":         "#a855f7",
+    "shadow_no_rev":  "#f59e0b",  # amber — attribution test
+    "shadow_eth_v53": "#8b5cf6",  # violet — cross-symbol test
+    "paper":          "#0ea5e9",
+}
 # shadow1.0 (post-swap paper-shadow) was retired 2026-05-15 after ~24h —
 # real LIVE data on the same config already exists, paper duplicate was
-# redundant + diluted attribution value. Removed from public analytics
-# surfaces; pre-swap "v5.1 shadow" retired card preserves the 23-trade
-# pre-swap history. ANCHORED_STREAMS keeps "shadow" so trips_preswap
-# still feeds that retired card.
-STREAMS_ORDER = ["live", "paper"]
-PRODUCT = {"live": "SOL-USD", "shadow": "SOL-USD", "paper": "ETH-USD"}
+# redundant + diluted attribution value. ANCHORED_STREAMS keeps "shadow"
+# so trips_preswap still feeds the retired card. Two NEW shadows launched
+# 2026-05-15 to test the post-swap stack: shadow_no_rev (isolates reverse-
+# exit Mode C as PnL driver, SOL) and shadow_eth_v53 (tests generalization
+# to ETH). Both reviewed at n≥30 or 2026-06-15.
+STREAMS_ORDER = ["live", "shadow_no_rev", "shadow_eth_v53", "paper"]
+PRODUCT = {
+    "live":           "SOL-USD",
+    "shadow":         "SOL-USD",
+    "shadow_no_rev":  "SOL-USD",
+    "shadow_eth_v53": "ETH-USD",
+    "paper":          "ETH-USD",
+}
 # Display label per stream — used in hero-cards + chart legends + section
 # headings. 2026-05-14 21:19 EDT swap: live became v5.3 (regime_gate +
 # reverse_exit_C + grid_what_if + trailing 0.005 + --no-grid).
-STREAM_LABEL = {"live": "v5.3", "paper": "paper · ETH"}
+STREAM_LABEL = {
+    "live":           "v5.3",
+    "shadow_no_rev":  "shadow · no_rev",
+    "shadow_eth_v53": "shadow · ETH v5.3",
+    "paper":          "paper · ETH",
+}
 # Streams whose data is re-anchored to SWAP_TS — only trades closed at or
 # after this moment count toward equity / KPIs / charts. The paper (ETH)
 # stream is unrelated and remains full-history.
@@ -525,8 +545,14 @@ def _active_position(snapshot):
     return pos if pos.get("active") else None
 
 
-# stream → bridge agent_id (None = no bridge entry, use live-status instead)
-STREAM_AGENT_ID = {"live": None, "shadow": "102", "paper": "103"}
+# stream → bridge agent_id (None = no bridge entry, use live-status instead).
+# shadow_no_rev = /office slot 102 (attribution clone), shadow_eth_v53 = 107.
+STREAM_AGENT_ID = {
+    "live":           None,
+    "shadow_no_rev":  "102",
+    "shadow_eth_v53": "107",
+    "paper":          "103",
+}
 
 print("loading open positions ...")
 _bridge_open = _load_bridge_open_positions()
@@ -534,6 +560,10 @@ _live_snapshot = _fetch_live_snapshot()
 _live_open = _active_position(_live_snapshot)
 
 def _mtm_for(stream):
+    # Public snapshots strip MTM — open-position state would go stale between
+    # deploys and /signals is the live-truth source (per project_lab_dashboard).
+    if PUBLIC_MODE:
+        return None
     if stream == "live":
         return _live_open
     aid = STREAM_AGENT_ID.get(stream)
@@ -548,8 +578,8 @@ print("loading DBs ...")
 # history. The 2026-05-14 21:19 EDT mode swap toggled flags but didn't reset
 # the lineage; downstream views show pre+post as one curve with a marker.
 raw = {k: load_raw(k, v) for k, v in DBS.items()}
-# Anchored slices for hero-cards only (v5.3 + shadow1.0 are strategy bundles,
-# scoped to post-swap). Paper unchanged.
+# Anchored slices: live = v5.3 post-swap only on every active surface.
+# (Pre-swap v5.1 history lives in the retired card.) Paper streams unchanged.
 raw_postswap = {s: raw[s][raw[s]["dt"] >= SWAP_TS].copy()
                 for s in ANCHORED_STREAMS if s in raw}
 raw_preswap = {s: raw[s][raw[s]["dt"] < SWAP_TS].copy()
@@ -557,10 +587,19 @@ raw_preswap = {s: raw[s][raw[s]["dt"] < SWAP_TS].copy()
 trips_per_stream = {k: build_round_trips(df) for k, df in raw.items()}
 trips_postswap = {k: build_round_trips(df) for k, df in raw_postswap.items()}
 trips_preswap = {k: build_round_trips(df) for k, df in raw_preswap.items()}
+# Active-analytics anchor: live = v5.3 post-swap only. The label "live" on
+# every active surface (KPI table, equity, charts, recent activity) now
+# means "the bot since the 2026-05-14 21:19 EDT mode swap", which is v5.3.
+# Pre-swap v5.1 history is preserved separately in the retired-card row via
+# trips_preswap, so nothing gets lost — just unmixed. Same treatment applies
+# to any stream in ANCHORED_STREAMS (currently only "live" is in STREAMS_ORDER).
+for s in ANCHORED_STREAMS:
+    if s in STREAMS_ORDER and s in raw_postswap:
+        raw[s] = raw_postswap[s]
+        trips_per_stream[s] = trips_postswap[s]
 # Trades for analytics (groupby stream charts) — filter to public streams
 # only so dropped streams (shadow post-2026-05-15 retirement) don't appear
-# as a phantom series in PnL/exit/regime breakdowns. trips_per_stream
-# itself stays cumulative for any caller that wants the full picture.
+# as a phantom series in PnL/exit/regime breakdowns.
 trades = pd.concat([trips_per_stream[s] for s in STREAMS_ORDER
                     if not trips_per_stream[s].empty],
                    ignore_index=True)
@@ -635,11 +674,11 @@ fig_equity.add_shape(
 )
 fig_equity.add_annotation(
     x=SWAP_TS.to_pydatetime(), y=1, xref="x", yref="paper",
-    text="2026-05-14 21:19 EDT swap → v5.3 + shadow1.0",
+    text="2026-05-14 21:19 EDT swap → v5.3 LIVE",
     showarrow=False, yanchor="bottom", xanchor="right",
     font=dict(color="#f59e0b", size=10),
 )
-finish(fig_equity, 420, "Equity · normalized to $1,000 (full v5.1 history; dashed line marks the 2026-05-14 mode swap)")
+finish(fig_equity, 420, "Equity · normalized to $1,000 (live = v5.3 post-swap; paper streams full history; dashed line marks the 2026-05-14 mode swap)")
 fig_equity.update_yaxes(title="Account equity ($)")
 
 
@@ -886,17 +925,18 @@ recent = recent[["stream", "asset", "direction", "entry_dt", "exit_dt", "duratio
 print("rendering HTML ...")
 
 SECTIONS = [
-    ("kpi",       "Headline KPIs"),
-    ("equity",    "Equity curves"),
-    ("price",     "Trades on price"),
-    ("timeline",  "PnL timeline"),
-    ("dist",      "PnL distribution"),
-    ("exit",      "Exit reasons"),
-    ("direction", "Long vs short"),
-    ("regime",    "Regime"),
-    ("mfe",       "MFE × MAE"),
-    ("duration",  "Duration vs PnL"),
-    ("recent",    "Recent activity"),
+    ("kpi",         "Headline KPIs"),
+    ("equity",      "Equity curves"),
+    ("price",       "Trades on price"),
+    ("timeline",    "PnL timeline"),
+    ("dist",        "PnL distribution"),
+    ("exit",        "Exit reasons"),
+    ("direction",   "Long vs short"),
+    ("regime",      "Regime"),
+    ("mfe",         "MFE × MAE"),
+    ("duration",    "Duration vs PnL"),
+    ("recent",      "Recent activity"),
+    ("pump-sniper", "Pump Sniper SPOT"),
 ]
 
 # Pre-swap baseline (equity, trade_count) per anchored stream — attached to
@@ -924,7 +964,7 @@ _preswap_v51_raw_by_stream = {
     s: _preswap_v51_raw_closes(s) for s in ANCHORED_STREAMS
 }
 
-# Build the hero card row — v5.3 + shadow1.0 use POST-SWAP slices so the
+# Build the hero card row — live (v5.3) uses POST-SWAP slices so the
 # strategy-specific equity + open-position badge reflects the new bundle
 # only; paper stays full-history. KPI table + charts below use cumulative.
 # The live stream additionally gets live_snapshot to re-anchor equity to
@@ -1258,10 +1298,133 @@ if PUBLIC_MODE:
         '<p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>'
         '<p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a> &middot; <a href="/rules">Rules</a></p>'
         '<p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>'
-        f'<p class="sf-fine">Snapshot regenerated daily &middot; $1,000 seed since 2026-04-20 (hybrid_v5.1 go-live); v5.3 + shadow1.0 cards anchored from the 2026-05-14 21:19 EDT mode swap. Educational experiment, not financial advice. '
+        f'<p class="sf-fine">Snapshot regenerated every 6h (04:30 / 10:30 / 16:30 / 22:30 EDT) &middot; $1,000 seed since 2026-04-20 (hybrid_v5.1 go-live); v5.3 anchored from the 2026-05-14 21:19 EDT mode swap; the two new paper shadows started 2026-05-15. Educational experiment, not financial advice. '
         '<a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>'
         '</footer>'
     )
+    # ── Live-now banner — north-star metric absorbed from /office ─────────
+    # First step of the /office → /lab merge (gradual cadence; Phase 2 will
+    # decide on full /office retirement after CF analytics review).
+    # Polls /api/live-status every 30s; the hero cards below remain the
+    # static 6h-deploy snapshot. Day count anchored to 2026-04-07 live start
+    # (feedback_no_inflated_experiment_age.md).
+    live_now_banner = """
+  <style>
+    .live-now { padding: 18px 36px 16px var(--tocw);
+      background: linear-gradient(180deg, #131826 0%, #0d1220 100%);
+      border-bottom: 1px solid var(--border);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      color: var(--text); }
+    .live-now .ln-inner { padding-left: 28px; }
+    .live-now .ln-headline { display: flex; align-items: baseline; gap: 12px;
+      flex-wrap: wrap; font-weight: 600; line-height: 1;
+      letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+    .live-now #mb-balance { font-size: 30px; color: var(--text); }
+    .live-now #mb-balance.mb-pnl-pos { color: var(--green); }
+    .live-now #mb-balance.mb-pnl-neg { color: var(--danger); }
+    .live-now .ln-arrow { opacity: 0.32; font-size: 22px; font-weight: 400;
+      color: var(--muted); }
+    .live-now .ln-target { opacity: 0.55; font-size: 22px; font-weight: 400;
+      color: var(--muted); }
+    .live-now .ln-tag { margin-left: auto;
+      font-family: -apple-system, system-ui, 'Segoe UI', sans-serif;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      opacity: 0.5; color: var(--muted); align-self: center; }
+    .live-now .ln-track { position: relative; width: 100%;
+      margin-top: 12px;
+      height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px;
+      overflow: hidden; }
+    .live-now .ln-fill { position: absolute; left: 0; top: 0; bottom: 0;
+      width: 0%; background: linear-gradient(90deg, #22c55e, #4ade80);
+      transition: width 0.6s ease-out; }
+    .live-now .ln-start { position: absolute; top: -2px; bottom: -2px;
+      left: 10%; width: 1px; background: rgba(255,255,255,0.4); }
+    .live-now .ln-stats { display: flex; gap: 10px; flex-wrap: wrap;
+      align-items: baseline; margin-top: 10px;
+      font-size: 12.5px; opacity: 0.88; color: var(--muted);
+      letter-spacing: 0.01em; }
+    .live-now .ln-stats strong { color: var(--text); font-weight: 600;
+      font-variant-numeric: tabular-nums; }
+    .live-now .ln-sep { opacity: 0.3; }
+    .live-now .ln-meta { opacity: 0.55; font-size: 11.5px; margin-left: auto; }
+    .live-now .ln-meta a { color: var(--muted); }
+    .live-now .ln-meta a:hover { color: var(--text); }
+    @media (max-width: 768px) {
+      .live-now { padding: 14px 18px 14px 18px; }
+      .live-now .ln-inner { padding-left: 0; }
+      .live-now #mb-balance { font-size: 22px; }
+      .live-now .ln-arrow, .live-now .ln-target { font-size: 16px; }
+      .live-now .ln-tag { display: none; }
+      .live-now .ln-stats { font-size: 11.5px; }
+      .live-now .ln-meta { margin-left: 0; flex-basis: 100%; }
+    }
+  </style>
+  <section class="live-now" aria-live="polite">
+    <div class="ln-inner">
+      <div class="ln-headline">
+        <strong id="mb-balance">$—</strong>
+        <span class="ln-arrow">&rarr;</span>
+        <span class="ln-target">$10,000</span>
+        <span class="ln-tag">live &middot; $1,000 &rarr; $10,000</span>
+      </div>
+      <div class="ln-track" aria-label="progress from $1,000 to $10,000">
+        <div class="ln-fill" id="mb-fill"></div>
+        <div class="ln-start" title="starting capital: $1,000"></div>
+      </div>
+      <div class="ln-stats">
+        <span>Day <strong id="mb-day">&mdash;</strong></span>
+        <span class="ln-sep">&middot;</span>
+        <span><strong id="mb-trades">&mdash;</strong> v5.1+ trades</span>
+        <span class="ln-sep">&middot;</span>
+        <span>WR <strong id="mb-wr">&mdash;</strong>%</span>
+        <span class="ln-sep">&middot;</span>
+        <span>regime <strong id="mb-regime">&mdash;</strong></span>
+        <span class="ln-meta">polls every 30s &middot; <a href="/signals">/signals</a> for the full snapshot</span>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function () {
+      var START_DATE_UTC = Date.UTC(2026, 3, 7);  // 2026-04-07 live start
+      var TARGET = 10000;
+      var STARTING = 1000;
+      function $(id) { return document.getElementById(id); }
+      function dayCount() {
+        return Math.max(1, Math.floor((Date.now() - START_DATE_UTC) / 86400000) + 1);
+      }
+      function paint(d) {
+        if (!d) return;
+        var balance = Number(d.balance);
+        var balEl = $('mb-balance');
+        if (balEl) {
+          balEl.textContent = isFinite(balance) ? '$' + balance.toFixed(2) : '$—';
+          balEl.classList.remove('mb-pnl-neg', 'mb-pnl-pos');
+          if (isFinite(balance)) balEl.classList.add(balance < STARTING ? 'mb-pnl-neg' : 'mb-pnl-pos');
+        }
+        var fillPct = isFinite(balance) ? Math.max(0, Math.min(100, (balance / TARGET) * 100)) : 0;
+        var fillEl = $('mb-fill');
+        if (fillEl) fillEl.style.width = fillPct.toFixed(2) + '%';
+        var trEl = $('mb-trades');
+        if (trEl && d.total_trades_v51 != null) trEl.textContent = d.total_trades_v51;
+        var wrEl = $('mb-wr');
+        if (wrEl && d.win_rate_v51 != null) wrEl.textContent = (Number(d.win_rate_v51) * 100).toFixed(0);
+        var rgEl = $('mb-regime');
+        if (rgEl && d.regime) rgEl.textContent = d.regime;
+      }
+      function refresh() {
+        var dayEl = $('mb-day');
+        if (dayEl) dayEl.textContent = dayCount();
+        fetch('/api/live-status', { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .catch(function () { return null; })
+          .then(paint);
+      }
+      refresh();
+      setInterval(refresh, 30000);
+    })();
+  </script>
+"""
 else:
     page_title  = "iBitLabs · live / shadow / paper"
     page_h1     = "Live · Shadow · Paper"
@@ -1279,6 +1442,184 @@ else:
         'Price cache <code>.candles_cache/</code> (rm to refresh).'
         '</footer>'
     )
+    live_now_banner = ""
+
+# =================== pump_sniper_spot_v01 section ===================
+# Standalone /lab section reading from web/public/data/pump_sniper_spot_v01.json
+# (written by ~/ibitlabs/spot_pump_sniper.py every poll). NOT a v5.3 stream —
+# different data shape (JSONL not SQLite), different universe (top-20 spot),
+# different direction (fade-short long-only). Rendered as a separate section
+# below the v5.3-family analysis so the data models stay clean.
+_pump_dash = ROOT / "web" / "public" / "data" / "pump_sniper_spot_v01.json"
+pump_d = None
+if _pump_dash.exists():
+    try:
+        pump_d = json.loads(_pump_dash.read_text())
+    except Exception:
+        pump_d = None
+
+
+def _render_pump_section(d):
+    if not d:
+        return ""
+    kpi = d.get("kpi", {}) or {}
+    pc  = d.get("production_cell", {}) or {}
+    open_p = d.get("open_positions", []) or []
+    recent = d.get("recent_trades", []) or []
+    per_sym = d.get("per_symbol", {}) or {}
+    slip = d.get("realized_slip", {}) or {}
+
+    trades = kpi.get("trades", 0)
+    wr     = kpi.get("wr_pct")
+    pf     = kpi.get("pf")
+    net    = kpi.get("net_usd", 0) or 0
+    gate_pct  = kpi.get("gate_pct", 0)
+    gate_prog = kpi.get("gate_progress", "0/30")
+    fires_att = kpi.get("fires_attempted", 0)
+    fires_fill = kpi.get("fires_filled", 0)
+
+    def _col(v):
+        return "#22c55e" if v > 0 else ("#ef4444" if v < 0 else "var(--dim)")
+
+    wr_str = f"{wr:.1f}%" if wr is not None else "—"
+    if isinstance(pf, (int, float)):
+        pf_str = f"{pf:.2f}"
+    elif pf == "inf":
+        pf_str = "∞"
+    else:
+        pf_str = "—"
+    sign = "+" if net > 0 else ("−" if net < 0 else "")
+    net_str = f"{sign}${abs(net):.2f}"
+
+    if open_p:
+        rows = "".join(
+            f"<tr><td>{p['symbol']}</td><td>${p['size_usd']}</td>"
+            f"<td>{p.get('trigger_ret_pct', 0):.2f}%</td>"
+            f"<td>{p.get('highest_pnl_pct', 0):.2f}%</td>"
+            f"<td>{p.get('elapsed_sec', 0)}s</td>"
+            f"<td>{'trail-armed' if p.get('trail_armed') else 'watching'}</td></tr>"
+            for p in open_p
+        )
+        open_html = (
+            '<table class="ps-tbl"><thead><tr>'
+            '<th>symbol</th><th>size</th><th>trigger ret</th>'
+            '<th>peak %</th><th>elapsed</th><th>state</th>'
+            f'</tr></thead><tbody>{rows}</tbody></table>'
+        )
+    else:
+        open_html = '<p class="ps-empty">no open positions</p>'
+
+    if recent:
+        r_rows = []
+        for t in recent:
+            pnl_usd = t.get("gross_pnl_usd", 0) or 0
+            pnl_pct = t.get("gross_pnl_pct", 0) or 0
+            trig = t.get("trigger_ret_pct", 0) or 0
+            r_rows.append(
+                f"<tr><td>{t['symbol']}</td>"
+                f"<td>{trig:.2f}%</td>"
+                f"<td>{t.get('elapsed_sec', 0)}s</td>"
+                f"<td style='color:{_col(pnl_usd)}'>"
+                f"{('+' if pnl_usd>0 else '')}${pnl_usd:+.2f} ({pnl_pct:+.2f}%)</td>"
+                f"<td>{t.get('exit_reason', '—')}</td></tr>"
+            )
+        recent_html = (
+            '<table class="ps-tbl"><thead><tr>'
+            '<th>symbol</th><th>trigger ret</th><th>held</th>'
+            '<th>net pnl</th><th>exit reason</th>'
+            f'</tr></thead><tbody>{"".join(r_rows)}</tbody></table>'
+        )
+    else:
+        recent_html = ('<p class="ps-empty">no trades yet — first fire arriving on ~80min cadence; '
+                       'the bot polls every 60s.</p>')
+
+    if per_sym:
+        ps_rows = []
+        for sym, s in sorted(per_sym.items(), key=lambda x: -x[1].get("n", 0)):
+            ns = s.get("net_usd", 0) or 0
+            wr_s = s.get("wr_pct")
+            wr_s_str = f"{wr_s:.0f}%" if wr_s is not None else "—"
+            ps_rows.append(
+                f"<tr><td>{sym}</td><td>{s.get('n', 0)}</td>"
+                f"<td>{wr_s_str}</td>"
+                f"<td style='color:{_col(ns)}'>"
+                f"{('+' if ns>0 else '')}${ns:.2f}</td></tr>"
+            )
+        per_sym_html = (
+            '<table class="ps-tbl"><thead><tr>'
+            '<th>symbol</th><th>n</th><th>WR</th><th>net</th>'
+            f'</tr></thead><tbody>{"".join(ps_rows)}</tbody></table>'
+        )
+    else:
+        per_sym_html = '<p class="ps-empty">per-symbol breakdown appears after the first 5 trades.</p>'
+
+    slip_e  = slip.get("avg_entry_pct")
+    slip_x  = slip.get("avg_exit_pct")
+    slip_rt = slip.get("avg_round_trip_pct")
+    if slip_rt is not None:
+        slip_html = (
+            f'<div class="ps-slip">realized slip — '
+            f'entry {slip_e:.3f}% · exit {slip_x:.3f}% · round-trip {slip_rt:.3f}%'
+            f' (backtest assumption: 0.10–0.60% RT by tier)</div>'
+        )
+    else:
+        slip_html = ('<div class="ps-slip">realized slip — measured live on each entry+exit; '
+                     'appears after first trade.</div>')
+
+    return f"""
+    <section id="pump-sniper">
+      <h2><span class="sn">12</span>Pump Sniper SPOT v0.1<span class="tag">NEW family · paper · fade-short on top-20 spot · since 2026-05-19</span></h2>
+      <div class="lede">A parallel track to v5.3 — not a variant, a different strategy family.
+        Catches the bounce after a -2% dump on top-20 Coinbase spot.
+        <strong>Trigger:</strong> {pc.get("trigger", "")}.
+        <strong>Exit:</strong> {pc.get("exit", "")}.
+        <strong>Fee model:</strong> {pc.get("fee_assumption", "")}.</div>
+      <div class="ps-kpi-row">
+        <div class="ps-kpi"><span class="ps-k">net (paper)</span>
+          <span class="ps-v" style="color:{_col(net)}">{net_str}</span></div>
+        <div class="ps-kpi"><span class="ps-k">trades</span>
+          <span class="ps-v">{trades}</span></div>
+        <div class="ps-kpi"><span class="ps-k">WR</span>
+          <span class="ps-v">{wr_str}</span></div>
+        <div class="ps-kpi"><span class="ps-k">PF</span>
+          <span class="ps-v">{pf_str}</span></div>
+        <div class="ps-kpi"><span class="ps-k">fires att/fill</span>
+          <span class="ps-v">{fires_att} / {fires_fill}</span></div>
+        <div class="ps-kpi"><span class="ps-k">30-trade gate</span>
+          <span class="ps-v">{gate_prog}
+            <div class="ps-bar"><div class="ps-bar-fill" style="width:{gate_pct}%"></div></div>
+          </span></div>
+      </div>
+      {slip_html}
+      <h3 class="ps-sub">Open positions</h3>
+      {open_html}
+      <h3 class="ps-sub">Recent trades</h3>
+      {recent_html}
+      <h3 class="ps-sub">Per-symbol</h3>
+      {per_sym_html}
+    </section>
+    """
+
+pump_sniper_html = _render_pump_section(pump_d)
+
+# CSS for the pump_sniper section — kept inline so the section is fully
+# self-contained and surviving any future build_report.py refactor.
+PUMP_CSS = """
+section#pump-sniper { --pump-accent: #fb923c; }
+section#pump-sniper h2 .tag { color: var(--pump-accent); }
+.ps-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+.ps-kpi { background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.25); border-radius: 8px; padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
+.ps-k { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.ps-v { font-size: 18px; font-weight: 600; }
+.ps-bar { height: 6px; background: rgba(251,146,60,0.15); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.ps-bar-fill { height: 100%; background: var(--pump-accent); transition: width 0.4s; }
+.ps-slip { margin: 12px 0; font-size: 12px; color: var(--dim); font-family: ui-monospace, Menlo, monospace; }
+.ps-sub { margin: 24px 0 8px; font-size: 14px; font-weight: 600; color: #e8e8f0; text-transform: uppercase; letter-spacing: 0.5px; }
+.ps-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; }
+.ps-tbl th, .ps-tbl td { border-bottom: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+.ps-tbl th { color: var(--dim); font-weight: 500; }
+.ps-empty { font-size: 12.5px; color: var(--dim); font-style: italic; padding: 8px 0; }
+"""
 
 html = f"""<!doctype html>
 <html lang="en">
@@ -1290,7 +1631,7 @@ html = f"""<!doctype html>
   <meta name="theme-color" content="#0a0e1a">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
   <script src="/tz.js" defer></script>
-  <style>{CSS}</style>
+  <style>{CSS}{PUMP_CSS}</style>
 </head>
 <body id="top">
   <aside class="toc">
@@ -1303,11 +1644,12 @@ html = f"""<!doctype html>
   </aside>
 
   {site_nav_html}
+  {live_now_banner}
 
   <header class="top">
     <h1>{page_h1}</h1>
     {mission_html}
-    <div class="sub">SOL sniper · <strong>v5.3</strong> = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if + trailing 0.005/0.004 (--no-grid kept) · ETH sniper (paper). v5.3 card shows post-2026-05-14-swap data with open-position MTM; charts + tables below span the full v5.1 history with a marker at the cutover. Pre-swap shadow1.0 paper-control ran ~24h and was retired 2026-05-15 (redundant with real LIVE data on same config) — see the v5.1 shadow retired card for the 23-trade pre-swap shadow history.</div>
+    <div class="sub"><strong>live</strong> = SOL × v5.3 = hybrid_v5.1 + regime gate + reverse-exit Mode C + grid-what-if + trailing arm <strong>+0.4%</strong> / drawdown 0.5% (--no-grid kept). Three paper shadows sit next to it: <strong>shadow_no_rev</strong> = same stack on SOL minus reverse-exit (isolates Mode C as the candidate PnL driver); <strong>shadow_eth_v53</strong> = same stack on ETH (tests whether v5.3 generalizes off SOL); <strong>paper</strong> = ETH × v5.1 baseline (trailing arm <strong>+1.5%</strong> / drawdown 0.5%, no regime gate, no reverse-exit, no grid-what-if — the v5.1 control sitting next to shadow_eth_v53). On every active table + chart below, <strong>live = v5.3 post-swap only</strong> — the pre-swap v5.1 history is preserved in its own retired card so the v5.3 numbers don't get diluted. Pre-swap shadow1.0 retired 2026-05-15 — see the v5.1 shadow retired card for the 23-trade pre-swap history.</div>
     <div class="meta">{meta_line}</div>
   </header>
 
@@ -1317,7 +1659,7 @@ html = f"""<!doctype html>
     {retired_row_html}
 
     <section id="kpi">
-      <h2><span class="sn">01</span>Headline KPIs<span class="tag">all v5.1 closed trades · pre + post swap</span></h2>
+      <h2><span class="sn">01</span>Headline KPIs<span class="tag">live = v5.3 post-swap · paper streams full history</span></h2>
       <div class="lede">PF &gt; 1.0 = profitable. &gt; 1.5 = good. &gt; 2.0 = rare. Max DD is peak-to-trough on the equity curve.</div>
       {colored_df_html(kpi_for_table, pnl_cols=kpi_pnl_cols, index=False)}
     </section>
@@ -1366,8 +1708,8 @@ html = f"""<!doctype html>
     </section>
 
     <section id="regime">
-      <h2><span class="sn">08</span>Regime × stream<span class="tag">live: gated · shadow: baseline</span></h2>
-      <div class="lede">After the 2026-05-14 LIVE↔shadow swap, shadow runs the bare hybrid_v5.1 baseline (no regime gate, no reverse-exit, no grid-what-if). The split lets us measure whether the live-side mode flags actually improve outcomes vs the unmodified strategy. Promotion bar still applies for any new mode flag we may want to A/B.</div>
+      <h2><span class="sn">08</span>Regime × stream<span class="tag">live = full v5.3 · shadows = ablations</span></h2>
+      <div class="lede">live runs the full v5.3 stack (regime gate + reverse-exit Mode C + grid-what-if + trailing). shadow_no_rev clones live but drops reverse-exit, isolating Mode C as the candidate PnL driver. shadow_eth_v53 runs the same stack on ETH to test whether v5.3 generalizes off SOL. Both shadows reach their first review at n≥30 or 2026-06-15, whichever comes first.</div>
       <div class="plot">{fig_html(fig_regime, 'fig-regime')}</div>
       {colored_df_html(rg_for_table, pnl_cols=["pnl", "avg"], index=False)}
     </section>
@@ -1389,6 +1731,8 @@ html = f"""<!doctype html>
       <div class="lede">Skim this when reopening the dashboard.</div>
       {colored_df_html(recent, pnl_cols=["pnl_net", "return_pct"], index=False)}
     </section>
+
+    {pump_sniper_html}
 
   </div></main>
 
