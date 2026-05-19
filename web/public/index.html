@@ -420,8 +420,6 @@ footer {
   .subscribe-section { padding: 2rem 1.2rem; }
 }
 </style>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2Z2NW9S800"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-2Z2NW9S800');</script>
 <script src="/i18n.js"></script>
 </head>
 <body>
@@ -435,6 +433,7 @@ footer {
     <a href="/office" data-i18n="nav_office">Office</a>
     <a href="/writing" data-i18n="nav_writing">Writing</a>
     <a href="/contributors" data-i18n="nav_contributors">Contributors</a>
+    <a href="/rules" data-i18n="nav_rules">Rules</a>
   </div>
   <div class="nav-right">
     <button class="lang-btn" id="lang-btn" onclick="toggleLang()">中文</button>
@@ -477,7 +476,7 @@ const startDate=new Date('2026-04-07');const now=new Date();const days=Math.max(
 document.getElementById('day-count').textContent=days;
 if(d.balance>0){const sc=d.starting_capital||1000;const roi=((d.balance-sc)/sc*100);document.getElementById('live-wr').textContent=(roi>=0?'+':'')+roi.toFixed(1)+'%';document.getElementById('live-wr').style.color=roi>=0?'var(--green)':'var(--red)'}
 if(d.balance>0){document.getElementById('live-balance').textContent='$'+d.balance.toFixed(0);const pnl=d.balance-(d.starting_capital||1000);document.getElementById('live-return').textContent=(pnl>0?'▲ +':pnl<0?'▼ ':'')+Math.abs(pnl).toFixed(0);document.getElementById('live-return').style.color=pnl>=0?'var(--green)':'var(--red)'}
-if(d.total_trades>0)document.getElementById('live-trades').textContent=d.total_trades;
+const _tt=d.total_trades_v51!=null?d.total_trades_v51:d.total_trades;if(_tt>0)document.getElementById('live-trades').textContent=_tt;
 }catch(e){}})();
 </script>
 
@@ -627,7 +626,7 @@ document.getElementById('goal-progress-text').textContent=progress>=0
     </div>
     <div class="ticker-trades" id="tk-history"></div>
     <button class="ticker-toggle" id="tk-toggle" onclick="document.getElementById('tk-history').classList.toggle('show');var s=document.getElementById('tk-history').classList.contains('show');this.textContent=s?(I18N.ticker_hide[currentLang]||'Hide trades'):(I18N.ticker_show[currentLang]||'Show recent trades')" data-i18n="ticker_show">Show recent trades</button>
-    <div class="ticker-footer" data-i18n="ticker_footer">Refreshes every 10s &middot; Live trading on Coinbase Futures &middot; V5.1 Adaptive &middot; 2x leverage</div>
+    <div class="ticker-footer" data-i18n="ticker_footer">Refreshes every 10s &middot; Live on Coinbase Futures &middot; hybrid_v5.1 + regime gate + trailing 0.4/0.5 &middot; 2x leverage</div>
   </div>
 </div>
 <script>
@@ -643,10 +642,12 @@ document.getElementById('goal-progress-text').textContent=progress>=0
       const pe=document.getElementById('tk-pnl');
       pe.textContent=(pnl>0?'▲ +':pnl<0?'▼ ':'')+('$'+Math.abs(pnl).toFixed(2))+' ('+(pnl>=0?'+':'')+pct.toFixed(1)+'%)';
       pe.className='ticker-pnl '+(pnl>0?'up':pnl<0?'down':'flat');
-      document.getElementById('tk-trades').textContent=d.total_trades||0;
-      document.getElementById('tk-wins').textContent=d.total_wins||0;
-      document.getElementById('tk-losses').textContent=d.total_losses||0;
-      const _sc=d.starting_capital||1000;const _roi=((bal-_sc)/_sc*100);document.getElementById('tk-wr').textContent=d.total_trades>0?((_roi>=0?'+':'')+_roi.toFixed(1)+'%'):'--';document.getElementById('tk-wr').style.color=_roi>=0?'var(--green)':'var(--red)';
+      // Use *_v51 fields for current-strategy honesty; fall back to legacy if absent
+      const _tt=d.total_trades_v51!=null?d.total_trades_v51:(d.total_trades||0);
+      document.getElementById('tk-trades').textContent=_tt;
+      document.getElementById('tk-wins').textContent=d.total_wins_v51!=null?d.total_wins_v51:(d.total_wins||0);
+      document.getElementById('tk-losses').textContent=d.total_losses_v51!=null?d.total_losses_v51:(d.total_losses||0);
+      const _sc=d.starting_capital||1000;const _roi=((bal-_sc)/_sc*100);document.getElementById('tk-wr').textContent=_tt>0?((_roi>=0?'+':'')+_roi.toFixed(1)+'%'):'--';document.getElementById('tk-wr').style.color=_roi>=0?'var(--green)':'var(--red)';
       const tp=document.getElementById('tk-today');
       tp.textContent=(d.today_pnl>=0?'+':'')+('$'+Math.abs(d.today_pnl||0).toFixed(2));
       tp.style.color=d.today_pnl>0?'var(--green)':d.today_pnl<0?'var(--red)':'';
@@ -808,7 +809,7 @@ document.getElementById('goal-progress-text').textContent=progress>=0
     </div>
     <div class="faq-item">
       <div class="faq-q" data-i18n="faq_q4">What if the bot loses all the money?</div>
-      <div class="faq-a" data-i18n="faq_a4">Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is 80% of capital, and there's a trailing stop that locks in profits. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live.</div>
+      <div class="faq-a" data-i18n="faq_a4">Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is governed by an in-house risk-officer module, and the trailing stop arms at +0.4% profit then exits on a 0.5% pullback from the high. A regime gate also blocks entries the strategy decides are unfavorable. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" data-i18n="faq_q5">Who actually writes the code?</div>
@@ -889,6 +890,7 @@ document.getElementById('goal-progress-text').textContent=progress>=0
     <a href="/office" style="color:var(--text-3)">Office</a> &middot;
     <a href="/writing" style="color:var(--text-3)">Writing</a> &middot;
     <a href="/contributors" style="color:var(--text-3)">Contributors</a>
+    &middot; <a href="/rules" style="color:var(--text-3)">Rules</a>
   </p>
   <p style="margin-top: 0.4rem; font-size: 0.8rem;">
     <a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener" style="color:var(--text-3)">X · @BonnyOuyang</a> &middot;
@@ -971,7 +973,7 @@ document.getElementById('goal-progress-text').textContent=progress>=0
         {"@type": "Question", "name": "Why is everything free?", "acceptedAnswer": {"@type": "Answer", "text": "Because the point is to show that a 0-to-N startup can be run this way — one founder, a small team of AI agents, every commit auditable. Making it free means more people watching, more accountability, more pressure to be honest about results. The experiment is the product."}},
         {"@type": "Question", "name": "Can I copy the trades?", "acceptedAnswer": {"@type": "Answer", "text": "You can see every trade, but the dashboard updates every 5 seconds and crypto moves fast. The core strategy parameters are not shown. This is meant for watching and learning, not copy-trading. Trade at your own risk."}},
         {"@type": "Question", "name": "How does the AI trading system work?", "acceptedAnswer": {"@type": "Answer", "text": "The Sniper uses mean reversion: it buys when SOL is oversold (StochRSI low + price at lower Bollinger Band) and shorts when overbought. The strategy adapts to the current market regime — uptrend, downtrend, or sideways. 2x leverage on Coinbase SOL futures. The system decides when to enter and exit — I don't touch it."}},
-        {"@type": "Question", "name": "What if the bot loses all the money?", "acceptedAnswer": {"@type": "Answer", "text": "Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is 80% of capital, and there's a trailing stop that locks in profits. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live."}},
+        {"@type": "Question", "name": "What if the bot loses all the money?", "acceptedAnswer": {"@type": "Answer", "text": "Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is governed by an in-house risk-officer module, and the trailing stop arms at +0.4% profit then exits on a 0.5% pullback from the high. A regime gate also blocks entries the strategy decides are unfavorable. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live."}},
         {"@type": "Question", "name": "Who actually writes the code?", "acceptedAnswer": {"@type": "Answer", "text": "Both. The founder writes the constraints, the redirects, the load-bearing decisions, and pushes back on bad output. Claude (Anthropic's AI) writes most of the source: trading logic, dashboard, website, scheduled tasks, database. The point isn't that no human wrote code; it's that AI now writes most of the code most companies need, and that changes who gets to start one."}},
         {"@type": "Question", "name": "Is this better than 3Commas, Cryptohopper, or signal services?", "acceptedAnswer": {"@type": "Answer", "text": "It's not competing with them. Those are trading tools or signal channels you pay to use on your own account. iBitLabs is one experiment running on my account — you watch it. Full comparison at https://www.ibitlabs.com/vs."}},
         {"@type": "Question", "name": "What's the catch? Are you selling something?", "acceptedAnswer": {"@type": "Answer", "text": "No subscriptions, no signals, no paywall, no affiliate links, no referral codes. Just a USDT donation address if you want to chip in. If the experiment ends up profitable over a year or more, I'll open-source the setup so anyone with $1,000 can run their own version."}},
@@ -1036,10 +1038,11 @@ function handleSubscribe(e) {
   const startDate = new Date('2026-04-07');
   const days = Math.max(1, Math.floor((new Date() - startDate) / (1000*60*60*24)));
   fetch('/api/live-status').then(r=>r.json()).then(d => {
-    const trades = d.total_trades || 0;
+    // Use v5.1 (current strategy) count, not legacy cross-strategy total_trades.
+    const trades = d.total_trades_v51 != null ? d.total_trades_v51 : (d.total_trades || 0);
     if (trades > 0) {
       document.getElementById('proof-text').textContent =
-        trades + ' trades executed over ' + days + ' days — live on Coinbase Futures';
+        trades + ' v5.1 trades over ' + days + ' days — live on Coinbase Futures';
     }
   }).catch(()=>{});
 })();
