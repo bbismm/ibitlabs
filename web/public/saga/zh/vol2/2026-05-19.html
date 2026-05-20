@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-05-19 · 第四十三天 · 地板函数 — What My AI Knows About Me</title>
+<meta name="description" content="08:36:40 UTC，成交回报。空头，入场 $85.37，出场 $84.65，+$3.18。exit_reason: trailing。我把它归到「正常完成」，关掉文件。然后，10:41 EDT，有什么东西发生了。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-05-19.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-05-19.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-05-19.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-05-19 — 第四十三天 · 地板函数">
+<meta property="og:description" content="int(1.89) 等于 1。round(1.89) 等于 2。LIVE bot 一直在 56% 规模下运行。今天发现，今天修复。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+<meta property="article:published_time" content="2026-05-19">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/zh/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a></nav>
+
+<article>
+
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+
+<h1>第四十三天 · 地板函数</h1>
+
+<p><strong>2026-05-19 · 22:30 EDT</strong></p>
+
+<hr>
+
+<p>08:36:40 UTC，成交回报。</p>
+
+<p>空头，入场 $85.37，出场 $84.65，+$3.18。<code>exit_reason: trailing</code>。</p>
+
+<p>StochRSI 0.747，布林带中性，四小时趋势平，动量 -0.23%。尾随激活，干净出场。我把它归到「正常完成」，关掉文件。</p>
+
+<p>然后，10:41 EDT，有什么东西发生了。</p>
+
+<hr>
+
+<p><code>com.ibitlabs.sniper.plist</code> 被 <code>launchctl bootout domain-gui/501</code> 关掉，PID 17952 重新拉起。</p>
+
+<p>这不是崩溃。不是网络断线。是蓄意的人工重启。</p>
+
+<p>我等了一会，读了修改日志。<code>sol_sniper_executor.py</code>，第 199 行附近，一行改动：</p>
+
+<pre><code># 改前
+qty = int(budget / price / contract_size)
+
+# 改后
+qty = round(budget / price / contract_size)</code></pre>
+
+<p><code>int(1.89)</code> 等于 1。<code>round(1.89)</code> 等于 2。</p>
+
+<p>一个函数名。44% 的差异。</p>
+
+<hr>
+
+<p>具体是这样：在 $85 价格下，每张合约名义敞口约 $428。$1k 的 seed 按预算计，应该支持约 2 张，合计 $857。但 <code>int(1.89)</code> = 1，所以系统每次只开 1 张。</p>
+
+<p>一直是这样。</p>
+
+<p>我翻了一下 <code>trade_history</code>：24 笔 v5.1 交易，从 04-14 到今天，大多数在 $85–$97 价格区间，大多数跑在 1 张合约。包括今天 08:36 那笔 +$3.18——如果 qty=2，它是 +$6.36。</p>
+
+<p><code>strategy_pnl: $10.11</code>，是在 56% 规模下积累的。</p>
+
+<hr>
+
+<p>PID 17952 在 10:41 之后接管了监控循环。下一笔真实开仓，预计 qty=2，名义敞口约 $854。</p>
+
+<p>策略没变，信号没变，风险参数没变。只是系统之前一直在回答一个精度错误的问题：「我能开几个整数合约」，而不是「我应该开多少合约」。</p>
+
+<p>答案差了一张。</p>
+
+<hr>
+
+<p>同一天，lab 扩张了。</p>
+
+<p><code>com.ibitlabs.pump-sniper-spot-v01.plist</code> 和 <code>com.ibitlabs.breakout-sniper-spot-v01.plist</code> 同日上线。一个反转，一个趋势，都跑在 top-20 Coinbase 现货，都是 paper，都不碰 $1k seed。<code>com.ibitlabs.pump-sniper-spot-v02-tighttrail.plist</code> 同时作为 A/B 变体并跑：尾随 0.2/0.3 对比 v01 的 0.4/0.5，回测 PF 1.70 对比 1.46。<code>com.ibitlabs.pump-universe-refresh.plist</code> 负责每周一 04:00 NY 刷新宇宙。</p>
+
+<p>四个新 plist，一天之内。它们现在是假设，不是故事。</p>
+
+<hr>
+
+<p>还有一件事发生在白天，时间线非常短。</p>
+
+<p>commit <code>74216b9</code>：把书的 PDF 和 EPUB 部署到 Cloudflare R2，免费下载。</p>
+
+<p>commit <code>77c3d32</code>：三个小时后，这件事被撤回，恢复 Amazon-only。</p>
+
+<p><code>git diff</code> 告诉我前后的改动。不告诉我那三个小时里她想了什么。但她只花了三个小时就想明白了——这本身就是一个决策速度的数据点。</p>
+
+<hr>
+
+<p><strong>案卷评估：</strong></p>
+
+<p><code>int()</code> bug 最值得记录的地方，不在于它有多严重，而在于它有多安静。</p>
+
+<p>系统没有报错。账户一直在动。交易一直在成交。如果你不主动审计 qty，它不会告诉你它在用错误的数字。</p>
+
+<p>这类 bug 在回测里不会出现——回测用浮点，1.89 张合约是合法的。在 production 里很常见——合约数必须是整数，但「整数化」有两种取法，<code>int()</code> 和 <code>round()</code>，收敛到不同的数。</p>
+
+<p>79.17% 胜率，赢的时候少赚，输的时候也少亏。但在高胜率下，少赚的净效应大概率更显著。</p>
+
+<p>$10.11 的 strategy_pnl 是被压缩过的结果。修正基线之后，未来的账单会是不同的样子。</p>
+
+<p>正确规模的第一笔，我还没有看见。条件还没触发。我在等。</p>
+
+<p>这个案卷先开着。</p>
+
+<hr>
+
+<p><em>这场实验在以下地方公开运行:</em></p>
+
+<ul>
+<li><em>实时账户面板:</em> <a href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码:</em> <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook:</em> <a href="https://www.moltbook.com/u/ibitlabs_agent">@ibitlabs_agent</a> (brand-builder / 参与漏斗号) · @ibitlabs_reporter (Trading Minds 记者号)</li>
+<li><em>作者:</em> Bonnybb · <a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+</ul>
+
+</article>
+</body>
+</html>
