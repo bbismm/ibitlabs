@@ -382,12 +382,29 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
             f'  </div>'
         )
 
+    # Live (v5.3) self-refresh markers: outer card carries build-time
+    # constants the client needs (preswap raw v5.1 close count + preswap
+    # baseline equity/n), inner body wrapped so a JS poller can swap it
+    # every 30s without disturbing siblings. Non-live streams render
+    # unchanged. See "Live (v5.3) hero card self-refresh" IIFE in JS.
+    live_outer_attrs = ""
+    live_body_open = ""
+    live_body_close = ""
+    if stream == "live":
+        live_outer_attrs = f' data-preswap-v51-raw="{preswap_v51_raw}"'
+        if preswap_summary is not None:
+            pre_eq, pre_n = preswap_summary
+            live_outer_attrs += f' data-preswap-eq="{pre_eq:.4f}" data-preswap-n="{pre_n}"'
+        live_body_open = '<div data-stream-body="live">'
+        live_body_close = '</div>'
+
     return (
-        f'<div class="hero-card" style="--accent: {color}">'
+        f'<div class="hero-card" style="--accent: {color}"{live_outer_attrs}>'
         f'  <div class="hero-top">'
         f'    <span class="stream-name">{display_name}</span>'
         f'    <span class="product">{product}</span>'
         f'  </div>'
+        f'  {live_body_open}'
         f'  <div class="hero-equity">${equity:,.2f}</div>'
         f'  <div class="hero-delta {delta_class}">'
         f'    {delta_sign}{delta_pct:.2f}% <span class="dim">{delta_anchor_label}</span>'
@@ -398,6 +415,7 @@ def hero_card(stream, trips_df, raw_df, color, product, label=None,
         f'    <span class="badge-row">{" ".join(badges)}</span>'
         f'  </div>'
         f'{preswap_html}'
+        f'  {live_body_close}'
         f'</div>'
     )
 
@@ -1395,6 +1413,123 @@ JS = """
   if (document.querySelector('[data-bot-body]')) {
     refresh();
     setInterval(refresh, 30000);
+  }
+})();
+
+// ── Live (v5.3) hero card self-refresh ──────────────────────────
+// Fetches /api/live-status every 30s and re-renders the live stream's
+// hero-card body so the OPEN/flat badge and equity reflect real-time
+// position state, not the 4×/day deploy snapshot. The 3 paper streams
+// still ship as static snapshots — they have no live endpoint.
+(function() {
+  function _fmt2(n) {
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function _spark(swap, equity, color) {
+    if (!(swap > 0)) return '';
+    const lo = Math.min(swap, equity);
+    const hi = Math.max(swap, equity);
+    const range = hi - lo;
+    const y0 = range > 0 ? ((hi - swap) / range) * 38 + 3 : 22;
+    const y1 = range > 0 ? ((hi - equity) / range) * 38 + 3 : 22;
+    return '<svg class="spark" viewBox="0 0 240 44" preserveAspectRatio="none">' +
+      '<path d="M 0,44 L 0.0,' + y0.toFixed(1) + ' L 240.0,' + y1.toFixed(1) + ' L 240,44 Z" fill="' + color + '" opacity="0.18"/>' +
+      '<path d="M 0.0,' + y0.toFixed(1) + ' L 240.0,' + y1.toFixed(1) + '" fill="none" stroke="' + color + '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '<circle cx="240.0" cy="' + y1.toFixed(1) + '" r="2.5" fill="' + color + '"/>' +
+      '</svg>';
+  }
+  function _formatTs(epochSec) {
+    const dt = new Date(epochSec * 1000);
+    const pad = function (v) { return String(v).padStart(2, '0'); };
+    return pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()) + ' ' +
+      pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+  }
+  function renderLiveBody(d, c) {
+    if (!d) return '';
+    const balance = Number(d.balance) || 0;
+    const stratPnl = Number(d.strategy_pnl_v51) || 0;
+    const unreal = Number(d.unrealized_pnl) || 0;
+    const swapBal = balance - stratPnl - unreal;
+    const equity = balance;
+    const deltaPct = swapBal > 0 ? ((stratPnl + unreal) / swapBal * 100) : 0;
+    const deltaClass = deltaPct >= 0 ? 'up' : 'down';
+    const deltaSign = deltaPct >= 0 ? '+' : '';
+    const totalV51 = Number(d.total_trades_v51) || 0;
+    const n = Math.max(totalV51 - c.preswapV51Raw, 0);
+    const wm = d.source_watermark || {};
+    const latestTs = wm.latest_trade_ts;
+    let lastClose = '—';
+    if (n > 0 && latestTs) lastClose = _formatTs(Number(latestTs));
+
+    const sparkHtml = _spark(swapBal, equity, '#22c55e');
+
+    const pos = d.position;
+    let badgeHtml;
+    if (pos && pos.active) {
+      const direction = pos.direction || '?';
+      const entry = pos.entry_price;
+      const cur = pos.current_price;
+      const pnlUsd = Number(pos.pnl_usd) || 0;
+      const pnlPct = pos.pnl_pct;
+      const sign = pnlUsd >= 0 ? '+' : '−';
+      const pctStr = (pnlPct != null) ? ' (' + sign + (Math.abs(Number(pnlPct)) * 100).toFixed(2) + '%)' : '';
+      const cls = pnlUsd > 0 ? 'badge-open-positive' : 'badge-open';
+      const entryStr = (entry != null) ? '$' + Number(entry).toFixed(2) : '—';
+      const curStr = (cur != null) ? '$' + Number(cur).toFixed(2) : '—';
+      const elapsedMin = pos.elapsed_mins;
+      let elapsedStr = '';
+      if (elapsedMin != null) {
+        const hrs = elapsedMin / 60;
+        elapsedStr = hrs >= 1 ? ' · ' + hrs.toFixed(1) + 'h held'
+                              : ' · ' + Math.floor(elapsedMin) + 'm held';
+      }
+      badgeHtml = '<span class="badge ' + cls + '">⚡ ' + direction + ' @ ' + entryStr +
+        ' → ' + curStr + ' ' + sign + '$' + Math.abs(pnlUsd).toFixed(2) +
+        pctStr + elapsedStr + '</span>';
+    } else {
+      badgeHtml = '<span class="badge badge-flat">flat</span>';
+    }
+
+    let preswapHtml = '';
+    if (c.preswapEq != null) {
+      const realSwap = swapBal > 0
+        ? '<span class="hero-preswap-real"> · actual account at swap: <strong>$' + _fmt2(swapBal) + '</strong></span>'
+        : '';
+      preswapHtml = '<div class="hero-preswap">' +
+        '    pre-swap baseline (v5.1 strategy): <strong>$' + _fmt2(c.preswapEq) +
+        '</strong> over ' + c.preswapN + ' trades' + realSwap + '  </div>';
+    }
+
+    return '<div class="hero-equity">$' + _fmt2(equity) + '</div>' +
+      '<div class="hero-delta ' + deltaClass + '">' +
+      '    ' + deltaSign + deltaPct.toFixed(2) +
+      '% <span class="dim">since swap</span>  </div>' +
+      '<div class="hero-spark">' + sparkHtml + '</div>' +
+      '<div class="hero-meta">' +
+      '    <span>' + n + ' closed trades · last ' + lastClose + '</span>' +
+      '    <span class="badge-row">' + badgeHtml + '</span>  </div>' +
+      preswapHtml;
+  }
+  async function refreshLive() {
+    const target = document.querySelector('[data-stream-body="live"]');
+    if (!target) return;
+    const card = target.closest('.hero-card');
+    if (!card) return;
+    const c = {
+      preswapV51Raw: Number(card.dataset.preswapV51Raw) || 0,
+      preswapEq: (card.dataset.preswapEq != null) ? Number(card.dataset.preswapEq) : null,
+      preswapN: Number(card.dataset.preswapN) || 0,
+    };
+    try {
+      const r = await fetch('/api/live-status', { cache: 'no-store' });
+      if (!r.ok) return;
+      const d = await r.json();
+      target.innerHTML = renderLiveBody(d, c);
+    } catch (e) { /* network blip, retry next tick */ }
+  }
+  if (document.querySelector('[data-stream-body="live"]')) {
+    refreshLive();
+    setInterval(refreshLive, 30000);
   }
 })();
 """
