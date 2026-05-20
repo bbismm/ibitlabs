@@ -66,8 +66,8 @@ PRODUCT = {
 STREAM_LABEL = {
     "live":           "v5.3",
     "shadow_no_rev":  "shadow · no_rev",
-    "shadow_eth_v53": "shadow · ETH v5.3",
-    "paper":          "paper · ETH",
+    "shadow_eth_v53": "shadow · ETH v5.3 (retiring)",
+    "paper":          "ETH paper · v5.1",
 }
 # Streams whose data is re-anchored to SWAP_TS — only trades closed at or
 # after this moment count toward equity / KPIs / charts. The paper (ETH)
@@ -936,7 +936,9 @@ SECTIONS = [
     ("mfe",         "MFE × MAE"),
     ("duration",    "Duration vs PnL"),
     ("recent",      "Recent activity"),
-    ("pump-sniper", "Pump Sniper SPOT"),
+    ("pump-sniper",          "Pump Sniper SPOT"),
+    ("pump-sniper-v02",      "Pump Sniper v0.2 (tighter)"),
+    ("breakout-sniper-spot", "Breakout Sniper SPOT"),
 ]
 
 # Pre-swap baseline (equity, trade_count) per anchored stream — attached to
@@ -1262,6 +1264,139 @@ JS = """
   }, { rootMargin: '-25% 0px -65% 0px', threshold: 0 });
   sections.forEach(s => obs.observe(s));
 })();
+
+// ── Spot bots live refresh ──────────────────────────────────────
+// Fetches /api/spot-bots-status (CF Pages Function → cloudflared →
+// sol_sniper_dashboard_harness.py at localhost:8086) every 30s and
+// re-renders the body of each section[data-bot-key]. Initial server-side
+// render still ships in the page so the content is correct without JS.
+(function() {
+  function _col(v) {
+    return v > 0 ? '#22c55e' : (v < 0 ? '#ef4444' : 'var(--dim)');
+  }
+  function _esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+  function _fmtNet(net) {
+    const sign = net > 0 ? '+' : (net < 0 ? '−' : '');
+    return sign + '$' + Math.abs(net).toFixed(2);
+  }
+  function _fmtWR(wr) { return (wr == null) ? '—' : wr.toFixed(1) + '%'; }
+  function _fmtPF(pf) {
+    if (pf === 'inf' || pf === Infinity) return '∞';
+    if (typeof pf === 'number') return pf.toFixed(2);
+    return '—';
+  }
+  function _fmtSignedPnl(usd, pct) {
+    const signUsd = usd > 0 ? '+' : (usd < 0 ? '−' : '');
+    const signPct = pct >= 0 ? '+' : '';
+    return signUsd + '$' + Math.abs(usd).toFixed(2) + ' (' + signPct + pct.toFixed(2) + '%)';
+  }
+
+  function renderBody(d) {
+    if (!d || d._error) return '<p class="ps-empty">data unavailable: ' + _esc(d && d._error || 'no data') + '</p>';
+    const kpi = d.kpi || {};
+    const open = d.open_positions || [];
+    const recent = d.recent_trades || [];
+    const perSym = d.per_symbol || {};
+    const slip = d.realized_slip || {};
+    const net = kpi.net_usd || 0;
+
+    const kpiRow = '<div class="ps-kpi-row">' +
+      '<div class="ps-kpi"><span class="ps-k">net (paper)</span><span class="ps-v" style="color:' + _col(net) + '">' + _fmtNet(net) + '</span></div>' +
+      '<div class="ps-kpi"><span class="ps-k">trades</span><span class="ps-v">' + (kpi.trades || 0) + '</span></div>' +
+      '<div class="ps-kpi"><span class="ps-k">WR</span><span class="ps-v">' + _fmtWR(kpi.wr_pct) + '</span></div>' +
+      '<div class="ps-kpi"><span class="ps-k">PF</span><span class="ps-v">' + _fmtPF(kpi.pf) + '</span></div>' +
+      '<div class="ps-kpi"><span class="ps-k">fires att/fill</span><span class="ps-v">' + (kpi.fires_attempted || 0) + ' / ' + (kpi.fires_filled || 0) + '</span></div>' +
+      '<div class="ps-kpi"><span class="ps-k">30-trade gate</span><span class="ps-v">' + _esc(kpi.gate_progress || '0/30') +
+        '<div class="ps-bar"><div class="ps-bar-fill" style="width:' + (kpi.gate_pct || 0) + '%"></div></div></span></div>' +
+      '</div>';
+
+    let slipHtml;
+    if (slip.avg_round_trip_pct != null) {
+      slipHtml = '<div class="ps-slip">realized slip — entry ' + slip.avg_entry_pct.toFixed(3) +
+        '% · exit ' + slip.avg_exit_pct.toFixed(3) +
+        '% · round-trip ' + slip.avg_round_trip_pct.toFixed(3) +
+        '% (backtest assumption: 0.10–0.60% RT by tier)</div>';
+    } else {
+      slipHtml = '<div class="ps-slip">realized slip — measured live on each entry+exit; appears after first trade.</div>';
+    }
+
+    let openHtml;
+    if (open.length) {
+      const rows = open.map(function(p) {
+        return '<tr><td>' + _esc(p.symbol) + '</td><td>$' + p.size_usd + '</td>' +
+          '<td>' + (p.trigger_ret_pct || 0).toFixed(2) + '%</td>' +
+          '<td>' + (p.highest_pnl_pct || 0).toFixed(2) + '%</td>' +
+          '<td>' + (p.elapsed_sec || 0) + 's</td>' +
+          '<td>' + (p.trail_armed ? 'trail-armed' : 'watching') + '</td></tr>';
+      }).join('');
+      openHtml = '<table class="ps-tbl"><thead><tr><th>symbol</th><th>size</th><th>trigger ret</th><th>peak %</th><th>elapsed</th><th>state</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    } else {
+      openHtml = '<p class="ps-empty">no open positions</p>';
+    }
+
+    let recentHtml;
+    if (recent.length) {
+      const rows = recent.map(function(t) {
+        const pnlU = t.gross_pnl_usd || 0;
+        const pnlP = t.gross_pnl_pct || 0;
+        const trig = t.trigger_ret_pct || 0;
+        return '<tr><td>' + _esc(t.symbol) + '</td>' +
+          '<td>' + trig.toFixed(2) + '%</td>' +
+          '<td>' + (t.elapsed_sec || 0) + 's</td>' +
+          '<td style="color:' + _col(pnlU) + '">' + _fmtSignedPnl(pnlU, pnlP) + '</td>' +
+          '<td>' + _esc(t.exit_reason || '—') + '</td></tr>';
+      }).join('');
+      recentHtml = '<table class="ps-tbl"><thead><tr><th>symbol</th><th>trigger ret</th><th>held</th><th>net pnl</th><th>exit reason</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    } else {
+      recentHtml = '<p class="ps-empty">no trades yet — first fire arriving on ~80min cadence; the bot polls every 60s.</p>';
+    }
+
+    let perSymHtml;
+    const symEntries = Object.entries(perSym);
+    if (symEntries.length) {
+      symEntries.sort(function(a, b) { return (b[1].n || 0) - (a[1].n || 0); });
+      const rows = symEntries.map(function(entry) {
+        const sym = entry[0], s = entry[1];
+        const ns = s.net_usd || 0;
+        const wrs = s.wr_pct;
+        const wrsStr = (wrs == null) ? '—' : wrs.toFixed(0) + '%';
+        const signN = ns > 0 ? '+' : (ns < 0 ? '−' : '');
+        return '<tr><td>' + _esc(sym) + '</td><td>' + (s.n || 0) + '</td><td>' + wrsStr +
+          '</td><td style="color:' + _col(ns) + '">' + signN + '$' + Math.abs(ns).toFixed(2) + '</td></tr>';
+      }).join('');
+      perSymHtml = '<table class="ps-tbl"><thead><tr><th>symbol</th><th>n</th><th>WR</th><th>net</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    } else {
+      perSymHtml = '<p class="ps-empty">per-symbol breakdown appears after the first 5 trades.</p>';
+    }
+
+    return kpiRow + slipHtml +
+      '<h3 class="ps-sub">Open positions</h3>' + openHtml +
+      '<h3 class="ps-sub">Recent trades</h3>' + recentHtml +
+      '<h3 class="ps-sub">Per-symbol</h3>' + perSymHtml;
+  }
+
+  async function refresh() {
+    try {
+      const r = await fetch('/api/spot-bots-status', { cache: 'no-store' });
+      if (!r.ok) return;
+      const data = await r.json();
+      const bots = data.bots || {};
+      Object.keys(bots).forEach(function(key) {
+        const el = document.querySelector('[data-bot-body="' + key + '"]');
+        if (el) el.innerHTML = renderBody(bots[key]);
+      });
+    } catch (e) { /* network blip, retry next tick */ }
+  }
+
+  if (document.querySelector('[data-bot-body]')) {
+    refresh();
+    setInterval(refresh, 30000);
+  }
+})();
 """
 
 if PUBLIC_MODE:
@@ -1458,8 +1593,28 @@ if _pump_dash.exists():
     except Exception:
         pump_d = None
 
+_pump_v02_dash = ROOT / "web" / "public" / "data" / "pump_sniper_spot_v02_tighttrail.json"
+pump_v02_d = None
+if _pump_v02_dash.exists():
+    try:
+        pump_v02_d = json.loads(_pump_v02_dash.read_text())
+    except Exception:
+        pump_v02_d = None
 
-def _render_pump_section(d):
+_breakout_dash = ROOT / "web" / "public" / "data" / "breakout_sniper_spot_v01.json"
+breakout_d = None
+if _breakout_dash.exists():
+    try:
+        breakout_d = json.loads(_breakout_dash.read_text())
+    except Exception:
+        breakout_d = None
+
+
+def _render_pump_section(d, *, section_id="pump-sniper", section_num=12,
+                        title="Pump Sniper SPOT v0.1",
+                        tag="NEW family · paper · fade-short on top-20 spot · since 2026-05-19",
+                        lede=None,
+                        bot_key="pump_v01"):
     if not d:
         return ""
     kpi = d.get("kpi", {}) or {}
@@ -1566,14 +1721,20 @@ def _render_pump_section(d):
         slip_html = ('<div class="ps-slip">realized slip — measured live on each entry+exit; '
                      'appears after first trade.</div>')
 
+    if lede is None:
+        lede = (
+            'A parallel track to v5.3 — not a variant, a different strategy family. '
+            'Catches the bounce after a -2% dump on top-20 Coinbase spot. '
+            f'<strong>Trigger:</strong> {pc.get("trigger", "")}. '
+            f'<strong>Exit:</strong> {pc.get("exit", "")}. '
+            f'<strong>Fee model:</strong> {pc.get("fee_assumption", "")}.'
+        )
+
     return f"""
-    <section id="pump-sniper">
-      <h2><span class="sn">12</span>Pump Sniper SPOT v0.1<span class="tag">NEW family · paper · fade-short on top-20 spot · since 2026-05-19</span></h2>
-      <div class="lede">A parallel track to v5.3 — not a variant, a different strategy family.
-        Catches the bounce after a -2% dump on top-20 Coinbase spot.
-        <strong>Trigger:</strong> {pc.get("trigger", "")}.
-        <strong>Exit:</strong> {pc.get("exit", "")}.
-        <strong>Fee model:</strong> {pc.get("fee_assumption", "")}.</div>
+    <section id="{section_id}" data-bot-key="{bot_key}">
+      <h2><span class="sn">{section_num:02d}</span>{title}<span class="tag">{tag}</span></h2>
+      <div class="lede">{lede}</div>
+      <div class="ps-body" data-bot-body="{bot_key}">
       <div class="ps-kpi-row">
         <div class="ps-kpi"><span class="ps-k">net (paper)</span>
           <span class="ps-v" style="color:{_col(net)}">{net_str}</span></div>
@@ -1597,16 +1758,57 @@ def _render_pump_section(d):
       {recent_html}
       <h3 class="ps-sub">Per-symbol</h3>
       {per_sym_html}
+      </div>
     </section>
     """
 
-pump_sniper_html = _render_pump_section(pump_d)
+pump_sniper_html = _render_pump_section(pump_d, bot_key="pump_v01")
+pump_v02_html = _render_pump_section(
+    pump_v02_d,
+    section_id="pump-sniper-v02",
+    section_num=13,
+    title="Pump Sniper SPOT v0.2 (tighter trail)",
+    tag="A/B variant · trailing 0.2/0.3 vs v0.1's 0.4/0.5 · since 2026-05-19 evening",
+    bot_key="pump_v02_tighttrail",
+    lede=(
+        'Direct A/B clone of v0.1 — same universe, same trigger, same SL, same 5min hold. '
+        '<strong>Only difference:</strong> trailing tightened from 0.4%/0.5% to 0.2%/0.3%. '
+        'Justification from the 2026-05-19 trailing sweep on the production cell (N=2 X=-2% '
+        'fade-short, 30 syms, 90d, n=2357 each): <code>trail_2_3</code> PF 1.70 / net +842% '
+        'vs <code>trail_4_5</code> PF 1.46 / net +644%. Whichever wins after ~30 realized '
+        'trades sets the new production trailing.'
+    ),
+)
+breakout_spot_html = _render_pump_section(
+    breakout_d,
+    section_id="breakout-sniper-spot",
+    section_num=14,
+    title="Breakout Sniper SPOT v0.1",
+    bot_key="breakout_v01",
+    tag="NEW family (trend-following) · 15m bars · 24h hold · since 2026-05-19 evening",
+    lede=(
+        'A different family from the pump bots — <strong>trend-following</strong>, not '
+        'mean-reversion. Fires on confirmed breakouts: 15m bar where StochRSI > 0.9, '
+        'price above BB upper, volume ≥ 1.5× MA, both 1H and 4H trends up, 15m '
+        'momentum ≥ +0.5%. Holds up to 24h. Phase 0 backtest (2026-05-19, 90d × 20 spot '
+        'symbols) returned <strong>PF 2.05</strong> with 19/20 symbols net-positive '
+        '(n=805 trades, exit mix: 705 trailing / 90 SL / 10 timeout). Same universe + '
+        'sizing as pump_sniper. Cyan accent on the /office pill.'
+    ),
+)
 
 # CSS for the pump_sniper section — kept inline so the section is fully
 # self-contained and surviving any future build_report.py refactor.
 PUMP_CSS = """
 section#pump-sniper { --pump-accent: #fb923c; }
-section#pump-sniper h2 .tag { color: var(--pump-accent); }
+section#pump-sniper-v02 { --pump-accent: #ea580c; }
+section#breakout-sniper-spot { --pump-accent: #06b6d4; }
+section#pump-sniper h2 .tag,
+section#pump-sniper-v02 h2 .tag,
+section#breakout-sniper-spot h2 .tag { color: var(--pump-accent); }
+section#breakout-sniper-spot .ps-kpi { background: rgba(6,182,212,0.06); border-color: rgba(6,182,212,0.25); }
+section#breakout-sniper-spot .ps-bar { background: rgba(6,182,212,0.15); }
+section#breakout-sniper-spot .ps-bar-fill { background: var(--pump-accent); }
 .ps-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
 .ps-kpi { background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.25); border-radius: 8px; padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
 .ps-k { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -1733,6 +1935,10 @@ html = f"""<!doctype html>
     </section>
 
     {pump_sniper_html}
+
+    {pump_v02_html}
+
+    {breakout_spot_html}
 
   </div></main>
 
