@@ -84,6 +84,52 @@ def fetch_exchange_fills(exchange, product_id, start_ts, end_ts):
     return fills
 
 
+def aggregate_fills_by_order(fills):
+    """Collapse per-fill records into per-order records.
+
+    Coinbase splits a single multi-contract market order into multiple
+    single-contract fill records (same order_id, distinct fill_ids).
+    DB trade_log stores one row per order with qty=N contracts. Comparing
+    per-fill to per-row mismatches whenever N>1. Aggregate by order_id so
+    matching is order-to-row.
+
+    Aggregate fields:
+      quantity = sum of fill quantities
+      price    = volume-weighted average (notional / qty)
+      ts       = earliest fill ts (closest to order submission)
+      fill_id  = first fill (representative; displayed in reports)
+      n_fills  = how many fills rolled up (1 = unchanged single fill)
+    """
+    by_order = {}
+    order_seq = []
+    for f in fills:
+        oid = f.get("order_id") or f.get("fill_id")
+        if oid not in by_order:
+            by_order[oid] = {
+                "order_id": f.get("order_id", oid),
+                "fill_id": f.get("fill_id", ""),
+                "side": f["side"],
+                "quantity": float(f["quantity"]),
+                "_notional": float(f["price"]) * float(f["quantity"]),
+                "ts": f["ts"],
+                "n_fills": 1,
+            }
+            order_seq.append(oid)
+        else:
+            agg = by_order[oid]
+            agg["quantity"] += float(f["quantity"])
+            agg["_notional"] += float(f["price"]) * float(f["quantity"])
+            agg["ts"] = min(agg["ts"], f["ts"])
+            agg["n_fills"] += 1
+    aggregated = []
+    for oid in order_seq:
+        a = by_order[oid]
+        a["price"] = a["_notional"] / a["quantity"] if a["quantity"] else 0.0
+        del a["_notional"]
+        aggregated.append(a)
+    return aggregated
+
+
 def classify_db_side(row):
     """Map DB side labels to canonical OPEN|CLOSE + direction.
 
@@ -299,13 +345,17 @@ def main():
 
     db_rows = fetch_db_trades(args.db, start_ts, end_ts)
     try:
-        fills = fetch_exchange_fills(exchange, args.symbol, start_ts, end_ts)
+        raw_fills = fetch_exchange_fills(exchange, args.symbol, start_ts, end_ts)
     except Exception as e:
         print(f"[ERROR] fills fetch failed: {e}", file=sys.stderr)
         return 2
 
+    fills = aggregate_fills_by_order(raw_fills)
+    split_orders = sum(1 for f in fills if f.get("n_fills", 1) > 1)
+
     print(f"  db rows: {len(db_rows)}")
-    print(f"  exchange fills: {len(fills)}")
+    print(f"  exchange fills: {len(raw_fills)} raw → {len(fills)} orders "
+          f"({split_orders} multi-fill)")
 
     # Pass 1: match each fill to a DB row
     used_db_ids = set()
@@ -426,7 +476,8 @@ def main():
         "last_run_iso": datetime.now().isoformat(timespec="seconds"),
         "window_days": args.days,
         "db_rows": len(db_rows),
-        "exchange_fills": len(fills),
+        "exchange_fills": len(raw_fills),
+        "exchange_orders": len(fills),
         "unmatched_fills_total": len(unmatched_fills),
         "unmatched_pre_cleanup": len(unmatched_pre),
         "unmatched_post_cleanup": len(unmatched_post),
