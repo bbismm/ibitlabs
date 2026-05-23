@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """ibit-backtest CLI dispatcher.
 
-v0/v0.1 active subcommands: run, is-oos, sweep, gate, export-shadow
-v0.1 stubs:                 walk-fwd, compare, regime, anchor
+v0/v0.1 active subcommands: run, is-oos, sweep, gate, export-shadow, anchor
+v0.1 stubs:                 walk-fwd, compare, regime
 """
 
 from __future__ import annotations
@@ -68,6 +68,11 @@ def cmd_export_shadow(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_anchor(args: argparse.Namespace) -> int:
+    from backtest.lib.anchor import anchor_run
+    return anchor_run(run_dir_str=args.run_dir, output_dir_str=args.output_dir)
+
+
 def _stub(name: str):
     def _impl(_args: argparse.Namespace) -> int:
         print(f"ibit-backtest {name}: not implemented in v0", file=sys.stderr)
@@ -131,8 +136,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--direction", default="both", choices=["long_bias", "short_bias", "both", "neutral"])
     p.set_defaults(func=cmd_export_shadow)
 
+    # anchor (Receipt protocol — three-piece closure: 模拟 → 治理 → 锚定)
+    p = sub.add_parser(
+        "anchor",
+        help="emit Receipt-spec JSONL chain covering this run; dry-run if no PINATA_JWT",
+    )
+    p.add_argument("run_dir", help="path to a previous run directory")
+    p.add_argument("--output-dir", default=None, help="default: <run_dir>/anchor/")
+    p.set_defaults(func=cmd_anchor)
+
     # stubs
-    for name in ("walk-fwd", "compare", "regime", "anchor"):
+    for name in ("walk-fwd", "compare", "regime"):
         sp = sub.add_parser(name, help=f"{name} (not implemented in v0)")
         sp.set_defaults(func=_stub(name))
 
