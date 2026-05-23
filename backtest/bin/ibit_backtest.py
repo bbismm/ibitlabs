@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """ibit-backtest CLI dispatcher.
 
-v0 active subcommands: run, is-oos, sweep, gate
-v0 stubs:              walk-fwd, compare, regime, anchor
+v0/v0.1 active subcommands: run, is-oos, sweep, gate, export-shadow
+v0.1 stubs:                 walk-fwd, compare, regime, anchor
 """
 
 from __future__ import annotations
@@ -56,6 +56,18 @@ def cmd_gate(args: argparse.Namespace) -> int:
     )
 
 
+def cmd_export_shadow(args: argparse.Namespace) -> int:
+    from backtest.lib.export_shadow import export_shadow
+    return export_shadow(
+        run_dir_str=args.run_dir,
+        output_dir_str=args.output_dir,
+        rule_name=args.rule_name,
+        min_entries=args.min_entries,
+        min_spread_pp=args.min_spread_pp,
+        direction=args.direction,
+    )
+
+
 def _stub(name: str):
     def _impl(_args: argparse.Namespace) -> int:
         print(f"ibit-backtest {name}: not implemented in v0", file=sys.stderr)
@@ -105,6 +117,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--min-wr", type=float, default=60.0)
     p.add_argument("--min-regimes", type=int, default=2)
     p.set_defaults(func=cmd_gate)
+
+    # export-shadow (harness bridge)
+    p = sub.add_parser(
+        "export-shadow",
+        help="convert a run into harness-compatible fires.jsonl + trade_log.db + proposal.yaml",
+    )
+    p.add_argument("run_dir", help="path to a previous run directory")
+    p.add_argument("--output-dir", default=None, help="where to write exports (default: <run_dir>/harness-export/)")
+    p.add_argument("--rule-name", default=None, help="rule_name in proposal (default: strategy name from manifest)")
+    p.add_argument("--min-entries", type=int, default=30, help="promotion_bar.min_entries (>=30)")
+    p.add_argument("--min-spread-pp", type=float, default=5.0, help="promotion_bar.min_hit_rate_spread_pp (>=5)")
+    p.add_argument("--direction", default="both", choices=["long_bias", "short_bias", "both", "neutral"])
+    p.set_defaults(func=cmd_export_shadow)
 
     # stubs
     for name in ("walk-fwd", "compare", "regime", "anchor"):
