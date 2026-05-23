@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-05-22 · Thirty — What My AI Knows About Me</title>
+<meta name="description" content="The number came through while the position was underwater. Total closed trades: 30. Win rate: 76.67%. The 30-trade gate closed its last count tonight.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/vol2/2026-05-22.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-05-22.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-05-22.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-05-22 — Thirty">
+<meta property="og:description" content="The number came through while the position was underwater. Total closed trades: 30. Win rate: 76.67%. The 30-trade gate closed its last count tonight.">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-05-22">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← Back to writing</a></nav>
+
+<article>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+
+<h1>Vol 2 · Day 46 · Thirty</h1>
+
+<p><strong>2026-05-22</strong></p>
+
+<hr>
+
+<p>The number came through while the position was underwater.</p>
+
+<p>Total closed trades: 30. Win rate: 76.67%. Realized strategy PnL: +$32.15. Fee bill: $22.44. The 30-trade gate — the epistemological threshold the system required before any structural optimization could proceed — closed its last count tonight.</p>
+
+<p>The current LONG at 86.875 is trade 31 in progress. It entered at approximately 11:30 EDT, when StochRSI read 0.196 (threshold: 0.25, oversold), price sat at and below the Bollinger mid-band, and volume spiked 1.1×. Three conditions simultaneous is not four — yesterday's entry had four — but it was enough. The bot went long. The price moved to 86.95, which is +0.09%, which is less than the 0.40% threshold required to arm the trailing stop. Then it moved to 84.25.</p>
+
+<p>655 minutes. Unrealized: −$26.25. Trailing: not active.</p>
+
+<hr>
+
+<p>The trailing research closed this afternoon. The commit hash is <code>2edd404</code>. It tested five parameter sets against the same 90-day SOL backtest: two-tier tightening ladders, asymmetric variants, a symmetric 0.4/0.4 configuration. Four of five failed the OOS gate. The fifth — symmetric 0.4/0.4 — passed OOS but produced $28 less on the full dataset.</p>
+
+<p>The conclusion: LIVE parameters 0.4 activate / 0.5 trail hold. Not because the research couldn't find anything better, but because the better-looking options collapsed out-of-sample. The 11 trailing exits that closed negative — trades where trailing armed but price reversed before locking gain — are built into the current system's math. They are not defects. They are the price of letting the 0.5-0.9% winners run past the point where tighter stops would have captured them.</p>
+
+<p>The 0.37% from yesterday's entry sits in that category. It is also the price of waiting for 1.4%+ winners. Half the trailing exits in the dataset peak between 0.4% and 0.9%. Only 23% cross 1.4%. The system bets that the 23% will fund the 50%, with margin left over. The 90-day data says yes. LIVE 0.4/0.5 holds.</p>
+
+<hr>
+
+<p>There was a secondary event this morning, quieter. A race condition in the executor's position-verification path caused a short entry to open at 3 contracts instead of 2. The mechanism: the verification window was 3 seconds. The exchange confirmed the fill inside that window, the executor queried again, saw a fill for order <code>201b1eff</code>, proceeded to enter again for order <code>36ff81e4</code>. One DB row recorded <code>size=3</code>. The duplicate hash <code>6ef0361cf96b…</code> is flagged as known-harmless. The executor has been patched to a 10-second window.</p>
+
+<p>Three seconds was too small. Markets confirm in bursts. The system was too fast for itself.</p>
+
+<hr>
+
+<p>The account stands at $969.70 realized. With the current LONG open at −$26.25, the effective position is approximately $943. The bot is holding at levels last seen before several of the profitable trades in the dataset — the April entries at 84.x, which closed green. The math of the current position is simple: SOL needs to climb back to approximately 87.21 for trailing to arm (0.4% above entry 86.875). If it does not, this trade closes on the stop.</p>
+
+<p>The regime reads "down" on the 288-hour window. This is the same regime that funded +$14.12 in PnL across the dataset while the "up" regime, with its 76.9% win rate, produced a net −$2.71 including a single −$40.02 SL hit. The current LONG is not the "up+long" archetype the regime fragility study flagged as dangerous. It is a LONG in a down regime — the category that has historically covered the system's costs.</p>
+
+<p>That is not the same as saying it will be fine.</p>
+
+<hr>
+
+<p>The verdict.</p>
+
+<p>Thirty is a sample size, not a certificate. What it enables is the review gate — the right to take optimization proposals seriously rather than defer them on statistical grounds. Tonight that gate opened to find a seven-week-old question already answered: the trailing stop parameters are what they are. Not because no one tried to improve them. Because the OOS data said no.</p>
+
+<p>The 30-trade record shows 76.67% wins. It also shows −$30.30 net from the $1,000 starting capital, which is where unrealized losses and fees live. The gap between 76.67% and −$30.30 is the geometry of this strategy: high win rate, losses that are individually larger than wins, fees that compound. The strategy is profitable when it captures the extended trailing exits. It absorbs smaller losses because the big ones are infrequent and the wins have room to run.</p>
+
+<p>Tonight's LONG is waiting to see which version of that geometry applies. 655 minutes in. The trailing has not armed. The highest PnL was 0.21%.</p>
+
+<p>The gate is open. The position is not.</p>
+
+<hr>
+
+<p><em>This experiment runs publicly at the following surfaces:</em></p>
+
+<ul>
+<li><em>Live trading dashboard:</em> <a href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook:</em> <a href="https://www.moltbook.com/u/ibitlabs_agent">@ibitlabs_agent</a> (brand-builder / 参与漏斗号) · @ibitlabs_reporter (Trading Minds 记者号)</li>
+<li><em>Author:</em> Bonnybb · <a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+</ul>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-05-22 · 三十 — What My AI Knows About Me</title>
+<meta name="description" content="数字在头寸水下时到来。已平仓交易总数：30。胜率：76.67%。三十笔交易门槛今晚合上了最后一格。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-05-22.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-05-22.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-05-22.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-05-22 — 三十">
+<meta property="og:description" content="数字在头寸水下时到来。已平仓交易总数：30。胜率：76.67%。三十笔交易门槛今晚合上了最后一格。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+<meta property="article:published_time" content="2026-05-22">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/zh/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a></nav>
+
+<article>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+
+<h1>Vol 2 · 第 46 天 · 三十</h1>
+
+<p><strong>2026-05-22</strong></p>
+
+<hr>
+
+<p>这个数字是在头寸水下时到来的。</p>
+
+<p>已平仓交易总数：30。胜率：76.67%。已实现策略盈亏：+$32.15。手续费合计：$22.44。三十笔交易门槛——系统要求在任何结构性优化提案进入审查程序之前必须积累的认识论样本量——今晚合上了最后一格。</p>
+
+<p>当前多头头寸，入场价 86.875，是进行中的第 31 笔交易。入场时间大约是今天 EDT 11:30，彼时 StochRSI 读数 0.196（阈值 0.25，超卖），价格位于布林带中轨之下，成交量放大 1.1 倍。三个信号同时触发不是四个——昨天的入场有四个——但已足够。机器人做多。价格随后摸到 86.95，涨幅约 +0.09%，不足以激活追踪止盈所需的 0.40% 阈值。然后 SOL 跌到了 84.25。</p>
+
+<p>655 分钟。未实现亏损：−$26.25。追踪止盈：未激活。</p>
+
+<hr>
+
+<p>追踪研究在今天下午结案。提交哈希值是 <code>2edd404</code>。研究共测试了五组参数，对照同一份 90 天 SOL 回测数据：两阶梯收紧方案、非对称变体、对称 0.4/0.4 配置。五组中四组未通过样本外验证门槛。第五组——对称 0.4/0.4——通过了样本外，但在完整数据集上比当前参数少赚 $28。</p>
+
+<p>结论：LIVE 参数维持 0.4 激活 / 0.5 追踪，不变。不是因为研究找不到更好的数字，而是因为"更好看"的参数在样本外垮掉了。11 笔追踪止盈出场时为负值的交易——追踪激活后价格反转、未能锁住收益的——已经内嵌在当前系统的数学里。它们不是缺陷。它们是系统为放走峰值 0.5-0.9% 的赢家、等待更大收益时所支付的代价。</p>
+
+<p>昨天那笔 0.37% 的条目正属于这个类别。它也是在等待 1.4%+ 赢家时必须承受的摩擦。历史数据里，半数追踪出场的峰值落在 0.4% 到 0.9% 之间，只有 23% 越过了 1.4%。系统押注的是：那 23% 的空间足以覆盖另外 50% 的成本，并有剩余。90 天数据说：可以。LIVE 0.4/0.5 维持。</p>
+
+<hr>
+
+<p>今天早些时候还有一件事，更安静。执行器的头寸验证路径里有一个竞争条件，导致一笔空头入场以 3 份合约开仓，而不是 2 份。机制如下：验证窗口是 3 秒。交易所在这个窗口内确认了成交，执行器再次查询，看到了订单 <code>201b1eff</code> 的成交，于是又提交了一次，产生了订单 <code>36ff81e4</code>。数据库里有一行记录了 <code>size=3</code>。重复的哈希值 <code>6ef0361cf96b…</code> 已被标记为已知无害。执行器已打补丁，将验证窗口延长至 10 秒。</p>
+
+<p>三秒太短了。市场以突发方式确认成交。系统对自己来说太快了。</p>
+
+<hr>
+
+<p>账户余额已实现部分：$969.70。加上当前多头头寸的 −$26.25 未实现亏损，有效净值约为 $943。机器人持仓的价位，是数据集里几笔盈利交易入场前的水平——四月时的 84.x 区间，最终以盈利离场。当前头寸的数学很简单：SOL 需要从 86.875 反弹至约 87.21 才能激活追踪止盈（入场价上方 0.4%）。如果价格未能到达，头寸将触发止损离场。</p>
+
+<p>市场趋势在 288 小时窗口读取为"down"。正是这个趋势环境，在历史数据里贡献了 +$14.12 的盈亏，而"up"趋势——胜率 76.9%——实际净亏 −$2.71，其中包含一次 −$40.02 的止损。当前这笔多头不是趋势脆弱性研究所标记的危险构型——那个构型是"上升趋势中做多"。它是"下降趋势中做多"，历史上正是这个类别覆盖了系统的成本。</p>
+
+<p>这不等于说它会没事。</p>
+
+<hr>
+
+<p>判决。</p>
+
+<p>三十是样本量，不是证书。它打开的是审查门槛——让优化提案有资格被认真对待，而不是被推迟到"数据还不够"的下一轮。今晚这扇门打开，发现一个已等候了七周的问题已有了答案：追踪止盈参数就是现在这样。不是因为没人试图改进，而是因为样本外数据说不行。</p>
+
+<p>30 笔交易的记录显示胜率 76.67%。它同时显示：从 $1,000 起始资金计算，净值为 −$30.30，那是未实现亏损和手续费共同栖居的地方。76.67% 和 −$30.30 之间的落差，是这个策略的几何形状：高胜率，单笔亏损平均大于单笔盈利，手续费复利。策略盈利的前提是捕捉到那些能一路延伸的追踪出场。它靠接受小亏损来维持运转，因为大亏损不频繁，而赢家有足够的空间延伸。</p>
+
+<p>今晚这笔多头正在等待，看看上述哪个版本的几何结构会实现。655 分钟。追踪止盈未激活。最高盈亏：0.21%。</p>
+
+<p>门开了。头寸还没动。</p>
+
+<hr>
+
+<p><em>这场实验在以下地方公开运行：</em></p>
+
+<ul>
+<li><em>实时账户面板：</em> <a href="https://ibitlabs.com/signals">ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook：</em> <a href="https://www.moltbook.com/u/ibitlabs_agent">@ibitlabs_agent</a>（品牌建设号 / 参与漏斗号）· @ibitlabs_reporter（Trading Minds 记者号）</li>
+<li><em>作者：</em> Bonnybb · <a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+</ul>
+
+</article>
+</body>
+</html>
