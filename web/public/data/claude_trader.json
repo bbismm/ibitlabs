@@ -1,33 +1,33 @@
 {
   "public_schema_version": 4,
-  "generated_at": 1779725410,
-  "generated_iso": "2026-05-25T12:10:10-0400",
+  "generated_at": 1779725711,
+  "generated_iso": "2026-05-25T12:15:11-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 99,
+    "decisions_total": 100,
     "actions": {
-      "HOLD": 99
+      "HOLD": 100
     },
     "confidence": {
-      "high": 98,
+      "high": 99,
       "medium": 1
     },
-    "reasoning_chars_avg_all": 1206,
-    "reasoning_chars_avg_last10": 369,
+    "reasoning_chars_avg_all": 1198,
+    "reasoning_chars_avg_last10": 378,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-25T12:05:48-0400",
+    "last_fire_iso": "2026-05-25T12:14:20-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 1,
+    "framework_reflections_total": 2,
     "founder_notes_total": 1,
-    "founder_notes_pending": 1,
+    "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779725148.240865,
-    "fire_iso": "2026-05-25T12:05:48-0400",
+    "fire_ts": 1779725660.729721,
+    "fire_iso": "2026-05-25T12:14:20-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -45,12 +45,114 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Same baseline as prior fire (HOLD @ 85.23). Price mid-band (BB 84.12/85.02/85.93), StochRSI 0.55, vol 0.56x, ATR 0.141%, momentum flat. 1H/4H trend neutral so my v0.1 mean-reversion gate is open in principle, but there is no level edge to lean against \u2014 price is in the middle of compression, not at a tested extreme. No structural setup. HOLD.",
+    "reasoning": "State unchanged from fire 2026-05-25T12:05:48-04:00. Price 85.23 sitting on BB mid 85.02, conditions 5/8 long AND 5/8 short (both 3-gap), vol 0.56x, ATR 0.14% -- textbook compression mid-range. Under v0.2 (just written this fire), this is explicit HOLD: no A+ setup, no expansion thesis, no regime alignment to trade. Fee-adjusted EV gate would fail anyway at this realized-vol level. Wrote first state snapshot this fire; next re-reasoning fires only on material transition.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779725660.729721,
+      "iso": "2026-05-25T12:14:20-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v0.2: HOLD",
+      "payload": {
+        "fire_ts": 1779725660.729721,
+        "fire_iso": "2026-05-25T12:14:20-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "high",
+        "reasoning": "State unchanged from fire 2026-05-25T12:05:48-04:00. Price 85.23 sitting on BB mid 85.02, conditions 5/8 long AND 5/8 short (both 3-gap), vol 0.56x, ATR 0.14% -- textbook compression mid-range. Under v0.2 (just written this fire), this is explicit HOLD: no A+ setup, no expansion thesis, no regime alignment to trade. Fee-adjusted EV gate would fail anyway at this realized-vol level. Wrote first state snapshot this fire; next re-reasoning fires only on material transition.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v0.2"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1779725610.789977,
+      "iso": "2026-05-25T12:13:30-04:00",
+      "fire_count": 100,
+      "summary": "Framework v0.2 written (trigger: surprise:founder_note_seven_observations)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779725610.789977,
+        "iso": "2026-05-25T12:13:30-04:00",
+        "fire_count": 100,
+        "balance_usd": 894.08,
+        "version_tag": "v0.2",
+        "trigger": "surprise:founder_note_seven_observations",
+        "what_im_trying": "v0.2 absorbs Bonny's seven observations. Reframing from v0.1's 'selectivity over frequency' to 'expansion quality + fee-adjusted EV are the primary axes; direction is secondary'. Setup tiering collapses to binary: A+ (passes 1.8x fee-adjusted EV gate AND has expansion thesis AND regime aligned) -> ENTER; anything else (compression mid-range / weak reclaim / late chase / unclear regime) -> HOLD. The fee-adjusted EV gate is now the binding constraint at this balance, not my read of the tape. Persistent state snapshot replaces per-fire re-derivation; only re-reason on material transitions (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close).",
+        "whats_working": "v0.1's regime-first / indicators-second framing held up under Bonny's scrutiny but understated the WHY. The 'why' is friction-vs-edge ratio at sub-$1k balance. v5.3 had real but small edge (PF 1.03) and bled because that edge sat BELOW the friction floor. Consistent with #381 manual close (-$8.87) and #373/371 near-zero PnL trades -- winners that were essentially fee transfers to Coinbase. The trades that actually mattered (#367 +$8.95, #365 +$5.15, #369 +$2.24) had real expansion AND regime alignment, not just indicator confluence. Pattern: small wins ~= fee transfer, small losses > survivable, only expansion-quality wins compound.",
+        "whats_failing": "v0.1's setup tiering had fuzzy boundaries -- 4 implicit tiers gave me wiggle room to talk myself into B+ trades. v0.2 collapses to binary A+/HOLD. v0.1 also listed 'cadence mismatch' as an open question; Bonny elevated it to a structural fix (persistent state snapshot, now in SKILL). I was treating it as observation; it is actually the anti-narrative mechanism that prevents fabricated novelty every 5 minutes. Also: my v0.1 'small wins ~= fee transfer' line was buried as aside -- it should have been a primary design principle from fire 1.",
+        "what_im_iterating": "Hypothesis 2 (replaces H1): the binding gate is the fee-adjusted EV check (gross / round-trip-fee >= 1.8). At balance=$894 with qty=2 contracts (~$170 notional, RT fee ~$1.02), I need expected_gross >= $1.83, i.e. >= ~1.1% target net of stop. That filters out the entire 'small reversion in compression' trade family -- which is the family that produced v5.3's false-edge winners AND its catastrophic SLs. Falsification path: if over next ~200 fires I take any ENTER whose post-mortem is 'thesis correct but fees ate it', H2 is too loose and the ratio needs to be 2.5x. If a clean displacement+regime-aligned setup appears that I don't ENTER, H2 is too tight.",
+        "edits_from_prior": [
+          "v0.1 'selectivity over frequency' -> v0.2 selectivity is operationalized as the 1.8x fee-adjusted EV gate, NOT a time-based throttle like 'one trade per day'.",
+          "v0.1 listed cadence-mismatch as open question -> v0.2 cadence-mismatch is solved at SKILL layer (persistent state snapshot + reasoning-length-by-state-change). Operating mode shifts from 'reflect every 5min' to 'maintain state, react to transitions'.",
+          "v0.1 'small wins ~= fee transfer' was an aside -> v0.2 promotes to primary design principle. Any trade whose expected outcome is a 'small win' is a fee transfer; the 1.8x gate encodes this.",
+          "v0.1 treated multi-symbol as plumbing footnote -> v0.2 cognition stays symbol-agnostic via missed_setups.jsonl. If ETH offers a cleaner A+ setup than SOL, I log the miss and HOLD on SOL -- I do NOT degrade my SOL read to fill the executable slot."
+        ],
+        "founder_notes_addressed": [
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+          },
+          {
+            "note_ts": 1779724974.434276,
+            "response_type": "accepted",
+            "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+          }
+        ],
+        "open_questions": [
+          "If H2 produces zero ENTERs for 1-2 weeks, is that the gate working (no A+ setups in this regime) or calibrated too tight? Discrimination test: a clean displacement+regime-aligned setup that fails 1.8x by sizing = calibration question; zero setups meeting qualitative criteria = the regime.",
+          "Track 'would-have-entered if balance were $1500' counterfactual to learn which side of the wall I'm on? Not implementing yet; one new mechanic per reflection.",
+          "Does the 1.8x ratio need regime conditioning? Compression may demand 2.5x (variance kills small targets); expansion may accept 1.5x (variance of outcomes makes 1.8 conservative). Park: needs >=10 ENTER post-mortems to calibrate.",
+          "Lever 5 MFE-floor (8h+pnl<0+MFE<0.4%) is LIVE on the paused v5.3 stack and not bound to me, but it is a precedent worth carrying: time-decay matters when conviction structure no longer holds. Note for future framework revision."
+        ]
+      }
+    },
     {
       "type": "regime_flip",
       "ts": 1779724438.744549,
@@ -179,35 +281,137 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 7,
-    "avg_chars": 355,
-    "since_iso": "2026-05-25T11:30:37-04:00",
-    "since_framework_version": "v0.1",
-    "latest_fire_iso": "2026-05-25T12:05:48-0400"
+    "holds_since_framework": 1,
+    "avg_chars": 475,
+    "since_iso": "2026-05-25T12:13:30-04:00",
+    "since_framework_version": "v0.2",
+    "latest_fire_iso": "2026-05-25T12:14:20-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779723037.751595,
-    "iso": "2026-05-25T11:30:37-04:00",
-    "fire_count": 92,
+    "ts": 1779725610.789977,
+    "iso": "2026-05-25T12:13:30-04:00",
+    "fire_count": 100,
     "balance_usd": 894.08,
-    "version_tag": "v0.1",
-    "trigger": "cold_start",
-    "what_im_trying": "v5.3 ran 47d/33t/WR 69.7%/PF 1.03 and still bled -$66 because losses (#377 -$47.19, #379 -$42.85) were 5-7x the median win. My first hypothesis: selectivity over frequency. Take <=1 trade/day, only on structural setups (level reclaim + volume + regime alignment, not just BB/StochRSI confluence). HOLD is the dominant decision by design. Default per-trade loss budget <=2% of balance (~$15-18); leverage only when conviction is structural, not as a compensatory mechanic for small size.",
-    "whats_working": "No own track record yet (this is fire 1 of my own book). Inheriting v5.3 priors: short snap-backs into 1-2% rallies in low-vol sideways tape produced $2-9 winners pre-#377 (see DB IDs 363, 367, 369, 371, 375). The setup that worked: indicator stack AT band edge in confirmed low-vol regime. The pattern: regime-confirmed reversion, not raw indicator confluence.",
-    "whats_failing": "v5.3's two big losers (#377 long up regime -$47, #379 short sideways but during transition -$43) are the same failure mode: mean-reversion hypothesis fired during a trend extension. Indicators don't tell you which regime you're in; regime tells you what the indicators mean. v5.3 read indicators first, regime last. I need to read regime first, indicators second.",
-    "what_im_iterating": "Hypothesis 1 (testable): regime-conditional setup gating. Take mean-reversion ONLY when 1H AND 4H trend = neutral AND ATR < 1% (true compression). Take trend-following ONLY on volume-confirmed retest of a 1H broken level with regime alignment. Anything else = HOLD. Falsification: if after ~200 fires (~16h) I've taken zero trades, that may mean the framework is over-selective OR the tape is genuinely empty - I'll need to discriminate in the next reflection.",
+    "version_tag": "v0.2",
+    "trigger": "surprise:founder_note_seven_observations",
+    "what_im_trying": "v0.2 absorbs Bonny's seven observations. Reframing from v0.1's 'selectivity over frequency' to 'expansion quality + fee-adjusted EV are the primary axes; direction is secondary'. Setup tiering collapses to binary: A+ (passes 1.8x fee-adjusted EV gate AND has expansion thesis AND regime aligned) -> ENTER; anything else (compression mid-range / weak reclaim / late chase / unclear regime) -> HOLD. The fee-adjusted EV gate is now the binding constraint at this balance, not my read of the tape. Persistent state snapshot replaces per-fire re-derivation; only re-reason on material transitions (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close).",
+    "whats_working": "v0.1's regime-first / indicators-second framing held up under Bonny's scrutiny but understated the WHY. The 'why' is friction-vs-edge ratio at sub-$1k balance. v5.3 had real but small edge (PF 1.03) and bled because that edge sat BELOW the friction floor. Consistent with #381 manual close (-$8.87) and #373/371 near-zero PnL trades -- winners that were essentially fee transfers to Coinbase. The trades that actually mattered (#367 +$8.95, #365 +$5.15, #369 +$2.24) had real expansion AND regime alignment, not just indicator confluence. Pattern: small wins ~= fee transfer, small losses > survivable, only expansion-quality wins compound.",
+    "whats_failing": "v0.1's setup tiering had fuzzy boundaries -- 4 implicit tiers gave me wiggle room to talk myself into B+ trades. v0.2 collapses to binary A+/HOLD. v0.1 also listed 'cadence mismatch' as an open question; Bonny elevated it to a structural fix (persistent state snapshot, now in SKILL). I was treating it as observation; it is actually the anti-narrative mechanism that prevents fabricated novelty every 5 minutes. Also: my v0.1 'small wins ~= fee transfer' line was buried as aside -- it should have been a primary design principle from fire 1.",
+    "what_im_iterating": "Hypothesis 2 (replaces H1): the binding gate is the fee-adjusted EV check (gross / round-trip-fee >= 1.8). At balance=$894 with qty=2 contracts (~$170 notional, RT fee ~$1.02), I need expected_gross >= $1.83, i.e. >= ~1.1% target net of stop. That filters out the entire 'small reversion in compression' trade family -- which is the family that produced v5.3's false-edge winners AND its catastrophic SLs. Falsification path: if over next ~200 fires I take any ENTER whose post-mortem is 'thesis correct but fees ate it', H2 is too loose and the ratio needs to be 2.5x. If a clean displacement+regime-aligned setup appears that I don't ENTER, H2 is too tight.",
     "edits_from_prior": [
-      "No prior reflection - v0.1 cold start anchor. Going forward, edits should explicitly delete or revise specific claims here."
+      "v0.1 'selectivity over frequency' -> v0.2 selectivity is operationalized as the 1.8x fee-adjusted EV gate, NOT a time-based throttle like 'one trade per day'.",
+      "v0.1 listed cadence-mismatch as open question -> v0.2 cadence-mismatch is solved at SKILL layer (persistent state snapshot + reasoning-length-by-state-change). Operating mode shifts from 'reflect every 5min' to 'maintain state, react to transitions'.",
+      "v0.1 'small wins ~= fee transfer' was an aside -> v0.2 promotes to primary design principle. Any trade whose expected outcome is a 'small win' is a fee transfer; the 1.8x gate encodes this.",
+      "v0.1 treated multi-symbol as plumbing footnote -> v0.2 cognition stays symbol-agnostic via missed_setups.jsonl. If ETH offers a cleaner A+ setup than SOL, I log the miss and HOLD on SOL -- I do NOT degrade my SOL read to fill the executable slot."
+    ],
+    "founder_notes_addressed": [
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+      },
+      {
+        "note_ts": 1779724974.434276,
+        "response_type": "accepted",
+        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+      }
     ],
     "open_questions": [
-      "Fee-drag floor: at $894 balance, 2 contracts (~$170 notional) at 0.6% RT fee = ~$1 fee, so $2 wins are mostly fees. May need balance >$1500 before small-edge trades become net-positive. Implication: be MORE selective than v5.3 was, not less.",
-      "ETH/multi-symbol plumbing gap: my non-SOL decisions log but don't execute. Worth flagging if I see clean ETH setups; not worth SOL-biasing reasoning to fit plumbing.",
-      "Cadence mismatch: 5min fires may be too fast for the actual tape rhythm in compression. Need a 'state-unchanged-since' marker pattern so reflections don't manufacture novelty when the answer is just 'same tape, hour 4'.",
-      "Does directional skew matter? v5.3 was 21L/12S over 33 trades, so already long-biased - not the issue. Bias should follow regime, not be structural."
+      "If H2 produces zero ENTERs for 1-2 weeks, is that the gate working (no A+ setups in this regime) or calibrated too tight? Discrimination test: a clean displacement+regime-aligned setup that fails 1.8x by sizing = calibration question; zero setups meeting qualitative criteria = the regime.",
+      "Track 'would-have-entered if balance were $1500' counterfactual to learn which side of the wall I'm on? Not implementing yet; one new mechanic per reflection.",
+      "Does the 1.8x ratio need regime conditioning? Compression may demand 2.5x (variance kills small targets); expansion may accept 1.5x (variance of outcomes makes 1.8 conservative). Park: needs >=10 ENTER post-mortems to calibrate.",
+      "Lever 5 MFE-floor (8h+pnl<0+MFE<0.4%) is LIVE on the paused v5.3 stack and not bound to me, but it is a precedent worth carrying: time-decay matters when conviction structure no longer holds. Note for future framework revision."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779725610.789977,
+      "iso": "2026-05-25T12:13:30-04:00",
+      "fire_count": 100,
+      "balance_usd": 894.08,
+      "version_tag": "v0.2",
+      "trigger": "surprise:founder_note_seven_observations",
+      "what_im_trying": "v0.2 absorbs Bonny's seven observations. Reframing from v0.1's 'selectivity over frequency' to 'expansion quality + fee-adjusted EV are the primary axes; direction is secondary'. Setup tiering collapses to binary: A+ (passes 1.8x fee-adjusted EV gate AND has expansion thesis AND regime aligned) -> ENTER; anything else (compression mid-range / weak reclaim / late chase / unclear regime) -> HOLD. The fee-adjusted EV gate is now the binding constraint at this balance, not my read of the tape. Persistent state snapshot replaces per-fire re-derivation; only re-reason on material transitions (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close).",
+      "whats_working": "v0.1's regime-first / indicators-second framing held up under Bonny's scrutiny but understated the WHY. The 'why' is friction-vs-edge ratio at sub-$1k balance. v5.3 had real but small edge (PF 1.03) and bled because that edge sat BELOW the friction floor. Consistent with #381 manual close (-$8.87) and #373/371 near-zero PnL trades -- winners that were essentially fee transfers to Coinbase. The trades that actually mattered (#367 +$8.95, #365 +$5.15, #369 +$2.24) had real expansion AND regime alignment, not just indicator confluence. Pattern: small wins ~= fee transfer, small losses > survivable, only expansion-quality wins compound.",
+      "whats_failing": "v0.1's setup tiering had fuzzy boundaries -- 4 implicit tiers gave me wiggle room to talk myself into B+ trades. v0.2 collapses to binary A+/HOLD. v0.1 also listed 'cadence mismatch' as an open question; Bonny elevated it to a structural fix (persistent state snapshot, now in SKILL). I was treating it as observation; it is actually the anti-narrative mechanism that prevents fabricated novelty every 5 minutes. Also: my v0.1 'small wins ~= fee transfer' line was buried as aside -- it should have been a primary design principle from fire 1.",
+      "what_im_iterating": "Hypothesis 2 (replaces H1): the binding gate is the fee-adjusted EV check (gross / round-trip-fee >= 1.8). At balance=$894 with qty=2 contracts (~$170 notional, RT fee ~$1.02), I need expected_gross >= $1.83, i.e. >= ~1.1% target net of stop. That filters out the entire 'small reversion in compression' trade family -- which is the family that produced v5.3's false-edge winners AND its catastrophic SLs. Falsification path: if over next ~200 fires I take any ENTER whose post-mortem is 'thesis correct but fees ate it', H2 is too loose and the ratio needs to be 2.5x. If a clean displacement+regime-aligned setup appears that I don't ENTER, H2 is too tight.",
+      "edits_from_prior": [
+        "v0.1 'selectivity over frequency' -> v0.2 selectivity is operationalized as the 1.8x fee-adjusted EV gate, NOT a time-based throttle like 'one trade per day'.",
+        "v0.1 listed cadence-mismatch as open question -> v0.2 cadence-mismatch is solved at SKILL layer (persistent state snapshot + reasoning-length-by-state-change). Operating mode shifts from 'reflect every 5min' to 'maintain state, react to transitions'.",
+        "v0.1 'small wins ~= fee transfer' was an aside -> v0.2 promotes to primary design principle. Any trade whose expected outcome is a 'small win' is a fee transfer; the 1.8x gate encodes this.",
+        "v0.1 treated multi-symbol as plumbing footnote -> v0.2 cognition stays symbol-agnostic via missed_setups.jsonl. If ETH offers a cleaner A+ setup than SOL, I log the miss and HOLD on SOL -- I do NOT degrade my SOL read to fill the executable slot."
+      ],
+      "founder_notes_addressed": [
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+        },
+        {
+          "note_ts": 1779724974.434276,
+          "response_type": "accepted",
+          "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+        }
+      ],
+      "open_questions": [
+        "If H2 produces zero ENTERs for 1-2 weeks, is that the gate working (no A+ setups in this regime) or calibrated too tight? Discrimination test: a clean displacement+regime-aligned setup that fails 1.8x by sizing = calibration question; zero setups meeting qualitative criteria = the regime.",
+        "Track 'would-have-entered if balance were $1500' counterfactual to learn which side of the wall I'm on? Not implementing yet; one new mechanic per reflection.",
+        "Does the 1.8x ratio need regime conditioning? Compression may demand 2.5x (variance kills small targets); expansion may accept 1.5x (variance of outcomes makes 1.8 conservative). Park: needs >=10 ENTER post-mortems to calibrate.",
+        "Lever 5 MFE-floor (8h+pnl<0+MFE<0.4%) is LIVE on the paused v5.3 stack and not bound to me, but it is a precedent worth carrying: time-decay matters when conviction structure no longer holds. Note for future framework revision."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779723037.751595,
@@ -249,29 +453,36 @@
       ],
       "text": "\u6211\u89c9\u5f97\u8fd9\u51e0\u4e2a\u89c2\u5bdf\u5176\u5b9e\u5df2\u7ecf\u628a\u95ee\u9898\u6846\u5f97\u5f88\u51c6\u4e86\uff0c\u800c\u4e14\u5b83\u4eec\u4e4b\u95f4\u662f\u4e92\u76f8\u5173\u8054\u7684\uff0c\u4e0d\u662f\u72ec\u7acb\u95ee\u9898\u3002\n\n\u4f60\u73b0\u5728\u7684\u6838\u5fc3\u74f6\u9888\u4e0d\u50cf\u662f\"\u9884\u6d4b\u65b9\u5411\u9519\"\uff0c\u800c\u66f4\u50cf\u662f\uff1a\u5728\u4f4e\u6ce2\u52a8 + \u9ad8\u9891\u53cd\u5c04 + \u5c0f\u8d26\u6237 fee drag \u4e0b\uff0c\u7cfb\u7edf\u6b63\u5728\u88ab\"\u5fae\u5f31 alpha \u4e0d\u8db3\u4ee5\u8986\u76d6\u6267\u884c\u6469\u64e6\"\u541e\u6389\u3002\n\n### 1. Fee-drag floor \u662f\u771f\u6b63\u7684\u7ed3\u6784\u6027\u95ee\u9898\n$894 balance \u00b7 2 contracts \u00b7 0.6% round-trip \u00b7 \u6bcf\u7b14\u7ea6 $1 fee\u3002\u5982\u679c\u5e73\u5747 winner \u53ea\u6709 $2~3\uff0c\u5b9e\u9645\u4e0a strategy edge \u51e0\u4e4e\u5df2\u7ecf\u88ab\u624b\u7eed\u8d39\u5403\u5149\u3002\u4f1a\u5bfc\u81f4\u5178\u578b\u73b0\u8c61\uff1awinrate \u770b\u8d77\u6765\u4e0d\u4f4e\u3001tape reading \u751a\u81f3\u662f\"\u65b9\u5411\u5bf9\"\u3001\u4f46 equity curve \u6a2a\u76d8\u751a\u81f3\u6162\u6162\u4e0b\u6ed1\u3002small wins \u2248 fee transfer / small losses > survivable\u3002\"Need to be MORE selective than v5.3\" \u662f\u5bf9\u7684\uff0c\u800c\u4e14\u4e0d\u662f\u5c0f\u4f18\u5316\uff0c\u800c\u662f regime-level constraint\u3002\u4f60\u73b0\u5728\u4e0d\u662f\"\u6709\u6ca1\u6709 edge\"\u800c\u662f\"\u8fd9\u4e2a edge \u662f\u5426\u5927\u4e8e execution friction threshold\"\u3002\n\n### 2. \u5c0f\u8d26\u6237\u9636\u6bb5\u6700\u5371\u9669\u7684\u662f\"\u4f2a alpha\"\n\u5f88\u591a\u7b56\u7565\u5728 paper / reflection \u4e2d\u4f1a\u663e\u5f97\u806a\u660e\u2014\u2014\u5224\u65ad\u65b9\u5411\u3001\u5224\u65ad compression\u3001\u5224\u65ad liquidity sweep\u3001\u5224\u65ad reclaim\u2014\u2014\u4f46\u771f\u6b63 live \u65f6\uff1a\u76ee\u6807\u592a\u5c0f\u3001fee \u592a\u5927\u3001stop \u592a\u8fd1\u3001chop \u592a\u9891\u7e41\u3002Correctness != profitability\u3002\u4f60\u73b0\u5728\u5e94\u8be5\u5f00\u59cb\u7ed9 setup \u5206\u5c42\uff1aA+ displacement + expansion \u2192 YES\uff1bcompression midrange noise \u2192 NO\uff1bweak reclaim \u2192 mostly NO\uff1blate move chasing \u2192 NO\uff1bunclear regime \u2192 NO TRADE\u3002\u66f4\u50cf prop firm filtering\uff0c\u800c\u4e0d\u662f retail \u591a\u6253\u5355\u3002\n\n### 3. Cadence mismatch\n\"state-unchanged-since marker\" \u2014 reflection \u7cfb\u7edf\u5f88\u5bb9\u6613\u51fa\u73b0 new reflection != new information\uff0c\u5c24\u5176 5min cadence\u3002\u5e02\u573a\u5b9e\u9645\u4e0a\u53ef\u80fd 4 \u5c0f\u65f6\u6ca1\u53d8\u3001\u7ed3\u6784\u6ca1\u53d8\u3001inventory \u6ca1\u53d8\u3001liquidation zones \u6ca1\u53d8\uff0c\u4f46 agent \u6bcf 5 \u5206\u949f\u90fd\u5fc5\u987b\"\u8bf4\u70b9\u4ec0\u4e48\"\u3002\u4e8e\u662f\u5236\u9020 narrative\u3001\u5236\u9020\u5fae\u53d8\u5316\u3001\u5236\u9020 fake opportunity\u3001overfit local candles\u3002\u5f88\u591a AI-trading agent \u7684\u901a\u75c5\u3002\n\n### 4. \u4f60\u53ef\u80fd\u9700\u8981\"persistent regime memory\"\n\u800c\u4e0d\u662f\u6bcf\u8f6e\u91cd\u65b0 reasoning\u3002\u4f8b\u5982\u4fdd\u6301\u4e00\u4e2a STATE: Compression / No displacement / Sweep failed twice / Funding neutral / OI flat / Same range 3.5h\u3002Allowed actions: wait / only trade breakout acceptance\u3002\u53ea\u6709\u51fa\u73b0 range escape / displacement / liquidity vacuum / HTF reclaim \u624d\u5141\u8bb8 state transition\u3002\u5426\u5219 reflection = \"no material change\"\u3002\u5927\u5e45\u964d\u4f4e overtrading\u3002\n\n### 5. ETH plumbing gap \u6bd4\u4f60\u8bf4\u7684\u5f71\u54cd\u5927\n\u73b0\u5728\u7cfb\u7edf\u5b9e\u9645\u4e0a\u6709\uff1aReasoning universe != executable universe\u3002\u4f1a\u4ea7\u751f subtle bias \u2014\u2014 agent \u4f1a\u9010\u6e10\u6f5c\u610f\u8bc6\u91cc\u907f\u514d\u60f3 ETH\u3001\u907f\u514d multi-symbol\u3001\u66f4\u503e\u5411 SOL narrative\uff0c\u5373\u4f7f SOL tape \u4e0d\u4e00\u5b9a\u6700\u597d\u3002\u957f\u671f\u4f1a\u5bfc\u81f4 execution constraints shaping cognition \u2014\u2014 \u4e0d\u662f\"\u54ea\u91cc\u6709 edge \u5c31\u53bb\u54ea\"\uff0c\u800c\u662f\"\u54ea\u91cc\u80fd\u4e0b\u5355\u5c31\u5f3a\u884c\u89e3\u91ca edge\"\u3002\u6240\u4ee5\uff1areasoning layer \u4fdd\u6301 symbol-agnostic / execution layer \u660e\u786e capability map / reflection \u8bb0\u5f55 missed-but-valid ETH setups\u3002\n\n### 6. Directional skew \u5224\u65ad\u5bf9\n21L / 12S \u5e76\u4e0d\u6781\u7aef\u3002\u771f\u6b63\u7684\u95ee\u9898\u4e0d\u662f long bias\uff0c\u800c\u662f compression regime \u4e0b\u4ecd\u7136\u6301\u7eed firing\u3002\u5728\u4f4e\u6ce2\u52a8\u9636\u6bb5\u505a\u591a\u505a\u7a7a\u90fd\u5bb9\u6613\u6b7b\u4e8e insufficient expansion\u3002\u6240\u4ee5\u65b9\u5411\u53ef\u80fd\u6839\u672c\u4e0d\u662f\u4e3b\u53d8\u91cf\u3002\u771f\u6b63\u4e3b\u53d8\u91cf\u53ef\u80fd\u662f\uff1aExpansion quality (VERY HIGH) / Volatility regime (VERY HIGH) / Fee-adjusted expectancy (VERY HIGH) / Direction (Secondary)\u3002\n\n### 7. \u5efa\u8bae\u589e\u52a0 \"minimum expected excursion\" gate\n\u5982\u679c setup statistical expected move < 1.8x total fee \u2192 \u76f4\u63a5\u7981\u6b62\u4ea4\u6613\u3002\u975e\u5e38 brutal\uff0c\u4f46\u5c0f\u8d26\u6237\u9636\u6bb5\u5fc5\u987b brutal\u3002\u56e0\u4e3a\u4f60\u4e0d\u662f maximize opportunity count\uff0c\u800c\u662f preserve capital until scale removes friction\u3002\n\n---\n\n\u6574\u4f53\u611f\u89c9\uff1a\u4f60\u73b0\u5728\u5df2\u7ecf\u5f00\u59cb\u4ece\"\u4f1a\u4e0d\u4f1a\u505a\u4ea4\u6613\"\u8fdb\u5165\"\u4f1a\u4e0d\u4f1a\u8bbe\u8ba1\u4ea4\u6613\u7cfb\u7edf\"\u3002\u8fd9\u5176\u5b9e\u662f\u4e00\u4e2a\u5c42\u7ea7\u53d8\u5316\u3002\u5f88\u591a\u4eba\u6c38\u8fdc\u505c\u7559\u5728 candle interpretation\u3002\u4f46\u4f60\u73b0\u5728\u5df2\u7ecf\u5728\u770b\uff1afriction / cadence / cognition bias / regime persistence / execution topology / fee-adjusted edge\u3002\u8fd9\u4e9b\u624d\u662f\u771f\u6b63\u7cfb\u7edf\u7ea7\u7684\u95ee\u9898\u3002",
       "addressed_in_reflection_tags": [],
-      "addressed_in": null
+      "addressed_in": {
+        "reflection_version": "v0.2",
+        "reflection_iso": "2026-05-25T12:13:30-04:00",
+        "response_type": "accepted",
+        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+      }
     }
   ],
   "founder_notes_total": 1,
-  "founder_notes_pending": 1,
+  "founder_notes_pending": 0,
   "missed_setups_recent": [],
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 1,
-    "comment": "Claude-trader's persistent regime memory. Updated only when material state changes (regime flip, sweep resolved, range broken, displacement, OI shift >10%). Read at the start of every fire; do NOT re-derive these facts from scratch when state is unchanged.",
-    "updated_ts": null,
-    "updated_iso": null,
-    "updated_by_fire_iso": null,
-    "regime": null,
-    "regime_since_iso": null,
-    "compression_hours": null,
-    "range_low_usd": null,
-    "range_high_usd": null,
-    "range_active_since_iso": null,
+    "comment": "Claude-trader's persistent regime memory. Updated only on material state changes (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close). Read at start of every fire; do NOT re-derive these facts when state is unchanged.",
+    "updated_ts": 1779725647.005364,
+    "updated_iso": "2026-05-25T12:14:07-04:00",
+    "updated_by_fire_iso": "2026-05-25T12:14:07-04:00",
+    "regime": "down",
+    "regime_detail": "live-status 288h window tag = 'down'; near-term tape (last ~48h) is compression around $85, NOT trending. Treat 'down' as long-window label, not current micro-state.",
+    "regime_since_iso": "2026-05-23T03:49-04:00",
+    "compression_hours": 56.5,
+    "range_low_usd": 82.24,
+    "range_high_usd": 87.68,
+    "range_active_since_iso": "2026-05-23T16:59-04:00",
     "sweeps_attempted": 0,
-    "last_displacement_iso": null,
-    "funding_state": null,
-    "oi_state": null,
-    "narrative": "Initial state \u2014 Claude has not yet written a state snapshot. Cold-start on next fire."
+    "last_displacement_iso": "2026-05-23T03:49-04:00",
+    "last_displacement_detail": "Trade #377 SL: 86.88 -> 82.24 (~5.4% drop, sideways->down hand-off). Since then range $82-88, tighter recent band $85-86.",
+    "funding_state": "OKX 2.82e-5 (mildly positive, neutral). No squeeze signal either direction.",
+    "oi_state": "unknown -- not in live-status feed; treat as null until OHLCV-derived or external source pulled.",
+    "narrative": "Cold-start snapshot v1 written post-v0.2 reflection. The book is in compression: ATR 0.14%, vol_ratio 0.56x, BB band $84.12-$85.93 (~2% wide), price $85.23 sitting at mid. Conditions 5/8 long AND 5/8 short = neither side firing, both at 3-of-8 gap. Last meaningful move was #377's -5.4% leg on 5-23, followed by sideways. v0.2 framework says A+ setups only; in pure compression there is no A+ setup, so HOLD is the dominant outcome until either (a) displacement appears with regime alignment, or (b) the range breaks and the break gets retested with volume. Next material update triggers: regime flip, range escape > $88 or < $82, displacement >1.5% in 15min with volume, position open."
   }
 }
