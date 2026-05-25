@@ -1,7 +1,7 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779727928,
-  "generated_iso": "2026-05-25T12:52:08-0400",
+  "generated_at": 1779729218,
+  "generated_iso": "2026-05-25T13:13:38-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
@@ -721,16 +721,46 @@
     "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
     "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-25T12:49:49-04:00"
+    "skipped_fires_in_mode": 5,
+    "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
+    "last_gate_check_iso": "2026-05-25T17:11:37.787756+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-25T12:49:49-04:00",
     "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 5,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": null
-  }
+    "last_gate_check_iso": "2026-05-25T17:11:37.787756+00:00"
+  },
+  "framework_origins": [
+    {
+      "schema_version": 1,
+      "ts": 1779727789.3992162,
+      "iso": "2026-05-25T12:49:49-04:00",
+      "fire_count": 105,
+      "balance_usd": 894.08,
+      "version_tag": "v0.3",
+      "trigger": "bootstrap:cognition_mode_protocol",
+      "cognition_mode_initial": "Compression",
+      "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
+      "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
+      "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
+      "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
+      "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
+      "edits_from_prior": [
+        "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
+        "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
+        "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
+        "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
+        "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
+        "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
+      ]
+    }
+  ]
 }
