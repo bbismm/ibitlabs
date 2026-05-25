@@ -234,40 +234,73 @@
       background: var(--green); margin-bottom: 14px;
     }
 
-    /* === Stream === */
-    section.stream { margin-top: 8px; }
-    section.stream h2 {
+    /* === Pulse counter (HOLDs since current framework) === */
+    section.pulse {
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 18px; margin: 8px 0 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 14px; flex-wrap: wrap;
+      font-family: ui-monospace, Menlo, monospace; font-size: 12.5px;
+      color: var(--muted);
+    }
+    section.pulse .pulse-main b { color: var(--text); font-weight: 600; }
+    section.pulse .pulse-main code {
+      background: var(--bg); padding: 1px 5px; border-radius: 3px;
+      color: var(--purple); font-size: 11.5px;
+    }
+    section.pulse .pulse-meta {
+      color: var(--dim); font-size: 11.5px;
+    }
+
+    /* === Event timeline === */
+    section.timeline { margin-top: 8px; }
+    section.timeline h2 {
       font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--muted); margin: 0 0 14px;
+      color: var(--muted); margin: 0 0 6px;
       font-family: ui-monospace, Menlo, monospace;
     }
-    .stream-item {
-      background: var(--panel); border: 1px solid var(--border);
-      border-radius: 8px; padding: 16px 18px; margin-bottom: 10px;
-      transition: border-color 0.12s ease;
+    section.timeline .hint {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px; margin: 0 0 14px; max-width: 720px;
     }
-    .stream-item:hover { border-color: var(--border-2); }
-    .stream-item .top {
+    .ev {
+      position: relative; background: var(--panel);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 18px 14px 22px; margin-bottom: 10px;
+      border-left: 3px solid var(--dim);
+    }
+    .ev.framework_reflection { border-left-color: var(--purple); }
+    .ev.first_under_framework { border-left-color: var(--blue); }
+    .ev.regime_flip { border-left-color: var(--warn); }
+    .ev.confidence_shift { border-left-color: var(--muted); }
+    .ev.enter { border-left-color: var(--green); }
+    .ev.exit { border-left-color: var(--warn); }
+    .ev .top {
       display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 10px; gap: 12px; flex-wrap: wrap;
+      gap: 14px; flex-wrap: wrap; margin-bottom: 6px;
     }
-    .stream-item .top .left {
-      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    .ev .type {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600;
     }
-    .stream-item .top .left .verdict {
-      font-weight: 600; letter-spacing: 0.04em;
-    }
-    .stream-item .top .left .verdict.hold { color: var(--muted); }
-    .stream-item .top .left .verdict.enter { color: var(--green); }
-    .stream-item .top .left .verdict.exit { color: var(--warn); }
-    .stream-item .top .left .ctx { color: var(--dim); margin-left: 8px; }
-    .stream-item .top .when {
+    .ev.framework_reflection .type { color: var(--purple); }
+    .ev.first_under_framework .type { color: var(--blue); }
+    .ev.regime_flip .type { color: var(--warn); }
+    .ev.confidence_shift .type { color: var(--muted); }
+    .ev.enter .type { color: var(--green); }
+    .ev.exit .type { color: var(--warn); }
+    .ev .when {
       font-family: ui-monospace, Menlo, monospace; font-size: 11px;
       color: var(--dim);
     }
-    .stream-item .text {
-      color: var(--text); font-size: 14px; line-height: 1.65;
-      font-family: ui-serif, Georgia, serif;
+    .ev .summary {
+      font-family: ui-serif, Georgia, serif; font-size: 14.5px;
+      color: var(--text); line-height: 1.6;
+    }
+    .ev.timeline-empty {
+      border-left-color: var(--border);
+      color: var(--muted); font-family: ui-monospace, Menlo, monospace;
+      font-size: 13px; padding: 16px 18px;
     }
 
     /* === How this works === */
@@ -420,9 +453,17 @@
       <div class="reasoning" id="latest-reasoning">Loading…</div>
     </section>
 
-    <section class="stream">
-      <h2>Recent stream</h2>
-      <div id="stream-host">
+    <section class="pulse" id="pulse">
+      <div class="pulse-main" id="pulse-main">Loading pulse…</div>
+      <div class="pulse-meta" id="pulse-meta">—</div>
+    </section>
+
+    <section class="timeline">
+      <h2>Event timeline</h2>
+      <p class="hint">
+        Only the moments that move: framework reflections, ENTER/EXIT decisions, regime flips, confidence shifts, first decision after each new framework. Repeating frozen-tape HOLDs aggregate into the pulse counter above. Full raw decisions in <a href="/data/claude_trader.json"><code>claude_trader.json</code></a> if you want them.
+      </p>
+      <div id="timeline-host">
         <p style="color: var(--dim); font-family: ui-monospace, Menlo, monospace; font-size: 12px;">Loading…</p>
       </div>
     </section>
@@ -650,29 +691,67 @@
       document.getElementById("latest-reasoning").textContent = l.reasoning || "(no reasoning)";
     }
 
-    function renderStream(d) {
-      const items = d.recent || [];
-      const host = document.getElementById("stream-host");
-      if (!items.length) {
-        host.innerHTML = '<p style="color: var(--dim);">No decisions yet.</p>';
+    function renderPulse(d) {
+      const hs = d.hold_summary || {};
+      const fw = d.framework_latest;
+      const latest = d.latest;
+      const mainEl = document.getElementById("pulse-main");
+      const metaEl = document.getElementById("pulse-meta");
+
+      if (!latest) {
+        mainEl.textContent = "No decisions yet.";
+        metaEl.textContent = "";
         return;
       }
-      const html = items.map(it => {
-        const vc = verdictClass(it.decision);
-        const ctxParts = [];
-        if (it.direction) ctxParts.push(it.direction);
-        if (it.current_price) ctxParts.push("$" + it.current_price);
-        if (it.regime) ctxParts.push(it.regime);
-        const ctx = ctxParts.length ? `<span class="ctx">· ${ctxParts.join(" · ")}</span>` : "";
+
+      const fwVer = fw ? (fw.version_tag || "v?") : null;
+      if (hs.holds_since_framework && fwVer) {
+        mainEl.innerHTML =
+          `<b>${hs.holds_since_framework} frozen HOLD${hs.holds_since_framework > 1 ? "s" : ""}</b> ` +
+          `since framework <code>${escapeHtml(fwVer)}</code> · ` +
+          `avg ${hs.avg_chars} chars`;
+      } else if (fwVer) {
+        mainEl.innerHTML = `Live under framework <code>${escapeHtml(fwVer)}</code>. No HOLDs yet this version.`;
+      } else {
+        mainEl.textContent = `${d.summary.decisions_total || 0} decisions logged.`;
+      }
+      metaEl.innerHTML = latest.fire_iso
+        ? `Last fire ${ago(latest.fire_iso)}`
+        : "—";
+    }
+
+    function eventTypeLabel(t) {
+      switch (t) {
+        case "framework_reflection": return "Framework reflection";
+        case "first_under_framework": return "First decision under framework";
+        case "regime_flip": return "Regime flip";
+        case "confidence_shift": return "Confidence shift";
+        case "enter": return "Enter";
+        case "exit": return "Exit";
+        default: return t || "Event";
+      }
+    }
+
+    function renderTimeline(d) {
+      const events = d.events || [];
+      const host = document.getElementById("timeline-host");
+      if (!events.length) {
+        host.innerHTML = `
+          <div class="ev timeline-empty">
+            No events yet. The page surfaces only moments that move — framework reflections, non-HOLD decisions, regime flips, confidence shifts. Quiet tape produces no events; the pulse counter above represents that activity.
+          </div>`;
+        return;
+      }
+      const html = events.map(e => {
+        const cls = (e.type || "").replace(/[^a-z_]/gi, "");
+        const when = e.iso ? `${fmtTime(e.iso)} · ${ago(e.iso)}` : "—";
         return `
-          <div class="stream-item">
+          <div class="ev ${cls}">
             <div class="top">
-              <div class="left">
-                <span class="verdict ${vc}">${it.decision || "—"}</span>${ctx}
-              </div>
-              <div class="when">${it.fire_iso ? fmtTime(it.fire_iso) + " · " + ago(it.fire_iso) : "—"}</div>
+              <span class="type">${escapeHtml(eventTypeLabel(e.type))}</span>
+              <span class="when">${when}</span>
             </div>
-            <div class="text">${escapeHtml(it.reasoning || "")}</div>
+            <div class="summary">${escapeHtml(e.summary || "")}</div>
           </div>
         `;
       }).join("");
@@ -716,7 +795,8 @@
         renderStats(d);
         renderFramework(d);
         renderLatest(d);
-        renderStream(d);
+        renderPulse(d);
+        renderTimeline(d);
       } catch (e) {
         console.error(e);
         document.getElementById("latest-reasoning").innerHTML =
