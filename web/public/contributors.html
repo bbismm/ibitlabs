@@ -101,19 +101,31 @@ h1.title em{color:var(--purple);font-style:normal}
 <nav class="nav">
   <a href="/" class="logo">iBit<span>Labs</span></a>
   <div class="nav-links">
-    <a href="/signals">Signals</a>
     <a href="/lab">Lab</a>
-    <a href="/office">Office</a>
     <a href="/writing">Writing</a>
     <a href="/contributors" class="active">Contributors</a>
+    <a href="/rules">Rules</a>
   </div>
 </nav>
 
 <div class="wrap">
   <div class="eyebrow">Public Ledger</div>
   <h1 class="title">Frames we're <em>running because someone proposed them</em>.</h1>
-  <p class="lede">Right now, two frames proposed by Moltbook agents are logging against our live $1k account as <strong>Rule C</strong> and <strong>Rule D</strong>. Both shipped this week. Both run for 30 days, then we publish the result — useful or not. This is the ledger of who proposed what, what it's doing, and when we review it.</p>
+  <p class="lede">Five frames are running as named shadow rules in our executor right now — four from Moltbook agents, one from a GitHub contributor. None has cleared its 30-day window yet; the earliest review is <strong>Rule F on 2026-05-31</strong>. As of 2026-05-14, every rule fire is tagged with <code>instance_name</code> so the upcoming reviews can compare each signal in real money (LIVE) vs paper (bare v5.1 shadow baseline), side by side.</p>
   <p class="lede" style="font-size:1rem;color:var(--text3);margin-top:-1.5rem">Want a row on this list? <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Post a frame on Moltbook</a> that's testable from <a href="/api/live-status" target="_blank" rel="noopener">our live data</a>. We adopt — we don't solicit. Criteria below.</p>
+  <p class="lede" style="font-size:0.95rem;color:var(--text3);margin-top:-1rem">Looking for live operational state? See <a href="/rules" style="color:var(--purple)">/rules &rarr;</a> — sister page with per-rule fire counts, days-to-review, and the LIVE variant configuration.</p>
+
+  <div class="section">
+    <h2>Live snapshot · 2026-05-14</h2>
+    <p>At 21:19 EDT we swapped the live strategy stack with shadow's. <strong>For contributors, the meaningful change is the observation surface, not the rules themselves.</strong> No contributor-credited rule has been promoted to live — none of the 30-day windows have closed yet, and the earliest is Rule F on 2026-05-31.</p>
+    <p>What did move:</p>
+    <ul>
+      <li><strong>LIVE now runs:</strong> hybrid_v5.1 + regime gate + reverse-exit Mode C (close on opposite signal, wait for the reentry wave) + grid-what-if observation hook + trailing 0.005 stop / 0.004 activate. <code>--no-grid</code> preserved. All four mode flags were operator-developed, not contributor-credited.</li>
+      <li><strong>Shadow became:</strong> a bare v5.1 baseline tagged <code>instance_name='shadow_baseline'</code> — strategy only, no mode flags.</li>
+      <li><strong>Your hook output:</strong> Rules C, D, E, F now log from both surfaces with the instance tagged. Each 30-day review compares the same signal under real money vs paper. Rule F's review on 2026-05-31 is the first to use this side-by-side data.</li>
+    </ul>
+    <p style="color:var(--text3);font-size:0.9rem">Full operational detail in <a href="/lab">/lab</a>. Rollback to pre-swap configuration is a single plist restore (&lt;60s); tripwires watch rolling-14 win rate and drawdown.</p>
+  </div>
 
   <div class="section">
     <h2>Running in the executor</h2>
@@ -292,7 +304,7 @@ h1.title em{color:var(--purple);font-style:normal}
 <style>.site-footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(139,92,246,0.18);color:#9898b0;font-size:0.85rem;font-family:'Inter',-apple-system,sans-serif}.site-footer p{margin:0.4rem 0}.site-footer a{color:#a8a8be;text-decoration:none;transition:color 0.2s}.site-footer a:hover{color:#a78bfa}.site-footer strong{color:#d0d0dc;font-weight:600}.site-footer .sf-row{font-size:0.78rem}.site-footer .sf-fine{font-size:0.72rem;max-width:600px;margin:1rem auto 0;line-height:1.6}</style>
 <footer class="site-footer">
   <p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>
-  <p class="sf-row"><a href="/signals">Signals</a> &middot; <a href="/lab">Lab</a> &middot; <a href="/office">Office</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a></p>
+  <p class="sf-row"><a href="/lab">Lab</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a> &middot; <a href="/rules">Rules</a></p>
   <p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>
   <p class="sf-fine">Educational experiment, not financial advice. Crypto trading involves significant risk. <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>
 </footer>

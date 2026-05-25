@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iBitLabs | Strategy Rules</title>
+<meta name="description" content="Live operations dashboard for iBitLabs strategy rules — what's running on LIVE, what's running as shadow, fire counts, days-to-review, retired experiments.">
+<link rel="canonical" href="https://www.ibitlabs.com/rules">
+<meta property="og:title" content="iBitLabs Strategy Rules — Live Operations">
+<meta property="og:description" content="Per-rule fire counts, shadow review countdowns, LIVE variant config, retired experiments. Sister page to /contributors.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ibitlabs.com/rules">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iBitLabs Strategy Rules — Live Operations">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:dark}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--elevated:#1a1a26;--overlay:#222233;
+  --text:#f0f0f5;--text2:#a8a8ba;--text3:#787890;
+  --accent:#8b5cf6;--accent-m:rgba(139,92,246,0.15);--accent-g:rgba(139,92,246,0.30);
+  --green:#22c55e;--green-m:rgba(34,197,94,0.12);--green-b:rgba(34,197,94,0.30);
+  --red:#ef4444;--red-m:rgba(239,68,68,0.12);--red-b:rgba(239,68,68,0.30);
+  --warn:#f59e0b;--warn-m:rgba(245,158,11,0.12);--warn-b:rgba(245,158,11,0.30);
+  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.10);
+  --ui:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono','SF Mono',monospace;
+  --r:10px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--ui);font-size:14px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;line-height:1.5}
+
+.top-bar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(10,10,15,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1)}
+.logo{font-size:14px;font-weight:800;letter-spacing:2px;text-decoration:none;color:var(--text)}
+.logo em{font-style:normal;color:var(--accent);font-weight:500}
+.top-r{display:flex;align-items:center;gap:14px}
+.top-r a{font-size:12px;color:var(--text3);text-decoration:none}
+.top-r a:hover{color:var(--accent)}
+.top-links{display:flex;align-items:center;gap:14px}
+.live-dot{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--green)}
+.live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+h1{font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
+h1 .small{font-size:13px;color:var(--text3);font-weight:500;letter-spacing:0;margin-left:8px;font-family:var(--mono)}
+.lede{font-size:14px;color:var(--text2);max-width:820px;margin-bottom:28px}
+.lede a{color:var(--accent);text-decoration:none}
+.lede a:hover{text-decoration:underline}
+
+section{margin-bottom:36px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid var(--b1);padding-bottom:10px}
+.sec-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2.5px}
+.sec-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+/* live banner */
+.live-banner{background:linear-gradient(135deg,rgba(34,197,94,0.06),rgba(139,92,246,0.05));border:1px solid var(--green-b);border-radius:var(--r);padding:18px 22px}
+.live-banner-row{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.live-banner-row .badge-live{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:1.5px;background:var(--green-m);color:var(--green);border:1px solid var(--green-b)}
+.live-banner-row .variant{font-family:var(--mono);font-size:13px;color:var(--text2)}
+.live-banner-row .since{font-family:var(--mono);font-size:11px;color:var(--text3);margin-left:auto}
+.live-config{font-family:var(--mono);font-size:13px;color:var(--text);line-height:1.7}
+.live-config .flag{display:inline-block;background:var(--accent-m);border:1px solid var(--accent-g);color:var(--accent);padding:2px 8px;border-radius:4px;margin:2px 4px 2px 0;font-size:12px;font-weight:600}
+.live-config .cli{display:inline-block;background:rgba(255,255,255,0.04);border:1px solid var(--b1);color:var(--text2);padding:2px 8px;border-radius:4px;margin:2px 4px 2px 0;font-size:12px}
+
+/* card grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:16px 18px;transition:border-color 0.2s}
+.card:hover{border-color:var(--b2)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-id{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent)}
+.card-name{font-size:13px;color:var(--text2);font-family:var(--mono)}
+.card-handle{font-size:12px;color:var(--text3)}
+.card-handle a{color:var(--accent);text-decoration:none}
+.card-handle a:hover{text-decoration:underline}
+
+.status-pill{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:1px;white-space:nowrap}
+.st-open{background:var(--green-m);color:var(--green);border:1px solid var(--green-b)}
+.st-dormant{background:var(--warn-m);color:var(--warn);border:1px solid var(--warn-b)}
+.st-observation{background:rgba(255,255,255,0.04);color:var(--text3);border:1px solid var(--b1)}
+.st-retired{background:var(--red-m);color:var(--red);border:1px solid var(--red-b)}
+.st-queued{background:rgba(255,255,255,0.04);color:var(--text2);border:1px solid var(--b2)}
+
+.fire-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:12px 0;padding:10px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.fire-cell{text-align:center}
+.fire-num{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)}
+.fire-num.zero{color:var(--text3)}
+.fire-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+.card-meta{font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px}
+.card-meta strong{color:var(--text2);font-weight:500}
+.frame{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5;font-style:italic;border-left:2px solid var(--b2);padding-left:10px}
+.frame::before{content:'"';color:var(--text3);font-style:normal}
+.frame::after{content:'"';color:var(--text3);font-style:normal}
+
+.review-strip{margin-top:10px;padding:6px 10px;border-radius:6px;font-size:11px;font-family:var(--mono);display:flex;justify-content:space-between;align-items:center}
+.review-strip.soon{background:var(--warn-m);color:var(--warn);border:1px solid var(--warn-b)}
+.review-strip.normal{background:rgba(255,255,255,0.03);color:var(--text2);border:1px solid var(--b1)}
+.review-strip.passed{background:rgba(255,255,255,0.03);color:var(--text3);border:1px solid var(--b1)}
+
+/* gate cards */
+.gate-card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px}
+.gate-card .gate-name{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.gate-card .gate-thresh{font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:6px}
+.gate-card .gate-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* queued list */
+.queued-list{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:8px 4px}
+.queued-row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--b1);font-size:12px}
+.queued-row:last-child{border-bottom:none}
+.queued-handle{color:var(--accent);font-family:var(--mono);font-weight:600;text-decoration:none}
+.queued-handle:hover{text-decoration:underline}
+.queued-name{color:var(--text2);font-family:var(--mono)}
+.queued-name.frame-only{color:var(--text3);font-style:italic;font-family:var(--ui)}
+.queued-status{font-size:10px;color:var(--text3);font-family:var(--mono)}
+
+/* retired */
+.retired-card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;opacity:0.85}
+.retired-card .ret-name{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.retired-card .ret-date{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px}
+.retired-card .ret-reason{font-size:12px;color:var(--text3);line-height:1.5}
+
+.foot{text-align:center;font-size:11px;color:var(--text3);padding:24px 0;letter-spacing:1px;font-family:var(--mono)}
+#err{display:none;background:var(--red-m);color:var(--red);border:1px solid var(--red-b);padding:12px 16px;border-radius:var(--r);margin-bottom:20px;font-size:13px}
+
+@media(max-width:640px){
+  main{padding:16px 12px 40px}
+  h1{font-size:22px}
+  .cards{grid-template-columns:1fr}
+  .fire-row{grid-template-columns:1fr 1fr 1fr}
+  .live-banner-row{flex-wrap:wrap}
+  .live-banner-row .since{margin-left:0;width:100%}
+  .top-r > a{display:none}
+}
+</style>
+<script src="/i18n.js"></script>
+<script src="/tz.js" defer></script>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="/" class="logo">iBitLabs <em>Rules</em></a>
+  <div class="top-r">
+    <span class="live-dot" id="live-dot">LIVE</span>
+    <span style="font-size:10px;color:var(--text3);font-family:var(--mono)" id="ts">--</span>
+    <div class="top-links">
+      <a href="/lab">Lab</a>
+      <a href="/writing">Writing</a>
+      <a href="/contributors">Contributors</a>
+      <a href="/rules" style="color:var(--accent)">Rules</a>
+    </div>
+  </div>
+</div>
+
+<main>
+  <h1>Strategy Rules <span class="small" id="updatedAt">loading…</span></h1>
+  <p class="lede">
+    Live operations dashboard for what's actually running on the SOL Sniper, what's running as shadow alongside it, and what's been retired. Sister page to <a href="/contributors">/contributors</a> &mdash; that one tracks who proposed each rule and when it gets reviewed; this one tracks fire counts, current state, and the LIVE configuration. Updated every 30 seconds. Refreshes when shadow rules fire.
+  </p>
+
+  <div id="err"></div>
+
+  <!-- A. LIVE VARIANT BANNER -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">A &middot; LIVE Configuration</div>
+      <div class="sec-sub" id="liveSince">since —</div>
+    </div>
+    <div class="live-banner" id="liveBanner">
+      <div class="live-banner-row">
+        <span class="badge-live">LIVE</span>
+        <span class="variant" id="variantName">loading…</span>
+        <span class="since" id="variantSince"></span>
+      </div>
+      <div class="live-config" id="liveConfig">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5">
+        Single-strategy bot. <code>regime_gate</code> filters entries by 30-day SOL regime. <code>reverse_exit_C</code> closes on opposite signal &middot; arms reentry gate &middot; waits for reverse signal to clear. <code>GRID_WHAT_IF</code> is a log-only observation hook (Path C) &mdash; no trades. Grid is structurally disabled until the 2026-06-05 review.
+      </div>
+    </div>
+  </section>
+
+  <!-- B. CONTRIBUTOR-CREDITED SHADOW RULES -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">B &middot; Contributor Shadow Rules</div>
+      <div class="sec-sub">5 adopted &middot; log-only until reviewed</div>
+    </div>
+    <div class="cards" id="contribCards"><div class="card-meta">loading…</div></div>
+  </section>
+
+  <!-- C. OPERATOR SHADOW RULES -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">C &middot; Operator Shadow Rules</div>
+      <div class="sec-sub">internal experiments, log-only</div>
+    </div>
+    <div class="cards" id="opShadowCards"><div class="card-meta">loading…</div></div>
+  </section>
+
+  <!-- D. OBSERVATION HOOKS -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">D &middot; Observation Hooks</div>
+      <div class="sec-sub">no decision impact &middot; pure instrumentation</div>
+    </div>
+    <div class="cards" id="obsCards"><div class="card-meta">loading…</div></div>
+  </section>
+
+  <!-- E. RUNTIME GATES -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">E &middot; Runtime Entry Gates</div>
+      <div class="sec-sub">enforced inside <code>sol_sniper_main.py</code> &middot; live state on <a href="/signals" style="color:var(--accent)">/signals</a></div>
+    </div>
+    <div class="cards" id="gatesCards">
+      <div class="gate-card">
+        <div class="gate-name">ATR Volatility</div>
+        <div class="gate-thresh">ATR > 4% &rarr; skip signal</div>
+        <div class="gate-desc">Mean reversion is unreliable in extreme volatility. Computed from 14-period ATR vs price.</div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-name">Cooldown</div>
+        <div class="gate-thresh">SL: 4h &middot; TP/trail/reverse: 15min</div>
+        <div class="gate-desc">No new entries during cooldown. Length depends on what closed the previous trade. Circuit Breaker extends this to 24h.</div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-name">Circuit Breaker</div>
+        <div class="gate-thresh">3 consecutive SL &rarr; 24h pause</div>
+        <div class="gate-desc">Hard halt after a streak of losses. Implemented as an extended cooldown; status visible on /signals.</div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-name">Reentry Gate (Mode C)</div>
+        <div class="gate-thresh">Block same-direction re-entry until reverse signal stops</div>
+        <div class="gate-desc">After a reverse-exit close, refuses to re-enter the original side until the opposite signal stops firing. Pairs with <code>reverse_exit_C</code> on LIVE.</div>
+      </div>
+      <div class="gate-card">
+        <div class="gate-name">risk_officer (portfolio)</div>
+        <div class="gate-thresh">per-symbol min/max &middot; 7d DD &minus;5/&minus;10/&minus;15 &rarr; 1.0/0.5/0.0&times; cap</div>
+        <div class="gate-desc">Portfolio-level entry gate wired 2026-05-08. Never overrides exits; only blocks or scales entries.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- F. QUEUED FRAMES -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">F &middot; Queued Frames</div>
+      <div class="sec-sub" id="queuedCount">— frames awaiting promotion</div>
+    </div>
+    <div class="queued-list" id="queuedList"><div class="card-meta" style="padding:14px">loading…</div></div>
+  </section>
+
+  <!-- G. RETIRED -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">G &middot; Retired Experiments</div>
+      <div class="sec-sub">tested + falsified &middot; kept here as teaching record</div>
+    </div>
+    <div class="cards" id="retiredCards"></div>
+  </section>
+
+  <div class="foot">iBitLabs Rules &middot; sister page to <a href="/contributors" style="color:var(--text2)">/contributors</a> &middot; data refreshes every 30s</div>
+</main>
+
+<style>.site-footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid rgba(139,92,246,0.18);color:#9898b0;font-size:0.85rem;font-family:'Inter',-apple-system,sans-serif}.site-footer p{margin:0.4rem 0}.site-footer a{color:#a8a8be;text-decoration:none;transition:color 0.2s}.site-footer a:hover{color:#a78bfa}.site-footer strong{color:#d0d0dc;font-weight:600}.site-footer .sf-row{font-size:0.78rem}.site-footer .sf-fine{font-size:0.72rem;max-width:600px;margin:1rem auto 0;line-height:1.6}</style>
+<footer class="site-footer">
+  <p>iBitLabs &mdash; A 0-to-N Startup, In Public &mdash; by <strong>Bonnybb</strong></p>
+  <p class="sf-row"><a href="/lab">Lab</a> &middot; <a href="/writing">Writing</a> &middot; <a href="/contributors">Contributors</a> &middot; <a href="/rules">Rules</a></p>
+  <p class="sf-row"><a href="https://twitter.com/BonnyOuyang" target="_blank" rel="noopener">X</a> &middot; <a href="https://www.moltbook.com/u/ibitlabs_agent" target="_blank" rel="noopener">Moltbook</a> &middot; <a href="https://github.com/bbismm/ibitlabs" target="_blank" rel="noopener">GitHub</a> &middot; <a href="https://t.me/ibitlabs_sniper" target="_blank" rel="noopener">Telegram</a></p>
+  <p class="sf-fine">Educational experiment, not financial advice. Crypto trading involves significant risk. <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// Retired experiments — hardcoded teaching record. Source: feedback_*.md memory.
+const RETIRED = [
+  {name: "Filter A — drawdown-from-recent-high gate", date: "falsified 2026-04 OOS", reason: "+20pp in-sample, &minus;40pp out-of-sample. Regime-window lag is the root cause. Don't re-propose Filter A or rolling-percentile (Option B, same family)."},
+  {name: "TP/SL adaptive variants (16 findings)", date: "archived 2026-05-06", reason: "All entry filters + exit price/signal-driven variants falsified or null on 120d backtest. v5.1 PF=1.32 / +57% beat best v5.2 candidate by &minus;46pp."},
+  {name: "v5.2 architecture spec", date: "retired 2026-05-06 evening", reason: "120d backtest: V0 v5.1 +57% / PF 1.32 vs best v5.2 V3h +11.1% / PF 0.61. Lost &minus;46pp. PF<1.00 live = small-sample noise, NOT architecture switch."},
+  {name: "Deep StochRSI extreme as SL predictor", date: "falsified 2026-05-11", reason: "Hypothesis: StochRSI &le;0.1 long / &ge;0.9 short at entry predicts elevated SL rate. Reversed by the 04-12 &rarr; 05-11 dataset &mdash; 5/14 trailing wins entered deep-extreme (incl. 05-11 winner at StochRSI=0.000); only 1/4 SL fires did. Deep-extreme correlates with winning, not losing. Don't re-propose depth-of-extreme as a filter."},
+  {name: "Daily +1% upside cap", date: "removed 2026-04-27", reason: "Profit caps contradict the $1k&rarr;$10k mission. Loss caps stay; profit caps are out."},
+  {name: "12h flat hard-cap", date: "rejected 2026-04-22", reason: "Conflicted with 24h-compound and 36h-flat exits. Compound version shipped as Rule B shadow."},
+  {name: "Polymarket sniper Phase 1", date: "archived 2026-05-09", reason: "Same-day paper&rarr;archived. 4 evidence chains: Liu &minus;50%, Farxida 86&times; edge collapse, ladder 0 violations, retail 70% loss. Sandbox kept for re-evaluation."},
+  {name: "Kronos zero-shot K-line model", date: "archived 2026-05-14", reason: "h24 Win-UP minus Loss-UP = &minus;60pp (inverse). h96 +6.7pp (null). pred/actual std 0.22&rarr;0.29 = OOD on SOL 5m. Don't re-propose without 4 caveats addressed."},
+];
+
+const fmtDays = n => n === null ? '—' : n < 0 ? `${-n}d ago` : `in ${n}d`;
+const safeText = s => (s || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+const moltUrl = handle => handle ? `https://www.moltbook.com/u/${handle}` : '#';
+
+const STATUS_LABELS = {
+  shadow_window_open: ['OPEN', 'st-open'],
+  shadow_window_open_dormant_pending_calibration: ['DORMANT', 'st-dormant'],
+  observation_hook: ['OBSERVE', 'st-observation'],
+  operator_shadow: ['OP-SHADOW', 'st-observation'],
+  queued: ['QUEUED', 'st-queued'],
+  frame_stage_not_rule_yet: ['FRAME', 'st-queued'],
+};
+
+function pill(status_key) {
+  const [label, cls] = STATUS_LABELS[status_key] || [status_key.toUpperCase().slice(0, 8), 'st-observation'];
+  return `<span class="status-pill ${cls}">${label}</span>`;
+}
+
+function reviewStrip(reviewIso) {
+  if (!reviewIso) return '';
+  const review = new Date(reviewIso);
+  const days = Math.ceil((review - Date.now()) / 86400000);
+  let cls = 'normal';
+  if (days < 0) cls = 'passed';
+  else if (days <= 14) cls = 'soon';
+  const dateStr = reviewIso.slice(0, 10);
+  return `<div class="review-strip ${cls}"><span>review</span><span><time datetime="${reviewIso}" data-tz="date-local">${dateStr}</time> &middot; ${fmtDays(days)}</span></div>`;
+}
+
+function renderShadowCard(rule, contribMeta) {
+  const handle = rule.handle;
+  const meta = contribMeta || {};
+  const statusKey = meta.review_status || 'shadow_window_open';
+  const reviewIso = meta.shadow_window_review || null;
+  const frame = meta.frame || meta.proposed_in_url || '';
+  const moltbookUrl = meta.moltbook_url || (handle ? moltUrl(handle) : '#');
+
+  const lifeCls = rule.fires_lifetime ? '' : ' zero';
+  const d30Cls  = rule.fires_30d ? '' : ' zero';
+  const d7Cls   = rule.fires_7d ? '' : ' zero';
+
+  const lastFire = rule.last_fire_iso
+    ? `<time datetime="${rule.last_fire_iso}" data-tz="local">${rule.last_fire_iso.slice(0, 16).replace('T', ' ')}</time>`
+    : '<span style="color:var(--text3)">no fires yet</span>';
+
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span class="card-id">Rule ${safeText(rule.rule_id)}</span>
+            ${pill(statusKey)}
+          </div>
+          <div class="card-name">${safeText(rule.rule_name)}</div>
+          ${handle ? `<div class="card-handle">proposed by <a href="${moltbookUrl}" target="_blank" rel="noopener">@${safeText(handle)}</a></div>` : ''}
+        </div>
+      </div>
+      <div class="fire-row">
+        <div class="fire-cell"><div class="fire-num${d7Cls}">${rule.fires_7d}</div><div class="fire-label">7d</div></div>
+        <div class="fire-cell"><div class="fire-num${d30Cls}">${rule.fires_30d}</div><div class="fire-label">30d</div></div>
+        <div class="fire-cell"><div class="fire-num${lifeCls}">${rule.fires_lifetime}</div><div class="fire-label">lifetime</div></div>
+      </div>
+      <div class="card-meta"><strong>last fire</strong> &middot; ${lastFire}</div>
+      ${frame ? `<div class="frame">${safeText(frame)}</div>` : ''}
+      ${reviewStrip(reviewIso)}
+    </div>`;
+}
+
+function renderObsCard(rule) {
+  const lifeCls = rule.fires_lifetime ? '' : ' zero';
+  const d30Cls  = rule.fires_30d ? '' : ' zero';
+  const d7Cls   = rule.fires_7d ? '' : ' zero';
+  const lastFire = rule.last_fire_iso
+    ? `<time datetime="${rule.last_fire_iso}" data-tz="local">${rule.last_fire_iso.slice(0, 16).replace('T', ' ')}</time>`
+    : '<span style="color:var(--text3)">no fires yet</span>';
+
+  const blurb = rule.rule_id === 'op_entry_conf'
+    ? 'Snapshots full indicator state at every entry. Feeds future tier-sizing analysis once n &ge; 30.'
+    : 'Logs grid-mode entry/exit decisions on shadow paper. No real trades. Path C from the trade-decoupling work.';
+
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span class="card-id" style="font-size:14px">${safeText(rule.rule_name)}</span>
+            ${pill('observation_hook')}
+          </div>
+          <div class="card-name">${safeText(rule.log_path)}</div>
+        </div>
+      </div>
+      <div class="fire-row">
+        <div class="fire-cell"><div class="fire-num${d7Cls}">${rule.fires_7d}</div><div class="fire-label">7d</div></div>
+        <div class="fire-cell"><div class="fire-num${d30Cls}">${rule.fires_30d}</div><div class="fire-label">30d</div></div>
+        <div class="fire-cell"><div class="fire-num${lifeCls}">${rule.fires_lifetime}</div><div class="fire-label">lifetime</div></div>
+      </div>
+      <div class="card-meta"><strong>last fire</strong> &middot; ${lastFire}</div>
+      <div class="frame">${blurb}</div>
+    </div>`;
+}
+
+function renderQueued(queued) {
+  if (!queued || !queued.length) return '<div class="card-meta" style="padding:14px">none queued</div>';
+  return queued.map(q => {
+    const handle = q.handle;
+    const url = q.moltbook_url || moltUrl(handle);
+    const ruleName = q.proposed_rule_name;
+    const nameCell = ruleName
+      ? `<span class="queued-name">${safeText(ruleName)}</span>`
+      : `<span class="queued-name frame-only">frame stage &mdash; not yet a rule</span>`;
+    return `<div class="queued-row">
+      <a class="queued-handle" href="${url}" target="_blank" rel="noopener">@${safeText(handle)}</a>
+      ${nameCell}
+      <span class="queued-status">${safeText(q.review_status || '—')}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderRetired() {
+  return RETIRED.map(r => `
+    <div class="retired-card">
+      <div class="ret-name">${r.name}</div>
+      <div class="ret-date">${r.date}</div>
+      <div class="ret-reason">${r.reason}</div>
+    </div>`).join('');
+}
+
+function showError(msg) { const el = $('err'); el.textContent = msg; el.style.display = 'block'; }
+
+async function load() {
+  try {
+    const [rRules, rContrib] = await Promise.all([
+      fetch('/api/rules-status').then(r => r.json()),
+      fetch('/data/contributors.json').then(r => r.json()),
+    ]);
+
+    if (rRules._error) throw new Error('rules-status: ' + rRules._error);
+
+    // ── Header ──
+    $('updatedAt').textContent = 'updated ' + new Date(rRules.generated_at * 1000).toISOString().slice(11, 19) + ' UTC';
+    $('live-dot').textContent = 'LIVE';
+
+    // ── A. LIVE banner ──
+    const lv = rRules.live_variant || {};
+    $('variantName').textContent = lv.name || 'unknown';
+    $('liveSince').textContent = lv.since_iso ? 'since ' + lv.since_iso.slice(0, 10) : 'since —';
+    $('variantSince').innerHTML = lv.since_iso
+      ? '<time datetime="' + lv.since_iso + '" data-tz="local">' + lv.since_iso.slice(0, 16).replace('T', ' ') + '</time>'
+      : '';
+    const flagsHtml = (lv.mode_flags_env || []).map(f => `<span class="flag">${safeText(f)}</span>`).join('');
+    const cliHtml = Object.entries(lv.cli_flags || {}).map(([k, v]) => {
+      const rendered = (typeof v === 'boolean') ? k : `${k} ${v}`;
+      return `<span class="cli">${safeText(rendered)}</span>`;
+    }).join('');
+    $('liveConfig').innerHTML = `<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">env mode flags</div>${flagsHtml}<div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin:10px 0 6px">cli flags</div>${cliHtml}`;
+
+    // Index contributors metadata by rule_id
+    const adoptedById = {};
+    for (const r of (rContrib.adopted || [])) {
+      if (r.rule_id) adoptedById[r.rule_id] = r;
+    }
+
+    // ── B. Contributor shadow rules ──
+    const contribRules = rRules.rules.filter(r => r.kind === 'contributor_shadow');
+    $('contribCards').innerHTML = contribRules.map(r => renderShadowCard(r, adoptedById[r.rule_id])).join('');
+
+    // ── C. Operator shadow rules ──
+    const opRules = rRules.rules.filter(r => r.kind === 'operator_shadow');
+    $('opShadowCards').innerHTML = opRules.length
+      ? opRules.map(r => renderShadowCard(r, adoptedById[r.rule_id] || {review_status: 'operator_shadow', frame: r.rule_id === 'B' ? '12h compound time cap — exits trades whose total funding cost approaches its compounding threshold.' : "24h armedless safety net — closes positions over 24h that never armed trailing, treating dormant exposure as risk."})).join('')
+      : '<div class="card-meta">none</div>';
+
+    // ── D. Observation hooks ──
+    const obs = rRules.rules.filter(r => r.kind === 'observation_hook');
+    $('obsCards').innerHTML = obs.map(renderObsCard).join('');
+
+    // ── F. Queued frames ──
+    const queued = rContrib.queued_for_review || [];
+    $('queuedCount').textContent = `${queued.length} frames awaiting promotion`;
+    $('queuedList').innerHTML = renderQueued(queued);
+
+    // ── G. Retired ──
+    $('retiredCards').innerHTML = renderRetired();
+
+    // Apply tz formatting
+    if (window.tzApply) window.tzApply(document.body);
+
+  } catch (e) {
+    console.error(e);
+    showError('Failed to load: ' + e.message);
+    $('live-dot').textContent = 'OFFLINE';
+    $('live-dot').style.color = 'var(--red)';
+  }
+}
+
+load();
+setInterval(load, 30000);
+</script>
+
+</body>
+</html>
