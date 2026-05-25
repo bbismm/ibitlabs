@@ -450,6 +450,18 @@ def main() -> int:
             "last_gate_check_iso": state_snapshot.get("last_gate_check_iso"),
         }
 
+    # Origin reflections — any framework_log entry whose trigger starts with
+    # "bootstrap:" is an archive-level artifact: the first self-declaration of
+    # an ontology layer. We surface them separately so the page can render an
+    # ORIGIN badge even after later reflections push the bootstrap out of the
+    # "latest" slot. There may be multiple origins over time as new ontology
+    # layers ship (e.g. cognition_mode bootstrap, future market_phenomenology
+    # bootstrap, etc.) — keep the full list, chronological.
+    origin_reflections = [
+        r for r in reflections
+        if str(r.get("trigger") or "").startswith("bootstrap:")
+    ]
+
     common_extras = {
         "founder_notes_recent": list(reversed(founder_notes[-FOUNDER_NOTES_LIMIT:])),
         "founder_notes_total": len(founder_notes),
@@ -459,6 +471,7 @@ def main() -> int:
         "missed_setups_total": len(missed_setups),
         "state_snapshot": state_snapshot,
         "cognition": cognition,
+        "framework_origins": origin_reflections,  # full list, chronological
     }
 
     if not decisions:

@@ -357,6 +357,32 @@
       padding: 3px 8px; border: 1px solid var(--purple);
       border-radius: 4px; vertical-align: middle;
     }
+    /* ORIGIN badge — bootstrap reflections are archive-level artifacts.
+       Gold accent signals "load-bearing canonical moment, not normal iteration". */
+    section.framework .fw-origin-badge {
+      display: inline-block; margin-left: 10px; padding: 3px 10px;
+      font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+      color: #d4a017; border: 1px solid #d4a017;
+      background: rgba(212, 160, 23, 0.08);
+      border-radius: 4px; vertical-align: middle;
+    }
+    section.framework .fw-origin-badge::before {
+      content: "✦ "; opacity: 0.8;
+    }
+    /* When the latest reflection is NOT a bootstrap, surface a small back-
+       reference so the origin remains visible after newer reflections land. */
+    section.framework .fw-origin-ref {
+      margin-top: 14px; padding: 8px 12px;
+      background: rgba(212, 160, 23, 0.05);
+      border-left: 2px solid #d4a017;
+      border-radius: 0 4px 4px 0;
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      color: var(--muted); line-height: 1.5;
+    }
+    section.framework .fw-origin-ref b {
+      color: #d4a017; font-weight: 600;
+    }
     section.framework .fw-fields {
       display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px;
       margin-top: 4px;
@@ -673,6 +699,7 @@
       <div class="fw-headline">
         <span class="fw-version" id="fw-version">—</span>
         <span class="fw-trigger" id="fw-trigger" style="display:none"></span>
+        <span class="fw-origin-badge" id="fw-origin-badge" style="display:none" title="Bootstrap reflection — canonical declaration of an ontology layer. Archive-level artifact.">origin</span>
       </div>
       <div id="fw-body">
         <div class="fw-empty">
@@ -1029,14 +1056,17 @@
 
     function renderFramework(d) {
       const fw = d.framework_latest;
+      const origins = d.framework_origins || [];
       const whenEl = document.getElementById("fw-when");
       const versionEl = document.getElementById("fw-version");
       const triggerEl = document.getElementById("fw-trigger");
+      const originBadgeEl = document.getElementById("fw-origin-badge");
       const bodyEl = document.getElementById("fw-body");
       if (!fw) {
         whenEl.textContent = "—";
         versionEl.textContent = "v0 (not yet written)";
         triggerEl.style.display = "none";
+        if (originBadgeEl) originBadgeEl.style.display = "none";
         // Body keeps the static placeholder set in HTML.
         return;
       }
@@ -1046,6 +1076,12 @@
         triggerEl.style.display = "inline-block";
       } else {
         triggerEl.style.display = "none";
+      }
+      // ORIGIN badge — if the current "latest" reflection itself is a
+      // bootstrap, mark it prominently. The badge sits next to the version.
+      const latestIsOrigin = String(fw.trigger || "").startsWith("bootstrap:");
+      if (originBadgeEl) {
+        originBadgeEl.style.display = latestIsOrigin ? "inline-block" : "none";
       }
       whenEl.textContent = fw.iso
         ? `fire ${fw.fire_count ?? "?"} · ${fmtTime(fw.iso)} · ${ago(fw.iso)}`
@@ -1097,10 +1133,28 @@
           </div>`;
       }
 
+      // Back-reference to ORIGIN reflections when the latest is NOT itself
+      // an origin. Each bootstrap trigger marks a canonical ontology-layer
+      // declaration that should remain visible after newer reflections land.
+      let originRef = "";
+      if (!latestIsOrigin && origins.length > 0) {
+        const lines = origins.map(o => {
+          const layerLabel = String(o.trigger || "")
+            .replace(/^bootstrap:/, "")
+            .replace(/_/g, " ");
+          return `<b>${escapeHtml(o.version_tag || "v?")}</b> — ${escapeHtml(layerLabel)} (${o.iso ? fmtTime(o.iso) : "—"})`;
+        }).join(" · ");
+        originRef = `
+          <div class="fw-origin-ref">
+            <b>Lineage origin</b> · ${lines} · these are archive-level artifacts kept visible as the canonical first-declarations of their ontology layers.
+          </div>`;
+      }
+
       bodyEl.innerHTML = `
         <div class="fw-fields">${fieldsHtml}</div>
         ${edits}
         ${openQs}
+        ${originRef}
         ${history}
       `;
     }
