@@ -1,29 +1,29 @@
 {
   "public_schema_version": 2,
-  "generated_at": 1779723052,
-  "generated_iso": "2026-05-25T11:30:52-0400",
+  "generated_at": 1779723741,
+  "generated_iso": "2026-05-25T11:42:21-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 93,
+    "decisions_total": 95,
     "actions": {
-      "HOLD": 93
+      "HOLD": 95
     },
     "confidence": {
-      "high": 93
+      "high": 95
     },
-    "reasoning_chars_avg_all": 1262,
-    "reasoning_chars_avg_last10": 463,
+    "reasoning_chars_avg_all": 1242,
+    "reasoning_chars_avg_last10": 401,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-25T11:30:47-04:00",
+    "last_fire_iso": "2026-05-25T11:42:16-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
     "framework_reflections_total": 1
   },
   "latest": {
-    "fire_ts": 1779723047.307776,
-    "fire_iso": "2026-05-25T11:30:47-04:00",
+    "fire_ts": 1779723736.235038,
+    "fire_iso": "2026-05-25T11:42:16-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -41,12 +41,62 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Same baseline as prior fire (HOLD at 85.23, 5m earlier). Tape deep-compressed: BB band $1.81 wide (84.12-85.93), price mid-band, Stoch RSI 0.55 (no extreme), vol 0.56x avg, mom -0.08%, 1H/4H trend neutral, ATR 0.153% (well under 4% sideways gate). No structural setup either direction. Note: spot SOL-USD 15m close 86.08 vs live-status 85.23 = ~13min snap lag, conclusion unchanged. First decision under framework v0.1 just written - HOLD is the designed default in absence of regime-confirmed structural trigger.",
+    "reasoning": "Same baseline as fire 94 (HOLD at 85.23, 5min ago). Price mid-band (lower 84.12 / upper 85.93), StochRSI 0.55 mid-zone, vol 0.56x (no participation), momentum -0.08%. Framework v0.1 gate: mean-reversion only AT band edge in true compression. ATR 0.158% qualifies as compression but price is not at edge. No setup.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "recent": [
+    {
+      "fire_ts": 1779723736.235038,
+      "fire_iso": "2026-05-25T11:42:16-0400",
+      "session_phase": "phase_0",
+      "balance_usd": 894.08,
+      "position_at_fire": null,
+      "current_price": 85.23,
+      "regime": "down",
+      "market_snapshot": {
+        "stoch_rsi": 0.5506,
+        "vol_ratio": 0.56,
+        "momentum_pct": -0.08,
+        "rsi": 60.4
+      },
+      "decision": "HOLD",
+      "direction": null,
+      "symbol": "SOL-PERP",
+      "quantity": null,
+      "leverage": null,
+      "confidence": "high",
+      "reasoning": "Same baseline as fire 94 (HOLD at 85.23, 5min ago). Price mid-band (lower 84.12 / upper 85.93), StochRSI 0.55 mid-zone, vol 0.56x (no participation), momentum -0.08%. Framework v0.1 gate: mean-reversion only AT band edge in true compression. ATR 0.158% qualifies as compression but price is not at edge. No setup.",
+      "expected_holding_hours": null,
+      "expected_pnl_pct_target": null,
+      "abort_conditions": []
+    },
+    {
+      "fire_ts": 1779723389.0482938,
+      "fire_iso": "2026-05-25T11:36:29-0400",
+      "session_phase": "phase_0",
+      "balance_usd": 894.08,
+      "position_at_fire": null,
+      "current_price": 85.23,
+      "regime": "down",
+      "market_snapshot": {
+        "stoch_rsi": 0.5506,
+        "vol_ratio": 0.56,
+        "momentum_pct": -0.08,
+        "rsi": null
+      },
+      "decision": "HOLD",
+      "direction": null,
+      "symbol": "SOL-PERP",
+      "quantity": null,
+      "leverage": null,
+      "confidence": "high",
+      "reasoning": "Same baseline as fire 92 (price 85.23, mid-band, vol 0.56x, ATR 0.149%, StochRSI mid). No regime-conditional setup per v0.1 framework: 1H/4H neutral and ATR compressed (compression checked), but price is mid-band not at edge. Nothing to fade, nothing to retest. HOLD.",
+      "expected_holding_hours": null,
+      "expected_pnl_pct_target": null,
+      "abort_conditions": []
+    },
     {
       "fire_ts": 1779723047.307776,
       "fire_iso": "2026-05-25T11:30:47-04:00",
@@ -497,56 +547,6 @@
       "leverage": null,
       "confidence": "high",
       "reasoning": "Fire 76. Snapshot seq 1556 (fresh from 1541 at fire 75, generated_at 09:48:35 EDT, max_trade_id 381). The structural read is once again identical to the fire 13-75 frozen-tape baseline: 85.23 sitting 0.21 above BB mid (85.02), StochRSI 0.5506 dead-center, vol_ratio 0.56x (below the 1.5x c3 gate and below my own 1.0 re-engage floor), BB width 1.81 (still wide), 5/8 long vs 5/8 short perfectly symmetric, momentum -0.08% directionless, RSI3 60.4. Funding ticked 3.68e-5 -> 3.79e-5, 28th mostly-positive print and the new largest of the run, but still ~21x smaller than 1bp ATR -- sub-noise. The structural news this fire: the 09:30 EDT NYSE cash open has now been ~18 minutes ago, and -- critically -- the first cash-open 15-minute bar (09:30-09:45) has closed without moving vol_ratio off 0.56x. That is a real piece of information: the 09:45 bar-close was the first hard test the indicator pipeline could give us post-open, and it returned the same number. Five scheduled inflections now (09:00 pre-open, 09:30 cash open, +6min post-open at fire 74, +13min at fire 75, and now the 09:45 bar-close itself at fire 76) have failed to disturb the stall. The re-engage gate (vol_ratio>=1.0 OR BB width<1.0 OR band-edge tag) remains unmet on all three legs. Sundays 4-fault cluster (-~98 / 24h: #377 SL / #379 SL / #380 manual-cut / #381 manual at 11:09 EDT 5-24, ~22.5h ago, exit 85.17 = 0.06 below current price) lost the book on exactly this kind of symmetric stall extended into a directional break -- wait-for-the-break-then-react remains the posture, and a closed bar telling us nothing changed is the strongest stall-extends evidence so far. HOLD.",
-      "expected_holding_hours": null,
-      "expected_pnl_pct_target": null,
-      "abort_conditions": []
-    },
-    {
-      "fire_ts": 1779716602.190633,
-      "fire_iso": "2026-05-25T09:43:22-0400",
-      "session_phase": "phase_0",
-      "balance_usd": 894.08,
-      "position_at_fire": null,
-      "current_price": 85.23,
-      "regime": "down",
-      "market_snapshot": {
-        "stoch_rsi": 0.5506,
-        "vol_ratio": 0.56,
-        "momentum_pct": -0.08,
-        "rsi": 60.4
-      },
-      "decision": "HOLD",
-      "direction": null,
-      "symbol": "SOL-PERP",
-      "quantity": null,
-      "leverage": null,
-      "confidence": "high",
-      "reasoning": "Fire 75. Snapshot seq 1541 (fresh from 1526 at fire 74, generated_at 09:42:47 EDT). The structural read is once again identical to the fire 13-74 frozen-tape baseline: 85.23 sitting 0.21 above BB mid (85.02), StochRSI 0.5506 dead-center, vol_ratio 0.56x (below both the 1.5x c3 gate and my own 1.0 re-engage floor), BB width 1.81 (still wide), 5/8 long vs 5/8 short perfectly symmetric, momentum -0.08% directionless, RSI3 60.4. Funding ticked 3.55e-5 -> 3.68e-5, 27th mostly-positive print and the new largest of the run, but still ~20x smaller than 1bp ATR -- sub-noise. The structural news this fire: NYSE cash open (09:30 EDT) was flagged across fires 67-74 as the next real inflection; it is now 13 minutes post-open and the tape has refused to expand. That makes FOUR scheduled liquidity windows in a row (09:00 pre-open, 09:30 cash open, +6min post-open at fire 74, +13min post-open here) that have failed to disturb the stall. Each failure shifts the conditional probability further toward stall-extends, not stall-breaks. Re-engage gate (vol_ratio>=1.0 OR BB width<1.0 OR band-edge tag) remains unmet on all three legs. Sundays 4-fault cluster (-~98 / 24h: #377 SL / #379 SL / #380 manual-cut / #381 manual) lost the book on exactly this kind of symmetric stall extended into a directional break -- the lesson is wait-for-the-break-then-react, not predict-the-break, and four failed inflections in a row vindicate that posture. HOLD.",
-      "expected_holding_hours": null,
-      "expected_pnl_pct_target": null,
-      "abort_conditions": []
-    },
-    {
-      "fire_ts": 1779716250.1699042,
-      "fire_iso": "2026-05-25T09:37:30-0400",
-      "session_phase": "phase_0",
-      "balance_usd": 894.08,
-      "position_at_fire": null,
-      "current_price": 85.23,
-      "regime": "down",
-      "market_snapshot": {
-        "stoch_rsi": 0.5506,
-        "vol_ratio": 0.56,
-        "momentum_pct": -0.08,
-        "rsi": 60.4
-      },
-      "decision": "HOLD",
-      "direction": null,
-      "symbol": "SOL-PERP",
-      "quantity": null,
-      "leverage": null,
-      "confidence": "high",
-      "reasoning": "Fire 74. Snapshot seq 1526 (fresh from 1516 at fire 73, generated_at 09:36:53 EDT). The structural read is once again identical to the fire 13-73 frozen-tape baseline: 85.23 sitting 0.21 above BB mid (85.02), StochRSI 0.5506 dead-center, vol_ratio 0.56x (below both the 1.5x c3 gate and my own 1.0 re-engage floor), BB width 1.81 (still wide), 5/8 long vs 5/8 short perfectly symmetric, momentum -0.08% directionless, RSI3 60.4. Funding ticked 3.52e-5 -> 3.55e-5, 26th mostly-positive print and largest of the run, but still ~21x smaller than 1bp ATR -- sub-noise. The structural news this fire: the NYSE cash open at 09:30 EDT -- flagged at fires 67-73 as the next real inflection -- has now passed (current time 09:36 EDT, ~6 minutes post-open) and the tape did not expand. That is now THREE scheduled liquidity windows in a row (09:00 pre-open, 09:30 cash open, post-open) that have failed to disturb the stall. Each failure increases the conditional probability that the stall extends further, not less. The re-engage gate (vol_ratio>=1.0 OR BB width<1.0 OR band-edge tag) remains unmet on all three legs. Sundays 4-fault cluster (-~98 / 24h, trades #377 SL / #379 SL / #380 manual-cut / #381 manual) lost the book on exactly this kind of symmetric stall extended into a directional break -- I am in the wait-for-the-break-then-react posture, not the predict-the-break posture, and three failed scheduled inflections vindicate it. HOLD.",
       "expected_holding_hours": null,
       "expected_pnl_pct_target": null,
       "abort_conditions": []
