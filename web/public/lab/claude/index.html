@@ -101,6 +101,90 @@
       font-family: ui-monospace, Menlo, monospace;
     }
 
+    /* === Framework card (first-class artifact, ranks above decision) === */
+    section.framework {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px 26px; margin-bottom: 24px;
+      border-left: 3px solid var(--purple);
+    }
+    section.framework .head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 4px; flex-wrap: wrap; gap: 8px;
+    }
+    section.framework .title-line {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--purple); font-weight: 600;
+    }
+    section.framework .when {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px;
+    }
+    section.framework .fw-headline {
+      margin: 6px 0 18px;
+    }
+    section.framework .fw-version {
+      font-size: 28px; font-weight: 600;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      color: var(--text); letter-spacing: -0.01em;
+    }
+    section.framework .fw-trigger {
+      display: inline-block; margin-left: 12px;
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      color: var(--purple); text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 3px 8px; border: 1px solid var(--purple);
+      border-radius: 4px; vertical-align: middle;
+    }
+    section.framework .fw-fields {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px;
+      margin-top: 4px;
+    }
+    section.framework .fw-fields .fw-field {
+      border-top: 1px solid var(--border); padding-top: 12px;
+    }
+    section.framework .fw-fields .fw-field .lbl {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--purple); margin-bottom: 6px; font-weight: 600;
+    }
+    section.framework .fw-fields .fw-field .body {
+      font-family: ui-serif, Georgia, serif; font-size: 14.5px;
+      line-height: 1.65; color: var(--text);
+    }
+    section.framework .fw-list {
+      margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px;
+    }
+    section.framework .fw-list .lbl {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--purple); margin-bottom: 8px; font-weight: 600;
+    }
+    section.framework .fw-list ul {
+      margin: 0; padding-left: 20px;
+      font-family: ui-serif, Georgia, serif; font-size: 14px;
+      color: var(--text); line-height: 1.6;
+    }
+    section.framework .fw-list ul li { margin: 4px 0; }
+    section.framework .fw-empty {
+      padding: 18px 0 6px; color: var(--muted);
+      font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+    }
+    section.framework .fw-empty .accent {
+      color: var(--purple); font-weight: 600;
+    }
+    section.framework .fw-history-link {
+      margin-top: 18px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+      color: var(--muted);
+    }
+    section.framework .fw-history-link a { color: var(--blue); }
+
+    @media (max-width: 720px) {
+      section.framework .fw-fields { grid-template-columns: 1fr; gap: 14px; }
+      section.framework { padding: 18px 18px; }
+    }
+
     /* === Latest decision card === */
     section.latest {
       background: var(--panel); border: 1px solid var(--border);
@@ -296,9 +380,9 @@
         <div class="sub" id="stat-decisions-sub">across all fires</div>
       </div>
       <div class="stat">
-        <div class="label">Avg reasoning (last 10)</div>
-        <div class="value" id="stat-reason">—</div>
-        <div class="sub">chars per decision</div>
+        <div class="label">Framework</div>
+        <div class="value" id="stat-framework">—</div>
+        <div class="sub" id="stat-framework-sub">Claude's current model</div>
       </div>
       <div class="stat">
         <div class="label">Action mix</div>
@@ -306,6 +390,23 @@
         <div class="sub" id="stat-mix-sub">HOLD / ENTER / EXIT</div>
       </div>
     </div>
+
+    <section class="framework" id="framework">
+      <div class="head">
+        <span class="title-line">Framework — current model</span>
+        <span class="when" id="fw-when">—</span>
+      </div>
+      <div class="fw-headline">
+        <span class="fw-version" id="fw-version">—</span>
+        <span class="fw-trigger" id="fw-trigger" style="display:none"></span>
+      </div>
+      <div id="fw-body">
+        <div class="fw-empty">
+          <span class="accent">Waiting for first framework reflection.</span>
+          Claude writes one on cold-start (next fire if framework_log.jsonl is empty), then every ≈50 fires or any time the tape produces a meaningful surprise. The reflection is the first-class artifact of this experiment — decisions are downstream of the model.
+        </div>
+      </div>
+    </section>
 
     <section class="latest" id="latest">
       <div class="head">
@@ -331,18 +432,27 @@
       <p>
         A launchd job fires every 5 minutes. Each fire spawns a Claude (Opus 4.7)
         session that reads <code>/api/live-status</code>, the recent trade log,
-        and a one-line pointer to its prior decision — then writes one JSON line
-        with a <code>decision</code> (HOLD / ENTER / EXIT), structured market context,
-        and free-form <code>reasoning</code>. The executor consumes those decisions;
-        it is currently in DRY_RUN, meaning Claude's choices are recorded but not
-        yet sent to the exchange. This page shows the last 20 of those JSON lines,
-        rendered as they are.
+        a pointer to its prior decision, and (this is new) the last 3 entries of
+        its own evolving <em>framework</em>. It then writes one JSON line to
+        <code>decisions.jsonl</code> with a decision (HOLD / ENTER / EXIT) and
+        free-form reasoning. The executor consumes those decisions; it is
+        currently in DRY_RUN, meaning choices are recorded but not yet sent to
+        the exchange.
       </p>
       <p>
-        No filters. No editing. If Claude writes a bad sentence, you see the bad
-        sentence. If Claude finds a structural edge none of the rule engines
-        caught, you see that too. The whole point of the experiment is that the
-        record is the proof.
+        <b style="color: var(--purple);">The framework is the first-class artifact.</b>
+        Every ≈50 fires (≈ once every 4 hours) — or any time the tape produces a
+        meaningful surprise — Claude writes a structured reflection to
+        <code>framework_log.jsonl</code>: what model it's currently using, what's
+        working, what's failing, what it's iterating, what it explicitly edits
+        from the prior reflection. Decisions are downstream of the framework;
+        the framework is what you actually want to read.
+      </p>
+      <p>
+        No filters. No editing. The previous SKILL versions listed v5.3's 8
+        entry conditions and 8 "dimensions to weigh" — both anchored Claude to
+        someone else's signal lattice. Both are gone. Claude brings its own
+        model, evolves it in public, and lives or dies by what it writes here.
       </p>
       <p>
         <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a>
@@ -418,8 +528,13 @@
       document.getElementById("stat-decisions").textContent = (s.decisions_total ?? 0).toLocaleString();
       const first = s.first_fire_iso ? fmtTime(s.first_fire_iso) : "—";
       document.getElementById("stat-decisions-sub").textContent = `since ${first}`;
-      // reasoning length
-      document.getElementById("stat-reason").textContent = (s.reasoning_chars_avg_last10 ?? "—");
+      // framework version (replaces avg-reasoning slot)
+      const fw = d.framework_latest;
+      const fwTotal = s.framework_reflections_total ?? 0;
+      document.getElementById("stat-framework").textContent =
+        fw ? (fw.version_tag || "v?") : "v0";
+      document.getElementById("stat-framework-sub").textContent =
+        fwTotal > 0 ? `${fwTotal} reflection${fwTotal > 1 ? "s" : ""} written` : "awaiting cold-start";
       // action mix
       const a = s.actions || {};
       const parts = [`${a.HOLD || 0}h`];
@@ -431,6 +546,84 @@
     function verdictClass(v) {
       if (!v) return "";
       return v.toLowerCase();
+    }
+
+    function renderFramework(d) {
+      const fw = d.framework_latest;
+      const whenEl = document.getElementById("fw-when");
+      const versionEl = document.getElementById("fw-version");
+      const triggerEl = document.getElementById("fw-trigger");
+      const bodyEl = document.getElementById("fw-body");
+      if (!fw) {
+        whenEl.textContent = "—";
+        versionEl.textContent = "v0 (not yet written)";
+        triggerEl.style.display = "none";
+        // Body keeps the static placeholder set in HTML.
+        return;
+      }
+      versionEl.textContent = fw.version_tag || "v?";
+      if (fw.trigger) {
+        triggerEl.textContent = fw.trigger;
+        triggerEl.style.display = "inline-block";
+      } else {
+        triggerEl.style.display = "none";
+      }
+      whenEl.textContent = fw.iso
+        ? `fire ${fw.fire_count ?? "?"} · ${fmtTime(fw.iso)} · ${ago(fw.iso)}`
+        : "—";
+
+      const fields = [
+        ["What I'm trying", fw.what_im_trying],
+        ["What's working", fw.whats_working],
+        ["What's failing", fw.whats_failing],
+        ["What I'm iterating", fw.what_im_iterating],
+      ];
+      const fieldsHtml = fields
+        .filter(([, v]) => v && String(v).trim())
+        .map(
+          ([lbl, body]) => `
+          <div class="fw-field">
+            <div class="lbl">${lbl}</div>
+            <div class="body">${escapeHtml(body)}</div>
+          </div>`
+        )
+        .join("");
+
+      let edits = "";
+      if (Array.isArray(fw.edits_from_prior) && fw.edits_from_prior.length) {
+        edits = `
+          <div class="fw-list">
+            <div class="lbl">Edits from prior framework</div>
+            <ul>${fw.edits_from_prior.map(e => `<li>${escapeHtml(e)}</li>`).join("")}</ul>
+          </div>`;
+      }
+
+      let openQs = "";
+      if (Array.isArray(fw.open_questions) && fw.open_questions.length) {
+        openQs = `
+          <div class="fw-list">
+            <div class="lbl">Open questions</div>
+            <ul>${fw.open_questions.map(e => `<li>${escapeHtml(e)}</li>`).join("")}</ul>
+          </div>`;
+      }
+
+      const fwTotal = (d.summary || {}).framework_reflections_total || 0;
+      let history = "";
+      if (fwTotal > 1) {
+        history = `
+          <div class="fw-history-link">
+            ${fwTotal} reflections in this experiment so far. Full log:
+            <a href="/data/claude_trader.json">claude_trader.json</a> →
+            <code>framework_recent</code>.
+          </div>`;
+      }
+
+      bodyEl.innerHTML = `
+        <div class="fw-fields">${fieldsHtml}</div>
+        ${edits}
+        ${openQs}
+        ${history}
+      `;
     }
 
     function renderLatest(d) {
@@ -521,6 +714,7 @@
         renderMeta(d);
         renderBanner(d);
         renderStats(d);
+        renderFramework(d);
         renderLatest(d);
         renderStream(d);
       } catch (e) {

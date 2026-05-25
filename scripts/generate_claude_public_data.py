@@ -19,13 +19,17 @@ from collections import Counter
 
 HOME = Path.home()
 DECISIONS_FILE = HOME / "ibitlabs/logs/claude-trader/decisions.jsonl"
+FRAMEWORK_FILE = HOME / "ibitlabs/logs/claude-trader/framework_log.jsonl"
 OUTPUT_FILE = HOME / "ibitlabs/web/public/data/claude_trader.json"
 
 # How many decisions to include in the public "recent" stream.
 RECENT_LIMIT = 20
 
+# How many framework reflections to include in the public history.
+FRAMEWORK_HISTORY_LIMIT = 10
+
 # Schema version of the OUTPUT artifact (separate from per-decision schema_version).
-PUBLIC_SCHEMA_VERSION = 1
+PUBLIC_SCHEMA_VERSION = 2
 
 
 def load_decisions(path: Path) -> list[dict]:
@@ -111,32 +115,58 @@ def compute_summary(decisions: list[dict]) -> dict:
     }
 
 
+def load_framework_reflections(path: Path) -> list[dict]:
+    """Each line is one reflection. Schema fields documented in SKILL.md
+    § Framework reflection. We pass them through largely as-is — they are
+    Claude's first-class artifact and the public page renders them prominently."""
+    if not path.exists():
+        return []
+    out = []
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
 def main() -> int:
     decisions = load_decisions(DECISIONS_FILE)
+    reflections = load_framework_reflections(FRAMEWORK_FILE)
+
+    base = {
+        "public_schema_version": PUBLIC_SCHEMA_VERSION,
+        "generated_at": int(time.time()),
+        "generated_iso": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "experiment": "iBitLabs claude-trader Phase 0",
+        "mode": "DRY_RUN",
+    }
+
     if not decisions:
         print(f"WARN: no decisions found at {DECISIONS_FILE}", file=sys.stderr)
-        # Still write an empty-state file so the page renders cleanly.
         out = {
-            "public_schema_version": PUBLIC_SCHEMA_VERSION,
-            "generated_at": int(time.time()),
-            "generated_iso": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            "experiment": "iBitLabs claude-trader Phase 0",
-            "mode": "DRY_RUN",
-            "summary": {"decisions_total": 0},
+            **base,
+            "summary": {"decisions_total": 0, "framework_reflections_total": len(reflections)},
             "latest": None,
             "recent": [],
+            "framework_latest": reflections[-1] if reflections else None,
+            "framework_recent": list(reversed(reflections[-FRAMEWORK_HISTORY_LIMIT:])),
         }
     else:
         sanitized = [sanitize(d) for d in decisions]
+        summary = compute_summary(sanitized)
+        summary["framework_reflections_total"] = len(reflections)
         out = {
-            "public_schema_version": PUBLIC_SCHEMA_VERSION,
-            "generated_at": int(time.time()),
-            "generated_iso": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            "experiment": "iBitLabs claude-trader Phase 0",
-            "mode": "DRY_RUN",
-            "summary": compute_summary(sanitized),
+            **base,
+            "summary": summary,
             "latest": sanitized[-1],
             "recent": list(reversed(sanitized[-RECENT_LIMIT:])),
+            "framework_latest": reflections[-1] if reflections else None,
+            "framework_recent": list(reversed(reflections[-FRAMEWORK_HISTORY_LIMIT:])),
         }
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
