@@ -38,10 +38,12 @@ MISSED_SETUPS_LIMIT = 10
 # Schema version of the OUTPUT artifact (separate from per-decision schema_version).
 # v3: dropped verbose `recent` stream; added `events` timeline + `hold_summary`.
 # v4: added `founder_notes` channel, `state_snapshot`, `missed_setups`.
-# v5: epistemic upgrade — founder notes now carry type/confidence/claims[].
-#     Lineage tracking is per-claim (note_ts + claim_id), not per-note.
-#     Adds `lineage_stats` summarizing accept/reject by claim type.
-PUBLIC_SCHEMA_VERSION = 5
+# v5: epistemic upgrade — founder notes carry type/confidence/claims[].
+# v6: cognition_mode protocol (Phase B.1) — adds `cognition` rollup in summary,
+#     surfaces cognition_mode + rationale + cadence_hint + skipped_fires_in_mode
+#     for the always-visible mode strip. Wrapper gate may now skip fires when
+#     mode permits, so `latest.fire_iso` is no longer a guaranteed 5min cadence.
+PUBLIC_SCHEMA_VERSION = 6
 
 
 def load_decisions(path: Path) -> list[dict]:
@@ -434,6 +436,20 @@ def main() -> int:
         "mode": "DRY_RUN",
     }
 
+    # Cognition rollup — convenience extraction of cognition_mode fields from
+    # the state snapshot, so the page doesn't have to dig into state_snapshot.
+    cognition = None
+    if state_snapshot:
+        cognition = {
+            "mode": state_snapshot.get("cognition_mode"),
+            "since_iso": state_snapshot.get("cognition_mode_since_iso"),
+            "rationale": state_snapshot.get("cognition_mode_rationale"),
+            "cadence_hint": state_snapshot.get("cognition_mode_cadence_hint"),
+            "skipped_fires_in_mode": state_snapshot.get("skipped_fires_in_mode") or 0,
+            "last_mode_transition_iso": state_snapshot.get("last_mode_transition_iso"),
+            "last_gate_check_iso": state_snapshot.get("last_gate_check_iso"),
+        }
+
     common_extras = {
         "founder_notes_recent": list(reversed(founder_notes[-FOUNDER_NOTES_LIMIT:])),
         "founder_notes_total": len(founder_notes),
@@ -442,6 +458,7 @@ def main() -> int:
         "missed_setups_recent": list(reversed(missed_setups[-MISSED_SETUPS_LIMIT:])),
         "missed_setups_total": len(missed_setups),
         "state_snapshot": state_snapshot,
+        "cognition": cognition,
     }
 
     if not decisions:

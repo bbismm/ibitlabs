@@ -69,6 +69,30 @@ ntfy_push() {
     exit 3
   fi
 
+  # Phase B.1 cadence gate. claude_trader_gate.py decides FIRE or SKIP based on:
+  #   - invariant transition signals (regime flip / range break / position change)
+  #   - cognition_mode-based heartbeat (Compression 1h / Regime Uncertain 15min /
+  #     Expansion + Inventory Discovery 5min)
+  #   - reflection clock (force fire if last reflection > 4h ago)
+  #   - bootstrap (force fire if state.cognition_mode is null)
+  #
+  # Failure mode bias: any unreachable dependency → FIRE (safer to spawn
+  # unnecessarily than silently skip during a real event).
+  if [[ -x "$HOME/ibitlabs/scripts/claude_trader_gate.py" ]]; then
+    GATE_VERDICT=$("$HOME/ibitlabs/scripts/claude_trader_gate.py" 2>&1)
+    GATE_LOG_DIR="$HOME/ibitlabs/logs/claude-trader/gate"
+    mkdir -p "$GATE_LOG_DIR"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $GATE_VERDICT" >> "$GATE_LOG_DIR/gate.log"
+    echo "=== gate verdict: $GATE_VERDICT ==="
+    if [[ "$GATE_VERDICT" == SKIP:* ]]; then
+      echo "[claude-trader-gate] skip — wrapper exiting 0 without spawning Claude."
+      echo "  reason: ${GATE_VERDICT#SKIP:}"
+      exit 0
+    fi
+  else
+    echo "WARN: gate script not found/executable; firing unconditionally"
+  fi
+
   PREAMBLE="UNATTENDED CRON RUN — no human is watching. This is a launchd-driven
 fire of the claude-trader skill (Phase 0 / B-pure decision producer for the
 iBitLabs SOL perp \$1k→\$10k experiment). The skill contains your decision

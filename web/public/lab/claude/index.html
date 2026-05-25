@@ -259,25 +259,64 @@
       font-size: 13px; padding: 4px 0;
     }
 
-    /* === State snapshot strip (compact persistent regime memory) === */
-    section.state-strip {
-      background: var(--panel-2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 12px 16px; margin: 0 0 22px;
-      display: flex; flex-wrap: wrap; gap: 14px; align-items: baseline;
-      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    /* === Mode strip (Phase B.1 — always-visible cognition state) === */
+    section.mode-strip {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin: 0 0 22px;
+      border-left: 4px solid var(--dim);
+      transition: border-left-color 0.3s ease;
+    }
+    section.mode-strip[data-mode="Expansion"] { border-left-color: var(--green); }
+    section.mode-strip[data-mode="Compression"] { border-left-color: var(--purple); }
+    section.mode-strip[data-mode="Regime Uncertain"] { border-left-color: var(--warn); }
+    section.mode-strip[data-mode="Inventory Discovery"] { border-left-color: var(--blue); }
+
+    section.mode-strip .mode-row {
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    section.mode-strip .mode-label {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 14px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
       color: var(--muted);
     }
-    section.state-strip .state-label {
-      color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em;
-      font-size: 10.5px; font-weight: 600;
+    section.mode-strip[data-mode="Expansion"] .mode-label { color: var(--green); }
+    section.mode-strip[data-mode="Compression"] .mode-label { color: var(--purple); }
+    section.mode-strip[data-mode="Regime Uncertain"] .mode-label { color: var(--warn); }
+    section.mode-strip[data-mode="Inventory Discovery"] .mode-label { color: var(--blue); }
+
+    section.mode-strip .mode-tag {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+      color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em;
+      font-weight: 600;
     }
-    section.state-strip .state-narrative {
+    section.mode-strip .mode-since,
+    section.mode-strip .mode-cadence {
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      color: var(--muted);
+    }
+    section.mode-strip .mode-cadence b {
+      color: var(--text); font-weight: 500;
+    }
+    section.mode-strip .mode-rationale {
       color: var(--text); font-family: ui-serif, Georgia, serif;
-      font-size: 13.5px; line-height: 1.55; flex: 1;
+      font-size: 14.5px; line-height: 1.55; margin: 8px 0 6px;
       font-style: italic;
     }
-    section.state-strip .state-meta {
-      color: var(--dim); font-size: 11px;
+    section.mode-strip .mode-rationale.dim {
+      color: var(--muted); font-style: normal;
+    }
+    section.mode-strip .mode-meta {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px; line-height: 1.6;
+      padding-top: 8px; border-top: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    section.mode-strip .mode-meta b { color: var(--muted); font-weight: 500; }
+    section.mode-strip[data-mode=""] .mode-tag,
+    section.mode-strip:not([data-mode]) .mode-tag {
+      color: var(--warn);
     }
 
     /* === Framework card (first-class artifact, ranks above decision) === */
@@ -580,6 +619,17 @@
   <main>
     <div id="banner-host"></div>
 
+    <section class="mode-strip" id="mode-strip">
+      <div class="mode-row">
+        <span class="mode-tag">cognition mode</span>
+        <span class="mode-label" id="mode-label">—</span>
+        <span class="mode-since" id="mode-since"></span>
+        <span class="mode-cadence" id="mode-cadence"></span>
+      </div>
+      <div class="mode-rationale dim" id="mode-rationale">Loading…</div>
+      <div class="mode-meta" id="mode-meta"></div>
+    </section>
+
     <div class="stat-strip" id="stat-strip">
       <div class="stat">
         <div class="label">Balance</div>
@@ -628,12 +678,6 @@
           Claude writes one on cold-start (next fire if framework_log.jsonl is empty), then every ≈50 fires or any time the tape produces a meaningful surprise. The reflection is the first-class artifact of this experiment — decisions are downstream of the model.
         </div>
       </div>
-    </section>
-
-    <section class="state-strip" id="state-strip">
-      <span class="state-label">Persistent state</span>
-      <span class="state-narrative" id="state-narrative">—</span>
-      <span class="state-meta" id="state-meta">—</span>
     </section>
 
     <section class="latest" id="latest">
@@ -922,25 +966,63 @@
       body.innerHTML = html + lineage;
     }
 
-    function renderStateSnapshot(d) {
+    function renderModeStrip(d) {
+      const c = d.cognition || {};
       const s = d.state_snapshot || {};
-      const stripEl = document.getElementById("state-strip");
-      const narEl = document.getElementById("state-narrative");
-      const metaEl = document.getElementById("state-meta");
-      if (!s || !s.narrative) {
-        narEl.textContent = "Not yet written.";
-        metaEl.textContent = "Claude maintains this file once state stabilizes.";
+      const stripEl = document.getElementById("mode-strip");
+      const labelEl = document.getElementById("mode-label");
+      const sinceEl = document.getElementById("mode-since");
+      const cadenceEl = document.getElementById("mode-cadence");
+      const ratEl = document.getElementById("mode-rationale");
+      const metaEl = document.getElementById("mode-meta");
+
+      const mode = c.mode;
+
+      if (!mode) {
+        // Bootstrap pending state — Phase B.1 just shipped, Claude has not yet
+        // written the initial cognition_mode declaration.
+        stripEl.removeAttribute("data-mode");
+        labelEl.textContent = "bootstrap pending";
+        sinceEl.textContent = "first fire under Phase B.1 will declare initial mode";
+        cadenceEl.textContent = "";
+        ratEl.className = "mode-rationale dim";
+        ratEl.textContent = "Phase B.1 cognition_mode protocol shipped. On the next fire, Claude writes a bootstrap framework reflection declaring its initial cognition mode (Expansion / Compression / Regime Uncertain / Inventory Discovery) and the rationale for choosing it. This strip will then carry that declaration permanently.";
+        metaEl.textContent = "";
         return;
       }
-      narEl.textContent = s.narrative;
-      const parts = [];
-      if (s.regime) parts.push(`regime: ${s.regime}`);
-      if (s.range_low_usd && s.range_high_usd) {
-        parts.push(`range: $${s.range_low_usd}–$${s.range_high_usd}`);
+
+      stripEl.setAttribute("data-mode", mode);
+      labelEl.textContent = mode;
+
+      if (c.since_iso) {
+        sinceEl.textContent = `· since ${ago(c.since_iso)}`;
+      } else {
+        sinceEl.textContent = "";
       }
-      if (s.compression_hours) parts.push(`comp: ${s.compression_hours}h`);
-      if (s.updated_iso) parts.push(`updated ${ago(s.updated_iso)}`);
-      metaEl.textContent = parts.length ? parts.join(" · ") : "—";
+
+      if (c.cadence_hint) {
+        cadenceEl.innerHTML = `· cognition <b>${escapeHtml(c.cadence_hint)}</b>`;
+      } else {
+        cadenceEl.textContent = "";
+      }
+
+      ratEl.className = "mode-rationale";
+      ratEl.textContent = c.rationale || "—";
+
+      // Meta line: state context that supports the mode.
+      const parts = [];
+      if (s.regime) parts.push(`<b>regime</b>: ${escapeHtml(s.regime)}`);
+      if (s.range_low_usd && s.range_high_usd) {
+        parts.push(`<b>range</b>: $${s.range_low_usd}–$${s.range_high_usd}`);
+      }
+      if (s.compression_hours) parts.push(`<b>compression</b>: ${s.compression_hours}h`);
+      if (typeof c.skipped_fires_in_mode === "number" && c.skipped_fires_in_mode > 0) {
+        parts.push(`<b>skipped fires</b>: ${c.skipped_fires_in_mode}`);
+      }
+      if (s.updated_iso) {
+        parts.push(`state updated ${ago(s.updated_iso)}`);
+      }
+      metaEl.innerHTML = parts.join(" · ");
     }
 
     function renderFramework(d) {
@@ -1146,10 +1228,10 @@
         const d = await r.json();
         renderMeta(d);
         renderBanner(d);
+        renderModeStrip(d);
         renderStats(d);
         renderFounderNotes(d);
         renderFramework(d);
-        renderStateSnapshot(d);
         renderLatest(d);
         renderPulse(d);
         renderTimeline(d);

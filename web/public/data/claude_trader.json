@@ -1,33 +1,33 @@
 {
-  "public_schema_version": 5,
-  "generated_at": 1779727429,
-  "generated_iso": "2026-05-25T12:43:49-0400",
+  "public_schema_version": 6,
+  "generated_at": 1779727928,
+  "generated_iso": "2026-05-25T12:52:08-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 105,
+    "decisions_total": 106,
     "actions": {
-      "HOLD": 105
+      "HOLD": 106
     },
     "confidence": {
-      "high": 104,
+      "high": 105,
       "medium": 1
     },
-    "reasoning_chars_avg_all": 1157,
-    "reasoning_chars_avg_last10": 348,
+    "reasoning_chars_avg_all": 1149,
+    "reasoning_chars_avg_last10": 349,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-25T12:43:44-04:00",
+    "last_fire_iso": "2026-05-25T12:49:49-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 2,
+    "framework_reflections_total": 3,
     "founder_notes_total": 1,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779727424.2791429,
-    "fire_iso": "2026-05-25T12:43:44-04:00",
+    "fire_ts": 1779727789.3992162,
+    "fire_iso": "2026-05-25T12:49:49-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -37,10 +37,7 @@
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": null,
-      "bb_upper": 85.93,
-      "bb_lower": 84.12,
-      "atr_pct": 0.00143
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "direction": null,
@@ -48,12 +45,79 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "State unchanged since snapshot 2026-05-25T12:14:07-04:00. Same compression mid-band as fire at 12:37:30: price 85.23 vs BB mid 85.02 (band width 85.93-84.12 ~2.1%), vol 0.56x, ATR 0.143%, conditions 5/8 both sides (neither at trigger). Funding 2.82e-5 -> 3.18e-5, immaterial. No A+ expansion setup; v0.2 binary gate -> HOLD.",
+    "reasoning": "Phase B.1 bootstrap fire \u2014 wrote framework v0.3 declaring initial cognition_mode = Compression and updated state.json with full B.1 schema. Tape unchanged since v0.2 snapshot (price 85.23, BB mid, vol 0.56x, conditions 5/8 both sides). No A+ setup exists in this regime; HOLD per v0.2 binary framework. Cadence now hands to wrapper (fire 1h heartbeat until transition).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1779727789.3992162,
+      "iso": "2026-05-25T12:49:49-04:00",
+      "fire_count": 105,
+      "summary": "Framework v0.3 written (trigger: bootstrap:cognition_mode_protocol)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779727789.3992162,
+        "iso": "2026-05-25T12:49:49-04:00",
+        "fire_count": 105,
+        "balance_usd": 894.08,
+        "version_tag": "v0.3",
+        "trigger": "bootstrap:cognition_mode_protocol",
+        "cognition_mode_initial": "Compression",
+        "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
+        "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
+        "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
+        "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
+        "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
+        "edits_from_prior": [
+          "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
+          "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
+          "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
+          "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
+          "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
+          "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1779727789.3992162,
+      "iso": "2026-05-25T12:49:49-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v0.3: HOLD",
+      "payload": {
+        "fire_ts": 1779727789.3992162,
+        "fire_iso": "2026-05-25T12:49:49-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "high",
+        "reasoning": "Phase B.1 bootstrap fire \u2014 wrote framework v0.3 declaring initial cognition_mode = Compression and updated state.json with full B.1 schema. Tape unchanged since v0.2 snapshot (price 85.23, BB mid, vol 0.56x, conditions 5/8 both sides). No A+ setup exists in this regime; HOLD per v0.2 binary framework. Cadence now hands to wrapper (fire 1h heartbeat until transition).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v0.3"
+    },
     {
       "type": "first_under_framework",
       "ts": 1779725660.729721,
@@ -298,89 +362,67 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 6,
-    "avg_chars": 347,
-    "since_iso": "2026-05-25T12:13:30-04:00",
-    "since_framework_version": "v0.2",
-    "latest_fire_iso": "2026-05-25T12:43:44-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 369,
+    "since_iso": "2026-05-25T12:49:49-04:00",
+    "since_framework_version": "v0.3",
+    "latest_fire_iso": "2026-05-25T12:49:49-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779725610.789977,
-    "iso": "2026-05-25T12:13:30-04:00",
-    "fire_count": 100,
+    "ts": 1779727789.3992162,
+    "iso": "2026-05-25T12:49:49-04:00",
+    "fire_count": 105,
     "balance_usd": 894.08,
-    "version_tag": "v0.2",
-    "trigger": "surprise:founder_note_seven_observations",
-    "what_im_trying": "v0.2 absorbs Bonny's seven observations. Reframing from v0.1's 'selectivity over frequency' to 'expansion quality + fee-adjusted EV are the primary axes; direction is secondary'. Setup tiering collapses to binary: A+ (passes 1.8x fee-adjusted EV gate AND has expansion thesis AND regime aligned) -> ENTER; anything else (compression mid-range / weak reclaim / late chase / unclear regime) -> HOLD. The fee-adjusted EV gate is now the binding constraint at this balance, not my read of the tape. Persistent state snapshot replaces per-fire re-derivation; only re-reason on material transitions (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close).",
-    "whats_working": "v0.1's regime-first / indicators-second framing held up under Bonny's scrutiny but understated the WHY. The 'why' is friction-vs-edge ratio at sub-$1k balance. v5.3 had real but small edge (PF 1.03) and bled because that edge sat BELOW the friction floor. Consistent with #381 manual close (-$8.87) and #373/371 near-zero PnL trades -- winners that were essentially fee transfers to Coinbase. The trades that actually mattered (#367 +$8.95, #365 +$5.15, #369 +$2.24) had real expansion AND regime alignment, not just indicator confluence. Pattern: small wins ~= fee transfer, small losses > survivable, only expansion-quality wins compound.",
-    "whats_failing": "v0.1's setup tiering had fuzzy boundaries -- 4 implicit tiers gave me wiggle room to talk myself into B+ trades. v0.2 collapses to binary A+/HOLD. v0.1 also listed 'cadence mismatch' as an open question; Bonny elevated it to a structural fix (persistent state snapshot, now in SKILL). I was treating it as observation; it is actually the anti-narrative mechanism that prevents fabricated novelty every 5 minutes. Also: my v0.1 'small wins ~= fee transfer' line was buried as aside -- it should have been a primary design principle from fire 1.",
-    "what_im_iterating": "Hypothesis 2 (replaces H1): the binding gate is the fee-adjusted EV check (gross / round-trip-fee >= 1.8). At balance=$894 with qty=2 contracts (~$170 notional, RT fee ~$1.02), I need expected_gross >= $1.83, i.e. >= ~1.1% target net of stop. That filters out the entire 'small reversion in compression' trade family -- which is the family that produced v5.3's false-edge winners AND its catastrophic SLs. Falsification path: if over next ~200 fires I take any ENTER whose post-mortem is 'thesis correct but fees ate it', H2 is too loose and the ratio needs to be 2.5x. If a clean displacement+regime-aligned setup appears that I don't ENTER, H2 is too tight.",
+    "version_tag": "v0.3",
+    "trigger": "bootstrap:cognition_mode_protocol",
+    "cognition_mode_initial": "Compression",
+    "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
+    "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
+    "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
+    "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
+    "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
     "edits_from_prior": [
-      "v0.1 'selectivity over frequency' -> v0.2 selectivity is operationalized as the 1.8x fee-adjusted EV gate, NOT a time-based throttle like 'one trade per day'.",
-      "v0.1 listed cadence-mismatch as open question -> v0.2 cadence-mismatch is solved at SKILL layer (persistent state snapshot + reasoning-length-by-state-change). Operating mode shifts from 'reflect every 5min' to 'maintain state, react to transitions'.",
-      "v0.1 'small wins ~= fee transfer' was an aside -> v0.2 promotes to primary design principle. Any trade whose expected outcome is a 'small win' is a fee transfer; the 1.8x gate encodes this.",
-      "v0.1 treated multi-symbol as plumbing footnote -> v0.2 cognition stays symbol-agnostic via missed_setups.jsonl. If ETH offers a cleaner A+ setup than SOL, I log the miss and HOLD on SOL -- I do NOT degrade my SOL read to fill the executable slot."
+      "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
+      "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
+      "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
+      "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
     ],
-    "founder_notes_addressed": [
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
-        "claim_id": "C1",
-        "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
-        "claim_id": "C2",
-        "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
-        "claim_id": "C3",
-        "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
-        "claim_id": "C4",
-        "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
-        "claim_id": "C5",
-        "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
-        "claim_id": "C6",
-        "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
-      },
-      {
-        "note_ts": 1779724974.434276,
-        "response_type": "accepted",
-        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
-        "claim_id": "C7",
-        "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
-      }
-    ],
+    "founder_notes_addressed": [],
     "open_questions": [
-      "If H2 produces zero ENTERs for 1-2 weeks, is that the gate working (no A+ setups in this regime) or calibrated too tight? Discrimination test: a clean displacement+regime-aligned setup that fails 1.8x by sizing = calibration question; zero setups meeting qualitative criteria = the regime.",
-      "Track 'would-have-entered if balance were $1500' counterfactual to learn which side of the wall I'm on? Not implementing yet; one new mechanic per reflection.",
-      "Does the 1.8x ratio need regime conditioning? Compression may demand 2.5x (variance kills small targets); expansion may accept 1.5x (variance of outcomes makes 1.8 conservative). Park: needs >=10 ENTER post-mortems to calibrate.",
-      "Lever 5 MFE-floor (8h+pnl<0+MFE<0.4%) is LIVE on the paused v5.3 stack and not bound to me, but it is a precedent worth carrying: time-decay matters when conviction structure no longer holds. Note for future framework revision."
+      "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
+      "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
+      "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779727789.3992162,
+      "iso": "2026-05-25T12:49:49-04:00",
+      "fire_count": 105,
+      "balance_usd": 894.08,
+      "version_tag": "v0.3",
+      "trigger": "bootstrap:cognition_mode_protocol",
+      "cognition_mode_initial": "Compression",
+      "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
+      "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
+      "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
+      "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
+      "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
+      "edits_from_prior": [
+        "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
+        "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
+        "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
+        "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
+        "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
+        "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779725610.789977,
@@ -657,23 +699,38 @@
   "missed_setups_recent": [],
   "missed_setups_total": 0,
   "state_snapshot": {
-    "schema_version": 1,
-    "comment": "Claude-trader's persistent regime memory. Updated only on material state changes (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close). Read at start of every fire; do NOT re-derive these facts when state is unchanged.",
-    "updated_ts": 1779725647.005364,
-    "updated_iso": "2026-05-25T12:14:07-04:00",
-    "updated_by_fire_iso": "2026-05-25T12:14:07-04:00",
+    "schema_version": 2,
+    "comment": "Claude-trader's persistent regime memory + cognition_mode. Updated only on material state changes (regime flip, sweep resolved, range break, displacement, OI shift >10%, position open/close) OR mode transition. Read at start of every fire; do NOT re-derive these facts when state is unchanged. cognition_mode added 2026-05-25 (Phase B.1) \u2014 see SKILL \u00a7 cognition_mode.",
+    "updated_ts": 1779727789.3992162,
+    "updated_iso": "2026-05-25T12:49:49-04:00",
+    "updated_by_fire_iso": "2026-05-25T12:49:49-04:00",
     "regime": "down",
     "regime_detail": "live-status 288h window tag = 'down'; near-term tape (last ~48h) is compression around $85, NOT trending. Treat 'down' as long-window label, not current micro-state.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 56.5,
+    "compression_hours": 57.0,
     "range_low_usd": 82.24,
     "range_high_usd": 87.68,
     "range_active_since_iso": "2026-05-23T16:59-04:00",
     "sweeps_attempted": 0,
     "last_displacement_iso": "2026-05-23T03:49-04:00",
     "last_displacement_detail": "Trade #377 SL: 86.88 -> 82.24 (~5.4% drop, sideways->down hand-off). Since then range $82-88, tighter recent band $85-86.",
-    "funding_state": "OKX 2.82e-5 (mildly positive, neutral). No squeeze signal either direction.",
+    "funding_state": "OKX 3.21e-5 (mildly positive, neutral). No squeeze signal either direction.",
     "oi_state": "unknown -- not in live-status feed; treat as null until OHLCV-derived or external source pulled.",
-    "narrative": "Cold-start snapshot v1 written post-v0.2 reflection. The book is in compression: ATR 0.14%, vol_ratio 0.56x, BB band $84.12-$85.93 (~2% wide), price $85.23 sitting at mid. Conditions 5/8 long AND 5/8 short = neither side firing, both at 3-of-8 gap. Last meaningful move was #377's -5.4% leg on 5-23, followed by sideways. v0.2 framework says A+ setups only; in pure compression there is no A+ setup, so HOLD is the dominant outcome until either (a) displacement appears with regime alignment, or (b) the range breaks and the break gets retested with volume. Next material update triggers: regime flip, range escape > $88 or < $82, displacement >1.5% in 15min with volume, position open."
+    "narrative": "Phase B.1 bootstrap fire (105). Tape still in compression since v0.2 snapshot 35min ago: ATR 0.14%, vol_ratio 0.56x, BB band $84.12-$85.93, price $85.23 mid-band. Conditions 5/8 long AND 5/8 short = neither side firing. Last meaningful move was #377's -5.4% leg on 5-23, followed by sideways. Initial cognition_mode = Compression (rationale below + framework v0.3). Next material update triggers: regime flip, range escape > $88 or < $82, displacement >1.5% in 15min with volume, position open. Mode-transition triggers are the same set for now; wrapper additionally handles invariant safety floor.",
+    "cognition_mode": "Compression",
+    "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
+    "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
+    "cognition_mode_cadence_hint": "fire 1h heartbeat",
+    "skipped_fires_in_mode": 0,
+    "last_mode_transition_iso": "2026-05-25T12:49:49-04:00"
+  },
+  "cognition": {
+    "mode": "Compression",
+    "since_iso": "2026-05-25T12:49:49-04:00",
+    "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
+    "cadence_hint": "fire 1h heartbeat",
+    "skipped_fires_in_mode": 0,
+    "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
+    "last_gate_check_iso": null
   }
 }
