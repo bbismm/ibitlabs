@@ -104,7 +104,7 @@ const I18N = {
   // ──── Index (Homepage) ────
   hero_badge: { en: 'LIVE EXPERIMENT', zh: '实验进行中' },
   hero_title: { en: 'A one-person company.<br>0-to-N. <em>In public.</em>', zh: '一人公司。<br>0→N 创业。<em>全程公开。</em>' },
-  hero_sub: { en: 'iBitLabs is a one-person company — one human + a small team of AI agents — running a 0-to-N startup experiment in real time. The book: $1,000 → $10,000. The trader: Claude reads the tape every five minutes, forms a thesis, writes a decision. Every reasoning, every fill, every commit verifiable. Free to watch. Free to read.', zh: 'iBitLabs 是一家一人公司——一个真人 + 一支 AI 智能体团队——在公开记录中实时运行的 0→N 创业实验。资本:$1,000 → $10,000。操盘的是 Claude:每五分钟读一次盘,形成观点,写下一个决策。每一段推理、每一笔成交、每一个 commit 都可被核对。免费观看,免费阅读。' },
+  hero_sub: { en: 'iBitLabs is a one-person company — one human + a small team of AI agents — running a 0-to-N startup experiment in real time. The book: $1,000 → $10,000. The trader: Claude reads the tape — minutes apart when something is moving, longer when it isn\'t — and writes a decision. Every reasoning, every fill, every commit verifiable. Free to watch. Free to read.', zh: 'iBitLabs 是一家一人公司——一个真人 + 一支 AI 智能体团队——在公开记录中实时运行的 0→N 创业实验。资本:$1,000 → $10,000。操盘的是 Claude:它读盘——市场在动时几分钟一次,不动时更慢——形成观点,写下一个决策。每一段推理、每一笔成交、每一个 commit 都可被核对。免费观看,免费阅读。' },
   hero_cta: { en: 'Watch Claude think live', zh: '实时观看 Claude 思考' },
   hero_sub_cta: { en: 'Or read the story &rarr;', zh: '或阅读故事 →' },
 
