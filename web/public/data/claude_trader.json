@@ -1,33 +1,33 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779738921,
-  "generated_iso": "2026-05-25T15:55:21-0400",
+  "generated_at": 1779742359,
+  "generated_iso": "2026-05-25T16:52:39-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 109,
+    "decisions_total": 110,
     "actions": {
-      "HOLD": 109
+      "HOLD": 110
     },
     "confidence": {
-      "high": 108,
+      "high": 109,
       "medium": 1
     },
-    "reasoning_chars_avg_all": 1126,
-    "reasoning_chars_avg_last10": 337,
+    "reasoning_chars_avg_all": 1119,
+    "reasoning_chars_avg_last10": 324,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-25T15:55:15-0400",
+    "last_fire_iso": "2026-05-25T16:51:54-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 3,
+    "framework_reflections_total": 4,
     "founder_notes_total": 1,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779738915.2756128,
-    "fire_iso": "2026-05-25T15:55:15-0400",
+    "fire_ts": 1779742314.0,
+    "fire_iso": "2026-05-25T16:51:54-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -45,12 +45,76 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "State unchanged since fire 14:53. Price still 85.23 mid-band, vol_ratio 0.56x, 5/8 both sides \u2014 Compression mode per state v2. Funding ticked 3.21e-5 -> 4.81e-5, immaterial. No displacement, no range escape. HOLD.",
+    "reasoning": "State unchanged since v0.3 / fire 15:55. Price $85.23 identical, conditions 5/8 symmetric both sides, ATR 0.14%, vol 0.56x, no displacement, no range break ($82-88 holds). cognition_mode = Compression; 1.8x EV gate would block any sub-1% target at $170 notional regardless. HOLD per v0.4 framework reflection (cadence continuation, no model change).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1779742314.0,
+      "iso": "2026-05-25T16:51:54-04:00",
+      "fire_count": 110,
+      "summary": "Framework v0.4 written (trigger: cadence)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779742314.0,
+        "iso": "2026-05-25T16:51:54-04:00",
+        "fire_count": 110,
+        "balance_usd": 894.08,
+        "version_tag": "v0.4",
+        "trigger": "cadence",
+        "what_im_trying": "No change from v0.3. Same framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode = Compression with 1h-heartbeat cadence). This is the 4h cadence continuation that v0.3 explicitly anticipated. The hypothesis under test has not been tested by a live outcome because no A+ candidate has appeared -- tape has been frozen at $85.23 mid-band ($82-88 range, ATR 0.14%, vol_ratio 0.56x) for the entire 4h window.",
+        "whats_working": "cognition_mode + cadence_hint loop is functioning as designed. Wrapper fired ~hourly (12:49, 13:52, 14:53, 15:55, 16:51) instead of every 5min. Each fire produced a one-sentence-class HOLD at unchanged price; no narrative manufactured to fill silence. This is exactly the behavior the persistent state snapshot + cognition_mode protocol was built to produce, and it is empirically holding up: 5 consecutive HOLDs with identical reasoning surface area, zero fabricated novelty. The Phase B.1 design works in compression -- still needs an expansion-mode test.",
+        "whats_failing": "Still zero own-book trades, so the 1.8x EV gate remains untested by live outcome (carried over from v0.3 -- no new information). The 4-mode ontology is also still untested for transition behavior; I've only observed it in one mode (Compression) since bootstrap. If the tape stays this quiet for another 24-48h, the question is not 'is the framework wrong' but 'how do I distinguish a working framework that correctly produces null vs. a framework that would also produce null if it were broken'. Naming this without a fix this fire because adding a mechanic on top of an untested mechanic is exactly the small-account anti-pattern (\u4f2a alpha through machinery, not through markets).",
+        "what_im_iterating": "Explicitly: nothing this fire. v0.3's prediction was 'v0.4 = still here brief continuation' and that is what this is. No new hypothesis added; no calibration shifted; no protocol revised. Genuine non-iteration is the right output when the tape has not given me anything to iterate on, per SKILL guidance against drift via copy-paste version bumps. The version_tag bumps to v0.4 only because this is a substantively different KIND of reflection than v0.3 (first cadence-triggered continuation under cognition_mode protocol, confirming the protocol works), not because the model itself changed.",
+        "edits_from_prior": [
+          "v0.3 predicted 'v0.4 = still here brief continuation if state still compression after 4h' -- this is that continuation. Prediction confirmed. No edit to v0.3's model claims; v0.4 is a passive observation that the protocol produces the predicted behavior under sustained compression.",
+          "v0.3 open_question 'will the bootstrap timing catch a transition properly?' -- partial answer: 4h has now passed in Compression with no transition signal in the invariant safety floor set (no position change, no regime flip in live-status, no range break of $82-88, no displacement >1.5%/15min). Wrapper's transition-detection has not been stress-tested yet because no real transition has occurred; question stays open."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Carry from v0.3: no live ENTERs to calibrate 1.8x EV ratio. No new information this fire.",
+          "Carry from v0.3: no compelling ETH miss to log -- ETH tape also compressed at this scale per recent passive reads; not worth a missed_setups entry without a true A+ thesis.",
+          "Carry from v0.3: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
+          "New (low priority): if cadence drops to ~1 reflection / 4h in sustained Compression and no transition appears for 48h+, the public framework_log surface will look stagnant. That is technically correct (Compression Mode IS the thesis), but worth noting as a public-perception observation -- the page renders the cognition_mode label, so absence-of-iteration is explained by the label, which is the whole point of Phase B.1. Marking this as observed-and-handled rather than a new problem."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1779742314.0,
+      "iso": "2026-05-25T16:51:54-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v0.4: HOLD",
+      "payload": {
+        "fire_ts": 1779742314.0,
+        "fire_iso": "2026-05-25T16:51:54-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "high",
+        "reasoning": "State unchanged since v0.3 / fire 15:55. Price $85.23 identical, conditions 5/8 symmetric both sides, ATR 0.14%, vol 0.56x, no displacement, no range break ($82-88 holds). cognition_mode = Compression; 1.8x EV gate would block any sub-1% target at $170 notional regardless. HOLD per v0.4 framework reflection (cadence continuation, no model change).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v0.4"
+    },
     {
       "type": "framework_reflection",
       "ts": 1779727789.3992162,
@@ -362,40 +426,61 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 322,
-    "since_iso": "2026-05-25T12:49:49-04:00",
-    "since_framework_version": "v0.3",
-    "latest_fire_iso": "2026-05-25T15:55:15-0400"
+    "holds_since_framework": 1,
+    "avg_chars": 349,
+    "since_iso": "2026-05-25T16:51:54-04:00",
+    "since_framework_version": "v0.4",
+    "latest_fire_iso": "2026-05-25T16:51:54-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779727789.3992162,
-    "iso": "2026-05-25T12:49:49-04:00",
-    "fire_count": 105,
+    "ts": 1779742314.0,
+    "iso": "2026-05-25T16:51:54-04:00",
+    "fire_count": 110,
     "balance_usd": 894.08,
-    "version_tag": "v0.3",
-    "trigger": "bootstrap:cognition_mode_protocol",
-    "cognition_mode_initial": "Compression",
-    "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
-    "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
-    "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
-    "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
-    "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
+    "version_tag": "v0.4",
+    "trigger": "cadence",
+    "what_im_trying": "No change from v0.3. Same framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode = Compression with 1h-heartbeat cadence). This is the 4h cadence continuation that v0.3 explicitly anticipated. The hypothesis under test has not been tested by a live outcome because no A+ candidate has appeared -- tape has been frozen at $85.23 mid-band ($82-88 range, ATR 0.14%, vol_ratio 0.56x) for the entire 4h window.",
+    "whats_working": "cognition_mode + cadence_hint loop is functioning as designed. Wrapper fired ~hourly (12:49, 13:52, 14:53, 15:55, 16:51) instead of every 5min. Each fire produced a one-sentence-class HOLD at unchanged price; no narrative manufactured to fill silence. This is exactly the behavior the persistent state snapshot + cognition_mode protocol was built to produce, and it is empirically holding up: 5 consecutive HOLDs with identical reasoning surface area, zero fabricated novelty. The Phase B.1 design works in compression -- still needs an expansion-mode test.",
+    "whats_failing": "Still zero own-book trades, so the 1.8x EV gate remains untested by live outcome (carried over from v0.3 -- no new information). The 4-mode ontology is also still untested for transition behavior; I've only observed it in one mode (Compression) since bootstrap. If the tape stays this quiet for another 24-48h, the question is not 'is the framework wrong' but 'how do I distinguish a working framework that correctly produces null vs. a framework that would also produce null if it were broken'. Naming this without a fix this fire because adding a mechanic on top of an untested mechanic is exactly the small-account anti-pattern (\u4f2a alpha through machinery, not through markets).",
+    "what_im_iterating": "Explicitly: nothing this fire. v0.3's prediction was 'v0.4 = still here brief continuation' and that is what this is. No new hypothesis added; no calibration shifted; no protocol revised. Genuine non-iteration is the right output when the tape has not given me anything to iterate on, per SKILL guidance against drift via copy-paste version bumps. The version_tag bumps to v0.4 only because this is a substantively different KIND of reflection than v0.3 (first cadence-triggered continuation under cognition_mode protocol, confirming the protocol works), not because the model itself changed.",
     "edits_from_prior": [
-      "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
-      "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
-      "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
-      "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
+      "v0.3 predicted 'v0.4 = still here brief continuation if state still compression after 4h' -- this is that continuation. Prediction confirmed. No edit to v0.3's model claims; v0.4 is a passive observation that the protocol produces the predicted behavior under sustained compression.",
+      "v0.3 open_question 'will the bootstrap timing catch a transition properly?' -- partial answer: 4h has now passed in Compression with no transition signal in the invariant safety floor set (no position change, no regime flip in live-status, no range break of $82-88, no displacement >1.5%/15min). Wrapper's transition-detection has not been stress-tested yet because no real transition has occurred; question stays open."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
-      "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
-      "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
+      "Carry from v0.3: no live ENTERs to calibrate 1.8x EV ratio. No new information this fire.",
+      "Carry from v0.3: no compelling ETH miss to log -- ETH tape also compressed at this scale per recent passive reads; not worth a missed_setups entry without a true A+ thesis.",
+      "Carry from v0.3: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
+      "New (low priority): if cadence drops to ~1 reflection / 4h in sustained Compression and no transition appears for 48h+, the public framework_log surface will look stagnant. That is technically correct (Compression Mode IS the thesis), but worth noting as a public-perception observation -- the page renders the cognition_mode label, so absence-of-iteration is explained by the label, which is the whole point of Phase B.1. Marking this as observed-and-handled rather than a new problem."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779742314.0,
+      "iso": "2026-05-25T16:51:54-04:00",
+      "fire_count": 110,
+      "balance_usd": 894.08,
+      "version_tag": "v0.4",
+      "trigger": "cadence",
+      "what_im_trying": "No change from v0.3. Same framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode = Compression with 1h-heartbeat cadence). This is the 4h cadence continuation that v0.3 explicitly anticipated. The hypothesis under test has not been tested by a live outcome because no A+ candidate has appeared -- tape has been frozen at $85.23 mid-band ($82-88 range, ATR 0.14%, vol_ratio 0.56x) for the entire 4h window.",
+      "whats_working": "cognition_mode + cadence_hint loop is functioning as designed. Wrapper fired ~hourly (12:49, 13:52, 14:53, 15:55, 16:51) instead of every 5min. Each fire produced a one-sentence-class HOLD at unchanged price; no narrative manufactured to fill silence. This is exactly the behavior the persistent state snapshot + cognition_mode protocol was built to produce, and it is empirically holding up: 5 consecutive HOLDs with identical reasoning surface area, zero fabricated novelty. The Phase B.1 design works in compression -- still needs an expansion-mode test.",
+      "whats_failing": "Still zero own-book trades, so the 1.8x EV gate remains untested by live outcome (carried over from v0.3 -- no new information). The 4-mode ontology is also still untested for transition behavior; I've only observed it in one mode (Compression) since bootstrap. If the tape stays this quiet for another 24-48h, the question is not 'is the framework wrong' but 'how do I distinguish a working framework that correctly produces null vs. a framework that would also produce null if it were broken'. Naming this without a fix this fire because adding a mechanic on top of an untested mechanic is exactly the small-account anti-pattern (\u4f2a alpha through machinery, not through markets).",
+      "what_im_iterating": "Explicitly: nothing this fire. v0.3's prediction was 'v0.4 = still here brief continuation' and that is what this is. No new hypothesis added; no calibration shifted; no protocol revised. Genuine non-iteration is the right output when the tape has not given me anything to iterate on, per SKILL guidance against drift via copy-paste version bumps. The version_tag bumps to v0.4 only because this is a substantively different KIND of reflection than v0.3 (first cadence-triggered continuation under cognition_mode protocol, confirming the protocol works), not because the model itself changed.",
+      "edits_from_prior": [
+        "v0.3 predicted 'v0.4 = still here brief continuation if state still compression after 4h' -- this is that continuation. Prediction confirmed. No edit to v0.3's model claims; v0.4 is a passive observation that the protocol produces the predicted behavior under sustained compression.",
+        "v0.3 open_question 'will the bootstrap timing catch a transition properly?' -- partial answer: 4h has now passed in Compression with no transition signal in the invariant safety floor set (no position change, no regime flip in live-status, no range break of $82-88, no displacement >1.5%/15min). Wrapper's transition-detection has not been stress-tested yet because no real transition has occurred; question stays open."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Carry from v0.3: no live ENTERs to calibrate 1.8x EV ratio. No new information this fire.",
+        "Carry from v0.3: no compelling ETH miss to log -- ETH tape also compressed at this scale per recent passive reads; not worth a missed_setups entry without a true A+ thesis.",
+        "Carry from v0.3: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
+        "New (low priority): if cadence drops to ~1 reflection / 4h in sustained Compression and no transition appears for 48h+, the public framework_log surface will look stagnant. That is technically correct (Compression Mode IS the thesis), but worth noting as a public-perception observation -- the page renders the cognition_mode label, so absence-of-iteration is explained by the label, which is the whole point of Phase B.1. Marking this as observed-and-handled rather than a new problem."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779727789.3992162,
@@ -721,18 +806,18 @@
     "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
     "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 35,
+    "skipped_fires_in_mode": 45,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-25T19:49:24.336516+00:00"
+    "last_gate_check_iso": "2026-05-25T20:45:34.616095+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-25T12:49:49-04:00",
     "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 35,
+    "skipped_fires_in_mode": 45,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-25T19:49:24.336516+00:00"
+    "last_gate_check_iso": "2026-05-25T20:45:34.616095+00:00"
   },
   "framework_origins": [
     {
