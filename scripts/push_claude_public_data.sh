@@ -82,5 +82,24 @@ PYEOF
     exit 3
   fi
 
-  echo "pushed: $LATEST_INFO"
+  echo "git pushed: $LATEST_INFO"
+
+  # Force CF Pages deploy via wrangler. CF auto-deploy from GitHub is unreliable
+  # per CLAUDE.md; wrangler is the documented reliable path. Project: bibsus
+  # (legacy name, serves ibitlabs.com via custom domain). Smart deduplication
+  # means only changed files actually upload, so the deploy is fast.
+  if command -v wrangler >/dev/null 2>&1; then
+    if ! (cd "$REPO/web" && wrangler pages deploy public \
+            --project-name=bibsus \
+            --branch=main \
+            --commit-dirty=true 2>&1 | tail -5); then
+      echo "ERROR: wrangler deploy failed"
+      ntfy_push "[claude-public-publish] wrangler failed" \
+        "wrangler pages deploy failed at $(date -u +%H:%M:%SZ). Page may be stale until next cycle. Log: $LOG" \
+        "default" "warning"
+      # Non-fatal — git push succeeded, just publish lag.
+    fi
+  else
+    echo "WARN: wrangler not on PATH; relying on CF auto-deploy"
+  fi
 } 2>&1 | tee -a "$LOG"
