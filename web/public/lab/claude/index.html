@@ -162,29 +162,98 @@
     }
     .fn-note .fn-excerpt {
       color: var(--muted); font-family: ui-serif, Georgia, serif;
-      font-size: 13.5px; line-height: 1.6; padding: 8px 12px;
+      font-size: 13px; line-height: 1.55; padding: 8px 12px;
       border-left: 2px solid var(--border-2);
       background: var(--panel-2); border-radius: 0 4px 4px 0;
-      max-height: 180px; overflow: hidden; position: relative;
+      max-height: 140px; overflow: hidden; position: relative;
+      margin-top: 10px;
     }
-    .fn-note .fn-response {
-      margin-top: 10px; padding: 10px 12px;
-      background: rgba(34, 197, 94, 0.06); border-radius: 6px;
-      border: 1px solid rgba(34, 197, 94, 0.18);
-      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
-      color: var(--muted);
+
+    /* --- Per-claim rows --- */
+    .fn-claims-host { margin-top: 12px; }
+    .fn-claims-host .fn-claims-label {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--dim); margin-bottom: 6px;
     }
-    .fn-note .fn-response b { color: var(--green); font-weight: 600; }
-    .fn-note .fn-response.rejected {
-      background: rgba(239, 68, 68, 0.06);
-      border-color: rgba(239, 68, 68, 0.18);
+    .fn-claim {
+      padding: 10px 12px; margin-bottom: 8px;
+      background: var(--panel-2); border-radius: 6px;
+      border-left: 2px solid var(--border-2);
     }
-    .fn-note .fn-response.rejected b { color: var(--danger); }
-    .fn-note .fn-response.refined {
-      background: rgba(14, 165, 233, 0.06);
-      border-color: rgba(14, 165, 233, 0.18);
+    .fn-claim.accepted { border-left-color: var(--green); }
+    .fn-claim.rejected { border-left-color: var(--danger); }
+    .fn-claim.refined { border-left-color: var(--blue); }
+    .fn-claim.pending { border-left-color: var(--warn); }
+    .fn-claim .fn-claim-top {
+      display: flex; gap: 8px; align-items: baseline;
+      flex-wrap: wrap; margin-bottom: 5px;
     }
-    .fn-note .fn-response.refined b { color: var(--blue); }
+    .fn-claim .fn-claim-id {
+      font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+      color: var(--muted); font-weight: 600;
+    }
+    .fn-claim .fn-claim-pill {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10px;
+      padding: 1px 6px; border-radius: 3px;
+      background: var(--bg); color: var(--muted);
+      border: 1px solid var(--border); text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .fn-claim .fn-claim-pill.type-structural { color: var(--blue); border-color: rgba(14,165,233,0.3); }
+    .fn-claim .fn-claim-pill.type-tactical { color: var(--purple); border-color: rgba(168,85,247,0.3); }
+    .fn-claim .fn-claim-pill.type-risk { color: var(--warn); border-color: rgba(245,158,11,0.3); }
+    .fn-claim .fn-claim-pill.type-data { color: var(--green); border-color: rgba(34,197,94,0.3); }
+    .fn-claim .fn-claim-pill.type-regime { color: var(--text); border-color: var(--border-2); }
+    .fn-claim .fn-claim-status {
+      font-family: ui-monospace, Menlo, monospace; font-size: 10px;
+      padding: 1px 7px; border-radius: 3px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-left: auto;
+    }
+    .fn-claim .fn-claim-status.accepted { color: var(--green); background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3); }
+    .fn-claim .fn-claim-status.rejected { color: var(--danger); background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); }
+    .fn-claim .fn-claim-status.refined { color: var(--blue); background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.3); }
+    .fn-claim .fn-claim-status.pending { color: var(--warn); background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); }
+    .fn-claim .fn-claim-text {
+      color: var(--text); font-family: ui-serif, Georgia, serif;
+      font-size: 13.5px; line-height: 1.55;
+    }
+    .fn-claim .fn-claim-action {
+      margin-top: 6px; color: var(--muted);
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      line-height: 1.5;
+    }
+    .fn-claim .fn-claim-action::before {
+      content: "→ "; color: var(--dim);
+    }
+    .fn-claim .fn-claim-planned {
+      margin-top: 7px; padding: 7px 10px;
+      background: var(--bg); border-radius: 4px;
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      color: var(--muted); line-height: 1.55;
+      border-left: 2px solid var(--border);
+    }
+    .fn-claim.accepted .fn-claim-planned { border-left-color: rgba(34,197,94,0.5); }
+    .fn-claim.rejected .fn-claim-planned { border-left-color: rgba(239,68,68,0.5); }
+    .fn-claim.refined .fn-claim-planned { border-left-color: rgba(14,165,233,0.5); }
+    .fn-claim .fn-claim-planned .label {
+      color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em;
+      font-size: 10px; font-weight: 600; margin-right: 5px;
+    }
+
+    /* --- Lineage stats strip --- */
+    .fn-lineage {
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      color: var(--dim); line-height: 1.6;
+    }
+    .fn-lineage b { color: var(--muted); font-weight: 500; }
+    .fn-lineage .lineage-num.green { color: var(--green); font-weight: 600; }
+    .fn-lineage .lineage-num.warn { color: var(--warn); font-weight: 600; }
+    .fn-lineage .lineage-num.danger { color: var(--danger); font-weight: 600; }
+    .fn-lineage .lineage-num.blue { color: var(--blue); font-weight: 600; }
     section.founder-notes .fn-empty {
       color: var(--muted); font-family: ui-monospace, Menlo, monospace;
       font-size: 13px; padding: 4px 0;
@@ -742,27 +811,77 @@
       }
 
       const html = notes.map(n => {
-        const addressed = n.addressed_in;
         const tags = (n.tags || []).map(t => `<span class="fn-tag">${escapeHtml(t)}</span>`).join("");
         const excerpt = (n.text || "").substring(0, 480);
         const truncated = (n.text || "").length > 480;
 
+        const total = n.claims_total || 0;
+        const pendingC = n.claims_pending_count || 0;
+        const addressedC = n.claims_addressed_count || 0;
+
         let metaTag;
-        if (!addressed) {
-          metaTag = '<span class="pending">Awaiting next reflection</span>';
+        if (total === 0) {
+          // legacy v1 note (no claims array)
+          const addressed = n.addressed_in;
+          if (!addressed) {
+            metaTag = '<span class="pending">Awaiting next reflection</span>';
+          } else {
+            const rt = (addressed.response_type || "").toLowerCase();
+            metaTag = `<span class="resp ${escapeHtml(rt)}">${escapeHtml(addressed.response_type || "?")} in ${escapeHtml(addressed.reflection_version || "v?")}</span>`;
+          }
+        } else if (pendingC === 0) {
+          // all claims addressed
+          metaTag = `<span class="resp accepted">${addressedC}/${total} claims addressed</span>`;
         } else {
-          const rt = (addressed.response_type || "").toLowerCase();
-          metaTag = `<span class="resp ${escapeHtml(rt)}">${escapeHtml(addressed.response_type || "?")} in ${escapeHtml(addressed.reflection_version || "v?")}</span>`;
+          metaTag = `<span class="pending">${pendingC}/${total} claims pending</span>`;
         }
 
-        let responseBlock = "";
-        if (addressed) {
-          const rt = (addressed.response_type || "").toLowerCase();
-          responseBlock = `
-            <div class="fn-response ${escapeHtml(rt)}">
-              <b>${escapeHtml(addressed.response_type || "?")}</b> in framework ${escapeHtml(addressed.reflection_version || "v?")}: ${escapeHtml(addressed.how || "")}
+        // Per-claim rows
+        let claimsBlock = "";
+        if (total > 0) {
+          const claimsHtml = (n.claims || []).map(c => {
+            const response = c.addressed_in;
+            const rt = response ? (response.response_type || "pending").toLowerCase() : "pending";
+            const statusLabel = response ? response.response_type : "PENDING";
+            const ctype = (c.type || "unknown").toLowerCase();
+            const cconf = (c.confidence || "?").toLowerCase();
+            const refRef = response
+              ? `<span class="fn-claim-pill">${escapeHtml(response.reflection_version || "v?")}</span>`
+              : "";
+            const planned = response && response.planned_change
+              ? `<div class="fn-claim-planned"><span class="label">planned change</span>${escapeHtml(response.planned_change)}</div>`
+              : "";
+            const how = response && response.how
+              ? `<div class="fn-claim-action">${escapeHtml(response.how)}</div>`
+              : "";
+            return `
+              <div class="fn-claim ${escapeHtml(rt)}">
+                <div class="fn-claim-top">
+                  <span class="fn-claim-id">${escapeHtml(c.claim_id || "?")}</span>
+                  <span class="fn-claim-pill type-${escapeHtml(ctype)}">${escapeHtml(c.type || "?")}</span>
+                  <span class="fn-claim-pill">conf:${escapeHtml(cconf)}</span>
+                  ${refRef}
+                  <span class="fn-claim-status ${escapeHtml(rt)}">${escapeHtml(statusLabel)}</span>
+                </div>
+                <div class="fn-claim-text">${escapeHtml(c.claim || "")}</div>
+                ${how}
+                ${planned}
+              </div>
+            `;
+          }).join("");
+          claimsBlock = `
+            <div class="fn-claims-host">
+              <div class="fn-claims-label">Claims (${total})</div>
+              ${claimsHtml}
             </div>`;
         }
+
+        // Note-level type + confidence pills
+        const noteTypeRow = (n.type || n.confidence) ? `
+          <div class="fn-tags" style="margin-bottom:6px;">
+            ${n.type ? `<span class="fn-tag" style="border-color:var(--border-2);color:var(--text);">type: ${escapeHtml(n.type)}</span>` : ""}
+            ${n.confidence ? `<span class="fn-tag" style="border-color:var(--border-2);color:var(--text);">conf: ${escapeHtml(n.confidence)}</span>` : ""}
+          </div>` : "";
 
         return `
           <div class="fn-note">
@@ -772,13 +891,35 @@
               ${metaTag}
             </div>
             <div class="fn-summary">${escapeHtml(n.summary || "")}</div>
+            ${noteTypeRow}
             <div class="fn-tags">${tags}</div>
+            ${claimsBlock}
             <div class="fn-excerpt">${escapeHtml(excerpt)}${truncated ? "…" : ""}</div>
-            ${responseBlock}
           </div>
         `;
       }).join("");
-      body.innerHTML = html;
+
+      // Lineage stats footer
+      const stats = d.lineage_stats || null;
+      let lineage = "";
+      if (stats && (stats.claims_total || 0) > 0) {
+        const mix = stats.response_mix || {};
+        const byType = stats.by_type || {};
+        const typeBits = Object.keys(byType).sort().map(t => {
+          const b = byType[t];
+          return `<b>${b.total}</b> ${escapeHtml(t)}`;
+        }).join(" · ");
+        lineage = `
+          <div class="fn-lineage">
+            Lineage: ${typeBits} · <b>${stats.claims_total} claim${stats.claims_total > 1 ? "s" : ""} total</b> ·
+            <span class="lineage-num green">${mix.accepted || 0} accepted</span> ·
+            <span class="lineage-num danger">${mix.rejected || 0} rejected</span> ·
+            <span class="lineage-num blue">${mix.refined || 0} refined</span> ·
+            <span class="lineage-num warn">${mix.pending || 0} pending</span>
+          </div>`;
+      }
+
+      body.innerHTML = html + lineage;
     }
 
     function renderStateSnapshot(d) {

@@ -37,10 +37,11 @@ MISSED_SETUPS_LIMIT = 10
 
 # Schema version of the OUTPUT artifact (separate from per-decision schema_version).
 # v3: dropped verbose `recent` stream; added `events` timeline + `hold_summary`.
-# v4: added `founder_notes` channel (operator → Claude input), `state_snapshot`
-#     (persistent regime memory), `missed_setups` (non-executable books). Each
-#     note carries an `addressed_in` field if a reflection has responded to it.
-PUBLIC_SCHEMA_VERSION = 4
+# v4: added `founder_notes` channel, `state_snapshot`, `missed_setups`.
+# v5: epistemic upgrade — founder notes now carry type/confidence/claims[].
+#     Lineage tracking is per-claim (note_ts + claim_id), not per-note.
+#     Adds `lineage_stats` summarizing accept/reject by claim type.
+PUBLIC_SCHEMA_VERSION = 5
 
 
 def load_decisions(path: Path) -> list[dict]:
@@ -287,30 +288,111 @@ def load_state_snapshot(path: Path):
 
 
 def annotate_founder_notes(notes: list[dict], reflections: list[dict]) -> list[dict]:
-    """Mark each note with the reflection (if any) that addressed it. A note's
-    `note_ts` matches a reflection's `founder_notes_addressed[*].note_ts`."""
-    # Build a ts → response map across all reflections.
-    ts_to_response: dict[float, dict] = {}
+    """For each note, attach per-claim addressing status.
+
+    A claim is identified by (note_ts, claim_id). For each claim we attach
+    the matching reflection response (response_type / how / planned_change /
+    reflection_version / reflection_iso), or None if pending. Note-level
+    `claims_addressed_count` and `claims_pending_count` are computed for
+    quick page rendering.
+    """
+    # Build (note_ts, claim_id) → response map across all reflections.
+    response_map: dict[tuple, dict] = {}
     for r in reflections:
         addressed = r.get("founder_notes_addressed") or []
         for entry in addressed:
             note_ts = entry.get("note_ts")
+            claim_id = entry.get("claim_id")
             if note_ts is None:
                 continue
-            ts_to_response[float(note_ts)] = {
+            key = (float(note_ts), claim_id)
+            response_map[key] = {
                 "reflection_version": r.get("version_tag"),
                 "reflection_iso": r.get("iso"),
                 "response_type": entry.get("response_type"),
                 "how": entry.get("how"),
+                "planned_change": entry.get("planned_change"),
             }
 
     out = []
     for n in notes:
         nn = dict(n)
-        response = ts_to_response.get(float(n.get("ts") or 0))
-        nn["addressed_in"] = response  # None if still pending
+        nts = float(n.get("ts") or 0)
+        claims = list(n.get("claims") or [])
+        annotated_claims = []
+        addressed_count = 0
+        for c in claims:
+            claim_id = c.get("claim_id")
+            response = response_map.get((nts, claim_id))
+            cc = dict(c)
+            cc["addressed_in"] = response  # None if still pending
+            if response is not None:
+                addressed_count += 1
+            annotated_claims.append(cc)
+
+        nn["claims"] = annotated_claims
+        nn["claims_total"] = len(claims)
+        nn["claims_addressed_count"] = addressed_count
+        nn["claims_pending_count"] = len(claims) - addressed_count
+
+        # Back-compat: still expose a note-level "addressed_in" — set to the
+        # most-recent claim-level response if every claim is addressed,
+        # else None. UI fallback when v1-style notes appear.
+        if claims and addressed_count == len(claims):
+            # pick the most-recent reflection that touched any claim of this note
+            touched = [
+                response_map[(nts, c.get("claim_id"))]
+                for c in claims
+                if (nts, c.get("claim_id")) in response_map
+            ]
+            nn["addressed_in"] = touched[0] if touched else None
+        elif not claims:
+            # legacy v1 note (no claims[] array): fall back to note-level match
+            nn["addressed_in"] = response_map.get((nts, None))
+        else:
+            nn["addressed_in"] = None
+
         out.append(nn)
     return out
+
+
+def compute_lineage_stats(notes: list[dict]) -> dict:
+    """Roll up across all (annotated) notes: how many claims by type, how
+    accept-rate splits by type / confidence. Designed to be queried over
+    long history; today it's tiny but will grow."""
+    by_type: dict[str, dict] = {}
+    by_confidence: dict[str, dict] = {}
+    response_counts = {"accepted": 0, "rejected": 0, "refined": 0, "pending": 0}
+
+    def _bucket(d: dict, key: str) -> dict:
+        if key not in d:
+            d[key] = {"total": 0, "accepted": 0, "rejected": 0, "refined": 0, "pending": 0}
+        return d[key]
+
+    total_claims = 0
+    for n in notes:
+        claims = n.get("claims") or []
+        for c in claims:
+            total_claims += 1
+            ctype = c.get("type") or "unknown"
+            cconf = c.get("confidence") or "unknown"
+            response = c.get("addressed_in")
+            rtype = (response or {}).get("response_type")
+            slot = "pending"
+            if rtype in ("accepted", "rejected", "refined"):
+                slot = rtype
+            response_counts[slot] += 1
+            _bucket(by_type, ctype)["total"] += 1
+            _bucket(by_type, ctype)[slot] += 1
+            _bucket(by_confidence, cconf)["total"] += 1
+            _bucket(by_confidence, cconf)[slot] += 1
+
+    return {
+        "claims_total": total_claims,
+        "response_mix": response_counts,
+        "by_type": by_type,
+        "by_confidence": by_confidence,
+    }
 
 
 def load_framework_reflections(path: Path) -> list[dict]:
@@ -340,7 +422,9 @@ def main() -> int:
     state_snapshot = load_state_snapshot(STATE_FILE)
 
     founder_notes = annotate_founder_notes(founder_notes_raw, reflections)
-    pending_count = sum(1 for n in founder_notes if not n.get("addressed_in"))
+    # "Pending" now means: at least one claim within the note is unaddressed.
+    pending_count = sum(1 for n in founder_notes if (n.get("claims_pending_count") or 0) > 0)
+    lineage_stats = compute_lineage_stats(founder_notes)
 
     base = {
         "public_schema_version": PUBLIC_SCHEMA_VERSION,
@@ -354,6 +438,7 @@ def main() -> int:
         "founder_notes_recent": list(reversed(founder_notes[-FOUNDER_NOTES_LIMIT:])),
         "founder_notes_total": len(founder_notes),
         "founder_notes_pending": pending_count,
+        "lineage_stats": lineage_stats,
         "missed_setups_recent": list(reversed(missed_setups[-MISSED_SETUPS_LIMIT:])),
         "missed_setups_total": len(missed_setups),
         "state_snapshot": state_snapshot,

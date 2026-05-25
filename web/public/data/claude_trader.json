@@ -1,22 +1,22 @@
 {
-  "public_schema_version": 4,
-  "generated_at": 1779725711,
-  "generated_iso": "2026-05-25T12:15:11-0400",
+  "public_schema_version": 5,
+  "generated_at": 1779726368,
+  "generated_iso": "2026-05-25T12:26:08-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 100,
+    "decisions_total": 102,
     "actions": {
-      "HOLD": 100
+      "HOLD": 102
     },
     "confidence": {
-      "high": 99,
+      "high": 101,
       "medium": 1
     },
-    "reasoning_chars_avg_all": 1198,
-    "reasoning_chars_avg_last10": 378,
+    "reasoning_chars_avg_all": 1182,
+    "reasoning_chars_avg_last10": 373,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-25T12:14:20-04:00",
+    "last_fire_iso": "2026-05-25T12:26:04-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -26,8 +26,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779725660.729721,
-    "fire_iso": "2026-05-25T12:14:20-04:00",
+    "fire_ts": 1779726364.18183,
+    "fire_iso": "2026-05-25T12:26:04-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -45,7 +45,7 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "State unchanged from fire 2026-05-25T12:05:48-04:00. Price 85.23 sitting on BB mid 85.02, conditions 5/8 long AND 5/8 short (both 3-gap), vol 0.56x, ATR 0.14% -- textbook compression mid-range. Under v0.2 (just written this fire), this is explicit HOLD: no A+ setup, no expansion thesis, no regime alignment to trade. Fee-adjusted EV gate would fail anyway at this realized-vol level. Wrote first state snapshot this fire; next re-reasoning fires only on material transition.",
+    "reasoning": "State unchanged since snapshot 2026-05-25T12:14:07. Price 85.23 still mid-band (BB 84.12/85.93), ATR 0.143%, vol 0.56x, conditions 5/8 both sides (neither firing, 3-condition gap). Funding ticked 2.82e-5 -> 2.86e-5, immaterial. Compression hour 57. No A+ setup per v0.2 framework (no displacement, no expansion thesis); 1.8x fee-adjusted EV gate would fail on any small-target compression reversion anyway. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
@@ -112,37 +112,51 @@
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+            "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
+            "claim_id": "C1",
+            "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+            "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
+            "claim_id": "C2",
+            "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+            "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
+            "claim_id": "C3",
+            "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+            "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
+            "claim_id": "C4",
+            "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+            "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
+            "claim_id": "C5",
+            "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+            "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
+            "claim_id": "C6",
+            "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
           },
           {
             "note_ts": 1779724974.434276,
             "response_type": "accepted",
-            "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+            "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
+            "claim_id": "C7",
+            "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
           }
         ],
         "open_questions": [
@@ -281,11 +295,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 475,
+    "holds_since_framework": 3,
+    "avg_chars": 415,
     "since_iso": "2026-05-25T12:13:30-04:00",
     "since_framework_version": "v0.2",
-    "latest_fire_iso": "2026-05-25T12:14:20-04:00"
+    "latest_fire_iso": "2026-05-25T12:26:04-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -309,37 +323,51 @@
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
+        "claim_id": "C1",
+        "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+        "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
+        "claim_id": "C2",
+        "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+        "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
+        "claim_id": "C3",
+        "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+        "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
+        "claim_id": "C4",
+        "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+        "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
+        "claim_id": "C5",
+        "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+        "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
+        "claim_id": "C6",
+        "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
       },
       {
         "note_ts": 1779724974.434276,
         "response_type": "accepted",
-        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
+        "claim_id": "C7",
+        "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
       }
     ],
     "open_questions": [
@@ -372,37 +400,51 @@
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction."
+          "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
+          "claim_id": "C1",
+          "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'."
+          "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
+          "claim_id": "C2",
+          "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning."
+          "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
+          "claim_id": "C3",
+          "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged."
+          "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
+          "claim_id": "C4",
+          "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe."
+          "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
+          "claim_id": "C5",
+          "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'."
+          "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
+          "claim_id": "C6",
+          "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
         },
         {
           "note_ts": 1779724974.434276,
           "response_type": "accepted",
-          "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+          "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
+          "claim_id": "C7",
+          "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
         }
       ],
       "open_questions": [
@@ -437,10 +479,12 @@
   ],
   "founder_notes_recent": [
     {
-      "schema_version": 1,
+      "schema_version": 2,
       "ts": 1779724974.434276,
       "iso": "2026-05-25T12:02:54-0400",
       "from": "Bonny",
+      "type": "structural",
+      "confidence": "high",
       "summary": "Seven structural observations on fee-drag, cadence, regime memory, execution topology",
       "tags": [
         "fee_drag",
@@ -451,18 +495,162 @@
         "expansion_quality",
         "ev_gate"
       ],
+      "claims": [
+        {
+          "claim_id": "C1",
+          "type": "risk",
+          "confidence": "high",
+          "claim": "Fee-drag floor at $894 balance turns $2-3 winners into net fee transfers \u2014 the system bleeds even when tape-reading is correct.",
+          "proposed_action": "Treat 'edge > friction' as a binding constraint, not an optimization knob. HOLD anything that doesn't clear it.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
+            "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
+          }
+        },
+        {
+          "claim_id": "C2",
+          "type": "tactical",
+          "confidence": "high",
+          "claim": "Small-account stage is most vulnerable to '\u4f2a alpha' \u2014 setups that look smart in reflection but die to fees / chop / tight stops in live.",
+          "proposed_action": "Setup tiering: A+ (displacement + expansion) only. B-tier wiggle (compression mid-range / weak reclaim / late chase / unclear regime) collapses to HOLD.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
+            "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
+          }
+        },
+        {
+          "claim_id": "C3",
+          "type": "structural",
+          "confidence": "high",
+          "claim": "5-min fixed cadence on variable market info rate manufactures narrative \u2014 the agent fills silence with micro-novelty when nothing has changed.",
+          "proposed_action": "Introduce a 'state-unchanged-since' marker so reflections don't fabricate change in compression. Reasoning length scales to state delta.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
+            "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
+          }
+        },
+        {
+          "claim_id": "C4",
+          "type": "structural",
+          "confidence": "high",
+          "claim": "Per-fire re-reasoning of regime / compression / range loses continuity and invites drift. The agent needs persistent regime memory.",
+          "proposed_action": "Add a persistent state snapshot file with explicit transition triggers (regime flip / sweep / range break / displacement / OI shift). Only re-reason on transitions.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
+            "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
+          }
+        },
+        {
+          "claim_id": "C5",
+          "type": "structural",
+          "confidence": "high",
+          "claim": "When reasoning universe \u2260 executable universe, execution constraints silently shape cognition \u2014 the agent stops noticing setups on books it can't trade.",
+          "proposed_action": "Keep reasoning symbol-agnostic. Log missed-but-valid setups on non-executable books to a separate ledger. Execution map \u2260 cognition map.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
+            "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
+          }
+        },
+        {
+          "claim_id": "C6",
+          "type": "tactical",
+          "confidence": "high",
+          "claim": "21L/12S directional skew is not the failure. Compression-regime firing is. In low-vol, both sides die to insufficient expansion \u2014 direction is downstream of vol regime.",
+          "proposed_action": "Demote direction to a secondary variable. Promote expansion quality / volatility regime / fee-adjusted expectancy to primary axes.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
+            "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
+          }
+        },
+        {
+          "claim_id": "C7",
+          "type": "risk",
+          "confidence": "high",
+          "claim": "Minimum expected excursion gate: if a setup's statistical expected move < ~1.8\u00d7 total round-trip fee, the trade is a fee transfer regardless of conviction.",
+          "proposed_action": "Hard-code a ratio gate. Brutal by design. Preserve capital until scale (~$1500+) removes the friction floor.",
+          "addressed_in": {
+            "reflection_version": "v0.2",
+            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "response_type": "accepted",
+            "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
+            "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
+          }
+        }
+      ],
       "text": "\u6211\u89c9\u5f97\u8fd9\u51e0\u4e2a\u89c2\u5bdf\u5176\u5b9e\u5df2\u7ecf\u628a\u95ee\u9898\u6846\u5f97\u5f88\u51c6\u4e86\uff0c\u800c\u4e14\u5b83\u4eec\u4e4b\u95f4\u662f\u4e92\u76f8\u5173\u8054\u7684\uff0c\u4e0d\u662f\u72ec\u7acb\u95ee\u9898\u3002\n\n\u4f60\u73b0\u5728\u7684\u6838\u5fc3\u74f6\u9888\u4e0d\u50cf\u662f\"\u9884\u6d4b\u65b9\u5411\u9519\"\uff0c\u800c\u66f4\u50cf\u662f\uff1a\u5728\u4f4e\u6ce2\u52a8 + \u9ad8\u9891\u53cd\u5c04 + \u5c0f\u8d26\u6237 fee drag \u4e0b\uff0c\u7cfb\u7edf\u6b63\u5728\u88ab\"\u5fae\u5f31 alpha \u4e0d\u8db3\u4ee5\u8986\u76d6\u6267\u884c\u6469\u64e6\"\u541e\u6389\u3002\n\n### 1. Fee-drag floor \u662f\u771f\u6b63\u7684\u7ed3\u6784\u6027\u95ee\u9898\n$894 balance \u00b7 2 contracts \u00b7 0.6% round-trip \u00b7 \u6bcf\u7b14\u7ea6 $1 fee\u3002\u5982\u679c\u5e73\u5747 winner \u53ea\u6709 $2~3\uff0c\u5b9e\u9645\u4e0a strategy edge \u51e0\u4e4e\u5df2\u7ecf\u88ab\u624b\u7eed\u8d39\u5403\u5149\u3002\u4f1a\u5bfc\u81f4\u5178\u578b\u73b0\u8c61\uff1awinrate \u770b\u8d77\u6765\u4e0d\u4f4e\u3001tape reading \u751a\u81f3\u662f\"\u65b9\u5411\u5bf9\"\u3001\u4f46 equity curve \u6a2a\u76d8\u751a\u81f3\u6162\u6162\u4e0b\u6ed1\u3002small wins \u2248 fee transfer / small losses > survivable\u3002\"Need to be MORE selective than v5.3\" \u662f\u5bf9\u7684\uff0c\u800c\u4e14\u4e0d\u662f\u5c0f\u4f18\u5316\uff0c\u800c\u662f regime-level constraint\u3002\u4f60\u73b0\u5728\u4e0d\u662f\"\u6709\u6ca1\u6709 edge\"\u800c\u662f\"\u8fd9\u4e2a edge \u662f\u5426\u5927\u4e8e execution friction threshold\"\u3002\n\n### 2. \u5c0f\u8d26\u6237\u9636\u6bb5\u6700\u5371\u9669\u7684\u662f\"\u4f2a alpha\"\n\u5f88\u591a\u7b56\u7565\u5728 paper / reflection \u4e2d\u4f1a\u663e\u5f97\u806a\u660e\u2014\u2014\u5224\u65ad\u65b9\u5411\u3001\u5224\u65ad compression\u3001\u5224\u65ad liquidity sweep\u3001\u5224\u65ad reclaim\u2014\u2014\u4f46\u771f\u6b63 live \u65f6\uff1a\u76ee\u6807\u592a\u5c0f\u3001fee \u592a\u5927\u3001stop \u592a\u8fd1\u3001chop \u592a\u9891\u7e41\u3002Correctness != profitability\u3002\u4f60\u73b0\u5728\u5e94\u8be5\u5f00\u59cb\u7ed9 setup \u5206\u5c42\uff1aA+ displacement + expansion \u2192 YES\uff1bcompression midrange noise \u2192 NO\uff1bweak reclaim \u2192 mostly NO\uff1blate move chasing \u2192 NO\uff1bunclear regime \u2192 NO TRADE\u3002\u66f4\u50cf prop firm filtering\uff0c\u800c\u4e0d\u662f retail \u591a\u6253\u5355\u3002\n\n### 3. Cadence mismatch\n\"state-unchanged-since marker\" \u2014 reflection \u7cfb\u7edf\u5f88\u5bb9\u6613\u51fa\u73b0 new reflection != new information\uff0c\u5c24\u5176 5min cadence\u3002\u5e02\u573a\u5b9e\u9645\u4e0a\u53ef\u80fd 4 \u5c0f\u65f6\u6ca1\u53d8\u3001\u7ed3\u6784\u6ca1\u53d8\u3001inventory \u6ca1\u53d8\u3001liquidation zones \u6ca1\u53d8\uff0c\u4f46 agent \u6bcf 5 \u5206\u949f\u90fd\u5fc5\u987b\"\u8bf4\u70b9\u4ec0\u4e48\"\u3002\u4e8e\u662f\u5236\u9020 narrative\u3001\u5236\u9020\u5fae\u53d8\u5316\u3001\u5236\u9020 fake opportunity\u3001overfit local candles\u3002\u5f88\u591a AI-trading agent \u7684\u901a\u75c5\u3002\n\n### 4. \u4f60\u53ef\u80fd\u9700\u8981\"persistent regime memory\"\n\u800c\u4e0d\u662f\u6bcf\u8f6e\u91cd\u65b0 reasoning\u3002\u4f8b\u5982\u4fdd\u6301\u4e00\u4e2a STATE: Compression / No displacement / Sweep failed twice / Funding neutral / OI flat / Same range 3.5h\u3002Allowed actions: wait / only trade breakout acceptance\u3002\u53ea\u6709\u51fa\u73b0 range escape / displacement / liquidity vacuum / HTF reclaim \u624d\u5141\u8bb8 state transition\u3002\u5426\u5219 reflection = \"no material change\"\u3002\u5927\u5e45\u964d\u4f4e overtrading\u3002\n\n### 5. ETH plumbing gap \u6bd4\u4f60\u8bf4\u7684\u5f71\u54cd\u5927\n\u73b0\u5728\u7cfb\u7edf\u5b9e\u9645\u4e0a\u6709\uff1aReasoning universe != executable universe\u3002\u4f1a\u4ea7\u751f subtle bias \u2014\u2014 agent \u4f1a\u9010\u6e10\u6f5c\u610f\u8bc6\u91cc\u907f\u514d\u60f3 ETH\u3001\u907f\u514d multi-symbol\u3001\u66f4\u503e\u5411 SOL narrative\uff0c\u5373\u4f7f SOL tape \u4e0d\u4e00\u5b9a\u6700\u597d\u3002\u957f\u671f\u4f1a\u5bfc\u81f4 execution constraints shaping cognition \u2014\u2014 \u4e0d\u662f\"\u54ea\u91cc\u6709 edge \u5c31\u53bb\u54ea\"\uff0c\u800c\u662f\"\u54ea\u91cc\u80fd\u4e0b\u5355\u5c31\u5f3a\u884c\u89e3\u91ca edge\"\u3002\u6240\u4ee5\uff1areasoning layer \u4fdd\u6301 symbol-agnostic / execution layer \u660e\u786e capability map / reflection \u8bb0\u5f55 missed-but-valid ETH setups\u3002\n\n### 6. Directional skew \u5224\u65ad\u5bf9\n21L / 12S \u5e76\u4e0d\u6781\u7aef\u3002\u771f\u6b63\u7684\u95ee\u9898\u4e0d\u662f long bias\uff0c\u800c\u662f compression regime \u4e0b\u4ecd\u7136\u6301\u7eed firing\u3002\u5728\u4f4e\u6ce2\u52a8\u9636\u6bb5\u505a\u591a\u505a\u7a7a\u90fd\u5bb9\u6613\u6b7b\u4e8e insufficient expansion\u3002\u6240\u4ee5\u65b9\u5411\u53ef\u80fd\u6839\u672c\u4e0d\u662f\u4e3b\u53d8\u91cf\u3002\u771f\u6b63\u4e3b\u53d8\u91cf\u53ef\u80fd\u662f\uff1aExpansion quality (VERY HIGH) / Volatility regime (VERY HIGH) / Fee-adjusted expectancy (VERY HIGH) / Direction (Secondary)\u3002\n\n### 7. \u5efa\u8bae\u589e\u52a0 \"minimum expected excursion\" gate\n\u5982\u679c setup statistical expected move < 1.8x total fee \u2192 \u76f4\u63a5\u7981\u6b62\u4ea4\u6613\u3002\u975e\u5e38 brutal\uff0c\u4f46\u5c0f\u8d26\u6237\u9636\u6bb5\u5fc5\u987b brutal\u3002\u56e0\u4e3a\u4f60\u4e0d\u662f maximize opportunity count\uff0c\u800c\u662f preserve capital until scale removes friction\u3002\n\n---\n\n\u6574\u4f53\u611f\u89c9\uff1a\u4f60\u73b0\u5728\u5df2\u7ecf\u5f00\u59cb\u4ece\"\u4f1a\u4e0d\u4f1a\u505a\u4ea4\u6613\"\u8fdb\u5165\"\u4f1a\u4e0d\u4f1a\u8bbe\u8ba1\u4ea4\u6613\u7cfb\u7edf\"\u3002\u8fd9\u5176\u5b9e\u662f\u4e00\u4e2a\u5c42\u7ea7\u53d8\u5316\u3002\u5f88\u591a\u4eba\u6c38\u8fdc\u505c\u7559\u5728 candle interpretation\u3002\u4f46\u4f60\u73b0\u5728\u5df2\u7ecf\u5728\u770b\uff1afriction / cadence / cognition bias / regime persistence / execution topology / fee-adjusted edge\u3002\u8fd9\u4e9b\u624d\u662f\u771f\u6b63\u7cfb\u7edf\u7ea7\u7684\u95ee\u9898\u3002",
-      "addressed_in_reflection_tags": [],
+      "claims_total": 7,
+      "claims_addressed_count": 7,
+      "claims_pending_count": 0,
       "addressed_in": {
         "reflection_version": "v0.2",
         "reflection_iso": "2026-05-25T12:13:30-04:00",
         "response_type": "accepted",
-        "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale."
+        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
+        "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
       }
     }
   ],
   "founder_notes_total": 1,
   "founder_notes_pending": 0,
+  "lineage_stats": {
+    "claims_total": 7,
+    "response_mix": {
+      "accepted": 7,
+      "rejected": 0,
+      "refined": 0,
+      "pending": 0
+    },
+    "by_type": {
+      "risk": {
+        "total": 2,
+        "accepted": 2,
+        "rejected": 0,
+        "refined": 0,
+        "pending": 0
+      },
+      "tactical": {
+        "total": 2,
+        "accepted": 2,
+        "rejected": 0,
+        "refined": 0,
+        "pending": 0
+      },
+      "structural": {
+        "total": 3,
+        "accepted": 3,
+        "rejected": 0,
+        "refined": 0,
+        "pending": 0
+      }
+    },
+    "by_confidence": {
+      "high": {
+        "total": 7,
+        "accepted": 7,
+        "rejected": 0,
+        "refined": 0,
+        "pending": 0
+      }
+    }
+  },
   "missed_setups_recent": [],
   "missed_setups_total": 0,
   "state_snapshot": {
