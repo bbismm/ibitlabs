@@ -11,12 +11,13 @@ Idempotent via a cursor file (~/ibitlabs/logs/claude-trader/.cursor) holding
 the last-processed decision's `fire_ts`. Designed to be invoked from a cron
 or launchd plist every 5 min; safe to invoke manually.
 
-Phase 0 hard constraints (enforced here, NOT trusted from Claude's output):
-  - quantity == 1 (exactly 1 SOL contract)
-  - leverage == 1 (no leverage)
-  - balance >= $750 (re-checked from /api/live-status, not Claude's stale read)
-  - no existing position (re-checked)
-  - cohort not in BLOCKED_COHORTS
+Schema-only validation (2026-05-25 founder call: hard constraints removed):
+  - action in {ENTER, HOLD, EXIT}
+  - ENTER has a valid direction (long/short)
+  - EXIT requires position open
+
+Sizing, leverage, balance floor, cohort blocks, position concurrency, symbol
+scope — all moved to Claude's discretion. Executor validates schema only.
 
 Run: python3 ~/ibitlabs/claude_trader_executor.py
 Flip live: export CLAUDE_TRADER_DRY_RUN=0
@@ -39,12 +40,6 @@ EXECUTIONS_FILE = LOG_DIR / "executions.jsonl"
 CURSOR_FILE = LOG_DIR / ".cursor"
 
 LIVE_STATUS_URL = "https://www.ibitlabs.com/api/live-status"
-
-# Hard constraints (Phase 0)
-ALLOWED_QTY = 1
-ALLOWED_LEVERAGE = 1
-BALANCE_FLOOR = 750.0
-BLOCKED_COHORTS = {"sideways+short"}  # mirrors SNIPER_BLOCKED_COHORTS
 
 # Default: dry run. Flip via env to enable real trades.
 DRY_RUN = os.environ.get("CLAUDE_TRADER_DRY_RUN", "1") == "1"
@@ -85,7 +80,15 @@ def ntfy_push(title: str, body: str, priority: str = "default", tags: str = "") 
 
 
 def validate_decision(decision: dict, live_status: dict) -> tuple[bool, list[str]]:
-    """Run a decision through all Phase 0 risk guards. Returns (ok, reasons)."""
+    """Schema validation + fee-adjusted EV gate for ENTERs.
+
+    Sizing / leverage / cohort / balance / symbol are all Claude's call. The
+    only HARD constraint the executor enforces (besides schema) is the EV
+    gate: at sub-$1000 balance, the experiment's structural fight is "edge >
+    friction" and ENTERs whose expected gross PnL fails to beat ~1.8× the
+    round-trip fee are systematic losers regardless of conviction. Per
+    founder note 2026-05-25.
+    """
     fails: list[str] = []
 
     action = decision.get("decision")
@@ -93,38 +96,36 @@ def validate_decision(decision: dict, live_status: dict) -> tuple[bool, list[str
         fails.append(f"unknown decision action: {action!r}")
         return False, fails
 
-    if action == "HOLD":
-        # HOLD is always valid — no constraints, no execution needed.
-        return True, []
-
     if action == "ENTER":
         direction = decision.get("direction")
         if direction not in ("long", "short"):
             fails.append(f"ENTER missing valid direction: {direction!r}")
 
-        qty = decision.get("quantity")
-        if qty != ALLOWED_QTY:
-            fails.append(f"qty={qty!r} != allowed {ALLOWED_QTY} (Phase 0 hard cap)")
-
-        lev = decision.get("leverage")
-        if lev != ALLOWED_LEVERAGE:
-            fails.append(f"leverage={lev!r} != allowed {ALLOWED_LEVERAGE} (no lev)")
-
-        # Fresh balance read from live-status (not Claude's stale snapshot)
-        bal = float(live_status.get("balance", 0))
-        if bal < BALANCE_FLOOR:
-            fails.append(f"balance ${bal:.2f} < floor ${BALANCE_FLOOR:.2f}")
-
-        # Fresh position read
-        pos = live_status.get("position")
-        if pos is not None:
-            fails.append(f"existing position open: {pos}")
-
-        # Cohort block
-        regime = live_status.get("regime") or decision.get("regime") or "unknown"
-        cohort = f"{regime}+{direction}" if direction else None
-        if cohort and cohort in BLOCKED_COHORTS:
-            fails.append(f"cohort {cohort!r} is in BLOCKED_COHORTS")
+        # Fee-adjusted EV gate. Claude is expected to compute the check
+        # itself and include `fee_adjusted_ev_check.passed` in the decision.
+        # We re-verify here as belt-and-suspenders.
+        ev = decision.get("fee_adjusted_ev_check") or {}
+        if not ev:
+            fails.append(
+                "ENTER missing required `fee_adjusted_ev_check` "
+                "(see SKILL § Fee-adjusted EV gate)"
+            )
+        else:
+            ratio = ev.get("ratio")
+            passed = ev.get("passed")
+            if not isinstance(ratio, (int, float)):
+                fails.append(f"fee_adjusted_ev_check.ratio not numeric: {ratio!r}")
+            elif ratio < 1.8:
+                fails.append(
+                    f"fee_adjusted_ev_check ratio {ratio:.2f} < 1.8 — "
+                    f"expected gross does not beat 1.8× round-trip fee. "
+                    f"This is the HARD EV gate in 扭亏 phase."
+                )
+            elif passed is False:
+                fails.append(
+                    f"fee_adjusted_ev_check.passed=False (Claude self-flagged), "
+                    f"ratio={ratio}"
+                )
 
     if action == "EXIT":
         pos = live_status.get("position")
@@ -249,7 +250,8 @@ def execute_or_log(decision: dict, live_status: dict, ok: bool, fails: list[str]
             title=f"[claude-trader DRY_RUN] would {action} {decision.get('direction','?')}",
             body=(
                 f"Claude proposed {action} {decision.get('direction','?')} "
-                f"qty=1 lev=1 @ price ${record.get('live_status_price','?')}\n"
+                f"qty={decision.get('quantity','?')} lev={decision.get('leverage','?')} "
+                f"@ price ${record.get('live_status_price','?')}\n"
                 f"balance=${record.get('live_status_balance','?'):.2f} regime={decision.get('regime','?')}\n"
                 f"confidence={decision.get('confidence','?')}\n\n"
                 f"reasoning: {decision.get('reasoning','')[:400]}\n\n"
@@ -274,7 +276,8 @@ def execute_or_log(decision: dict, live_status: dict, ok: bool, fails: list[str]
         title=f"[claude-trader] LIVE PATH NOT WIRED — {action} blocked",
         body=(
             f"DRY_RUN=0 is set but Phase 0 Day 3 live wiring is not done.\n"
-            f"Decision was {action} {decision.get('direction','?')} qty=1 lev=1.\n"
+            f"Decision was {action} {decision.get('direction','?')} "
+            f"qty={decision.get('quantity','?')} lev={decision.get('leverage','?')}.\n"
             f"Either flip DRY_RUN=1 or finish wiring sol_sniper_executor integration."
         ),
         priority="urgent",
@@ -321,4 +324,27 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Wrap main() so any unhandled exception fires an urgent ntfy before
+    # we propagate exit != 0. Without this, Python tracebacks land in
+    # stderr.log and stay invisible until someone tails the file.
+    import traceback
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except BaseException as exc:
+        tb = traceback.format_exc()
+        # Keep ntfy body manageable; truncate huge tracebacks.
+        body = (
+            f"Unhandled {type(exc).__name__} in claude_trader_executor.\n\n"
+            f"{tb[-800:]}\n\n"
+            f"Check ~/ibitlabs/logs/claude-trader/executor.stderr.log for full trace. "
+            f"Next 5min cron will retry."
+        )
+        ntfy_push(
+            title=f"[claude-trader-executor] CRASH — {type(exc).__name__}",
+            body=body,
+            priority="urgent",
+            tags="rotating_light",
+        )
+        raise

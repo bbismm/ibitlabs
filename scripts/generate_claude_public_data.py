@@ -20,6 +20,9 @@ from collections import Counter
 HOME = Path.home()
 DECISIONS_FILE = HOME / "ibitlabs/logs/claude-trader/decisions.jsonl"
 FRAMEWORK_FILE = HOME / "ibitlabs/logs/claude-trader/framework_log.jsonl"
+FOUNDER_NOTES_FILE = HOME / "ibitlabs/logs/claude-trader/founder_notes.jsonl"
+MISSED_SETUPS_FILE = HOME / "ibitlabs/logs/claude-trader/missed_setups.jsonl"
+STATE_FILE = HOME / "ibitlabs/state/claude_trader_state.json"
 OUTPUT_FILE = HOME / "ibitlabs/web/public/data/claude_trader.json"
 
 # How many framework reflections to include in the public history.
@@ -28,11 +31,16 @@ FRAMEWORK_HISTORY_LIMIT = 10
 # How many events to include in the public timeline (most recent first).
 EVENT_TIMELINE_LIMIT = 30
 
+# How many founder notes / missed setups to surface in the public JSON.
+FOUNDER_NOTES_LIMIT = 10
+MISSED_SETUPS_LIMIT = 10
+
 # Schema version of the OUTPUT artifact (separate from per-decision schema_version).
-# v3: dropped verbose `recent` stream (20 full HOLD reasonings was noise); added
-#     `events` timeline (framework + non-HOLD + regime flips + confidence shifts +
-#     first-under-framework) and `hold_summary` pulse counter.
-PUBLIC_SCHEMA_VERSION = 3
+# v3: dropped verbose `recent` stream; added `events` timeline + `hold_summary`.
+# v4: added `founder_notes` channel (operator → Claude input), `state_snapshot`
+#     (persistent regime memory), `missed_setups` (non-executable books). Each
+#     note carries an `addressed_in` field if a reflection has responded to it.
+PUBLIC_SCHEMA_VERSION = 4
 
 
 def load_decisions(path: Path) -> list[dict]:
@@ -250,6 +258,61 @@ def compute_hold_summary(decisions: list[dict], reflections: list[dict]) -> dict
     }
 
 
+def load_jsonl(path: Path) -> list[dict]:
+    """Generic JSONL loader. Skips malformed lines silently — never breaks
+    public output on parse error."""
+    if not path.exists():
+        return []
+    out = []
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
+def load_state_snapshot(path: Path):
+    """Read the persistent state file. Returns dict or None on missing/invalid."""
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def annotate_founder_notes(notes: list[dict], reflections: list[dict]) -> list[dict]:
+    """Mark each note with the reflection (if any) that addressed it. A note's
+    `note_ts` matches a reflection's `founder_notes_addressed[*].note_ts`."""
+    # Build a ts → response map across all reflections.
+    ts_to_response: dict[float, dict] = {}
+    for r in reflections:
+        addressed = r.get("founder_notes_addressed") or []
+        for entry in addressed:
+            note_ts = entry.get("note_ts")
+            if note_ts is None:
+                continue
+            ts_to_response[float(note_ts)] = {
+                "reflection_version": r.get("version_tag"),
+                "reflection_iso": r.get("iso"),
+                "response_type": entry.get("response_type"),
+                "how": entry.get("how"),
+            }
+
+    out = []
+    for n in notes:
+        nn = dict(n)
+        response = ts_to_response.get(float(n.get("ts") or 0))
+        nn["addressed_in"] = response  # None if still pending
+        out.append(nn)
+    return out
+
+
 def load_framework_reflections(path: Path) -> list[dict]:
     """Each line is one reflection. Schema fields documented in SKILL.md
     § Framework reflection. We pass them through largely as-is — they are
@@ -272,6 +335,12 @@ def load_framework_reflections(path: Path) -> list[dict]:
 def main() -> int:
     decisions = load_decisions(DECISIONS_FILE)
     reflections = load_framework_reflections(FRAMEWORK_FILE)
+    founder_notes_raw = load_jsonl(FOUNDER_NOTES_FILE)
+    missed_setups = load_jsonl(MISSED_SETUPS_FILE)
+    state_snapshot = load_state_snapshot(STATE_FILE)
+
+    founder_notes = annotate_founder_notes(founder_notes_raw, reflections)
+    pending_count = sum(1 for n in founder_notes if not n.get("addressed_in"))
 
     base = {
         "public_schema_version": PUBLIC_SCHEMA_VERSION,
@@ -281,21 +350,40 @@ def main() -> int:
         "mode": "DRY_RUN",
     }
 
+    common_extras = {
+        "founder_notes_recent": list(reversed(founder_notes[-FOUNDER_NOTES_LIMIT:])),
+        "founder_notes_total": len(founder_notes),
+        "founder_notes_pending": pending_count,
+        "missed_setups_recent": list(reversed(missed_setups[-MISSED_SETUPS_LIMIT:])),
+        "missed_setups_total": len(missed_setups),
+        "state_snapshot": state_snapshot,
+    }
+
     if not decisions:
         print(f"WARN: no decisions found at {DECISIONS_FILE}", file=sys.stderr)
         out = {
             **base,
-            "summary": {"decisions_total": 0, "framework_reflections_total": len(reflections)},
+            "summary": {
+                "decisions_total": 0,
+                "framework_reflections_total": len(reflections),
+                "founder_notes_total": len(founder_notes),
+                "founder_notes_pending": pending_count,
+                "missed_setups_total": len(missed_setups),
+            },
             "latest": None,
             "events": [],
             "hold_summary": {"holds_since_framework": 0, "avg_chars": 0, "since_iso": None},
             "framework_latest": reflections[-1] if reflections else None,
             "framework_recent": list(reversed(reflections[-FRAMEWORK_HISTORY_LIMIT:])),
+            **common_extras,
         }
     else:
         sanitized = [sanitize(d) for d in decisions]
         summary = compute_summary(sanitized)
         summary["framework_reflections_total"] = len(reflections)
+        summary["founder_notes_total"] = len(founder_notes)
+        summary["founder_notes_pending"] = pending_count
+        summary["missed_setups_total"] = len(missed_setups)
         out = {
             **base,
             "summary": summary,
@@ -304,6 +392,7 @@ def main() -> int:
             "hold_summary": compute_hold_summary(sanitized, reflections),
             "framework_latest": reflections[-1] if reflections else None,
             "framework_recent": list(reversed(reflections[-FRAMEWORK_HISTORY_LIMIT:])),
+            **common_extras,
         }
 
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
