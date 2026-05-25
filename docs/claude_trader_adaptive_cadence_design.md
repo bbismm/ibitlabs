@@ -157,3 +157,158 @@ Bonny chose path (c) in the founder-notes discussion: ship epistemic schema now,
 Today's commit (`b3fa4b0` / `95157cf` / `ab063c0` chain) shipped four collaboration mechanisms (founder-notes / state-snapshot / EV-gate / missed-setup-log) and the epistemic schema on top. Adaptive cadence is the next layer up and the highest-leverage one — but it touches the visible artifact and deserves explicit founder framing of "what does this page promise to a viewer."
 
 The design doc itself is the artifact for that conversation.
+
+---
+
+## Section 9 — Productizing observable cognition states (cognition_mode)
+
+*Added 2026-05-25 evening per Bonny's reflection on Phase A.6. This section is a refinement that SUPERSEDES Sections 2-3's wrapper-gate "state unchanged check" with a cleaner abstraction: cadence becomes a function of a semantic, Claude-owned cognition state — not a procedural heuristic.*
+
+### The level shift
+
+Earlier sections (2-3) framed adaptive cadence as a scheduler optimization problem: gate the Claude CLI invocation behind a procedural "state unchanged AND no position AND not at heartbeat" check. That works, but it leaves the cadence layer reactive and hidden — wrapper infrastructure logic invisible to the public surface. Bonny's reframe in conversation:
+
+> "You've moved cadence from scheduler-optimization-problem to cognitive-state-protocol."
+
+| Wrapper gate (Sections 2-3) | cognition_mode (this section) |
+|---|---|
+| Procedural | Semantic |
+| Reactive ("if no change, skip") | Self-described ("Compression Mode") |
+| Binary (fire / skip) | Expressive (multiple labeled states) |
+| Hidden infra logic | Public research state |
+
+The second column is what supports Mission #3. Silence labeled "Mode: Compression. Information rate low. Monitoring for structural transition." is an **epistemic stance**. Silence labeled with nothing (or with a passive "skipped 9 fires" counter) just looks like the system is broken.
+
+### cognition_mode as Claude-owned ontology
+
+`cognition_mode` becomes a first-class field in `~/ibitlabs/state/claude_trader_state.json`. Claude maintains it; the wrapper reads it; the page renders it. Nothing else writes to it.
+
+**Starter ontology (deliberately small, not exhaustive):**
+
+| Mode | Meaning | Typical cadence |
+|---|---|---|
+| `Expansion` | High information density. Displacement, regime in transition, fresh range break, volume conviction. | Full 5-min, full reasoning. |
+| `Compression` | Low information rate. Tight range, low ATR, no displacement, no sweep activity. | Sparse — fire on transitions + heartbeat only. |
+| `Regime Uncertain` | Mixed signals. Live-status regime tag conflicts with intra-day tape, or 1H/4H/24h disagree. | Medium — fire on each timeframe alignment check. |
+| `Inventory Discovery` | A position is open and the book is exploring P&L territory. Need to manage live risk. | Full 5-min, no skipping ever. |
+
+These are **seeds**, not a closed enum. Claude may grow new modes as the experiment matures — examples Bonny named in conversation:
+- `Liquidity Hunt` — sweep is in progress, expect cleanup move
+- `Trend Exhaustion` — extended directional move showing exhaustion signatures
+- `Reflexive Chop` — repeated failed breakouts, range narrowing pathologically
+- `Failed Discovery` — recent sweep didn't produce displacement; revert posture
+- `Post-Displacement Drift` — post-move stabilization, asymmetric continuation odds
+
+The protocol: Claude proposes a new mode in a framework reflection (with definition + cadence implication + entry triggers), then begins using it in state.json. The lineage is public. Future contributors learn the ontology by reading framework_log + state.json, not by reading a static schema.
+
+### Cadence = function(cognition_mode)
+
+Replaces the wrapper-gate ad-hoc logic from Section 2:
+
+```
+on each launchd tick:
+  mode = state.cognition_mode  // already-maintained by Claude
+
+  switch mode:
+    case "Expansion":         force_fire (always)
+    case "Inventory Discovery": force_fire (always — live risk)
+    case "Regime Uncertain":  fire if (last_fire > 15min ago) OR transitions
+    case "Compression":       fire only if (transition detected) OR (heartbeat: last_fire > 1h)
+    case <Claude-coined mode>: default behavior per mode's declared cadence
+
+  # Transition detection is still done by the wrapper (cheap shell checks):
+  # regime flip / range break / displacement / OI shift / position state change.
+  # These are NOT mode-defined; they're invariant safety signals.
+
+  if force_fire OR transition_detected:
+    spawn Claude CLI
+  else:
+    log "[claude-trader-gate] mode={mode} · skip" → gate.log
+    exit 0
+```
+
+The semantic layer (`mode`) is Claude's. The transition-detection layer (regime flip / displacement / range break / etc.) is procedural and lives in the wrapper as invariants. This separation means **Claude can never accidentally suppress its own cognition during a real market event** — transition detection bypasses the mode-based cadence.
+
+### State.json schema additions (replaces Section 2's proposal)
+
+```json
+{
+  "schema_version": 2,
+  ...existing fields (regime, range, narrative, etc.)...
+
+  "cognition_mode": "Expansion" | "Compression" | "Regime Uncertain" | "Inventory Discovery" | "<Claude-coined>",
+  "cognition_mode_since_iso": "<ISO>",
+  "cognition_mode_rationale": "<one sentence — why this mode, not the adjacent ones>",
+  "cognition_mode_cadence_hint": "fire 5min" | "fire 15min on transitions" | "fire 1h heartbeat" | "<custom>",
+  "skipped_fires_in_mode": <int>,  // reset on mode transition
+  "last_mode_transition_iso": "<ISO>"
+}
+```
+
+The `cognition_mode_rationale` and `cognition_mode_cadence_hint` are first-class — they show up on the public page so the reader sees not just "Mode: Compression" but also "why this mode and what it implies for cadence".
+
+### Public page implications (replaces Section 3's "compression banner")
+
+Drop the conditional "compression mode banner" idea from Section 3. Replace with **always-visible mode strip** at the top of the page:
+
+> **Mode: Compression** · Information rate low. Monitoring for structural transition. · since 47m ago · gate fires 5min, real cognition 1h heartbeat
+
+This is permanent UI furniture, not a conditional warning. The page reader **always** knows what cognition state the system is in. When the mode is `Expansion`, the same strip reads:
+
+> **Mode: Expansion** · Displacement signature on 15m, vol expanding. · since 4m ago · cognition fires 5min full reasoning.
+
+This subsumes:
+- The "compression banner" idea
+- The relabeled "Latest meaningful event" header
+- The "skipped fires count" — moved into the mode strip's metadata
+
+The Latest Decision card stays as today; it shows last decision regardless of mode. The mode strip explains why the freshness window is what it is.
+
+### Why this is better than Section 2's wrapper-gate
+
+1. **Honesty surfaces.** The system is not "skipping fires when nothing changes" (which sounds defensive). It is "in Compression Mode" (which is a positive epistemic stance).
+2. **Claude owns the abstraction.** The wrapper reads `cognition_mode` like reading any other piece of state. The wrapper does not decide what the mode is.
+3. **Ontology can grow.** A scheduler-optimization problem has a fixed solution space (fire / skip). A semantic protocol can absorb new modes without redesigning the gate.
+4. **The page becomes more accurate.** Absence of output is explained by a label, not by a counter.
+5. **Future contributors learn the system by reading the modes.** Modes are documented in framework_log entries; the ontology IS the system's worldview.
+
+### Trade-off: more burden on Claude
+
+The wrapper-gate approach (Section 2) puts the burden on infrastructure: a clean piece of shell logic, deterministic, reviewable. The cognition_mode approach puts the burden on Claude: it must maintain a semantic label, not just react to triggers. If Claude mislabels (says "Compression" when it's actually "Trend Exhaustion") the cadence will be wrong.
+
+Mitigations:
+- Transition detection (invariant safety) is procedural and bypasses mode logic — protects against worst-case mislabeling.
+- Mode mislabeling will show up in the public lineage (framework_log "what's failing" sections, eventually founder-note critiques) — self-correcting via the loop already shipped in Phase A.6.
+- Initial mode set is small (4) — low surface area for early errors.
+
+### Implementation revision (supersedes Section 2's sketch)
+
+Files to touch (delta from Section 2's sketch):
+- `~/.claude/scheduled-tasks/claude-trader/SKILL.md` — new section "§ cognition_mode" describing the protocol + starter ontology + how to propose new modes via framework reflection.
+- `~/ibitlabs/state/claude_trader_state.json` schema — add the 6 cognition_mode fields above.
+- `~/ibitlabs/scripts/run_claude_trader.sh` — gate logic reads `cognition_mode` from state.json (not the ad-hoc state-unchanged check).
+- `~/ibitlabs/scripts/generate_claude_public_data.py` — surface `cognition_mode` + rationale + cadence_hint in public JSON.
+- `~/ibitlabs/web/public/lab/claude/index.html` — render the always-visible mode strip. Drop the "compression banner" conditional logic from Section 3.
+- Memory: `project_persistent_epistemic_organism_2026_05_25.md` already references this. Cross-link.
+
+Estimated work (replaces Section 2's 60-90 min): **~90-120 min.** The extra time is in SKILL (writing the cognition_mode protocol clearly so Claude internalizes it) and in the page (the mode strip needs visual care — it's the most visible new element).
+
+### Open questions for operator — Section 9 additions
+
+(Existing 5 questions from earlier sections still apply where compatible.)
+
+6. **Starter ontology.** The 4 modes above feel sufficient for Phase B kickoff. Confirm? Or add `Position Held` as a distinct mode (rather than folding it into `Inventory Discovery`)?
+7. **Mode rationale visibility.** Should the page show only the rationale string, or also a "transitions since" timeline (e.g. "Expansion → Compression → Regime Uncertain → Compression over last 8 hours")? My instinct: just the current rationale + ISO transition, with full transition history in `framework_log` for those who want it.
+8. **Mode mislabeling recovery.** If operator notices Claude has been in `Compression` for 12+ hours but a real expansion is happening, should there be a "force-mode-reassessment" channel (a founder-note tagged `regime`, type=high-confidence)? Or just append a regular founder-note and let the protocol handle it? Probably the latter.
+9. **First-mode bootstrap.** When this ships, Claude needs to write the first cognition_mode into state.json. Should the first fire after Phase B ship be a forced reflection ("welcome to cognition_mode protocol; declare your initial mode"), or should Claude write the mode lazily on the next state.json update? My instinct: forced reflection on first fire — clean ontology origin point.
+
+### Status
+
+This section is a **design refinement**, not yet shipped. Phase B ship sequence:
+1. Operator reviews this Section 9 + answers questions 6-9.
+2. If green-lit, ship in ~2 hours.
+3. First fire under Phase B writes the bootstrap reflection declaring initial cognition_mode.
+4. Run for 1 week, observe whether the mode label feels honest or pretentious, calibrate.
+
+If Section 9 itself feels over-designed (e.g. "the wrapper-gate from Section 2 was simpler and would have shipped tonight"), the fallback path is: ship Section 2's wrapper-gate as Phase B.0, gather one week of "skip vs fire" telemetry, then layer cognition_mode on top as Phase B.1 informed by that data. That preserves the Section 9 vision while reducing first-ship risk.
+
