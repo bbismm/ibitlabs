@@ -9,6 +9,7 @@ const I18N = {
   nav_signals: { en: 'Signals', zh: '信号' },
   nav_lab:     { en: 'Lab',     zh: '实验室' },
   nav_writing: { en: 'Writing', zh: '文字' },
+  nav_rules:   { en: 'Rules',   zh: '规则' },
   nav_days: { en: 'Days', zh: '日记' },
   nav_learn: { en: 'Learn', zh: '学习' },
   nav_essays: { en: 'Essays', zh: '文章' },
@@ -103,8 +104,8 @@ const I18N = {
   // ──── Index (Homepage) ────
   hero_badge: { en: 'LIVE EXPERIMENT', zh: '实验进行中' },
   hero_title: { en: 'A one-person company.<br>0-to-N. <em>In public.</em>', zh: '一人公司。<br>0→N 创业。<em>全程公开。</em>' },
-  hero_sub: { en: 'iBitLabs is a one-person company — one human + a small team of AI agents — running a 0-to-N startup experiment in real time. Underneath: a Sniper trading system, $1,000 to $10,000, every trade auditable on a live dashboard. Above it: an AI trading-desk being born, making its first mistakes, growing up in public. Every commit, every fill, every agent verifiable. Free to watch. Free to read.', zh: 'iBitLabs 是一家一人公司——一个真人 + 一支 AI 智能体团队——在公开记录中实时运行的 0→N 创业实验。底下:一套狙击手交易系统,$1,000 → $10,000,每一笔交易都进实时面板。上面:一个 AI 操盘项目正在诞生、犯下第一批错误、在公开记录里走向成熟。每一个 commit、每一笔交易、每一个 agent 都可被核对。免费观看,免费阅读。' },
-  hero_cta: { en: 'Watch trades live', zh: '实时观看交易' },
+  hero_sub: { en: 'iBitLabs is a one-person company — one human + a small team of AI agents — running a 0-to-N startup experiment in real time. The book: $1,000 → $10,000. The trader: Claude reads the tape every five minutes, forms a thesis, writes a decision. Every reasoning, every fill, every commit verifiable. Free to watch. Free to read.', zh: 'iBitLabs 是一家一人公司——一个真人 + 一支 AI 智能体团队——在公开记录中实时运行的 0→N 创业实验。资本:$1,000 → $10,000。操盘的是 Claude:每五分钟读一次盘,形成观点,写下一个决策。每一段推理、每一笔成交、每一个 commit 都可被核对。免费观看,免费阅读。' },
+  hero_cta: { en: 'Watch Claude think live', zh: '实时观看 Claude 思考' },
   hero_sub_cta: { en: 'Or read the story &rarr;', zh: '或阅读故事 →' },
 
   // Stats bar
@@ -152,7 +153,7 @@ const I18N = {
   open_step2_desc: { en: 'Every trade with entry price, exit price, P&L, and exit reason. All tagged and timestamped.', zh: '每笔交易的入场价、出场价、盈亏和出场原因。全部标记时间戳。' },
   open_step3_title: { en: 'Free Academy', zh: '免费学院' },
   open_step3_desc: { en: '13 lessons explaining every indicator on the dashboard. StochRSI, Bollinger Bands, regime detection, risk management. Learn while you watch.', zh: '13节课讲解仪表盘上的每个指标。StochRSI、布林带、行情检测、风险管理。边看边学。' },
-  open_dashboard_btn: { en: 'Open Live Dashboard', zh: '打开实时仪表盘' },
+  open_dashboard_btn: { en: 'Open the Lab', zh: '打开实验室' },
 
   // FAQ
   faq_label: { en: 'Questions', zh: '常见问题' },
@@ -164,7 +165,7 @@ const I18N = {
   faq_q3: { en: 'How does the AI trading system work?', zh: 'AI交易系统如何运作？' },
   faq_a3: { en: 'The Sniper uses mean reversion: it buys when SOL is oversold (StochRSI low + price at lower Bollinger Band) and shorts when overbought. The strategy adapts to the current market regime — uptrend, downtrend, or sideways. 2x leverage on Coinbase SOL futures. The system decides when to enter and exit — I don\'t touch it.', zh: '狙击手采用均值回归策略：当SOL超卖（StochRSI低 + 价格在布林带下轨）时做多，超买时做空。策略会根据当前市场趋势自适应调整——上升、下降或横盘。在Coinbase SOL期货上使用2倍杠杆。系统决定何时进出 — 我不干预。' },
   faq_q4: { en: 'What if the bot loses all the money?', zh: '如果机器人亏完了怎么办？' },
-  faq_a4: { en: "Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is 80% of capital, and there's a trailing stop that locks in profits. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live.", zh: '那也是实验的一部分。我不会隐藏亏损或重新开一个新账户。每笔交易止损5%，仓位使用80%资金，并有追踪止损来锁定利润。全部亏损的可能性不大，但回撤是可以预期的。你会实时看到一切。' },
+  faq_a4: { en: "Then that's part of the experiment. I won't hide losses or restart with a fresh account. The stop loss is 5% per trade, position sizing is governed by an in-house risk-officer module, and the trailing stop arms at +0.4% profit then exits on a 0.5% pullback from the high. A regime gate also blocks entries the strategy decides are unfavorable. A total wipeout is unlikely but drawdowns are expected. You'll see it all happen live.", zh: '那也是实验的一部分。我不会隐藏亏损或重新开一个新账户。每笔交易止损 5%，仓位由自研风控模块动态管理，追踪止盈在 +0.4% 启动、自高点回落 0.5% 时退出。同时有 regime 门拦截策略判定为不利的入场。全部亏损的可能性不大，但回撤是可以预期的。你会实时看到一切。' },
   faq_q5: { en: 'Who actually writes the code?', zh: '代码到底是谁写的?' },
   faq_a5: { en: `Both of us. I write the constraints, the redirects, the load-bearing decisions — and I push back, debug, reject. Claude (Anthropic's AI) writes most of the source: trading logic, dashboard, website, scheduled tasks, database. Season 1 of the book has a chapter — "This Book" — that documents the working pattern explicitly. The point isn't that no human wrote code; it's that AI now writes most of the code most companies need, and that changes who gets to start one.`, zh: '我们俩一起。我写约束、写方向、做承重决策——也会反驳、调试、拒绝。Claude(Anthropic 的 AI)写大部分源代码:交易逻辑、仪表盘、网站、定时任务、数据库。书的第一季里有一章——「这本书」——把这个协作模式记录得很清楚。重点不是「人一行代码都没写」;重点是 AI 现在能写大部分公司需要的代码,这件事改变了谁可以开一家公司。' },
   // Subscribe
@@ -176,7 +177,7 @@ const I18N = {
   // CTA
   cta_title: { en: 'The startup is live. Come watch.', zh: '创业实验正在进行中。来看吧。' },
   cta_desc: { en: 'One founder. A team of AI agents. Every commit, every fill, every agent verifiable.', zh: '一个创始人。一支 AI 智能体团队。每一笔 commit、每一笔交易、每一个 agent 都可被核对。' },
-  cta_watch: { en: 'Watch the Experiment', zh: '观看实验' },
+  cta_watch: { en: 'Open the Lab', zh: '打开实验室' },
 
   // Ticker
   ticker_live: { en: 'LIVE TRADING', zh: '实盘交易' },
@@ -188,7 +189,7 @@ const I18N = {
   ticker_price: { en: 'SOL Price', zh: 'SOL价格' },
   ticker_show: { en: 'Show recent trades', zh: '显示最近交易' },
   ticker_hide: { en: 'Hide trades', zh: '隐藏交易' },
-  ticker_footer: { en: 'Refreshes every 10s · Live trading on Coinbase Futures · V5.1 Adaptive · 2x leverage', zh: '每10秒刷新 · Coinbase期货实盘 · V5.1自适应 · 2倍杠杆' },
+  ticker_footer: { en: 'Live on Coinbase Futures · claude-trader Phase 0 — LLM is the sole decision-maker · DRY_RUN until Phase 0 gate passes', zh: 'Coinbase 期货实盘 · claude-trader Phase 0 — LLM 是唯一决策者 · Phase 0 门通过前为 DRY_RUN' },
 
   // Donate
   donate_label: { en: 'SUPPORT THE EXPERIMENT', zh: '支持这个实验' },
@@ -256,17 +257,8 @@ const I18N = {
   signals_bb_tip: { en: 'Bollinger Bands measure price volatility.', zh: '布林带衡量价格波动率。' },
   signals_regime_title: { en: 'Regime', zh: '市场趋势' },
   signals_regime_tip: { en: '30-day market regime. Bullish = uptrend. Bearish = downtrend. Neutral = sideways ranging.', zh: '30天市场趋势。看涨=上升趋势。看跌=下降趋势。中性=横盘震荡。' },
-  signals_market_ctx: { en: 'Market Context', zh: '市场背景' },
-  signals_fng: { en: 'Fear & Greed', zh: '恐贪指数' },
-  signals_fng_tip: { en: 'Crypto market sentiment index. 0-25 = extreme fear (buy signal). 75-100 = extreme greed (sell signal).', zh: '加密市场情绪指数。0-25=极度恐惧（买入信号）。75-100=极度贪婪（卖出信号）。' },
-  signals_btc: { en: 'BTC 1h', zh: 'BTC 1时' },
-  signals_btc_tip: { en: 'Bitcoin price and 1-hour change. BTC leads SOL — a strong BTC move often precedes SOL following.', zh: '比特币价格和1小时涨跌。BTC领先SOL — BTC强势移动通常预示SOL跟随。' },
-  signals_market_score: { en: 'Market Score', zh: '市场评分' },
-  signals_market_score_tip: { en: 'Composite score from funding, BTC correlation, Fear & Greed, liquidations, and open interest. Negative = bearish, positive = bullish.', zh: '综合评分，来自资金费率、BTC相关性、恐贪指数、强平量和持仓量。负值=看跌，正值=看涨。' },
-  signals_market_bias: { en: 'Market Bias', zh: '市场偏向' },
-  signals_market_bias_tip: { en: 'Overall market direction bias derived from all monitor signals combined.', zh: '综合所有监控信号得出的整体市场方向偏向。' },
   signals_funding: { en: 'Funding Rate', zh: '资金费率' },
-  signals_funding_tip: { en: 'Perpetual futures funding rate. Positive = longs pay shorts (crowded long). Negative = shorts pay longs.', zh: '永续合约资金费率。正值=多头付给空头（多头拥挤）。负值=空头付给多头。' },
+  signals_funding_tip: { en: 'Perpetual futures funding rate. Consumed by Rule C edge-kill exit (forward funding cost vs remaining edge).', zh: '永续合约资金费率。被 Rule C edge-kill 退出消费（远期资金成本 vs 剩余 edge）。' },
   signals_grid_title: { en: 'Micro-Grid', zh: '微网格' },
   signals_grid_tip: { en: 'Automated grid trading in sideways markets. Buys dips, sells bounces at preset levels. Earns while Sniper waits for signals.', zh: '横盘市场中的自动网格交易。在预设价位逢低买入、反弹卖出。在狙击手等待信号期间持续盈利。' },
   signals_atr: { en: 'ATR Volatility', zh: 'ATR波动率' },
@@ -288,7 +280,7 @@ const I18N = {
   signals_tg_title: { en: 'Get instant Telegram alerts', zh: '获取即时Telegram推送' },
   signals_tg_desc: { en: 'Every signal, every trade close — pushed to your phone in real time. Free. No signup required.', zh: '每个信号、每次平仓 — 实时推送到你的手机。免费，无需注册。' },
   signals_tg_btn: { en: 'Join Channel', zh: '加入频道' },
-  signals_footer: { en: 'iBitLabs V5.1 — AI-Powered SOL Trading · Mean Reversion Sniper', zh: 'iBitLabs V5.1 — AI驱动SOL交易 · 均值回归狙击手' },
+  signals_footer: { en: 'hybrid_v5.1 + regime gate + reverse-exit C + trailing 0.4/0.5 · SOL Perp · Live since 2026-04-07', zh: 'hybrid_v5.1 + regime 门 + 反向退出 C + 追踪止盈 0.4/0.5 · SOL 永续 · 自 2026-04-07 公开' },
   signals_no_position: { en: 'NO POSITION — Sniper is scanning for entry signals', zh: '无持仓 — 狙击手正在扫描入场信号' },
   signals_exact_hidden: { en: 'Exact value hidden', zh: '精确值已隐藏' },
   signals_band_hidden: { en: 'Band values hidden', zh: '带值已隐藏' },
@@ -296,7 +288,7 @@ const I18N = {
   signals_near_lower: { en: 'Near Lower', zh: '接近下轨' },
   signals_near_upper: { en: 'Near Upper', zh: '接近上轨' },
   signals_mid_range: { en: 'Mid Range', zh: '中间区域' },
-  signals_grid_waiting: { en: 'Waiting for sideways market', zh: '等待横盘市场' },
+  signals_grid_waiting: { en: 'Disabled — under review through 2026-06-05', zh: '已停用 — 2026-06-05 复审前不启用' },
   signals_trades_suffix: { en: ' trades', zh: ' 笔交易' },
   signals_mode_scan: { en: 'SCANNING', zh: '扫描中' },
   signals_mode_grid: { en: 'GRID', zh: '网格' },
@@ -315,7 +307,7 @@ const I18N = {
   dash_mm_direction_tip: { en: 'Overall market monitor direction based on aggregated signals.', zh: '基于汇总信号的整体市场监控方向。' },
   dash_recent_trades: { en: 'Recent Trades', zh: '最近交易' },
   dash_loading_trades: { en: 'Loading trades...', zh: '加载交易中...' },
-  dash_footer: { en: 'iBitLabs V5.1 — AI-Powered SOL Trading · Mean Reversion Sniper', zh: 'iBitLabs V5.1 — AI驱动SOL交易 · 均值回归狙击手' },
+  dash_footer: { en: 'hybrid_v5.1 + regime gate + reverse-exit C + trailing 0.4/0.5 · SOL Perp · Live since 2026-04-07', zh: 'hybrid_v5.1 + regime 门 + 反向退出 C + 追踪止盈 0.4/0.5 · SOL 永续 · 自 2026-04-07 公开' },
 };
 
 // ──── Core Logic ────
