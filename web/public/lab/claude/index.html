@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>claude-trader · live thinking · iBitLabs</title>
+  <meta name="description" content="The LLM trader on the iBitLabs $1,000 → $10,000 experiment. Every decision, every reasoning, in real time. Phase 0 — DRY_RUN — Bonny + Claude.">
+  <meta name="theme-color" content="#0a0e1a">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230a0e1a'/%3E%3Ctext x='50' y='66' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='44' font-weight='600' fill='%2322c55e'%3Ec%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #0a0e1a; --panel: #131826; --panel-2: #1a2236;
+      --text: #e2e8f0; --muted: #94a3b8; --dim: #64748b;
+      --green: #22c55e; --purple: #a855f7; --blue: #0ea5e9;
+      --warn: #f59e0b; --danger: #ef4444;
+      --border: #1e293b; --border-2: #243049;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      font-family: ui-sans-serif, -apple-system, "SF Pro", "Inter", system-ui, sans-serif;
+      font-size: 14.5px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { color: var(--green); }
+
+    /* === Site nav === */
+    .site-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 36px; border-bottom: 1px solid var(--border);
+      background: #0d1220; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+    }
+    .site-nav .brand { color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 11px; }
+    .site-nav .brand b { color: var(--text); font-weight: 600; letter-spacing: 0; }
+    .site-nav .brand em { color: var(--green); font-style: normal; font-weight: 600;
+      letter-spacing: 0; margin-left: 4px; }
+    .site-nav .links { display: flex; gap: 20px; }
+    .site-nav .links a { color: var(--muted); }
+    .site-nav .links a:hover { color: var(--text); }
+    .site-nav .links a.active { color: var(--green); }
+
+    /* === Header === */
+    header.top {
+      padding: 32px 36px 24px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #131826 0%, #0a0e1a 100%);
+    }
+    header.top .crumbs {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px; letter-spacing: 0.04em; margin-bottom: 10px;
+    }
+    header.top .crumbs a { color: var(--muted); }
+    header.top h1 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+    header.top h1 .accent { color: var(--green); }
+    header.top .pulse {
+      display: inline-block; width: 8px; height: 8px; background: var(--green);
+      border-radius: 50%; margin-left: 10px; vertical-align: middle;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    header.top .lede {
+      color: var(--muted); font-size: 14.5px; margin-top: 10px; max-width: 760px;
+    }
+    header.top .lede em { color: var(--text); font-style: normal; font-weight: 500; }
+    header.top .meta {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px; margin-top: 14px;
+    }
+    header.top .meta b { color: var(--muted); font-weight: 500; }
+
+    /* === Main === */
+    main { padding: 24px 36px 80px; max-width: 1180px; margin: 0 auto; }
+
+    /* === Stat strip === */
+    .stat-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      margin: 8px 0 28px;
+    }
+    .stat {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .stat .label {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+    }
+    .stat .value {
+      font-size: 22px; font-weight: 600; margin-top: 6px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      color: var(--text); letter-spacing: -0.01em;
+    }
+    .stat .value.green { color: var(--green); }
+    .stat .value.red { color: var(--danger); }
+    .stat .value.warn { color: var(--warn); }
+    .stat .sub {
+      font-size: 11.5px; color: var(--muted); margin-top: 3px;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+
+    /* === Latest decision card === */
+    section.latest {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px 24px; margin-bottom: 28px;
+      border-left: 3px solid var(--green);
+    }
+    section.latest .head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+    }
+    section.latest .title-line {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--green); font-weight: 600;
+    }
+    section.latest .when {
+      color: var(--dim); font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px;
+    }
+    section.latest .decision-row {
+      display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+      margin-bottom: 18px; padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    section.latest .decision-row .verdict {
+      font-size: 36px; font-weight: 600; letter-spacing: -0.01em;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+    section.latest .verdict.hold { color: var(--muted); }
+    section.latest .verdict.enter { color: var(--green); }
+    section.latest .verdict.exit { color: var(--warn); }
+    section.latest .decision-row .ctx {
+      color: var(--muted); font-family: ui-monospace, Menlo, monospace;
+      font-size: 13px;
+    }
+    section.latest .decision-row .ctx b { color: var(--text); font-weight: 500; }
+    section.latest .decision-row .ctx .dot {
+      color: var(--dim); margin: 0 6px;
+    }
+    section.latest .reasoning {
+      color: var(--text); font-size: 15.5px; line-height: 1.7;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      padding: 4px 0;
+    }
+    section.latest .reasoning::before {
+      content: ""; display: block; width: 28px; height: 2px;
+      background: var(--green); margin-bottom: 14px;
+    }
+
+    /* === Stream === */
+    section.stream { margin-top: 8px; }
+    section.stream h2 {
+      font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); margin: 0 0 14px;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+    .stream-item {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px 18px; margin-bottom: 10px;
+      transition: border-color 0.12s ease;
+    }
+    .stream-item:hover { border-color: var(--border-2); }
+    .stream-item .top {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 10px; gap: 12px; flex-wrap: wrap;
+    }
+    .stream-item .top .left {
+      font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    }
+    .stream-item .top .left .verdict {
+      font-weight: 600; letter-spacing: 0.04em;
+    }
+    .stream-item .top .left .verdict.hold { color: var(--muted); }
+    .stream-item .top .left .verdict.enter { color: var(--green); }
+    .stream-item .top .left .verdict.exit { color: var(--warn); }
+    .stream-item .top .left .ctx { color: var(--dim); margin-left: 8px; }
+    .stream-item .top .when {
+      font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+      color: var(--dim);
+    }
+    .stream-item .text {
+      color: var(--text); font-size: 14px; line-height: 1.65;
+      font-family: ui-serif, Georgia, serif;
+    }
+
+    /* === How this works === */
+    section.howto {
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 22px 24px; margin-top: 36px;
+    }
+    section.howto h3 {
+      font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--green); margin: 0 0 14px;
+      font-family: ui-monospace, Menlo, monospace; font-weight: 600;
+    }
+    section.howto p { color: var(--muted); margin: 0 0 12px; max-width: 740px; }
+    section.howto p:last-child { margin-bottom: 0; }
+    section.howto code {
+      font-family: ui-monospace, Menlo, monospace; font-size: 12.5px;
+      background: var(--bg); padding: 2px 6px; border-radius: 4px;
+      color: var(--text);
+    }
+
+    /* === Mode banner === */
+    .banner {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 6px; padding: 10px 14px;
+      font-family: ui-monospace, Menlo, monospace; font-size: 12.5px;
+      color: var(--warn); margin: 20px 0 18px;
+    }
+    .banner b { color: var(--warn); font-weight: 600; }
+
+    .error-state {
+      background: var(--panel); border: 1px solid var(--danger);
+      border-radius: 8px; padding: 18px; color: var(--danger);
+      font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+    }
+
+    /* === Footer === */
+    footer.foot {
+      margin-top: 60px; padding: 24px 36px;
+      border-top: 1px solid var(--border); color: var(--dim);
+      font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      max-width: 1180px; margin: 60px auto 0; display: flex;
+      justify-content: space-between; align-items: center; gap: 18px;
+      flex-wrap: wrap;
+    }
+    footer.foot a { color: var(--muted); }
+    footer.foot a:hover { color: var(--text); }
+
+    @media (max-width: 720px) {
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      header.top { padding: 24px 18px 20px; }
+      main { padding: 18px 18px 60px; }
+      .site-nav { padding: 10px 18px; }
+      .site-nav .links { gap: 12px; }
+      section.latest .decision-row .verdict { font-size: 30px; }
+      section.latest { padding: 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="brand">
+      iBitLabs <b>· The Lab</b> <em>/ claude-trader</em>
+    </div>
+    <div class="links">
+      <a href="/signals/">Signals</a>
+      <a href="/lab/" class="active">Lab</a>
+      <a href="/office/">Office</a>
+      <a href="/writing/">Writing</a>
+      <a href="/contributors/">Contributors</a>
+      <a href="/rules/">Rules</a>
+    </div>
+  </nav>
+
+  <header class="top">
+    <div class="crumbs">
+      <a href="/lab/">The Lab</a> &nbsp;›&nbsp; claude-trader
+    </div>
+    <h1>
+      claude-trader <span class="accent">· live thinking</span>
+      <span class="pulse" title="auto-refreshes every 60s"></span>
+    </h1>
+    <p class="lede">
+      <em>An LLM is the sole decision-maker on the iBitLabs $1,000 → $10,000 perp book.</em>
+      The rule engine that ran for 47 days was paused 2026-05-25 00:37 EDT.
+      Every five minutes, Claude reads the tape, forms a thesis, and writes a
+      decision. This page shows each one as it happens — the same JSON the
+      executor receives, in the same words Claude used.
+    </p>
+    <p class="meta">
+      <b>experiment:</b> <span id="meta-experiment">—</span> &nbsp;·&nbsp;
+      <b>mode:</b> <span id="meta-mode">—</span> &nbsp;·&nbsp;
+      <b>data:</b> <a href="/data/claude_trader.json">claude_trader.json</a> &nbsp;·&nbsp;
+      <b>updated:</b> <span id="meta-updated">—</span>
+    </p>
+  </header>
+
+  <main>
+    <div id="banner-host"></div>
+
+    <div class="stat-strip" id="stat-strip">
+      <div class="stat">
+        <div class="label">Balance</div>
+        <div class="value" id="stat-balance">—</div>
+        <div class="sub" id="stat-balance-sub">USD / starting $1,000</div>
+      </div>
+      <div class="stat">
+        <div class="label">Decisions</div>
+        <div class="value" id="stat-decisions">—</div>
+        <div class="sub" id="stat-decisions-sub">across all fires</div>
+      </div>
+      <div class="stat">
+        <div class="label">Avg reasoning (last 10)</div>
+        <div class="value" id="stat-reason">—</div>
+        <div class="sub">chars per decision</div>
+      </div>
+      <div class="stat">
+        <div class="label">Action mix</div>
+        <div class="value" id="stat-mix">—</div>
+        <div class="sub" id="stat-mix-sub">HOLD / ENTER / EXIT</div>
+      </div>
+    </div>
+
+    <section class="latest" id="latest">
+      <div class="head">
+        <span class="title-line">Latest decision</span>
+        <span class="when" id="latest-when">—</span>
+      </div>
+      <div class="decision-row">
+        <span class="verdict" id="latest-verdict">—</span>
+        <span class="ctx" id="latest-ctx">—</span>
+      </div>
+      <div class="reasoning" id="latest-reasoning">Loading…</div>
+    </section>
+
+    <section class="stream">
+      <h2>Recent stream</h2>
+      <div id="stream-host">
+        <p style="color: var(--dim); font-family: ui-monospace, Menlo, monospace; font-size: 12px;">Loading…</p>
+      </div>
+    </section>
+
+    <section class="howto">
+      <h3>How this works</h3>
+      <p>
+        A launchd job fires every 5 minutes. Each fire spawns a Claude (Opus 4.7)
+        session that reads <code>/api/live-status</code>, the recent trade log,
+        and a one-line pointer to its prior decision — then writes one JSON line
+        with a <code>decision</code> (HOLD / ENTER / EXIT), structured market context,
+        and free-form <code>reasoning</code>. The executor consumes those decisions;
+        it is currently in DRY_RUN, meaning Claude's choices are recorded but not
+        yet sent to the exchange. This page shows the last 20 of those JSON lines,
+        rendered as they are.
+      </p>
+      <p>
+        No filters. No editing. If Claude writes a bad sentence, you see the bad
+        sentence. If Claude finds a structural edge none of the rule engines
+        caught, you see that too. The whole point of the experiment is that the
+        record is the proof.
+      </p>
+      <p>
+        <a href="https://github.com/bbismm/ibitlabs">github.com/bbismm/ibitlabs</a>
+        &nbsp;·&nbsp;
+        <a href="/lab/">← back to The Lab</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div>
+      iBitLabs · The Lab · claude-trader<br>
+      <span style="color: var(--dim);">$1,000 → $10,000 · publicly recorded · Bonny + Claude</span>
+    </div>
+    <div>
+      <a href="/">ibitlabs.com</a> ·
+      <a href="/signals/">Signals</a> ·
+      <a href="/writing/">Writing</a>
+    </div>
+  </footer>
+
+  <script>
+    const DATA_URL = "/data/claude_trader.json?_=" + Date.now();
+    const REFRESH_MS = 60_000;
+
+    function fmtUsd(n) {
+      if (n === null || n === undefined) return "—";
+      return "$" + Number(n).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+    function fmtDelta(n) {
+      if (n === null || n === undefined) return "";
+      const sign = n > 0 ? "+" : n < 0 ? "−" : "±";
+      return sign + "$" + Math.abs(n).toFixed(2);
+    }
+    function fmtTime(iso) {
+      if (!iso) return "—";
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, {
+          month: "short", day: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        });
+      } catch (e) {
+        return iso;
+      }
+    }
+    function ago(iso) {
+      if (!iso) return "—";
+      const t = new Date(iso).getTime();
+      const s = Math.max(0, Math.floor((Date.now() - t) / 1000));
+      if (s < 60) return s + "s ago";
+      if (s < 3600) return Math.floor(s / 60) + "m ago";
+      if (s < 86400) return Math.floor(s / 3600) + "h ago";
+      return Math.floor(s / 86400) + "d ago";
+    }
+
+    function renderStat(id, value, subId, sub) {
+      document.getElementById(id).textContent = value;
+      if (subId) document.getElementById(subId).textContent = sub;
+    }
+
+    function renderStats(d) {
+      const s = d.summary || {};
+      // balance
+      const bal = s.balance_usd_latest;
+      const pnl = s.pnl_total_usd;
+      document.getElementById("stat-balance").textContent = fmtUsd(bal);
+      document.getElementById("stat-balance").classList.toggle("red", pnl !== null && pnl < 0);
+      document.getElementById("stat-balance").classList.toggle("green", pnl !== null && pnl > 0);
+      document.getElementById("stat-balance-sub").textContent =
+        pnl !== null ? `${fmtDelta(pnl)} from $1,000 start` : "USD / starting $1,000";
+      // decisions
+      document.getElementById("stat-decisions").textContent = (s.decisions_total ?? 0).toLocaleString();
+      const first = s.first_fire_iso ? fmtTime(s.first_fire_iso) : "—";
+      document.getElementById("stat-decisions-sub").textContent = `since ${first}`;
+      // reasoning length
+      document.getElementById("stat-reason").textContent = (s.reasoning_chars_avg_last10 ?? "—");
+      // action mix
+      const a = s.actions || {};
+      const parts = [`${a.HOLD || 0}h`];
+      if (a.ENTER) parts.push(`${a.ENTER}e`);
+      if (a.EXIT) parts.push(`${a.EXIT}x`);
+      document.getElementById("stat-mix").textContent = parts.join(" / ");
+    }
+
+    function verdictClass(v) {
+      if (!v) return "";
+      return v.toLowerCase();
+    }
+
+    function renderLatest(d) {
+      const l = d.latest;
+      if (!l) {
+        document.getElementById("latest-reasoning").textContent = "No decisions logged yet.";
+        return;
+      }
+      const verdictEl = document.getElementById("latest-verdict");
+      verdictEl.textContent = l.decision || "—";
+      verdictEl.className = "verdict " + verdictClass(l.decision);
+
+      const parts = [];
+      if (l.direction) parts.push(`<b>${l.direction}</b>`);
+      if (l.symbol) parts.push(l.symbol);
+      if (l.current_price !== null && l.current_price !== undefined)
+        parts.push(`@ $${l.current_price}`);
+      if (l.regime) parts.push(`regime: <b>${l.regime}</b>`);
+      if (l.confidence) parts.push(`confidence: <b>${l.confidence}</b>`);
+      document.getElementById("latest-ctx").innerHTML = parts.join('<span class="dot">·</span>');
+
+      document.getElementById("latest-when").textContent =
+        l.fire_iso ? `${fmtTime(l.fire_iso)} · ${ago(l.fire_iso)}` : "—";
+      document.getElementById("latest-reasoning").textContent = l.reasoning || "(no reasoning)";
+    }
+
+    function renderStream(d) {
+      const items = d.recent || [];
+      const host = document.getElementById("stream-host");
+      if (!items.length) {
+        host.innerHTML = '<p style="color: var(--dim);">No decisions yet.</p>';
+        return;
+      }
+      const html = items.map(it => {
+        const vc = verdictClass(it.decision);
+        const ctxParts = [];
+        if (it.direction) ctxParts.push(it.direction);
+        if (it.current_price) ctxParts.push("$" + it.current_price);
+        if (it.regime) ctxParts.push(it.regime);
+        const ctx = ctxParts.length ? `<span class="ctx">· ${ctxParts.join(" · ")}</span>` : "";
+        return `
+          <div class="stream-item">
+            <div class="top">
+              <div class="left">
+                <span class="verdict ${vc}">${it.decision || "—"}</span>${ctx}
+              </div>
+              <div class="when">${it.fire_iso ? fmtTime(it.fire_iso) + " · " + ago(it.fire_iso) : "—"}</div>
+            </div>
+            <div class="text">${escapeHtml(it.reasoning || "")}</div>
+          </div>
+        `;
+      }).join("");
+      host.innerHTML = html;
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function renderBanner(d) {
+      const host = document.getElementById("banner-host");
+      if (d.mode === "DRY_RUN") {
+        host.innerHTML = `
+          <div class="banner">
+            <b>DRY_RUN</b> — decisions are recorded but not yet sent to the exchange.
+            Executor live wiring ships when Phase 0 gate passes (≥10 decisions / ≥2 regimes / ≥1 ENTER through validation).
+          </div>`;
+      } else {
+        host.innerHTML = "";
+      }
+    }
+
+    function renderMeta(d) {
+      document.getElementById("meta-experiment").textContent = d.experiment || "—";
+      document.getElementById("meta-mode").textContent = d.mode || "—";
+      document.getElementById("meta-updated").textContent =
+        d.generated_iso ? `${fmtTime(d.generated_iso)} · ${ago(d.generated_iso)}` : "—";
+    }
+
+    async function load() {
+      try {
+        const url = "/data/claude_trader.json?_=" + Date.now();
+        const r = await fetch(url, { cache: "no-store" });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const d = await r.json();
+        renderMeta(d);
+        renderBanner(d);
+        renderStats(d);
+        renderLatest(d);
+        renderStream(d);
+      } catch (e) {
+        console.error(e);
+        document.getElementById("latest-reasoning").innerHTML =
+          '<div class="error-state">Could not load data: ' + escapeHtml(e.message) + '</div>';
+      }
+    }
+
+    load();
+    setInterval(load, REFRESH_MS);
+  </script>
+</body>
+</html>
