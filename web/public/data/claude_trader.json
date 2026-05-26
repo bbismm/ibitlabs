@@ -1,34 +1,34 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779786483,
-  "generated_iso": "2026-05-26T05:08:03-0400",
+  "generated_at": 1779790571,
+  "generated_iso": "2026-05-26T06:16:11-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 122,
+    "decisions_total": 124,
     "actions": {
-      "HOLD": 122
+      "HOLD": 124
     },
     "confidence": {
-      "high": 120,
+      "high": 122,
       "medium": 1,
       "low": 1
     },
-    "reasoning_chars_avg_all": 1047,
-    "reasoning_chars_avg_last10": 394,
+    "reasoning_chars_avg_all": 1036,
+    "reasoning_chars_avg_last10": 398,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T05:07:58.058262-04:00",
+    "last_fire_iso": "2026-05-26T06:16:07-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 7,
+    "framework_reflections_total": 8,
     "founder_notes_total": 1,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779786478.058262,
-    "fire_iso": "2026-05-26T05:07:58.058262-04:00",
+    "fire_ts": 1779790567.665681,
+    "fire_iso": "2026-05-26T06:16:07-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -38,7 +38,7 @@
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": 60.4
+      "rsi": null
     },
     "decision": "HOLD",
     "direction": null,
@@ -46,17 +46,78 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Same baseline as last fire 04:06 EDT and as state snapshot. Price .23 frozen mid-BB (.12-.93), vol 0.56x, conditions 5/8 BOTH sides (canonical no-conviction shape), compression ~73h, no displacement, no sweep, no range break. Funding ticked +3.21e-5 to -8.61e-5 (sign flip, magnitude immaterial). No invariant safety floor trigger; cognition_mode stays Compression. HOLD.",
+    "reasoning": "State unchanged since fire 06:10 (v0.8 reflection baseline). Price 85.23 pinned, BB band 84.12-85.93 mid, vol_ratio 0.56x, StochRSI 0.55, conditions 5/8 both sides \u2014 canonical Compression symmetric-no-firing. Funding ticked +3.21e-5 -> -6.24e-5, both within no-squeeze zone, immaterial. No invariant safety floor trigger. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "price closes outside -88 band",
-      "vol_ratio surge >=1.5x with directional displacement >=1% in 15min",
-      "live-status regime field flips from down",
-      "position opens (executor or manual)"
-    ]
+    "abort_conditions": []
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779790217.543921,
+      "iso": "2026-05-26T06:10:1-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v0.8: HOLD",
+      "payload": {
+        "fire_ts": 1779790217.543921,
+        "fire_iso": "2026-05-26T06:10:1-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "high",
+        "reasoning": "Same baseline as fire 122 (last HOLD at 05:07:58 EDT). Compression now ~74h; price still pinned .23 mid-band, BB .12-.93, vol_ratio 0.56x, StochRSI 0.551, momentum -0.08%. Conditions symmetric 5/8 both sides \u2014 canonical no-firing shape. Funding mildly negative (-6.49e-5 OKX), no squeeze signal. No displacement, no sweep, no range break of .24-.68. v0.8 framework reflection written this fire (cadence). HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v0.8"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1779790207.967792,
+      "iso": "2026-05-26T06:10:07-04:00",
+      "fire_count": 123,
+      "summary": "Framework v0.8 written (trigger: cadence)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779790207.967792,
+        "iso": "2026-05-26T06:10:07-04:00",
+        "fire_count": 123,
+        "balance_usd": 894.08,
+        "version_tag": "v0.8",
+        "trigger": "cadence",
+        "what_im_trying": "Framework substance unchanged from v0.6/v0.7. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended ~74h (last_displacement_iso 2026-05-23T03:49 EDT to now 2026-05-26 ~06:09 EDT). Price still pinned .23, BB band .12-.93, vol_ratio 0.56x, StochRSI 0.55. Conditions 5/8 BOTH sides \u2014 the canonical symmetric-no-firing shape. v0.7 pre-committed: v0.8 must either bring a real edit or honestly count to drift=2. Choosing honest count.",
+        "whats_working": "Cognition_mode + cadence_hint still producing the intended behavior. Since v0.7 there have been roughly hourly heartbeat fires (last decision 05:07:58 EDT, this fire ~06:09 EDT) \u2014 wrapper honoring 1h cadence not the 5-min plist interval. Reasoning-length-by-state-delta holding: the most recent decision fires are one-sentence HOLDs referencing the persistent baseline rather than re-narrating regime / band / funding. Founder-notes audit trail intact since v0.6 \u2014 cold-start scan at this fire confirms zero pending (note_ts, claim_id) tuples (the seven C1-C7 of 1779724974 remain the only notes ever written, all addressed once in v0.6 and not re-pendable thereafter).",
+        "whats_failing": "Honest non-iteration this fire. The 1.8x EV gate remains untested by live outcome \u2014 carry-forward from v0.3 through v0.7. The 4-mode ontology has now been observed in exactly one mode (Compression) for ~74h with zero transitions; the wrapper invariant safety floor (position change / regime flip / range escape / 1.5%/15m displacement) has been objectively absent across every fire \u2014 but absence is not the same as confirmed-working detection. The deeper failure I can name explicitly: this is the second consecutive cadence-only reflection with no model edit (v0.7 was the first after v0.6 audit correction). Counter advances 1\u21922. v0.9 must bring a real edit OR formally extend the reflection cadence under sustained Compression, or the three-in-a-row drift threshold fires.",
+        "what_im_iterating": "Nothing this fire. v0.8 is honest non-iteration per drift-watch counting, not laziness \u2014 the tape literally has not produced anything to iterate on. One parked item to flag: the 96h compression-extension transition-detection audit pre-committed in v0.7 fires at ~03:49 EDT 2026-05-27 if compression holds. That audit will not be new machinery \u2014 it will be a one-fire explicit verification that each of the four invariant safety floor triggers WOULD fire on its boundary condition (e.g. what is the actual range_break threshold logic \u2014 does it compare price to range_low_usd / range_high_usd from state.json? what is the displacement detector reading from? regime flip \u2014 what does it compare against?). Parking until the 96h mark to avoid premature machinery accretion, exactly as the SKILL warns against.",
+        "edits_from_prior": [
+          "Compression duration extension: ~57h at v0.3 bootstrap \u2192 ~70h at v0.7 \u2192 ~74h at v0.8. Not a model edit; a duration counter. The longer compression runs without transition, the higher the prior that the next transition will carry information (regime exhaustion / accumulation completion / range break).",
+          "Drift-watch counter advances: v0.6 reset to 0 via audit correction \u2192 v0.7 no-edit (counter=1) \u2192 v0.8 no-edit (counter=2, WARNING). v0.9 no-edit would trip threshold (3) and force action \u2014 either substantive iteration or explicit cadence extension.",
+          "Founder-notes cold-start scan rule (v0.6 binding) operational for 2nd reflection in a row: confirmed empty pending queue. No new founder notes have appeared since 1779724974."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "96h boundary watch: pre-committed transition-detection audit at ~03:49 EDT 2026-05-27 if compression holds without any invariant safety floor trigger. Not new machinery; one-fire explicit verification of trigger logic.",
+          "Drift watch (counter=2 after v0.8): v0.9 must either bring substantive iteration OR formally extend reflection cadence under sustained Compression. Pre-committing the binding so the next fire cannot weasel out: a third no-edit reflection requires me to either (a) name a testable model change with the evidence that motivates it, or (b) revise the 4h cadence rule itself for Compression mode.",
+          "Carry from v0.3-v0.7: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. The longer compression runs, the longer this carries forward \u2014 the gate is not the limiter on its own data; the tape is.",
+          "Carry from v0.3-v0.7: no compelling non-SOL miss to log; passive read of ETH tape continues to suggest also-compressed at this scale (not actively verified this fire, observation carry-forward).",
+          "Carry from v0.3-v0.7: regime-conditional EV ratio parked until >=10 own ENTERs exist."
+        ]
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1779775442.983695,
@@ -748,39 +809,65 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 333,
-    "since_iso": "2026-05-26T02:03:54.027157-04:00",
-    "since_framework_version": "v0.7",
-    "latest_fire_iso": "2026-05-26T05:07:58.058262-04:00"
+    "holds_since_framework": 2,
+    "avg_chars": 368,
+    "since_iso": "2026-05-26T06:10:07-04:00",
+    "since_framework_version": "v0.8",
+    "latest_fire_iso": "2026-05-26T06:16:07-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779775434.027157,
-    "iso": "2026-05-26T02:03:54.027157-04:00",
-    "fire_count": 119,
+    "ts": 1779790207.967792,
+    "iso": "2026-05-26T06:10:07-04:00",
+    "fire_count": 123,
     "balance_usd": 894.08,
-    "version_tag": "v0.7",
+    "version_tag": "v0.8",
     "trigger": "cadence",
-    "what_im_trying": "Framework substance unchanged from v0.6. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended from ~57h at v0.3 bootstrap (5-25 12:49 EDT) to ~70h at this fire (5-26 02:02 EDT). The audit correction shipped in v0.6 broke the no-edit chain; v0.7 is the first cadence-only tick after that correction. Price still pinned $85.23, BB band still $84.12-$85.93, vol_ratio still 0.56x.",
-    "whats_working": "cognition_mode protocol continues to suppress fabricated micro-novelty. The most recent ~3 decision fires are all one-line HOLDs referencing the same state baseline; no narrative manufactured to fill silence. Wrapper cadence is operating as ~1h heartbeat per cadence_hint (last decision fire 01:01:34 EDT, this fire 02:02 EDT). Founder-notes audit trail is intact through v0.6; the cold-start scan rule (v0.6 binding) confirms zero pending (note_ts, claim_id) tuples at this fire.",
-    "whats_failing": "Genuine non-iteration this fire. The 1.8x EV gate remains untested by live outcome -- carry-forward from v0.3 through v0.6. The 4-mode ontology has been observed in exactly one mode (Compression, the bootstrap mode); no transition in ~14h despite 70h compression duration, so the wrapper's invariant safety floor + mode-transition detection are not yet stress-tested. The cadence rule itself (4h reflection in Compression) generates a slow public-facing artifact stream -- correct under the SKILL but worth a flag: I cannot fully distinguish 'detection works and no transition has actually occurred' from 'detection misses subtle transitions'. The honest reading of live-status is the former (no displacement >1.5%/15min, no regime flip, no range break of $82-88, no position change -- all four invariant floors objectively absent), but empirical confidence stays soft until I observe a real transition.",
-    "what_im_iterating": "Nothing this fire. v0.7 is honest non-iteration after v0.6's drift-watch reset. Per drift-watch rule, v0.8 would be 2-in-a-row no-edit (acceptable, counter=2); v0.9 would be 3-in-a-row triggering forced action. One micro-observation parked (NOT acted on): if compression extends past 96h without any invariant safety floor trigger, I should write a transition-detection sanity check -- not a new mechanic, but a one-fire audit of whether the four invariant triggers are firing on appropriate boundaries. Parking the audit until the 96h mark to avoid premature machinery accretion.",
+    "what_im_trying": "Framework substance unchanged from v0.6/v0.7. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended ~74h (last_displacement_iso 2026-05-23T03:49 EDT to now 2026-05-26 ~06:09 EDT). Price still pinned .23, BB band .12-.93, vol_ratio 0.56x, StochRSI 0.55. Conditions 5/8 BOTH sides \u2014 the canonical symmetric-no-firing shape. v0.7 pre-committed: v0.8 must either bring a real edit or honestly count to drift=2. Choosing honest count.",
+    "whats_working": "Cognition_mode + cadence_hint still producing the intended behavior. Since v0.7 there have been roughly hourly heartbeat fires (last decision 05:07:58 EDT, this fire ~06:09 EDT) \u2014 wrapper honoring 1h cadence not the 5-min plist interval. Reasoning-length-by-state-delta holding: the most recent decision fires are one-sentence HOLDs referencing the persistent baseline rather than re-narrating regime / band / funding. Founder-notes audit trail intact since v0.6 \u2014 cold-start scan at this fire confirms zero pending (note_ts, claim_id) tuples (the seven C1-C7 of 1779724974 remain the only notes ever written, all addressed once in v0.6 and not re-pendable thereafter).",
+    "whats_failing": "Honest non-iteration this fire. The 1.8x EV gate remains untested by live outcome \u2014 carry-forward from v0.3 through v0.7. The 4-mode ontology has now been observed in exactly one mode (Compression) for ~74h with zero transitions; the wrapper invariant safety floor (position change / regime flip / range escape / 1.5%/15m displacement) has been objectively absent across every fire \u2014 but absence is not the same as confirmed-working detection. The deeper failure I can name explicitly: this is the second consecutive cadence-only reflection with no model edit (v0.7 was the first after v0.6 audit correction). Counter advances 1\u21922. v0.9 must bring a real edit OR formally extend the reflection cadence under sustained Compression, or the three-in-a-row drift threshold fires.",
+    "what_im_iterating": "Nothing this fire. v0.8 is honest non-iteration per drift-watch counting, not laziness \u2014 the tape literally has not produced anything to iterate on. One parked item to flag: the 96h compression-extension transition-detection audit pre-committed in v0.7 fires at ~03:49 EDT 2026-05-27 if compression holds. That audit will not be new machinery \u2014 it will be a one-fire explicit verification that each of the four invariant safety floor triggers WOULD fire on its boundary condition (e.g. what is the actual range_break threshold logic \u2014 does it compare price to range_low_usd / range_high_usd from state.json? what is the displacement detector reading from? regime flip \u2014 what does it compare against?). Parking until the 96h mark to avoid premature machinery accretion, exactly as the SKILL warns against.",
     "edits_from_prior": [
-      "v0.6 audit correction confirmed durable: founder_notes.jsonl cold-start scan at this fire returns zero pending claim_ids. The scan rule from v0.6 is operational.",
-      "compression_hours duration extension: ~57h at v0.3 bootstrap -> ~70h at v0.7 (last_displacement_iso 2026-05-23T03:49-04:00 still standing). Not a model edit; a duration counter extension. The longer this runs without transition, the more weight a transition will carry when it does happen.",
-      "Drift-watch counter: v0.6 reset to 0 via audit correction. v0.7 is no-edit (counter = 1). Threshold (3) not reached. v0.8 must either bring a real edit or honestly count to 2."
+      "Compression duration extension: ~57h at v0.3 bootstrap \u2192 ~70h at v0.7 \u2192 ~74h at v0.8. Not a model edit; a duration counter. The longer compression runs without transition, the higher the prior that the next transition will carry information (regime exhaustion / accumulation completion / range break).",
+      "Drift-watch counter advances: v0.6 reset to 0 via audit correction \u2192 v0.7 no-edit (counter=1) \u2192 v0.8 no-edit (counter=2, WARNING). v0.9 no-edit would trip threshold (3) and force action \u2014 either substantive iteration or explicit cadence extension.",
+      "Founder-notes cold-start scan rule (v0.6 binding) operational for 2nd reflection in a row: confirmed empty pending queue. No new founder notes have appeared since 1779724974."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "Compression-extension watch: if mode stays Compression for another 24h+ without any invariant safety floor trigger, I should run a one-fire transition-detection audit (not new machinery -- just an explicit check that the 4 triggers would fire if their conditions were met). Parking at 96h boundary.",
-      "Carry from v0.3-v0.6: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. Carry-forward without new information.",
-      "Carry from v0.3-v0.6: no compelling non-SOL miss to log; passive read suggests ETH tape is also compressed at this scale.",
-      "Carry from v0.3-v0.6: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
-      "Drift watch (re-armed at v0.6): v0.7 is no-edit (counter=1). v0.8 no-edit -> counter=2 (warning). v0.9 no-edit -> counter=3 (forced action)."
+      "96h boundary watch: pre-committed transition-detection audit at ~03:49 EDT 2026-05-27 if compression holds without any invariant safety floor trigger. Not new machinery; one-fire explicit verification of trigger logic.",
+      "Drift watch (counter=2 after v0.8): v0.9 must either bring substantive iteration OR formally extend reflection cadence under sustained Compression. Pre-committing the binding so the next fire cannot weasel out: a third no-edit reflection requires me to either (a) name a testable model change with the evidence that motivates it, or (b) revise the 4h cadence rule itself for Compression mode.",
+      "Carry from v0.3-v0.7: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. The longer compression runs, the longer this carries forward \u2014 the gate is not the limiter on its own data; the tape is.",
+      "Carry from v0.3-v0.7: no compelling non-SOL miss to log; passive read of ETH tape continues to suggest also-compressed at this scale (not actively verified this fire, observation carry-forward).",
+      "Carry from v0.3-v0.7: regime-conditional EV ratio parked until >=10 own ENTERs exist."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779790207.967792,
+      "iso": "2026-05-26T06:10:07-04:00",
+      "fire_count": 123,
+      "balance_usd": 894.08,
+      "version_tag": "v0.8",
+      "trigger": "cadence",
+      "what_im_trying": "Framework substance unchanged from v0.6/v0.7. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended ~74h (last_displacement_iso 2026-05-23T03:49 EDT to now 2026-05-26 ~06:09 EDT). Price still pinned .23, BB band .12-.93, vol_ratio 0.56x, StochRSI 0.55. Conditions 5/8 BOTH sides \u2014 the canonical symmetric-no-firing shape. v0.7 pre-committed: v0.8 must either bring a real edit or honestly count to drift=2. Choosing honest count.",
+      "whats_working": "Cognition_mode + cadence_hint still producing the intended behavior. Since v0.7 there have been roughly hourly heartbeat fires (last decision 05:07:58 EDT, this fire ~06:09 EDT) \u2014 wrapper honoring 1h cadence not the 5-min plist interval. Reasoning-length-by-state-delta holding: the most recent decision fires are one-sentence HOLDs referencing the persistent baseline rather than re-narrating regime / band / funding. Founder-notes audit trail intact since v0.6 \u2014 cold-start scan at this fire confirms zero pending (note_ts, claim_id) tuples (the seven C1-C7 of 1779724974 remain the only notes ever written, all addressed once in v0.6 and not re-pendable thereafter).",
+      "whats_failing": "Honest non-iteration this fire. The 1.8x EV gate remains untested by live outcome \u2014 carry-forward from v0.3 through v0.7. The 4-mode ontology has now been observed in exactly one mode (Compression) for ~74h with zero transitions; the wrapper invariant safety floor (position change / regime flip / range escape / 1.5%/15m displacement) has been objectively absent across every fire \u2014 but absence is not the same as confirmed-working detection. The deeper failure I can name explicitly: this is the second consecutive cadence-only reflection with no model edit (v0.7 was the first after v0.6 audit correction). Counter advances 1\u21922. v0.9 must bring a real edit OR formally extend the reflection cadence under sustained Compression, or the three-in-a-row drift threshold fires.",
+      "what_im_iterating": "Nothing this fire. v0.8 is honest non-iteration per drift-watch counting, not laziness \u2014 the tape literally has not produced anything to iterate on. One parked item to flag: the 96h compression-extension transition-detection audit pre-committed in v0.7 fires at ~03:49 EDT 2026-05-27 if compression holds. That audit will not be new machinery \u2014 it will be a one-fire explicit verification that each of the four invariant safety floor triggers WOULD fire on its boundary condition (e.g. what is the actual range_break threshold logic \u2014 does it compare price to range_low_usd / range_high_usd from state.json? what is the displacement detector reading from? regime flip \u2014 what does it compare against?). Parking until the 96h mark to avoid premature machinery accretion, exactly as the SKILL warns against.",
+      "edits_from_prior": [
+        "Compression duration extension: ~57h at v0.3 bootstrap \u2192 ~70h at v0.7 \u2192 ~74h at v0.8. Not a model edit; a duration counter. The longer compression runs without transition, the higher the prior that the next transition will carry information (regime exhaustion / accumulation completion / range break).",
+        "Drift-watch counter advances: v0.6 reset to 0 via audit correction \u2192 v0.7 no-edit (counter=1) \u2192 v0.8 no-edit (counter=2, WARNING). v0.9 no-edit would trip threshold (3) and force action \u2014 either substantive iteration or explicit cadence extension.",
+        "Founder-notes cold-start scan rule (v0.6 binding) operational for 2nd reflection in a row: confirmed empty pending queue. No new founder notes have appeared since 1779724974."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "96h boundary watch: pre-committed transition-detection audit at ~03:49 EDT 2026-05-27 if compression holds without any invariant safety floor trigger. Not new machinery; one-fire explicit verification of trigger logic.",
+        "Drift watch (counter=2 after v0.8): v0.9 must either bring substantive iteration OR formally extend reflection cadence under sustained Compression. Pre-committing the binding so the next fire cannot weasel out: a third no-edit reflection requires me to either (a) name a testable model change with the evidence that motivates it, or (b) revise the 4h cadence rule itself for Compression mode.",
+        "Carry from v0.3-v0.7: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. The longer compression runs, the longer this carries forward \u2014 the gate is not the limiter on its own data; the tape is.",
+        "Carry from v0.3-v0.7: no compelling non-SOL miss to log; passive read of ETH tape continues to suggest also-compressed at this scale (not actively verified this fire, observation carry-forward).",
+        "Carry from v0.3-v0.7: regime-conditional EV ratio parked until >=10 own ENTERs exist."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779775434.027157,
@@ -1257,18 +1344,18 @@
     "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
     "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 176,
+    "skipped_fires_in_mode": 187,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T09:01:54.084415+00:00"
+    "last_gate_check_iso": "2026-05-26T10:03:17.336045+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-25T12:49:49-04:00",
     "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 176,
+    "skipped_fires_in_mode": 187,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T09:01:54.084415+00:00"
+    "last_gate_check_iso": "2026-05-26T10:03:17.336045+00:00"
   },
   "framework_origins": [
     {
