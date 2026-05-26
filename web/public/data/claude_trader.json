@@ -1,23 +1,23 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779833762,
-  "generated_iso": "2026-05-26T18:16:02-0400",
+  "generated_at": 1779837482,
+  "generated_iso": "2026-05-26T19:18:02-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 136,
+    "decisions_total": 137,
     "actions": {
-      "HOLD": 136
+      "HOLD": 137
     },
     "confidence": {
       "high": 132,
       "medium": 1,
-      "low": 3
+      "low": 4
     },
-    "reasoning_chars_avg_all": 992,
-    "reasoning_chars_avg_last10": 581,
+    "reasoning_chars_avg_all": 991,
+    "reasoning_chars_avg_last10": 589,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T18:14:58-04:00",
+    "last_fire_iso": "2026-05-26T19:17:55.597415-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -27,19 +27,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779833698.065517,
-    "fire_iso": "2026-05-26T18:14:58-04:00",
+    "fire_ts": 1779837475.597415,
+    "fire_iso": "2026-05-26T19:17:55.597415-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.59,
+    "current_price": 83.67,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": null,
-      "momentum_pct": null,
-      "rsi": null,
-      "note": "live-status indicators_pro stale 29.7h (system_gates.stale=true, age_sec=106830, available=false). Stale claim: indicators.price=85.23, BB lower=84.12, BB upper=85.93, StochRSI=0.5506, vol_ratio=0.56x. Real current from Coinbase: price $83.59 (22:00 UTC 15m close); $1.64/1.96% divergence vs stale. Recent band $83.21-$83.98 since 13:00 EDT. Volumes 5-20k last 5h (vs displacement-peak 40-70k 10:00-13:00 EDT)."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "direction": null,
@@ -47,7 +46,7 @@
     "quantity": null,
     "leverage": null,
     "confidence": "low",
-    "reasoning": "Surprise this fire: discovered live-status indicator pack stale 29.7h. v0.3-v1.1 reflections anchored on stale $85.23/BB $84.12-$85.93/StochRSI 0.5506. Real Coinbase OHLCV: today 10:00-13:00 EDT ran failed $86 breakout (vol 68552) + 3h displacement leg to $83.03 sweep-low (vol 69102). Since 13:00 EDT (~5h) tape consolidating $83.21-$83.98 with tapering volume. Current $83.59. v0.9 cohort-aware A+ score on real tape: cohort PASS (regime=down; down+long +$12.74/n=4/WR75 and down+short +$1.39/n=6/WR83 both historically OK), asymmetry FAIL (post-displacement balance, no directional bias from candle reads), volume FAIL (recent 5-20k = ~0.3-0.5x of displacement-window normal), structural trigger FAIL (displacement was 5h ago \u2014 post-displacement consolidation is itself not a setup; need fresh trigger like range break with retest OR extreme indicator OR sweep with vol). Score 1/4 -> HOLD. Confidence low because the framework's primary data source partially invalidated this fire \u2014 three operational hard-rules committed in v1.2 framework reflection: per-fire stale-flag inspection, price cross-check vs latest 15m close, 4h cumulative-move slow-displacement detector. State.json fully rewritten with new band + cognition_mode_since_iso bumped to 13:00 EDT. No ENTER thesis available.",
+    "reasoning": "Same baseline as v1.2 reflection (fire 136, ~1h ago). v1.2 hard-rule pre-checks executed: live-status system_gates.stale=true age_sec=110604 (30.7h) \u2014 indicators_pro untrusted, market_snapshot values above are stale-as-recorded for schema continuity, not used for decision. Coinbase 15m latest close $83.67 (live-status $85.23 stale by +1.86%, OHLCV-derived authoritative). 4h cumulative move +0.28% on avg_vol_16bars=5219 \u2014 far below 1.5% Expansion threshold and below typical baseline. Price mid-band of state.json range $83.21-$83.98 (range_active_since 13:00 EDT, ~6h young). Last 4 15min bars all <5k volume \u2014 tapering further into the band. No directional asymmetry, no volume confirmation, no structural trigger. Cohort framework (v0.9) continues to score 1/4 inputs. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
@@ -1160,11 +1159,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 1289,
+    "holds_since_framework": 2,
+    "avg_chars": 1034,
     "since_iso": "2026-05-26T18:14:58-04:00",
     "since_framework_version": "v1.2",
-    "latest_fire_iso": "2026-05-26T18:14:58-04:00"
+    "latest_fire_iso": "2026-05-26T19:17:55.597415-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1860,22 +1859,23 @@
     "cognition_mode_since_iso": "2026-05-26T13:00-04:00",
     "cognition_mode_rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 11,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
-    ]
+    ],
+    "last_gate_check_iso": "2026-05-26T23:11:15.724089+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-26T13:00-04:00",
     "rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 11,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
-    "last_gate_check_iso": null
+    "last_gate_check_iso": "2026-05-26T23:11:15.724089+00:00"
   },
   "framework_origins": [
     {
