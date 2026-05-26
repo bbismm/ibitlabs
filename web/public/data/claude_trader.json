@@ -1,23 +1,23 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779768030,
-  "generated_iso": "2026-05-26T00:00:30-0400",
+  "generated_at": 1779771700,
+  "generated_iso": "2026-05-26T01:01:40-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 117,
+    "decisions_total": 118,
     "actions": {
-      "HOLD": 117
+      "HOLD": 118
     },
     "confidence": {
-      "high": 115,
+      "high": 116,
       "medium": 1,
       "low": 1
     },
-    "reasoning_chars_avg_all": 1077,
-    "reasoning_chars_avg_last10": 377,
+    "reasoning_chars_avg_all": 1071,
+    "reasoning_chars_avg_last10": 389,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T00:00:24-0400",
+    "last_fire_iso": "2026-05-26T01:01:34-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -27,8 +27,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779768024.881923,
-    "fire_iso": "2026-05-26T00:00:24-0400",
+    "fire_ts": 1779771694.926083,
+    "fire_iso": "2026-05-26T01:01:34-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -38,7 +38,7 @@
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": null
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "direction": null,
@@ -46,10 +46,15 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Same baseline as fire 116 (22:59 EDT). Price unchanged $85.23 mid-band BB $84.12-$85.93, vol_ratio 0.56x, ATR 0.13%, conditions 5/8 BOTH sides. Funding drifted -5.45e-5 -> -7.78e-5 (more negative but still trivial magnitude, neutral). Compression now ~67h in $82-88. No displacement, no sweep, no range break. cognition_mode = Compression, 1h heartbeat cadence; this fire is the day-rollover tick, not an information event. No reflection (v0.6 was ~2h ago, < 4h cadence; no surprise trigger). HOLD.",
+    "reasoning": "Same baseline as fire 116 (00:00:24). Tape frozen mid-band: $85.23 vs BB $84.12-$85.93, vol_ratio 0.56x, ATR 0.16%, 5/8 BOTH long and short = canonical compression no-side-firing shape. Funding ticked +3.21e-5 to -9.84e-5 (OKX), sign flip but magnitude immaterial \u2014 neither squeeze direction. cognition_mode = Compression (1h heartbeat per state.json). v5.3 condition lattice symmetric; no displacement, no expansion, no thesis to size. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": []
+    "abort_conditions": [
+      "range escape > $87.68 with vol_ratio >= 1.5x",
+      "range break < $82.24 with vol_ratio >= 1.5x",
+      "displacement > 1.5% in 15min with volume",
+      "regime flip in live-status field"
+    ]
   },
   "events": [
     {
@@ -677,11 +682,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 3,
-    "avg_chars": 492,
+    "holds_since_framework": 4,
+    "avg_chars": 480,
     "since_iso": "2026-05-25T21:57:41.286573-04:00",
     "since_framework_version": "v0.6",
-    "latest_fire_iso": "2026-05-26T00:00:24-0400"
+    "latest_fire_iso": "2026-05-26T01:01:34-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1210,18 +1215,18 @@
     "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
     "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 121,
+    "skipped_fires_in_mode": 132,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T03:54:19.717683+00:00"
+    "last_gate_check_iso": "2026-05-26T04:55:45.510690+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-25T12:49:49-04:00",
     "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 121,
+    "skipped_fires_in_mode": 132,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T03:54:19.717683+00:00"
+    "last_gate_check_iso": "2026-05-26T04:55:45.510690+00:00"
   },
   "framework_origins": [
     {
