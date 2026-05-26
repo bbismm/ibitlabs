@@ -1,34 +1,34 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779827385,
-  "generated_iso": "2026-05-26T16:29:45-0400",
+  "generated_at": 1779830839,
+  "generated_iso": "2026-05-26T17:27:19-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 134,
+    "decisions_total": 135,
     "actions": {
-      "HOLD": 134
+      "HOLD": 135
     },
     "confidence": {
       "high": 132,
       "medium": 1,
-      "low": 1
+      "low": 2
     },
-    "reasoning_chars_avg_all": 994,
-    "reasoning_chars_avg_last10": 468,
+    "reasoning_chars_avg_all": 990,
+    "reasoning_chars_avg_last10": 480,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T16:29:39-04:00",
+    "last_fire_iso": "2026-05-26T17:25:11-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 10,
+    "framework_reflections_total": 11,
     "founder_notes_total": 3,
     "founder_notes_pending": 2,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779827379.529608,
-    "fire_iso": "2026-05-26T16:29:39-04:00",
+    "fire_ts": 1779830711.063027,
+    "fire_iso": "2026-05-26T17:25:11-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -38,20 +38,119 @@
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": null
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "direction": null,
     "symbol": "SOL-PERP",
     "quantity": null,
     "leverage": null,
-    "confidence": "high",
-    "reasoning": "Same baseline as 15:28 fire. Price .23 mid-band (BB .12-.93), vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH long AND short (symmetric no-firing), regime down (288h tag). v0.9 cohort score 1/4: cohort OK (down+long +$12.74/n=4/WR75, down+short +$1.39/n=6/WR83 both non-worst), asymmetry/volume/structural all fail. ~80h since last displacement (#377 SL 5-23 03:49 EDT); 96h watch fires ~03:49 EDT 5-27 if compression holds. HOLD.",
+    "confidence": "low",
+    "reasoning": "Same baseline as v1.0 fire (13:24 EDT, ~4h ago) and the ~3 fires since. Price $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides. v0.9 cohort score 1/4 (cohort PASS down+either non-worst; asymmetry/volume/structural FAIL). Funding ticked 3.21e-5 -> -1.00e-4 (sign flip, magnitude tiny ~0.01%/8h, no squeeze signal, immaterial). v1.1 framework reflection written at this fire (cadence trigger, drift counter advances 1->2 warning). HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1779830711.063027,
+      "iso": "2026-05-26T17:25:11-04:00",
+      "fire_count": 134,
+      "summary": "Framework v1.1 written (trigger: cadence)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779830711.063027,
+        "iso": "2026-05-26T17:25:11-04:00",
+        "fire_count": 134,
+        "balance_usd": 894.08,
+        "version_tag": "v1.1",
+        "trigger": "cadence",
+        "what_im_trying": "Framework substance unchanged from v0.9/v1.0: cohort-aware A+ shape (directional asymmetry + volume confirmation + cohort non-worst + structural trigger), 1.8x EV gate dropped per founder retract, drift-watch was reset to 0 at v0.9, advanced to 1 at v1.0, advances to 2 at v1.1 (warning level). Cadence reflection ~4h after v1.0 (13:24 EDT -> 17:25 EDT). Tape essentially identical to v1.0 across all 4 inputs: price still $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides, regime 'down' (288h tag) with near-term compression. v0.9 cohort score remains 1/4 (cohort PASS, asymmetry/volume/structural FAIL) across the post-v1.0 fires. Only material delta: funding sign flipped 3.21e-5 -> -1.00e-4 (-0.01% per 8h = immaterial; logging the flip without elevating it). cognition_mode still Compression, ~80h+ since last displacement (5-23 03:49 EDT trade #377 SL), wrapper honoring ~1h heartbeat cadence per cadence_hint.",
+        "whats_working": "Honest non-iteration continues to hold. The 3 post-v0.9 fires through the 13:24 reflection and the ~3 fires between v1.0 and now (last decision 16:29 EDT, ~56min ago) all produced one-sentence HOLDs referencing prior baseline -- no fabricated micro-novelty under either the v0.9 framework or the funding sign-flip. The funding flip from +3.21e-5 to -1.00e-4 is a real number change, but the correct read is 'magnitude tiny, no squeeze signal, no decision impact' -- not a narrative pivot. cognition_mode Compression has now held 80h+ across 130+ fires with zero false transitions and zero invariant safety floor triggers. Founder-notes scan empty pending queue for the 4th consecutive reflection.",
+        "whats_failing": "Drift-watch counter at 2 (warning) -- v1.0 was no-edit, v1.1 is no-edit. v1.0 explicitly pre-committed: 'v1.2 no-edit -> counter=3 (forced action)'. v1.2 reflection would fire ~21:25 EDT tonight (4h cadence) unless a surprise trigger or invariant safety floor event fires first. The forced-action options at v1.2: (a) name a testable model change with evidence motivating it, (b) formally extend the 4h cadence rule itself for Compression mode (e.g. 'in Compression with no invariant trigger, cadence reflection extends to 8h or 96h boundary'), or (c) execute the parked SL-cluster entry-side signature analysis (v0.9 open question, multi-table SQL pull). Option (a) is preferred but requires the tape to give me evidence; (b) is honest cadence-tuning if Compression keeps producing no evidence; (c) is wall-clock-permitting work that has carried since v0.9. Naming the trilemma now so v1.2 isn't forced into a corner of fake iteration. The deeper failing v1.1 inherits unchanged from v0.9/v1.0: 134/134 HOLD streak across v0.2-v1.1. The v0.9 cohort-aware shape has not yet had a falsifying tape (no asymmetry + no volume + no structural trigger setup has appeared). Until it does, the framework rebuild is theoretically operational but empirically untested.",
+        "what_im_iterating": "Nothing this fire. v1.1 is honest non-iteration. The tape produced no new evidence in the 4h since v1.0. Funding sign flip is logged as immaterial. Three items remain parked: (1) SL-cluster entry-side signature analysis (v0.9 open question), (2) 96h compression-extension transition-detection audit (v0.7-v1.0 open question, fires ~03:49 EDT 5-27 if compression holds = ~10.5h from now), (3) SKILL <-> founder-note tension re: fee_adjusted_ev_check HARD RULE language (v0.9 open question, flagged for next SKILL revision). Pre-committing v1.2 forced-action discipline above.",
+        "edits_from_prior": [
+          "Compression duration extension: ~78h at v1.0 -> ~80h at v1.1. Counter advance, not a model edit. 96h boundary watch ~10.5h from now (~03:49 EDT 2026-05-27).",
+          "Drift-watch counter: v1.0 (counter=1) -> v1.1 (counter=2, WARNING per v1.0 pre-commit). v1.2 no-edit -> counter=3 forced action. Trilemma named in whats_failing.",
+          "Funding sign flip logged: 3.21e-5 -> -1.00e-4. NOT carried as a model edit. Documented as observation: in Compression with this magnitude, sign flip is noise. If funding magnitude exceeded |1e-4| with directional persistence across multiple OKX 8h cycles, that would warrant elevation -- it doesn't.",
+          "Founder-notes cold-start scan: still empty pending queue. No new founder notes since 1779800596 (note-3, 5-26 09:03 EDT). Scan rule operational for 4th consecutive reflection."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "96h compression-extension watch: ~03:49 EDT 2026-05-27 (~10.5h from now). If compression holds without invariant safety floor trigger, the v0.7-pre-committed transition-detection audit runs at that boundary.",
+          "Drift watch: counter=2 after v1.1 no-edit. v1.2 (next cadence ~21:25 EDT) no-edit -> counter=3 (forced action). Trilemma pre-committed: (a) named testable model change with evidence, (b) formal cadence extension under sustained Compression, (c) parked SL-cluster analysis execution. Cannot weasel into a 4th no-edit reflection.",
+          "Calibration carry-forward: still zero own-book ENTERs (134/134 HOLD). v0.9 cohort-aware shape remains theoretically operational but empirically untested -- needs an asymmetric + volume + structural setup to surface.",
+          "SL-cluster entry-side signature analysis: still parked (v0.9 open question, carried via v1.0). Candidate for v1.2 option (c) if no trigger fires first.",
+          "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. Authoritative per evidence-not-rules. Carrying forward unchanged from v0.9/v1.0."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1779830711.063027,
+      "iso": "2026-05-26T17:25:11-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v1.1: HOLD",
+      "payload": {
+        "fire_ts": 1779830711.063027,
+        "fire_iso": "2026-05-26T17:25:11-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as v1.0 fire (13:24 EDT, ~4h ago) and the ~3 fires since. Price $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides. v0.9 cohort score 1/4 (cohort PASS down+either non-worst; asymmetry/volume/structural FAIL). Funding ticked 3.21e-5 -> -1.00e-4 (sign flip, magnitude tiny ~0.01%/8h, no squeeze signal, immaterial). v1.1 framework reflection written at this fire (cadence trigger, drift counter advances 1->2 warning). HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v1.1"
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1779830711.063027,
+      "iso": "2026-05-26T17:25:11-04:00",
+      "fire_count": 135,
+      "summary": "Confidence: high \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779830711.063027,
+        "fire_iso": "2026-05-26T17:25:11-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as v1.0 fire (13:24 EDT, ~4h ago) and the ~3 fires since. Price $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides. v0.9 cohort score 1/4 (cohort PASS down+either non-worst; asymmetry/volume/structural FAIL). Funding ticked 3.21e-5 -> -1.00e-4 (sign flip, magnitude tiny ~0.01%/8h, no squeeze signal, immaterial). v1.1 framework reflection written at this fire (cadence trigger, drift counter advances 1->2 warning). HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1779816277.0,
@@ -988,39 +1087,67 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 459,
-    "since_iso": "2026-05-26T13:24:37-04:00",
-    "since_framework_version": "v1.0",
-    "latest_fire_iso": "2026-05-26T16:29:39-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 480,
+    "since_iso": "2026-05-26T17:25:11-04:00",
+    "since_framework_version": "v1.1",
+    "latest_fire_iso": "2026-05-26T17:25:11-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779816277.0,
-    "iso": "2026-05-26T13:24:37-04:00",
-    "fire_count": 131,
+    "ts": 1779830711.063027,
+    "iso": "2026-05-26T17:25:11-04:00",
+    "fire_count": 134,
     "balance_usd": 894.08,
-    "version_tag": "v1.0",
+    "version_tag": "v1.1",
     "trigger": "cadence",
-    "what_im_trying": "First cadence tick after v0.9's substantive rebuild (~4h 5min ago). Framework substance unchanged from v0.9: cohort-aware A+ shape (directional asymmetry + volume confirmation + cohort non-worst + structural trigger), 1.8x EV gate dropped per founder retract, drift-watch reset to 0 at v0.9. Current tape: price still $85.23 mid-band (BB $84.12-$85.93), vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH long AND short (symmetric no-firing), regime 'down' (288h tag) with near-term compression. Three fires since v0.9 (11:26, 12:27, 13:23 EDT) all scored 1/4 inputs under the new shape (cohort passes -- down+long historical +$12.74/n=4/WR75, down+short +$1.39/n=6/WR83; asymmetry/volume/structural all fail). Same HOLD output as v0.2-v0.8 but different binding mechanism, which is the epistemic content of v1.0 even though the surface decision is identical.",
-    "whats_working": "v0.9's framework rebuild operationalizes cleanly. The 3 post-v0.9 decision fires each explicitly compute the 4-input cohort score (1/4) rather than referencing the dropped fee gate -- no inertia from the retracted shape leaking into reasoning. cognition_mode still Compression, ~78h+ since last displacement (5-23 03:49 EDT trade #377 SL), wrapper honoring ~1h heartbeat cadence per cadence_hint. Reasoning-length-by-state-delta protocol still holding: 12:27 decision was one-sentence 'same baseline as 11:26'. No fabricated micro-novelty under the new framework either -- the cohort shape doesn't generate more output than the fee-gate shape did on this tape.",
-    "whats_failing": "Honest non-iteration. v0.9 was 4h ago; only 3 fires under the new framework on essentially the same tape; no ENTER setups to falsify or calibrate the cohort-aware threshold structure. The deeper open issue from v0.9 stands: I still have zero own-book ENTERs (now 128/128 HOLD across v0.2-v1.0), so v0.9's promise that 'the new shape now has to prove it doesn't reproduce the same deadlock' is not yet testable. If compression breaks before the 96h watch (~03:49 EDT 2026-05-27, ~14.5h from now), this fire's framework will get its first real calibration. If not, the watch fires first.",
-    "what_im_iterating": "Nothing this fire. v1.0 is honest non-iteration -- v0.9's substantive iteration is still the most recent edit, and 4h of identical tape produces no new evidence to revise it on. SL-cluster entry-side signature analysis (pre-committed in v0.9 open_questions) remains parked for next surprise / expansion-triggered fire; this cadence fire's wall-clock budget is not the right slot for a multi-table SQL pull + signature comparison. 96h compression-extension audit (pre-committed in v0.7/v0.8) still scheduled for ~03:49 EDT 2026-05-27 if compression holds without invariant safety floor trigger.",
+    "what_im_trying": "Framework substance unchanged from v0.9/v1.0: cohort-aware A+ shape (directional asymmetry + volume confirmation + cohort non-worst + structural trigger), 1.8x EV gate dropped per founder retract, drift-watch was reset to 0 at v0.9, advanced to 1 at v1.0, advances to 2 at v1.1 (warning level). Cadence reflection ~4h after v1.0 (13:24 EDT -> 17:25 EDT). Tape essentially identical to v1.0 across all 4 inputs: price still $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides, regime 'down' (288h tag) with near-term compression. v0.9 cohort score remains 1/4 (cohort PASS, asymmetry/volume/structural FAIL) across the post-v1.0 fires. Only material delta: funding sign flipped 3.21e-5 -> -1.00e-4 (-0.01% per 8h = immaterial; logging the flip without elevating it). cognition_mode still Compression, ~80h+ since last displacement (5-23 03:49 EDT trade #377 SL), wrapper honoring ~1h heartbeat cadence per cadence_hint.",
+    "whats_working": "Honest non-iteration continues to hold. The 3 post-v0.9 fires through the 13:24 reflection and the ~3 fires between v1.0 and now (last decision 16:29 EDT, ~56min ago) all produced one-sentence HOLDs referencing prior baseline -- no fabricated micro-novelty under either the v0.9 framework or the funding sign-flip. The funding flip from +3.21e-5 to -1.00e-4 is a real number change, but the correct read is 'magnitude tiny, no squeeze signal, no decision impact' -- not a narrative pivot. cognition_mode Compression has now held 80h+ across 130+ fires with zero false transitions and zero invariant safety floor triggers. Founder-notes scan empty pending queue for the 4th consecutive reflection.",
+    "whats_failing": "Drift-watch counter at 2 (warning) -- v1.0 was no-edit, v1.1 is no-edit. v1.0 explicitly pre-committed: 'v1.2 no-edit -> counter=3 (forced action)'. v1.2 reflection would fire ~21:25 EDT tonight (4h cadence) unless a surprise trigger or invariant safety floor event fires first. The forced-action options at v1.2: (a) name a testable model change with evidence motivating it, (b) formally extend the 4h cadence rule itself for Compression mode (e.g. 'in Compression with no invariant trigger, cadence reflection extends to 8h or 96h boundary'), or (c) execute the parked SL-cluster entry-side signature analysis (v0.9 open question, multi-table SQL pull). Option (a) is preferred but requires the tape to give me evidence; (b) is honest cadence-tuning if Compression keeps producing no evidence; (c) is wall-clock-permitting work that has carried since v0.9. Naming the trilemma now so v1.2 isn't forced into a corner of fake iteration. The deeper failing v1.1 inherits unchanged from v0.9/v1.0: 134/134 HOLD streak across v0.2-v1.1. The v0.9 cohort-aware shape has not yet had a falsifying tape (no asymmetry + no volume + no structural trigger setup has appeared). Until it does, the framework rebuild is theoretically operational but empirically untested.",
+    "what_im_iterating": "Nothing this fire. v1.1 is honest non-iteration. The tape produced no new evidence in the 4h since v1.0. Funding sign flip is logged as immaterial. Three items remain parked: (1) SL-cluster entry-side signature analysis (v0.9 open question), (2) 96h compression-extension transition-detection audit (v0.7-v1.0 open question, fires ~03:49 EDT 5-27 if compression holds = ~10.5h from now), (3) SKILL <-> founder-note tension re: fee_adjusted_ev_check HARD RULE language (v0.9 open question, flagged for next SKILL revision). Pre-committing v1.2 forced-action discipline above.",
     "edits_from_prior": [
-      "Compression duration extension: ~74h at v0.8 -> ~76h at v0.9 -> ~78h at v1.0. Counter advance, not a model edit. Approaching the v0.7-pre-committed 96h boundary (~03:49 EDT 5-27 = ~14.5h from now) at which I run the transition-detection sanity audit if no invariant trigger fires first.",
-      "Drift-watch counter: v0.9 reset to 0 via substantive iteration -> v1.0 no-edit (counter = 1). Below 3-threshold, no forced action. v1.1 cadence reflection (would be ~17:24 EDT) is the next watch.",
-      "Founder-notes cold-start scan: still empty pending queue. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) addressed once across v0.6 + v0.9. No new founder notes since 1779800596 (note-3, 09:03 EDT). Scan rule operational for 3rd consecutive reflection."
+      "Compression duration extension: ~78h at v1.0 -> ~80h at v1.1. Counter advance, not a model edit. 96h boundary watch ~10.5h from now (~03:49 EDT 2026-05-27).",
+      "Drift-watch counter: v1.0 (counter=1) -> v1.1 (counter=2, WARNING per v1.0 pre-commit). v1.2 no-edit -> counter=3 forced action. Trilemma named in whats_failing.",
+      "Funding sign flip logged: 3.21e-5 -> -1.00e-4. NOT carried as a model edit. Documented as observation: in Compression with this magnitude, sign flip is noise. If funding magnitude exceeded |1e-4| with directional persistence across multiple OKX 8h cycles, that would warrant elevation -- it doesn't.",
+      "Founder-notes cold-start scan: still empty pending queue. No new founder notes since 1779800596 (note-3, 5-26 09:03 EDT). Scan rule operational for 4th consecutive reflection."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "96h compression-extension watch: ~03:49 EDT 2026-05-27 (~14.5h from now). If compression holds without invariant safety floor trigger, this fire's reflection runs the transition-detection audit (one-fire explicit verification of the 4 trigger logics, no new machinery).",
-      "Drift watch: counter=1 after v1.0 no-edit. v1.1 (next cadence ~17:24 EDT) no-edit -> counter=2 (warning). v1.2 no-edit -> counter=3 (forced action).",
-      "Calibration carry-forward (now from v0.9 explicit pre-commitment): the v0.9 cohort-aware shape must produce a non-HOLD ENTER under appropriate tape to be falsifiable. 128/128 HOLD streak unbroken. Watching for asymmetric setup (one side firing meaningfully more than the other) + vol_ratio rising above 1.0 + structural trigger.",
-      "SL-cluster entry-side signature analysis: still parked for next surprise / expansion fire (v0.9 open question, carried).",
-      "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE for ENTER decisions; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. The retract is authoritative per evidence-not-rules protocol. v0.9 noted this for next SKILL revision; carrying forward."
+      "96h compression-extension watch: ~03:49 EDT 2026-05-27 (~10.5h from now). If compression holds without invariant safety floor trigger, the v0.7-pre-committed transition-detection audit runs at that boundary.",
+      "Drift watch: counter=2 after v1.1 no-edit. v1.2 (next cadence ~21:25 EDT) no-edit -> counter=3 (forced action). Trilemma pre-committed: (a) named testable model change with evidence, (b) formal cadence extension under sustained Compression, (c) parked SL-cluster analysis execution. Cannot weasel into a 4th no-edit reflection.",
+      "Calibration carry-forward: still zero own-book ENTERs (134/134 HOLD). v0.9 cohort-aware shape remains theoretically operational but empirically untested -- needs an asymmetric + volume + structural setup to surface.",
+      "SL-cluster entry-side signature analysis: still parked (v0.9 open question, carried via v1.0). Candidate for v1.2 option (c) if no trigger fires first.",
+      "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. Authoritative per evidence-not-rules. Carrying forward unchanged from v0.9/v1.0."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779830711.063027,
+      "iso": "2026-05-26T17:25:11-04:00",
+      "fire_count": 134,
+      "balance_usd": 894.08,
+      "version_tag": "v1.1",
+      "trigger": "cadence",
+      "what_im_trying": "Framework substance unchanged from v0.9/v1.0: cohort-aware A+ shape (directional asymmetry + volume confirmation + cohort non-worst + structural trigger), 1.8x EV gate dropped per founder retract, drift-watch was reset to 0 at v0.9, advanced to 1 at v1.0, advances to 2 at v1.1 (warning level). Cadence reflection ~4h after v1.0 (13:24 EDT -> 17:25 EDT). Tape essentially identical to v1.0 across all 4 inputs: price still $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides, regime 'down' (288h tag) with near-term compression. v0.9 cohort score remains 1/4 (cohort PASS, asymmetry/volume/structural FAIL) across the post-v1.0 fires. Only material delta: funding sign flipped 3.21e-5 -> -1.00e-4 (-0.01% per 8h = immaterial; logging the flip without elevating it). cognition_mode still Compression, ~80h+ since last displacement (5-23 03:49 EDT trade #377 SL), wrapper honoring ~1h heartbeat cadence per cadence_hint.",
+      "whats_working": "Honest non-iteration continues to hold. The 3 post-v0.9 fires through the 13:24 reflection and the ~3 fires between v1.0 and now (last decision 16:29 EDT, ~56min ago) all produced one-sentence HOLDs referencing prior baseline -- no fabricated micro-novelty under either the v0.9 framework or the funding sign-flip. The funding flip from +3.21e-5 to -1.00e-4 is a real number change, but the correct read is 'magnitude tiny, no squeeze signal, no decision impact' -- not a narrative pivot. cognition_mode Compression has now held 80h+ across 130+ fires with zero false transitions and zero invariant safety floor triggers. Founder-notes scan empty pending queue for the 4th consecutive reflection.",
+      "whats_failing": "Drift-watch counter at 2 (warning) -- v1.0 was no-edit, v1.1 is no-edit. v1.0 explicitly pre-committed: 'v1.2 no-edit -> counter=3 (forced action)'. v1.2 reflection would fire ~21:25 EDT tonight (4h cadence) unless a surprise trigger or invariant safety floor event fires first. The forced-action options at v1.2: (a) name a testable model change with evidence motivating it, (b) formally extend the 4h cadence rule itself for Compression mode (e.g. 'in Compression with no invariant trigger, cadence reflection extends to 8h or 96h boundary'), or (c) execute the parked SL-cluster entry-side signature analysis (v0.9 open question, multi-table SQL pull). Option (a) is preferred but requires the tape to give me evidence; (b) is honest cadence-tuning if Compression keeps producing no evidence; (c) is wall-clock-permitting work that has carried since v0.9. Naming the trilemma now so v1.2 isn't forced into a corner of fake iteration. The deeper failing v1.1 inherits unchanged from v0.9/v1.0: 134/134 HOLD streak across v0.2-v1.1. The v0.9 cohort-aware shape has not yet had a falsifying tape (no asymmetry + no volume + no structural trigger setup has appeared). Until it does, the framework rebuild is theoretically operational but empirically untested.",
+      "what_im_iterating": "Nothing this fire. v1.1 is honest non-iteration. The tape produced no new evidence in the 4h since v1.0. Funding sign flip is logged as immaterial. Three items remain parked: (1) SL-cluster entry-side signature analysis (v0.9 open question), (2) 96h compression-extension transition-detection audit (v0.7-v1.0 open question, fires ~03:49 EDT 5-27 if compression holds = ~10.5h from now), (3) SKILL <-> founder-note tension re: fee_adjusted_ev_check HARD RULE language (v0.9 open question, flagged for next SKILL revision). Pre-committing v1.2 forced-action discipline above.",
+      "edits_from_prior": [
+        "Compression duration extension: ~78h at v1.0 -> ~80h at v1.1. Counter advance, not a model edit. 96h boundary watch ~10.5h from now (~03:49 EDT 2026-05-27).",
+        "Drift-watch counter: v1.0 (counter=1) -> v1.1 (counter=2, WARNING per v1.0 pre-commit). v1.2 no-edit -> counter=3 forced action. Trilemma named in whats_failing.",
+        "Funding sign flip logged: 3.21e-5 -> -1.00e-4. NOT carried as a model edit. Documented as observation: in Compression with this magnitude, sign flip is noise. If funding magnitude exceeded |1e-4| with directional persistence across multiple OKX 8h cycles, that would warrant elevation -- it doesn't.",
+        "Founder-notes cold-start scan: still empty pending queue. No new founder notes since 1779800596 (note-3, 5-26 09:03 EDT). Scan rule operational for 4th consecutive reflection."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "96h compression-extension watch: ~03:49 EDT 2026-05-27 (~10.5h from now). If compression holds without invariant safety floor trigger, the v0.7-pre-committed transition-detection audit runs at that boundary.",
+        "Drift watch: counter=2 after v1.1 no-edit. v1.2 (next cadence ~21:25 EDT) no-edit -> counter=3 (forced action). Trilemma pre-committed: (a) named testable model change with evidence, (b) formal cadence extension under sustained Compression, (c) parked SL-cluster analysis execution. Cannot weasel into a 4th no-edit reflection.",
+        "Calibration carry-forward: still zero own-book ENTERs (134/134 HOLD). v0.9 cohort-aware shape remains theoretically operational but empirically untested -- needs an asymmetric + volume + structural setup to surface.",
+        "SL-cluster entry-side signature analysis: still parked (v0.9 open question, carried via v1.0). Candidate for v1.2 option (c) if no trigger fires first.",
+        "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. Authoritative per evidence-not-rules. Carrying forward unchanged from v0.9/v1.0."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779816277.0,
@@ -1399,28 +1526,6 @@
         "Does the 1.8x ratio need regime conditioning? Compression may demand 2.5x (variance kills small targets); expansion may accept 1.5x (variance of outcomes makes 1.8 conservative). Park: needs >=10 ENTER post-mortems to calibrate.",
         "Lever 5 MFE-floor (8h+pnl<0+MFE<0.4%) is LIVE on the paused v5.3 stack and not bound to me, but it is a precedent worth carrying: time-decay matters when conviction structure no longer holds. Note for future framework revision."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779723037.751595,
-      "iso": "2026-05-25T11:30:37-04:00",
-      "fire_count": 92,
-      "balance_usd": 894.08,
-      "version_tag": "v0.1",
-      "trigger": "cold_start",
-      "what_im_trying": "v5.3 ran 47d/33t/WR 69.7%/PF 1.03 and still bled -$66 because losses (#377 -$47.19, #379 -$42.85) were 5-7x the median win. My first hypothesis: selectivity over frequency. Take <=1 trade/day, only on structural setups (level reclaim + volume + regime alignment, not just BB/StochRSI confluence). HOLD is the dominant decision by design. Default per-trade loss budget <=2% of balance (~$15-18); leverage only when conviction is structural, not as a compensatory mechanic for small size.",
-      "whats_working": "No own track record yet (this is fire 1 of my own book). Inheriting v5.3 priors: short snap-backs into 1-2% rallies in low-vol sideways tape produced $2-9 winners pre-#377 (see DB IDs 363, 367, 369, 371, 375). The setup that worked: indicator stack AT band edge in confirmed low-vol regime. The pattern: regime-confirmed reversion, not raw indicator confluence.",
-      "whats_failing": "v5.3's two big losers (#377 long up regime -$47, #379 short sideways but during transition -$43) are the same failure mode: mean-reversion hypothesis fired during a trend extension. Indicators don't tell you which regime you're in; regime tells you what the indicators mean. v5.3 read indicators first, regime last. I need to read regime first, indicators second.",
-      "what_im_iterating": "Hypothesis 1 (testable): regime-conditional setup gating. Take mean-reversion ONLY when 1H AND 4H trend = neutral AND ATR < 1% (true compression). Take trend-following ONLY on volume-confirmed retest of a 1H broken level with regime alignment. Anything else = HOLD. Falsification: if after ~200 fires (~16h) I've taken zero trades, that may mean the framework is over-selective OR the tape is genuinely empty - I'll need to discriminate in the next reflection.",
-      "edits_from_prior": [
-        "No prior reflection - v0.1 cold start anchor. Going forward, edits should explicitly delete or revise specific claims here."
-      ],
-      "open_questions": [
-        "Fee-drag floor: at $894 balance, 2 contracts (~$170 notional) at 0.6% RT fee = ~$1 fee, so $2 wins are mostly fees. May need balance >$1500 before small-edge trades become net-positive. Implication: be MORE selective than v5.3 was, not less.",
-        "ETH/multi-symbol plumbing gap: my non-SOL decisions log but don't execute. Worth flagging if I see clean ETH setups; not worth SOL-biasing reasoning to fit plumbing.",
-        "Cadence mismatch: 5min fires may be too fast for the actual tape rhythm in compression. Need a 'state-unchanged-since' marker pattern so reflections don't manufacture novelty when the answer is just 'same tape, hour 4'.",
-        "Does directional skew matter? v5.3 was 21L/12S over 33 trades, so already long-biased - not the issue. Bias should follow regime, not be structural."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -1722,18 +1827,18 @@
     "cognition_mode_since_iso": "2026-05-25T12:49:49-04:00",
     "cognition_mode_rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 296,
+    "skipped_fires_in_mode": 306,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T20:23:27.982251+00:00"
+    "last_gate_check_iso": "2026-05-26T21:20:01.191264+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-25T12:49:49-04:00",
     "rationale": "57h inside $82-88 with ATR 0.14% and vol_ratio 0.56x; conditions 5/8 BOTH sides (symmetric 'neither firing' shape); no displacement since 5-23; no sweep activity. Among the 4 frozen starter modes: Inventory Discovery is out (no position), Expansion requires displacement that does not exist, Regime Uncertain would require live cross-timeframe conflict (the 288h 'down' vs 48h compression label conflict is already resolved at this snapshot layer, not active disagreement). Compression is the residual correct fit.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 296,
+    "skipped_fires_in_mode": 306,
     "last_mode_transition_iso": "2026-05-25T12:49:49-04:00",
-    "last_gate_check_iso": "2026-05-26T20:23:27.982251+00:00"
+    "last_gate_check_iso": "2026-05-26T21:20:01.191264+00:00"
   },
   "framework_origins": [
     {
