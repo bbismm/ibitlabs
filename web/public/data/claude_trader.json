@@ -1,23 +1,23 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779870828,
-  "generated_iso": "2026-05-27T04:33:48-0400",
+  "generated_at": 1779874618,
+  "generated_iso": "2026-05-27T05:36:58-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 146,
+    "decisions_total": 147,
     "actions": {
-      "HOLD": 146
+      "HOLD": 147
     },
     "confidence": {
-      "high": 139,
+      "high": 140,
       "medium": 1,
       "low": 6
     },
-    "reasoning_chars_avg_all": 983,
-    "reasoning_chars_avg_last10": 860,
+    "reasoning_chars_avg_all": 984,
+    "reasoning_chars_avg_last10": 893,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T04:32:30-04:00",
+    "last_fire_iso": "2026-05-27T05:34:42-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -27,17 +27,17 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779870822.232159,
-    "fire_iso": "2026-05-27T04:32:30-04:00",
+    "fire_ts": 1779874482.0,
+    "fire_iso": "2026-05-27T05:34:42-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 84.18,
+    "current_price": 83.6,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": null,
-      "momentum_pct": 0.0036,
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
       "rsi": null
     },
     "decision": "HOLD",
@@ -46,7 +46,7 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Hard rules executed cleanly (stale=True age 40h, OHLCV-derived price $84.18 vs stale live-status $85.23 +1.25%, 4h cum +1.31% under 1.5% with avg vol ~2k under 1.0x = no mode transition). Tape since last fire 03:28 EDT: gradual drift $83.87 -> $84.18 (+0.37%), now testing prior range_high $84.10. Last two 15m bars closed $84.17/$84.18 = $0.07-$0.08 marginal upside break on LOW vol (1189 then 76, partial). First upside probe of this 15.5h band \u2014 outcome TBD (could resolve as failed sweep #4 or as confirmed break). v5.3 conditions still 5/8 both sides = no asymmetry; vol_ratio low; no structural confirmation (single marginal close, no retest, no vol). Cohort priors: rejection here -> down+short favorable (+$1.39/n=6/WR83); confirmed break -> down+long ok (+$12.74/n=4/WR75) but against regime. Neither trigger met yet. State.json widened range_high to $84.18 to absorb the probe; sweeps_attempted held at 3 pending resolution. HOLD \u2014 wait for next 1-2 bars to disambiguate. No reflection this fire (cadence next ~06:26 EDT; no surprise threshold tripped).",
+    "reasoning": "Material change since fire 04:32 EDT: the upper-edge probe (state.json v1.4-update @$84.18) resolved as failed sweep #4 \u2014 08:30 UTC $84.08 within prior cap, 08:45 $83.84 retrace, 09:30 partial $83.60 (fade ~-0.68% / -$0.58 over ~1h on tapering vol 2842/1204/2638/137). Range $82.74-$84.18 holds, 14.5h band life, 4/4 failed sweeps both sides \u2014 canonical Compression signature. Hard rules: #1 system_gates.stale=true age 147660s (41h pipe frozen since 5-25 12:49 EDT, +1h from v1.4); #2 live-status $85.23 vs OHLCV close $83.60 = +1.95% divergence > 0.5% \u2192 use OHLCV-derived; #3 4h cum +0.01% / avg vol ~2k per 15m \u2192 no Expansion transition. Cohort: regime down 288h; this fade is a down+short candidate (cohort prior +$1.39/n=6/WR83 favorable). v0.9/v1.4 cohort-aware A+ shape scores 1/4 \u2014 cohort PASS, asymmetry FAIL (both sides 5/8 on the stale v5.3 lattice), vol_ratio FAIL (~0.5x), structural FAIL (single 1h fade after a 2-bar wick is not displacement-out-of-range + retest-from-outside; this is in-band absorption). State.json rewritten: sweeps 3\u21924, narrative updated, cognition_mode Compression unchanged.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
@@ -1152,11 +1152,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 3,
-    "avg_chars": 879,
+    "holds_since_framework": 4,
+    "avg_chars": 937,
     "since_iso": "2026-05-27T02:26:51-04:00",
     "since_framework_version": "v1.4",
-    "latest_fire_iso": "2026-05-27T04:32:30-04:00"
+    "latest_fire_iso": "2026-05-27T05:34:42-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1838,45 +1838,45 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.4-state update 2026-05-27 ~04:30 EDT: first upside band probe. Price closed $84.17/$84.18 last two 15m bars (08:15/08:30 UTC) \u2014 $0.07-$0.08 above prior range_high $84.10. Volume marginal (1189 then 76, partial bar). 4h cum +1.31% (under 1.5% Expansion floor), avg vol ~2k (under 1.0x). No mode transition. Widening range_high $84.10 \u2192 $84.18 to absorb shallow break; NOT incrementing sweeps_attempted yet (could still be confirmed break, not failed sweep \u2014 next 15m bars will clarify). Last decision 03:28 EDT @$83.87 HOLD. v1.2 hard rules: rule#1 stale=True age 143891s (40h, pipe still frozen since 2026-05-25 12:49 EDT), rule#2 divergence +1.25% switched to OHLCV-derived, rule#3 4h cum +1.31% no transition.",
-    "updated_ts": 1779870744.0,
-    "updated_iso": "2026-05-27T04:32:24-04:00",
-    "updated_by_fire_iso": "2026-05-27T04:32:24-04:00",
+    "comment": "Claude-trader v1.4-state update 2026-05-27 ~05:34 EDT: upper-edge probe flagged at 04:32 EDT resolved as failed sweep #4. 08:30 UTC closed $84.08 (within prior $84.10 cap, not a break), 08:45 UTC $83.84 retrace, 09:00 UTC $83.66, 09:15 UTC $83.53, 09:30 UTC partial $83.60. Range $82.74-$84.18 holds, age 14.5h. Incrementing sweeps_attempted 3->4. Range_high unchanged at $84.18 (single 15m close at $84.17 + 1 partial $84.18 wasn't structural break). No mode transition. v1.2 hard rules executed: rule#1 stale=true age 147660s (41h pipe frozen, +1h since 04:32), rule#2 divergence +1.95% switched to OHLCV-derived, rule#3 4h cum +0.01% no transition.",
+    "updated_ts": 1779874482.0,
+    "updated_iso": "2026-05-27T05:34:42-04:00",
+    "updated_by_fire_iso": "2026-05-27T05:34:42-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down confirmed. Near-term tape since 13:00 EDT 5-26 is compression at lower band; current price at upper edge testing range_high $84.18 (first upside probe of this band).",
+    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: 4th failed sweep (this time upside) confirms compression at $82.74-$84.18 band; price back at $83.60 mid-band after ~1h fade from $84.18 upper-edge probe.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 15.5,
+    "compression_hours": 16.5,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
-    "sweeps_attempted": 3,
-    "sweep_detail": "Three confirmed failed sweeps + 1 in-progress upper-edge probe: (1) failed $86.03 breakout 14:00 UTC 5-26 rejected; (2) $83.03 sweep-low 17:00 UTC 5-26 that held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703 (~4x avg) recovered to $83.58 within 45min. NEW: 4th probe in progress \u2014 08:15 UTC close $84.17, 08:30 UTC partial $84.18 on low vol (1189/76). First upside test of this band. Outcome TBD \u2014 needs 1-2 more 15m bars to confirm break vs failed sweep.",
+    "sweeps_attempted": 4,
+    "sweep_detail": "Four confirmed failed sweeps over 14.5h band life: (1) failed $86.03 breakout 14:00 UTC 5-26 rejected; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703 (~4x avg) recovered to $83.58 within 45min; (4) NEW failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 on low vol (1189/2101) immediately faded over next 4 bars to $83.60 09:30 UTC partial. No upside breakout; range integrity holds both sides.",
     "last_displacement_iso": "2026-05-26T11:00-04:00",
-    "last_displacement_detail": "Failed $86 breakout 10:00 EDT 5-26 + 3h trend leg down to $83.03 at 13:00 EDT 5-26. No subsequent displacement (00:30 EDT 5-27 sweep-low was 1-bar wick; current upper-edge probe is +$1.09/4h slow drift, not displacement).",
-    "funding_state": "OKX -2.79e-5 (mildly negative, magnitude immaterial, slight tighten from -3.39e-5 \u2014 still noise-level).",
+    "last_displacement_detail": "Failed $86 breakout 10:00 EDT 5-26 + 3h trend leg down to $83.03 at 13:00 EDT 5-26. No subsequent displacement (00:30 EDT 5-27 sweep-low and 04:30 EDT upside probe were both 1-2 bar wicks within band).",
+    "funding_state": "OKX -2.43e-5 (mildly negative, magnitude immaterial, slight tighten from -2.79e-5 trend continues but still noise-level).",
     "oi_state": "unknown \u2014 not in live-status feed; treat as null.",
-    "narrative": "Phase B.1 fire ~157. Compression continuing at $82.74-$84.18 band (15.5h young), now with first upside-edge probe in progress. Last two 15m bars closed $84.17/$84.18 marginally above prior range_high $84.10 on low vol (1189/76). 4h cum +1.31% (under 1.5% Expansion floor), avg vol ~2k/15m (under 1.0x). Not yet a confirmed break \u2014 could resolve as failed sweep #4 or as confirmed upper exit; next 1-2 bars will tell. v5.3 indicator pipe still frozen (age 143891s = 40h, no consumer thawing it). No position. Regime still down (288h). Cohort context: a down+short setup at confirmed-rejection would carry favorable cohort prior (+$1.39/n=6/WR83); a long-on-confirmed-break would be down+long (+$12.74/n=4/WR75) but against the dominant regime tag. Neither shape has triggered yet (5/8 both sides on the v5.3 condition lattice = no asymmetry; vol_ratio low; no structural confirmation). 96h compression-extension audit still anchored 2026-05-26 13:00 EDT, fires ~2026-05-30 13:00 EDT if band integrity holds.",
+    "narrative": "Phase B.1 fire ~158. Compression intact at $82.74-$84.18 band (14.5h young, sweeps 4/4 failed both sides). 4th sweep was upside probe at $84.17/$84.18 that failed in 4 bars \u2014 same shape as 17:00 UTC's downside sweep. Price now back at $83.60 mid-band on low/tapering vol. Hard-rule #2 caught fresh +1.95% divergence (live-status $85.23 vs OHLCV $83.60). v5.3 indicator pipe still frozen (age 147660s = 41h, no consumer thawing; pipe-staleness root cause now past v1.4's 'past 48h informal watch' threshold \u2014 Bonny flag carried forward). No position. Cohort: regime tag down (288h); a failed-sweep-fade short would be down+short (+$1.39/n=6/WR83 favorable cohort prior). v0.9/v1.4 cohort-aware A+ shape scores 1/4 (cohort PASS, asymmetry FAIL 5/8 both sides, vol_ratio FAIL ~0.5x, structural FAIL single 1h fade is not displacement+retest). 144/144 HOLD continues. 96h compression-extension audit anchored 2026-05-26 13:00 EDT, fires ~2026-05-30 13:00 EDT (~80h from now) if band integrity holds.",
     "cognition_mode": "Compression",
     "cognition_mode_since_iso": "2026-05-26T13:00-04:00",
-    "cognition_mode_rationale": "Unchanged. Compression has held 15.5h. Today's upper-edge probe ($84.17/$84.18 close vs $84.10 prior cap) is a $0.07-$0.08 marginal break on low vol \u2014 fits within-noise band-edge testing, not Expansion. 4h cum +1.31% < 1.5% threshold; avg vol 2k/15m < 1.0x baseline. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-resolution still intact), Inventory Discovery out (no position). Compression remains correct; would re-evaluate if next bar adds +0.5%+ with vol spike, or fails back to mid-band.",
+    "cognition_mode_rationale": "Unchanged. Compression has held 14.5h with 4/4 failed sweeps both sides \u2014 the canonical Compression signature. Today's resolved 4th sweep ($84.17/$84.18 -> $83.60 fade) is in-mode evidence, not a transition signal. 4h cum +0.01% << 1.5% threshold; avg vol ~2k/15m << 1.0x baseline; no displacement; no position. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-tag intact + tape consistent with down-resolution thesis), Inventory Discovery out (no position). Compression remains correct.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 110,
+    "skipped_fires_in_mode": 122,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T08:32:24+00:00"
+    "last_gate_check_iso": "2026-05-27T09:34:42+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-26T13:00-04:00",
-    "rationale": "Unchanged. Compression has held 15.5h. Today's upper-edge probe ($84.17/$84.18 close vs $84.10 prior cap) is a $0.07-$0.08 marginal break on low vol \u2014 fits within-noise band-edge testing, not Expansion. 4h cum +1.31% < 1.5% threshold; avg vol 2k/15m < 1.0x baseline. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-resolution still intact), Inventory Discovery out (no position). Compression remains correct; would re-evaluate if next bar adds +0.5%+ with vol spike, or fails back to mid-band.",
+    "rationale": "Unchanged. Compression has held 14.5h with 4/4 failed sweeps both sides \u2014 the canonical Compression signature. Today's resolved 4th sweep ($84.17/$84.18 -> $83.60 fade) is in-mode evidence, not a transition signal. 4h cum +0.01% << 1.5% threshold; avg vol ~2k/15m << 1.0x baseline; no displacement; no position. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-tag intact + tape consistent with down-resolution thesis), Inventory Discovery out (no position). Compression remains correct.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 110,
+    "skipped_fires_in_mode": 122,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
-    "last_gate_check_iso": "2026-05-27T08:32:24+00:00"
+    "last_gate_check_iso": "2026-05-27T09:34:42+00:00"
   },
   "framework_origins": [
     {
