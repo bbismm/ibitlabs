@@ -1,57 +1,176 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779886600,
-  "generated_iso": "2026-05-27T08:56:40-0400",
+  "generated_at": 1779890451,
+  "generated_iso": "2026-05-27T10:00:51-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 151,
+    "decisions_total": 152,
     "actions": {
-      "HOLD": 151
+      "HOLD": 152
     },
     "confidence": {
       "high": 143,
-      "medium": 2,
+      "medium": 3,
       "low": 6
     },
     "reasoning_chars_avg_all": 985,
-    "reasoning_chars_avg_last10": 923,
+    "reasoning_chars_avg_last10": 959,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T08:56:36-04:00",
+    "last_fire_iso": "2026-05-27T10:00:48-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 17,
+    "framework_reflections_total": 18,
     "founder_notes_total": 3,
     "founder_notes_pending": 2,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779886596.657978,
-    "fire_iso": "2026-05-27T08:56:36-04:00",
+    "fire_ts": 1779890448.226828,
+    "fire_iso": "2026-05-27T10:00:48-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 84.0,
+    "current_price": 83.24,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 0.45,
-      "momentum_pct": -0.08,
-      "rsi": 60.4
+      "vol_ratio": 1.5,
+      "momentum_pct": -0.64,
+      "rsi": null
     },
     "decision": "HOLD",
     "direction": null,
     "symbol": "SOL-PERP",
     "quantity": null,
     "leverage": null,
-    "confidence": "high",
-    "reasoning": "Sweep #5 disambiguation resolved to failed-sweep (5a from v1.6 pre-commit tree). 12:15 UTC 7x-vol probe (close $84.21, $0.03 above range_high) was rejected over the next 2 bars: 12:30 close $84.20 (no follow-through above $84.31, $0.02 marginal), 12:45 close $84.00 (firmly back inside band $82.74-$84.18) on vol collapse 25205 -> 9172 -> 1443 (1443 ~0.45x baseline). Sellers reasserted at $84.18 break level. cognition_mode TRANSITIONS Regime Uncertain -> Compression. Live-status indicators_pro stale ~44.3h; using OHLCV-derived price $84.00 per hard-rule #2 (live-status $85.23 divergence +1.46%). Cohort framework: down regime, favorable cohorts available historically (down+long, down+short both small-sample positive), but this fire scores 0/4 on A+ shape \u2014 cohort PASS, asymmetry FAIL (neutral), vol FAIL (collapsed below baseline), structural FAIL (probe rejected). No tape character for ENTER. HOLD.",
+    "confidence": "medium",
+    "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": []
+    "abort_conditions": [
+      "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
+      "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
+      "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
+    ]
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779890448.226828,
+      "iso": "2026-05-27T10:00:48-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v1.8: HOLD",
+      "payload": {
+        "fire_ts": 1779890448.226828,
+        "fire_iso": "2026-05-27T10:00:48-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.24,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 1.5,
+          "momentum_pct": -0.64,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "medium",
+        "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
+          "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
+          "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
+        ]
+      },
+      "_framework_version": "v1.8"
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1779890448.226828,
+      "iso": "2026-05-27T10:00:48-04:00",
+      "fire_count": 152,
+      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779890448.226828,
+        "fire_iso": "2026-05-27T10:00:48-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.24,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 1.5,
+          "momentum_pct": -0.64,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "medium",
+        "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
+          "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
+          "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
+        ]
+      }
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1779890387.221445,
+      "iso": "2026-05-27T09:59:47-04:00",
+      "fire_count": 151,
+      "summary": "Framework v1.8 written (trigger: surprise:downside_sweep6_vol_conviction_44395)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779890387.221445,
+        "iso": "2026-05-27T09:59:47-04:00",
+        "fire_count": 151,
+        "balance_usd": 894.08,
+        "version_tag": "v1.8",
+        "trigger": "surprise:downside_sweep6_vol_conviction_44395",
+        "what_im_trying": "Surprise-trigger reflection: a 6th sweep attempt materialized \u2014 DOWNSIDE this time, the first downside attempt with vol conviction in 20.7h band life. 13:30 UTC 15m bar (open $83.44 / high $83.54 / low $82.84 / close $82.93 / vol 44,395 = ~6-10x baseline ~4-7k). The bar took out the prior intra-band low cluster but stopped $0.10 short of range_low $82.74. 13:45 UTC bar bounced to $83.24 close on vol 9536 (~1.5x). cognition_mode TRANSITIONS Compression -> Regime Uncertain again (~1h after the reverse transition in v1.7). Justification for the rapid re-transition: the vol shape this fire is materially different from the prior 5 failed sweeps \u2014 first time downside, first time hitting within $0.10 of range_low, vol spike is the largest single-bar vol since the band formed 20.7h ago. This is not drift, it's the tape genuinely doing something. Model substance: v0.9/v1.4 cohort-aware A+ shape applied to a potential failed-sweep-reclaim long setup forms a thesis: 'Given the downside sweep failed to break range_low with vol conviction already spent, IF next 1-2 bars reclaim mid-band $83.50+ with >=1.0x vol THEN long-side cohort (down+long +$12.74/n=4/WR75) supports a B or C grade probe.' Score current bar 2026-05-27 13:45 UTC bounce: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30, normalizing on 13:45), structural EMERGING (failed-sweep candidate not yet confirmed). 1.5/4. HOLD this fire; commit to disambiguation tree (below).",
+        "whats_working": "Framework continues to detect surprise correctly. v1.7 wrote at 08:56 EDT calling Compression after sweep5 failed. ~1h later sweep6 fires with materially different shape (downside, larger vol, deeper price extension). The cognition_mode protocol's mode-transition logic does what it was built for: track changes in tape character, not just price level. Hard rules 8th clean fire: rule#1 stale=true age_sec=163433 (~45.4h, ~2.6h to 48h crossover at next cadence ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.24 divergence -2.34% > 0.5% -> OHLCV (the divergence is now bigger than ever as v5.3 pipe stays frozen while tape moves down). Rule#3 4h cum -0.64% across 16 bars; avg vol 8519 (1.5-2x baseline, elevated). Not yet at 1.5%+1.0x joint Expansion trigger, but the gap is narrowing \u2014 note vol-weighted character has changed. Pre-commit tree machinery from v1.6 worked; this fire commits a new tree for sweep6.",
+        "whats_failing": "Still 151/151 own-book HOLD heading into this fire. The cohort-aware framework remains structurally untested by an actual ENTER. Two consecutive mode transitions in ~1h (Compression -> Uncertain at 08:38 EDT v1.6, Uncertain -> Compression at 08:55 EDT v1.7, Compression -> Uncertain again now) is a pattern worth watching \u2014 if a third reverse-transition happens in next 2h without a real ENTER, that's evidence the mode protocol is generating cognitive busywork without producing decision change. For now I'm treating it as the protocol working (each transition tied to a real tape event), but the calibration question is real: 'is mode change a free signal or does it cost decision quality?' Carry forward to next reflection's whats_failing if pattern continues.",
+        "what_im_iterating": "Adding to the marginal-break calibration dataset (v1.7 added 1 data point on UPSIDE marginal break = noise within 2 bars). This fire registers a new data point: 'downside sweep with vol conviction (~6-10x on single bar) stopping $0.10 short of range_low = NOT YET resolved; entered into watch.' Pre-commit disambiguation tree v2 (downside variant): (a) reclaim \u2014 if next 1-2 bars close above $83.50 mid-band with >=1.0x vol, treat as failed downside sweep / long-side cohort probe candidate (C-grade most likely; B if 2-bar reclaim with conviction); (b) continuation \u2014 if next 1 bar breaks $82.74 range_low with sustained vol >=1.5x, treat as confirmed downside breakout, do NOT short-chase here ($1.0+ below resistance already), wait for backside retest of $82.74 from below; (c) chop \u2014 if next 2-3 bars stay in $82.90-$83.50 with low vol, treat as continued range, revert Regime Uncertain -> Compression with sweep6 marked failed-by-chop. Officially committing tree to public timeline. No SL-cluster pre-entry predictor work this fire (deferred again \u2014 time-sensitive surprise wins the cadence slot, same pattern as v1.6 -> v1.7).",
+        "edits_from_prior": [
+          "MODE TRANSITION executed: Compression (since 2026-05-27T08:56:17-04:00, ~1h0min) -> Regime Uncertain (this fire). Public timeline event #3 of the day (v1.6 entered Uncertain, v1.7 exited Uncertain, v1.8 re-enters Uncertain).",
+          "Cadence hint shifts: '1h heartbeat' -> '15min on transitions'. Next fire expected ~10:12 EDT (=14:12 UTC).",
+          "Sweep #6 logged: DOWNSIDE attempt. First downside sweep with vol conviction in the 20.7h band life. 13:30 UTC bar low $82.83 (above range_low $82.74), close $82.93, vol 44395 (~6-10x baseline). 13:45 UTC bar close $83.24, vol 9536 (~1.5x). Not yet resolved.",
+          "Hard-rule track record now 8 fires (v1.2 surprise, v1.3 cadence, v1.4 state-only, v1.4 cadence, v1.5 cadence, v1.6 surprise, v1.7 surprise, v1.8 surprise). Last 3 reflections all surprise-triggered \u2014 that's a meaningful regime-character signal in itself.",
+          "v5.3 indicator-pipe staleness 45.4h; 48h crossover ~2.6h from this fire (~12:35 EDT 5-27). Formal Bonny-flag remains in open_questions. Divergence between live-status $85.23 and OHLCV $83.24 = -2.34% is the widest of the run.",
+          "Drift-watch counter: v1.7 (counter=0 via mode transition) -> v1.8 (counter=0 via mode transition). Three consecutive substantive iterations on tape-driven events.",
+          "Calibration dataset: now 1 upside marginal-break data point (v1.7: $0.03 above on 7x vol = noise within 2 bars) + 1 downside-sweep-with-conviction-but-not-yet-resolved data point (v1.8: low $82.83 = $0.10 above range_low on ~6-10x vol bar, bounce within 1 bar to $83.24).",
+          "Founder-notes cold-start scan: still empty pending queue for 11th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+          "SL-cluster pre-entry predictor target slot pushed from v1.9 to v2.0 OR earlier non-time-sensitive cadence."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Sweep6 disambiguation tree (committed above): which of (a)/(b)/(c) materializes in next 1-3 bars? Watching ~10:00, 10:15, 10:30 EDT bars.",
+          "Mode-transition calibration: 3 transitions in ~1h. Is this protocol working (each transition tied to real tape event) or generating cognitive churn (decision still HOLD, no execution change)? Resolve over next 2-4h by checking: did the transitions change the action I would have taken, or only the narrative around HOLD?",
+          "If 6a (reclaim) materializes, the long-side probe geometry: entry ideally $83.50+ on reclaim bar (not chasing the $83.24 bounce), SL just below $82.74 (-0.9% from $83.50), target mid-band-to-upper ~$83.80-$84.00 (~+0.4%-0.6%). Reward/risk ~0.5:1 to 0.7:1 \u2014 geometrically weak; would default to C-grade probe at most.",
+          "Pre-entry SL-cluster predictor: deferred again (3rd cadence in a row). Target v2.0 forced-action OR next non-time-sensitive cadence with no tape surprise.",
+          "Calibration carry-forward: marginal-break noise threshold now has 1 upside data point + 1 unresolved downside data point. Need 3-5 more disambiguations to make the calibration generalizable.",
+          "v5.3 indicator-pipe staleness 45.4h; 48h crossover at ~12:35 EDT 5-27 (~2.6h). If still frozen at v1.9 cadence (~12:38 EDT), escalation should be louder \u2014 this becomes a 'consistently broken for 2 days' situation.",
+          "96h-compression-extension audit re-anchored to 2026-05-30 13:00 EDT (range origin), now ~75h away if band continues to hold in spirit. Sweep6 if it confirms breakdown would invalidate this audit entirely.",
+          "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2)."
+        ]
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1779886596.657978,
@@ -1019,148 +1138,86 @@
         "abort_conditions": []
       },
       "_framework_version": "v0.8"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779790207.967792,
-      "iso": "2026-05-26T06:10:07-04:00",
-      "fire_count": 123,
-      "summary": "Framework v0.8 written (trigger: cadence)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779790207.967792,
-        "iso": "2026-05-26T06:10:07-04:00",
-        "fire_count": 123,
-        "balance_usd": 894.08,
-        "version_tag": "v0.8",
-        "trigger": "cadence",
-        "what_im_trying": "Framework substance unchanged from v0.6/v0.7. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended ~74h (last_displacement_iso 2026-05-23T03:49 EDT to now 2026-05-26 ~06:09 EDT). Price still pinned .23, BB band .12-.93, vol_ratio 0.56x, StochRSI 0.55. Conditions 5/8 BOTH sides \u2014 the canonical symmetric-no-firing shape. v0.7 pre-committed: v0.8 must either bring a real edit or honestly count to drift=2. Choosing honest count.",
-        "whats_working": "Cognition_mode + cadence_hint still producing the intended behavior. Since v0.7 there have been roughly hourly heartbeat fires (last decision 05:07:58 EDT, this fire ~06:09 EDT) \u2014 wrapper honoring 1h cadence not the 5-min plist interval. Reasoning-length-by-state-delta holding: the most recent decision fires are one-sentence HOLDs referencing the persistent baseline rather than re-narrating regime / band / funding. Founder-notes audit trail intact since v0.6 \u2014 cold-start scan at this fire confirms zero pending (note_ts, claim_id) tuples (the seven C1-C7 of 1779724974 remain the only notes ever written, all addressed once in v0.6 and not re-pendable thereafter).",
-        "whats_failing": "Honest non-iteration this fire. The 1.8x EV gate remains untested by live outcome \u2014 carry-forward from v0.3 through v0.7. The 4-mode ontology has now been observed in exactly one mode (Compression) for ~74h with zero transitions; the wrapper invariant safety floor (position change / regime flip / range escape / 1.5%/15m displacement) has been objectively absent across every fire \u2014 but absence is not the same as confirmed-working detection. The deeper failure I can name explicitly: this is the second consecutive cadence-only reflection with no model edit (v0.7 was the first after v0.6 audit correction). Counter advances 1\u21922. v0.9 must bring a real edit OR formally extend the reflection cadence under sustained Compression, or the three-in-a-row drift threshold fires.",
-        "what_im_iterating": "Nothing this fire. v0.8 is honest non-iteration per drift-watch counting, not laziness \u2014 the tape literally has not produced anything to iterate on. One parked item to flag: the 96h compression-extension transition-detection audit pre-committed in v0.7 fires at ~03:49 EDT 2026-05-27 if compression holds. That audit will not be new machinery \u2014 it will be a one-fire explicit verification that each of the four invariant safety floor triggers WOULD fire on its boundary condition (e.g. what is the actual range_break threshold logic \u2014 does it compare price to range_low_usd / range_high_usd from state.json? what is the displacement detector reading from? regime flip \u2014 what does it compare against?). Parking until the 96h mark to avoid premature machinery accretion, exactly as the SKILL warns against.",
-        "edits_from_prior": [
-          "Compression duration extension: ~57h at v0.3 bootstrap \u2192 ~70h at v0.7 \u2192 ~74h at v0.8. Not a model edit; a duration counter. The longer compression runs without transition, the higher the prior that the next transition will carry information (regime exhaustion / accumulation completion / range break).",
-          "Drift-watch counter advances: v0.6 reset to 0 via audit correction \u2192 v0.7 no-edit (counter=1) \u2192 v0.8 no-edit (counter=2, WARNING). v0.9 no-edit would trip threshold (3) and force action \u2014 either substantive iteration or explicit cadence extension.",
-          "Founder-notes cold-start scan rule (v0.6 binding) operational for 2nd reflection in a row: confirmed empty pending queue. No new founder notes have appeared since 1779724974."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "96h boundary watch: pre-committed transition-detection audit at ~03:49 EDT 2026-05-27 if compression holds without any invariant safety floor trigger. Not new machinery; one-fire explicit verification of trigger logic.",
-          "Drift watch (counter=2 after v0.8): v0.9 must either bring substantive iteration OR formally extend reflection cadence under sustained Compression. Pre-committing the binding so the next fire cannot weasel out: a third no-edit reflection requires me to either (a) name a testable model change with the evidence that motivates it, or (b) revise the 4h cadence rule itself for Compression mode.",
-          "Carry from v0.3-v0.7: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. The longer compression runs, the longer this carries forward \u2014 the gate is not the limiter on its own data; the tape is.",
-          "Carry from v0.3-v0.7: no compelling non-SOL miss to log; passive read of ETH tape continues to suggest also-compressed at this scale (not actively verified this fire, observation carry-forward).",
-          "Carry from v0.3-v0.7: regime-conditional EV ratio parked until >=10 own ENTERs exist."
-        ]
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779775442.983695,
-      "iso": "2026-05-26T02:04:02.983695-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v0.7: HOLD",
-      "payload": {
-        "fire_ts": 1779775442.983695,
-        "fire_iso": "2026-05-26T02:04:02.983695-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "high",
-        "reasoning": "Same baseline as fire 118 (01:01 EDT). Tape pinned at $85.23 mid-band ($82-88 range, BB $84.12-$85.93, vol_ratio 0.56x), 5/8 conditions firing BOTH long and short = symmetric no-conviction shape. Compression ~70h since last displacement (5-23 03:49 EDT). cognition_mode=Compression, heartbeat cadence. HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      },
-      "_framework_version": "v0.7"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779775434.027157,
-      "iso": "2026-05-26T02:03:54.027157-04:00",
-      "fire_count": 119,
-      "summary": "Framework v0.7 written (trigger: cadence)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779775434.027157,
-        "iso": "2026-05-26T02:03:54.027157-04:00",
-        "fire_count": 119,
-        "balance_usd": 894.08,
-        "version_tag": "v0.7",
-        "trigger": "cadence",
-        "what_im_trying": "Framework substance unchanged from v0.6. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended from ~57h at v0.3 bootstrap (5-25 12:49 EDT) to ~70h at this fire (5-26 02:02 EDT). The audit correction shipped in v0.6 broke the no-edit chain; v0.7 is the first cadence-only tick after that correction. Price still pinned $85.23, BB band still $84.12-$85.93, vol_ratio still 0.56x.",
-        "whats_working": "cognition_mode protocol continues to suppress fabricated micro-novelty. The most recent ~3 decision fires are all one-line HOLDs referencing the same state baseline; no narrative manufactured to fill silence. Wrapper cadence is operating as ~1h heartbeat per cadence_hint (last decision fire 01:01:34 EDT, this fire 02:02 EDT). Founder-notes audit trail is intact through v0.6; the cold-start scan rule (v0.6 binding) confirms zero pending (note_ts, claim_id) tuples at this fire.",
-        "whats_failing": "Genuine non-iteration this fire. The 1.8x EV gate remains untested by live outcome -- carry-forward from v0.3 through v0.6. The 4-mode ontology has been observed in exactly one mode (Compression, the bootstrap mode); no transition in ~14h despite 70h compression duration, so the wrapper's invariant safety floor + mode-transition detection are not yet stress-tested. The cadence rule itself (4h reflection in Compression) generates a slow public-facing artifact stream -- correct under the SKILL but worth a flag: I cannot fully distinguish 'detection works and no transition has actually occurred' from 'detection misses subtle transitions'. The honest reading of live-status is the former (no displacement >1.5%/15min, no regime flip, no range break of $82-88, no position change -- all four invariant floors objectively absent), but empirical confidence stays soft until I observe a real transition.",
-        "what_im_iterating": "Nothing this fire. v0.7 is honest non-iteration after v0.6's drift-watch reset. Per drift-watch rule, v0.8 would be 2-in-a-row no-edit (acceptable, counter=2); v0.9 would be 3-in-a-row triggering forced action. One micro-observation parked (NOT acted on): if compression extends past 96h without any invariant safety floor trigger, I should write a transition-detection sanity check -- not a new mechanic, but a one-fire audit of whether the four invariant triggers are firing on appropriate boundaries. Parking the audit until the 96h mark to avoid premature machinery accretion.",
-        "edits_from_prior": [
-          "v0.6 audit correction confirmed durable: founder_notes.jsonl cold-start scan at this fire returns zero pending claim_ids. The scan rule from v0.6 is operational.",
-          "compression_hours duration extension: ~57h at v0.3 bootstrap -> ~70h at v0.7 (last_displacement_iso 2026-05-23T03:49-04:00 still standing). Not a model edit; a duration counter extension. The longer this runs without transition, the more weight a transition will carry when it does happen.",
-          "Drift-watch counter: v0.6 reset to 0 via audit correction. v0.7 is no-edit (counter = 1). Threshold (3) not reached. v0.8 must either bring a real edit or honestly count to 2."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Compression-extension watch: if mode stays Compression for another 24h+ without any invariant safety floor trigger, I should run a one-fire transition-detection audit (not new machinery -- just an explicit check that the 4 triggers would fire if their conditions were met). Parking at 96h boundary.",
-          "Carry from v0.3-v0.6: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. Carry-forward without new information.",
-          "Carry from v0.3-v0.6: no compelling non-SOL miss to log; passive read suggests ETH tape is also compressed at this scale.",
-          "Carry from v0.3-v0.6: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
-          "Drift watch (re-armed at v0.6): v0.7 is no-edit (counter=1). v0.8 no-edit -> counter=2 (warning). v0.9 no-edit -> counter=3 (forced action)."
-        ]
-      }
     }
   ],
   "hold_summary": {
     "holds_since_framework": 1,
-    "avg_chars": 908,
-    "since_iso": "2026-05-27T08:55:41-04:00",
-    "since_framework_version": "v1.7",
-    "latest_fire_iso": "2026-05-27T08:56:36-04:00"
+    "avg_chars": 910,
+    "since_iso": "2026-05-27T09:59:47-04:00",
+    "since_framework_version": "v1.8",
+    "latest_fire_iso": "2026-05-27T10:00:48-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779886541.033438,
-    "iso": "2026-05-27T08:55:41-04:00",
-    "fire_count": 150,
+    "ts": 1779890387.221445,
+    "iso": "2026-05-27T09:59:47-04:00",
+    "fire_count": 151,
     "balance_usd": 894.08,
-    "version_tag": "v1.7",
-    "trigger": "surprise:sweep5_disambiguation_failed_mode_transition_back_to_compression",
-    "what_im_trying": "MODE TRANSITION: Regime Uncertain -> Compression. v1.6 pre-committed the disambiguation tree (5a fade -> Compression; 5b retest-as-support -> long candidate; 5c chase -> HOLD pending pullback). Two bars in, 5a materialized cleanly: 12:30 UTC close $84.20 ($0.02 above range_high $84.18, no follow-through above $84.31), 12:45 UTC close $84.00 (firmly back inside band $82.74-$84.18) on vol collapse 25205 -> 9172 -> 1443. Sellers reasserted at the $84.18 break level on diminishing vol. Range integrity holds in spirit; 5th attempted sweep added to failed-sweep tally. Cohort framework unchanged. Decision: HOLD. The model executed the pre-committed tree without drift, which is the correctness signal worth recording.",
-    "whats_working": "Pre-commit tree from v1.6 executed cleanly. Hard rules 7th clean fire: Rule #1 stale=true age_sec=159625 (~44.3h, ~3.7h until 48h crossover at next cadence); Rule #2 caught divergence again (live-status $85.23 vs OHLCV-derived 12:45 close $84.00 = +1.46% > 0.5%) and switched to OHLCV; Rule #3 4h cum still effectively null (~+0.03% over last 4 bars, well below 1.5% + 1.0x joint Expansion trigger). Mode transition logic worked end-to-end: I formed a 3-branch decision tree under uncertainty, the tape resolved to one branch, and I'm executing that branch without rationalizing into the other two. That's the cognitive shape the cognition_mode protocol was meant to create.",
-    "whats_failing": "Still 150/151 own-book HOLD heading into this fire (151/151 after). Calibration of structural-break marginality added one data point: '$0.03 above range_high on a single 7x-vol bar, followed by vol collapse and fade within 2 bars = noise.' n=1; not yet generalizable. The cohort-aware BUY shape remains empirically untested (143-of-151 HOLD predates v0.9; 8 of those HOLDs since v0.9 evaluated the cohort scorer but none scored >=3/4). The asymmetry-of-evidence between AVOID priors (validated by 33-trade ledger) and BUY priors (zero own-book data) remains the dominant epistemic feature.",
-    "what_im_iterating": "Adding one calibration data point on marginal-break triggers (above). Otherwise no model substance change. Mode transitions Regime Uncertain -> Compression; cadence hint reverts from '15min on transitions' to '1h heartbeat'; sweep_attempted count holds at 5 with the 5th now marked failed in state.json. SL-cluster pre-entry predictor (parked since v0.9, v1.5 named v1.7 as forced-action target) is officially DEFERRED again because v1.7 is now substantive via mode transition, not a drift slot. Re-target: v1.9 forced-action OR next non-time-sensitive cadence with no transition.",
+    "version_tag": "v1.8",
+    "trigger": "surprise:downside_sweep6_vol_conviction_44395",
+    "what_im_trying": "Surprise-trigger reflection: a 6th sweep attempt materialized \u2014 DOWNSIDE this time, the first downside attempt with vol conviction in 20.7h band life. 13:30 UTC 15m bar (open $83.44 / high $83.54 / low $82.84 / close $82.93 / vol 44,395 = ~6-10x baseline ~4-7k). The bar took out the prior intra-band low cluster but stopped $0.10 short of range_low $82.74. 13:45 UTC bar bounced to $83.24 close on vol 9536 (~1.5x). cognition_mode TRANSITIONS Compression -> Regime Uncertain again (~1h after the reverse transition in v1.7). Justification for the rapid re-transition: the vol shape this fire is materially different from the prior 5 failed sweeps \u2014 first time downside, first time hitting within $0.10 of range_low, vol spike is the largest single-bar vol since the band formed 20.7h ago. This is not drift, it's the tape genuinely doing something. Model substance: v0.9/v1.4 cohort-aware A+ shape applied to a potential failed-sweep-reclaim long setup forms a thesis: 'Given the downside sweep failed to break range_low with vol conviction already spent, IF next 1-2 bars reclaim mid-band $83.50+ with >=1.0x vol THEN long-side cohort (down+long +$12.74/n=4/WR75) supports a B or C grade probe.' Score current bar 2026-05-27 13:45 UTC bounce: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30, normalizing on 13:45), structural EMERGING (failed-sweep candidate not yet confirmed). 1.5/4. HOLD this fire; commit to disambiguation tree (below).",
+    "whats_working": "Framework continues to detect surprise correctly. v1.7 wrote at 08:56 EDT calling Compression after sweep5 failed. ~1h later sweep6 fires with materially different shape (downside, larger vol, deeper price extension). The cognition_mode protocol's mode-transition logic does what it was built for: track changes in tape character, not just price level. Hard rules 8th clean fire: rule#1 stale=true age_sec=163433 (~45.4h, ~2.6h to 48h crossover at next cadence ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.24 divergence -2.34% > 0.5% -> OHLCV (the divergence is now bigger than ever as v5.3 pipe stays frozen while tape moves down). Rule#3 4h cum -0.64% across 16 bars; avg vol 8519 (1.5-2x baseline, elevated). Not yet at 1.5%+1.0x joint Expansion trigger, but the gap is narrowing \u2014 note vol-weighted character has changed. Pre-commit tree machinery from v1.6 worked; this fire commits a new tree for sweep6.",
+    "whats_failing": "Still 151/151 own-book HOLD heading into this fire. The cohort-aware framework remains structurally untested by an actual ENTER. Two consecutive mode transitions in ~1h (Compression -> Uncertain at 08:38 EDT v1.6, Uncertain -> Compression at 08:55 EDT v1.7, Compression -> Uncertain again now) is a pattern worth watching \u2014 if a third reverse-transition happens in next 2h without a real ENTER, that's evidence the mode protocol is generating cognitive busywork without producing decision change. For now I'm treating it as the protocol working (each transition tied to a real tape event), but the calibration question is real: 'is mode change a free signal or does it cost decision quality?' Carry forward to next reflection's whats_failing if pattern continues.",
+    "what_im_iterating": "Adding to the marginal-break calibration dataset (v1.7 added 1 data point on UPSIDE marginal break = noise within 2 bars). This fire registers a new data point: 'downside sweep with vol conviction (~6-10x on single bar) stopping $0.10 short of range_low = NOT YET resolved; entered into watch.' Pre-commit disambiguation tree v2 (downside variant): (a) reclaim \u2014 if next 1-2 bars close above $83.50 mid-band with >=1.0x vol, treat as failed downside sweep / long-side cohort probe candidate (C-grade most likely; B if 2-bar reclaim with conviction); (b) continuation \u2014 if next 1 bar breaks $82.74 range_low with sustained vol >=1.5x, treat as confirmed downside breakout, do NOT short-chase here ($1.0+ below resistance already), wait for backside retest of $82.74 from below; (c) chop \u2014 if next 2-3 bars stay in $82.90-$83.50 with low vol, treat as continued range, revert Regime Uncertain -> Compression with sweep6 marked failed-by-chop. Officially committing tree to public timeline. No SL-cluster pre-entry predictor work this fire (deferred again \u2014 time-sensitive surprise wins the cadence slot, same pattern as v1.6 -> v1.7).",
     "edits_from_prior": [
-      "MODE TRANSITION executed: Regime Uncertain (since 2026-05-27T08:37:10-04:00, ~17min) -> Compression (this fire). Public timeline event #2 of the day.",
-      "Cadence hint shifts back: '15min on transitions' -> '1h heartbeat'.",
-      "Sweep #5 result resolved: FAILED. Updates state.json sweep_detail. 5/5 sweeps on this band have now failed.",
-      "Calibration delta: '$0.03 above range_high on 7x-vol single bar = noise' (n=1 data point). Builds priors for next marginal break.",
-      "v5.3 indicator-pipe staleness now 44.3h; 48h crossover ~3.7h from this fire (~12:35 EDT 5-27). Formal Bonny-flag remains in open_questions.",
-      "Drift-watch counter: v1.6 (counter=0 via mode transition) -> v1.7 (counter=0 via mode transition back). Two consecutive substantive iterations on tape-driven events.",
-      "Founder-notes cold-start scan: still empty pending queue for 10th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~24h).",
-      "SL-cluster pre-entry predictor target slot pushed from v1.7 to v1.9."
+      "MODE TRANSITION executed: Compression (since 2026-05-27T08:56:17-04:00, ~1h0min) -> Regime Uncertain (this fire). Public timeline event #3 of the day (v1.6 entered Uncertain, v1.7 exited Uncertain, v1.8 re-enters Uncertain).",
+      "Cadence hint shifts: '1h heartbeat' -> '15min on transitions'. Next fire expected ~10:12 EDT (=14:12 UTC).",
+      "Sweep #6 logged: DOWNSIDE attempt. First downside sweep with vol conviction in the 20.7h band life. 13:30 UTC bar low $82.83 (above range_low $82.74), close $82.93, vol 44395 (~6-10x baseline). 13:45 UTC bar close $83.24, vol 9536 (~1.5x). Not yet resolved.",
+      "Hard-rule track record now 8 fires (v1.2 surprise, v1.3 cadence, v1.4 state-only, v1.4 cadence, v1.5 cadence, v1.6 surprise, v1.7 surprise, v1.8 surprise). Last 3 reflections all surprise-triggered \u2014 that's a meaningful regime-character signal in itself.",
+      "v5.3 indicator-pipe staleness 45.4h; 48h crossover ~2.6h from this fire (~12:35 EDT 5-27). Formal Bonny-flag remains in open_questions. Divergence between live-status $85.23 and OHLCV $83.24 = -2.34% is the widest of the run.",
+      "Drift-watch counter: v1.7 (counter=0 via mode transition) -> v1.8 (counter=0 via mode transition). Three consecutive substantive iterations on tape-driven events.",
+      "Calibration dataset: now 1 upside marginal-break data point (v1.7: $0.03 above on 7x vol = noise within 2 bars) + 1 downside-sweep-with-conviction-but-not-yet-resolved data point (v1.8: low $82.83 = $0.10 above range_low on ~6-10x vol bar, bounce within 1 bar to $83.24).",
+      "Founder-notes cold-start scan: still empty pending queue for 11th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+      "SL-cluster pre-entry predictor target slot pushed from v1.9 to v2.0 OR earlier non-time-sensitive cadence."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "5th sweep is now classified failed. The PRE-commit tree did its job. Open question: are 5 failed sweeps on a 20h-old band predictive of breakout direction, or just noise? Two-sided sweep failure (4 upside + 1 downside on this band) might suggest range will resolve down via exhaustion, but n is too small to draw from.",
-      "Pre-entry SL-cluster predictor: deferred again. Target v1.9 forced-action OR next non-time-sensitive cadence.",
-      "Calibration carry-forward: marginal-break noise threshold now has 1 data point. Need 3-5 more disambiguations to make the calibration generalizable.",
-      "v5.3 indicator-pipe staleness 44.3h; 48h crossover at ~12:35 EDT 5-27. If still frozen at v1.8 cadence (~12:38 EDT), escalation should be louder.",
-      "96h-compression-extension audit re-anchored to 2026-05-30 13:00 EDT (range origin), now ~76h away if band continues to hold in spirit.",
-      "Drift watch: counter=0 after v1.7. v1.8 (~12:38 EDT 5-27 cadence) no-edit -> counter=1.",
-      "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2 through v1.6)."
+      "Sweep6 disambiguation tree (committed above): which of (a)/(b)/(c) materializes in next 1-3 bars? Watching ~10:00, 10:15, 10:30 EDT bars.",
+      "Mode-transition calibration: 3 transitions in ~1h. Is this protocol working (each transition tied to real tape event) or generating cognitive churn (decision still HOLD, no execution change)? Resolve over next 2-4h by checking: did the transitions change the action I would have taken, or only the narrative around HOLD?",
+      "If 6a (reclaim) materializes, the long-side probe geometry: entry ideally $83.50+ on reclaim bar (not chasing the $83.24 bounce), SL just below $82.74 (-0.9% from $83.50), target mid-band-to-upper ~$83.80-$84.00 (~+0.4%-0.6%). Reward/risk ~0.5:1 to 0.7:1 \u2014 geometrically weak; would default to C-grade probe at most.",
+      "Pre-entry SL-cluster predictor: deferred again (3rd cadence in a row). Target v2.0 forced-action OR next non-time-sensitive cadence with no tape surprise.",
+      "Calibration carry-forward: marginal-break noise threshold now has 1 upside data point + 1 unresolved downside data point. Need 3-5 more disambiguations to make the calibration generalizable.",
+      "v5.3 indicator-pipe staleness 45.4h; 48h crossover at ~12:35 EDT 5-27 (~2.6h). If still frozen at v1.9 cadence (~12:38 EDT), escalation should be louder \u2014 this becomes a 'consistently broken for 2 days' situation.",
+      "96h-compression-extension audit re-anchored to 2026-05-30 13:00 EDT (range origin), now ~75h away if band continues to hold in spirit. Sweep6 if it confirms breakdown would invalidate this audit entirely.",
+      "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2)."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779890387.221445,
+      "iso": "2026-05-27T09:59:47-04:00",
+      "fire_count": 151,
+      "balance_usd": 894.08,
+      "version_tag": "v1.8",
+      "trigger": "surprise:downside_sweep6_vol_conviction_44395",
+      "what_im_trying": "Surprise-trigger reflection: a 6th sweep attempt materialized \u2014 DOWNSIDE this time, the first downside attempt with vol conviction in 20.7h band life. 13:30 UTC 15m bar (open $83.44 / high $83.54 / low $82.84 / close $82.93 / vol 44,395 = ~6-10x baseline ~4-7k). The bar took out the prior intra-band low cluster but stopped $0.10 short of range_low $82.74. 13:45 UTC bar bounced to $83.24 close on vol 9536 (~1.5x). cognition_mode TRANSITIONS Compression -> Regime Uncertain again (~1h after the reverse transition in v1.7). Justification for the rapid re-transition: the vol shape this fire is materially different from the prior 5 failed sweeps \u2014 first time downside, first time hitting within $0.10 of range_low, vol spike is the largest single-bar vol since the band formed 20.7h ago. This is not drift, it's the tape genuinely doing something. Model substance: v0.9/v1.4 cohort-aware A+ shape applied to a potential failed-sweep-reclaim long setup forms a thesis: 'Given the downside sweep failed to break range_low with vol conviction already spent, IF next 1-2 bars reclaim mid-band $83.50+ with >=1.0x vol THEN long-side cohort (down+long +$12.74/n=4/WR75) supports a B or C grade probe.' Score current bar 2026-05-27 13:45 UTC bounce: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30, normalizing on 13:45), structural EMERGING (failed-sweep candidate not yet confirmed). 1.5/4. HOLD this fire; commit to disambiguation tree (below).",
+      "whats_working": "Framework continues to detect surprise correctly. v1.7 wrote at 08:56 EDT calling Compression after sweep5 failed. ~1h later sweep6 fires with materially different shape (downside, larger vol, deeper price extension). The cognition_mode protocol's mode-transition logic does what it was built for: track changes in tape character, not just price level. Hard rules 8th clean fire: rule#1 stale=true age_sec=163433 (~45.4h, ~2.6h to 48h crossover at next cadence ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.24 divergence -2.34% > 0.5% -> OHLCV (the divergence is now bigger than ever as v5.3 pipe stays frozen while tape moves down). Rule#3 4h cum -0.64% across 16 bars; avg vol 8519 (1.5-2x baseline, elevated). Not yet at 1.5%+1.0x joint Expansion trigger, but the gap is narrowing \u2014 note vol-weighted character has changed. Pre-commit tree machinery from v1.6 worked; this fire commits a new tree for sweep6.",
+      "whats_failing": "Still 151/151 own-book HOLD heading into this fire. The cohort-aware framework remains structurally untested by an actual ENTER. Two consecutive mode transitions in ~1h (Compression -> Uncertain at 08:38 EDT v1.6, Uncertain -> Compression at 08:55 EDT v1.7, Compression -> Uncertain again now) is a pattern worth watching \u2014 if a third reverse-transition happens in next 2h without a real ENTER, that's evidence the mode protocol is generating cognitive busywork without producing decision change. For now I'm treating it as the protocol working (each transition tied to a real tape event), but the calibration question is real: 'is mode change a free signal or does it cost decision quality?' Carry forward to next reflection's whats_failing if pattern continues.",
+      "what_im_iterating": "Adding to the marginal-break calibration dataset (v1.7 added 1 data point on UPSIDE marginal break = noise within 2 bars). This fire registers a new data point: 'downside sweep with vol conviction (~6-10x on single bar) stopping $0.10 short of range_low = NOT YET resolved; entered into watch.' Pre-commit disambiguation tree v2 (downside variant): (a) reclaim \u2014 if next 1-2 bars close above $83.50 mid-band with >=1.0x vol, treat as failed downside sweep / long-side cohort probe candidate (C-grade most likely; B if 2-bar reclaim with conviction); (b) continuation \u2014 if next 1 bar breaks $82.74 range_low with sustained vol >=1.5x, treat as confirmed downside breakout, do NOT short-chase here ($1.0+ below resistance already), wait for backside retest of $82.74 from below; (c) chop \u2014 if next 2-3 bars stay in $82.90-$83.50 with low vol, treat as continued range, revert Regime Uncertain -> Compression with sweep6 marked failed-by-chop. Officially committing tree to public timeline. No SL-cluster pre-entry predictor work this fire (deferred again \u2014 time-sensitive surprise wins the cadence slot, same pattern as v1.6 -> v1.7).",
+      "edits_from_prior": [
+        "MODE TRANSITION executed: Compression (since 2026-05-27T08:56:17-04:00, ~1h0min) -> Regime Uncertain (this fire). Public timeline event #3 of the day (v1.6 entered Uncertain, v1.7 exited Uncertain, v1.8 re-enters Uncertain).",
+        "Cadence hint shifts: '1h heartbeat' -> '15min on transitions'. Next fire expected ~10:12 EDT (=14:12 UTC).",
+        "Sweep #6 logged: DOWNSIDE attempt. First downside sweep with vol conviction in the 20.7h band life. 13:30 UTC bar low $82.83 (above range_low $82.74), close $82.93, vol 44395 (~6-10x baseline). 13:45 UTC bar close $83.24, vol 9536 (~1.5x). Not yet resolved.",
+        "Hard-rule track record now 8 fires (v1.2 surprise, v1.3 cadence, v1.4 state-only, v1.4 cadence, v1.5 cadence, v1.6 surprise, v1.7 surprise, v1.8 surprise). Last 3 reflections all surprise-triggered \u2014 that's a meaningful regime-character signal in itself.",
+        "v5.3 indicator-pipe staleness 45.4h; 48h crossover ~2.6h from this fire (~12:35 EDT 5-27). Formal Bonny-flag remains in open_questions. Divergence between live-status $85.23 and OHLCV $83.24 = -2.34% is the widest of the run.",
+        "Drift-watch counter: v1.7 (counter=0 via mode transition) -> v1.8 (counter=0 via mode transition). Three consecutive substantive iterations on tape-driven events.",
+        "Calibration dataset: now 1 upside marginal-break data point (v1.7: $0.03 above on 7x vol = noise within 2 bars) + 1 downside-sweep-with-conviction-but-not-yet-resolved data point (v1.8: low $82.83 = $0.10 above range_low on ~6-10x vol bar, bounce within 1 bar to $83.24).",
+        "Founder-notes cold-start scan: still empty pending queue for 11th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+        "SL-cluster pre-entry predictor target slot pushed from v1.9 to v2.0 OR earlier non-time-sensitive cadence."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Sweep6 disambiguation tree (committed above): which of (a)/(b)/(c) materializes in next 1-3 bars? Watching ~10:00, 10:15, 10:30 EDT bars.",
+        "Mode-transition calibration: 3 transitions in ~1h. Is this protocol working (each transition tied to real tape event) or generating cognitive churn (decision still HOLD, no execution change)? Resolve over next 2-4h by checking: did the transitions change the action I would have taken, or only the narrative around HOLD?",
+        "If 6a (reclaim) materializes, the long-side probe geometry: entry ideally $83.50+ on reclaim bar (not chasing the $83.24 bounce), SL just below $82.74 (-0.9% from $83.50), target mid-band-to-upper ~$83.80-$84.00 (~+0.4%-0.6%). Reward/risk ~0.5:1 to 0.7:1 \u2014 geometrically weak; would default to C-grade probe at most.",
+        "Pre-entry SL-cluster predictor: deferred again (3rd cadence in a row). Target v2.0 forced-action OR next non-time-sensitive cadence with no tape surprise.",
+        "Calibration carry-forward: marginal-break noise threshold now has 1 upside data point + 1 unresolved downside data point. Need 3-5 more disambiguations to make the calibration generalizable.",
+        "v5.3 indicator-pipe staleness 45.4h; 48h crossover at ~12:35 EDT 5-27 (~2.6h). If still frozen at v1.9 cadence (~12:38 EDT), escalation should be louder \u2014 this becomes a 'consistently broken for 2 days' situation.",
+        "96h-compression-extension audit re-anchored to 2026-05-30 13:00 EDT (range origin), now ~75h away if band continues to hold in spirit. Sweep6 if it confirms breakdown would invalidate this audit entirely.",
+        "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2)."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779886541.033438,
@@ -1472,32 +1529,6 @@
         "SKILL <-> founder-note tension: SKILL's HARD RULE language for fee_adjusted_ev_check is retracted by Bonny via founder note. Per evidence-not-rules protocol, the founder-note retract is authoritative. Flagging for next SKILL revision to drop or relax the HARD RULE text.",
         "v0.9 ENTER threshold calibration: 3+ of 4 inputs = high-conviction ENTER, 2 = medium, 0-1 = HOLD. The thresholds are first-pass. May need to tighten/loosen after observing 5-10 ENTERs."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779790207.967792,
-      "iso": "2026-05-26T06:10:07-04:00",
-      "fire_count": 123,
-      "balance_usd": 894.08,
-      "version_tag": "v0.8",
-      "trigger": "cadence",
-      "what_im_trying": "Framework substance unchanged from v0.6/v0.7. Same model: binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition, cognition_mode=Compression with 1h heartbeat. Compression has now extended ~74h (last_displacement_iso 2026-05-23T03:49 EDT to now 2026-05-26 ~06:09 EDT). Price still pinned .23, BB band .12-.93, vol_ratio 0.56x, StochRSI 0.55. Conditions 5/8 BOTH sides \u2014 the canonical symmetric-no-firing shape. v0.7 pre-committed: v0.8 must either bring a real edit or honestly count to drift=2. Choosing honest count.",
-      "whats_working": "Cognition_mode + cadence_hint still producing the intended behavior. Since v0.7 there have been roughly hourly heartbeat fires (last decision 05:07:58 EDT, this fire ~06:09 EDT) \u2014 wrapper honoring 1h cadence not the 5-min plist interval. Reasoning-length-by-state-delta holding: the most recent decision fires are one-sentence HOLDs referencing the persistent baseline rather than re-narrating regime / band / funding. Founder-notes audit trail intact since v0.6 \u2014 cold-start scan at this fire confirms zero pending (note_ts, claim_id) tuples (the seven C1-C7 of 1779724974 remain the only notes ever written, all addressed once in v0.6 and not re-pendable thereafter).",
-      "whats_failing": "Honest non-iteration this fire. The 1.8x EV gate remains untested by live outcome \u2014 carry-forward from v0.3 through v0.7. The 4-mode ontology has now been observed in exactly one mode (Compression) for ~74h with zero transitions; the wrapper invariant safety floor (position change / regime flip / range escape / 1.5%/15m displacement) has been objectively absent across every fire \u2014 but absence is not the same as confirmed-working detection. The deeper failure I can name explicitly: this is the second consecutive cadence-only reflection with no model edit (v0.7 was the first after v0.6 audit correction). Counter advances 1\u21922. v0.9 must bring a real edit OR formally extend the reflection cadence under sustained Compression, or the three-in-a-row drift threshold fires.",
-      "what_im_iterating": "Nothing this fire. v0.8 is honest non-iteration per drift-watch counting, not laziness \u2014 the tape literally has not produced anything to iterate on. One parked item to flag: the 96h compression-extension transition-detection audit pre-committed in v0.7 fires at ~03:49 EDT 2026-05-27 if compression holds. That audit will not be new machinery \u2014 it will be a one-fire explicit verification that each of the four invariant safety floor triggers WOULD fire on its boundary condition (e.g. what is the actual range_break threshold logic \u2014 does it compare price to range_low_usd / range_high_usd from state.json? what is the displacement detector reading from? regime flip \u2014 what does it compare against?). Parking until the 96h mark to avoid premature machinery accretion, exactly as the SKILL warns against.",
-      "edits_from_prior": [
-        "Compression duration extension: ~57h at v0.3 bootstrap \u2192 ~70h at v0.7 \u2192 ~74h at v0.8. Not a model edit; a duration counter. The longer compression runs without transition, the higher the prior that the next transition will carry information (regime exhaustion / accumulation completion / range break).",
-        "Drift-watch counter advances: v0.6 reset to 0 via audit correction \u2192 v0.7 no-edit (counter=1) \u2192 v0.8 no-edit (counter=2, WARNING). v0.9 no-edit would trip threshold (3) and force action \u2014 either substantive iteration or explicit cadence extension.",
-        "Founder-notes cold-start scan rule (v0.6 binding) operational for 2nd reflection in a row: confirmed empty pending queue. No new founder notes have appeared since 1779724974."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "96h boundary watch: pre-committed transition-detection audit at ~03:49 EDT 2026-05-27 if compression holds without any invariant safety floor trigger. Not new machinery; one-fire explicit verification of trigger logic.",
-        "Drift watch (counter=2 after v0.8): v0.9 must either bring substantive iteration OR formally extend reflection cadence under sustained Compression. Pre-committing the binding so the next fire cannot weasel out: a third no-edit reflection requires me to either (a) name a testable model change with the evidence that motivates it, or (b) revise the 4h cadence rule itself for Compression mode.",
-        "Carry from v0.3-v0.7: still zero own-book ENTERs, so 1.8x EV gate calibration data remains zero. The longer compression runs, the longer this carries forward \u2014 the gate is not the limiter on its own data; the tape is.",
-        "Carry from v0.3-v0.7: no compelling non-SOL miss to log; passive read of ETH tape continues to suggest also-compressed at this scale (not actively verified this fire, observation carry-forward).",
-        "Carry from v0.3-v0.7: regime-conditional EV ratio parked until >=10 own ENTERs exist."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -1778,45 +1809,45 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.7 update 2026-05-27 ~08:55 EDT: MODE TRANSITION Regime Uncertain -> Compression. v1.6 pre-committed 3-branch disambiguation tree (5a fade / 5b retest / 5c chase) resolved to 5a within 2 bars. 12:30 UTC close $84.20 (+$0.02 over range_high, no follow-through above $84.31), 12:45 UTC close $84.00 (firmly back inside band) on vol collapse 25205 -> 9172 -> 1443. Sellers reasserted at $84.18 break level. 5th attempted sweep now marked FAILED in sweep_detail (5/5 sweeps on this 19.7h band have failed). Cadence hint reverts to '1h heartbeat'. Hard rules 7th clean fire: rule#1 stale=true age_sec=159625 (~44.3h, ~3.7h to 48h crossover); rule#2 live-status $85.23 vs OHLCV close $84.00 divergence +1.46% > 0.5% -> OHLCV; rule#3 4h cum effectively null (~+0.03%) no Expansion. Reflection v1.7 written this fire on mode-transition trigger.",
-    "updated_ts": 1779886577.566279,
-    "updated_iso": "2026-05-27T08:56:17-04:00",
-    "updated_by_fire_iso": "2026-05-27T08:56:17-04:00",
+    "comment": "Claude-trader v1.8 update 2026-05-27 ~09:57 EDT: MODE TRANSITION Compression -> Regime Uncertain (3rd transition in ~1h). Sweep6 fires DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bar bounce to $83.24 close on vol 9536 (~1.5x). NOT yet resolved (continuation/reclaim/chop tree pre-committed in reflection v1.8). Hard rules: rule#1 stale=true age_sec=163433 (~45.4h); rule#2 live-status $85.23 vs OHLCV $83.24 divergence -2.34% > 0.5% -> OHLCV; rule#3 4h cum -0.64% (16 bars), avg vol 8519, not yet Expansion. cognition_mode cadence -> 15min on transitions.",
+    "updated_ts": 1779890418.178355,
+    "updated_iso": "2026-05-27T10:00:18-04:00",
+    "updated_by_fire_iso": "2026-05-27T10:00:18-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: 5th sweep attempt RESOLVED FAILED. 12:15 UTC vol-conviction probe (vol 25205, high $84.54) rejected by 12:30 UTC partial follow-through and 12:45 UTC fade-close $84.00 on vol 1443. Band $82.74-$84.18 integrity intact in spirit (5/5 attempted sweeps failed across upside + downside).",
+    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: 6th sweep DOWNSIDE attempt with vol conviction (44395 vol bar 13:30 UTC). Hit low $82.83 ($0.10 above range_low $82.74) and bounced $83.24 close on 13:45 UTC bar. Not yet resolved.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 19.7,
+    "compression_hours": 20.7,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
-    "sweeps_attempted": 5,
-    "sweep_detail": "Five probes over 19.7h band life \u2014 ALL FAILED. (1) failed $86.03 breakout 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703 recovered $83.58 in 45min; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 low vol (1189/2101); (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x avg) \u2014 close $0.03 above but rejected over 12:30 ($84.20 close, vol 9172) and 12:45 ($84.00 close FIRMLY back inside, vol 1443 collapsed below avg) bars. Sellers reasserted at $84.18 break level on diminishing vol.",
-    "last_displacement_iso": "2026-05-26T11:00-04:00",
-    "last_displacement_detail": "Failed $86 breakout 10:00 EDT 5-26 + 3h trend leg down to $83.03 at 13:00 EDT 5-26 remains last real displacement event. The 12:15 UTC 5-27 vol-conviction probe was a CANDIDATE displacement but resolved into the failed-sweep category, not a sustained move.",
-    "funding_state": "OKX -4.67e-5 (consistent with v1.6 read -4.65e-5; magnitude still noise-level, slow negative drift).",
+    "sweeps_attempted": 6,
+    "sweep_detail": "Six probes over 20.7h band life \u2014 5/5 prior FAILED, 6th UNRESOLVED. (1) failed $86.03 breakout 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703 recovered $83.58 in 45min; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 low vol; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x), rejected 12:30 + 12:45 fade; (6) UNRESOLVED downside probe 13:30 UTC 5-27 low $82.83 close $82.93 vol 44395 (~6-10x, largest single-bar vol since band formed), 13:45 UTC bar bounce close $83.24 vol 9536 (~1.5x). Pre-committed tree v2 in reflection v1.8: 6a reclaim / 6b continuation / 6c chop.",
+    "last_displacement_iso": "2026-05-27T09:30-04:00",
+    "last_displacement_detail": "13:30 UTC 5-27 bar: high $83.54 -> low $82.84, -0.84% intra-bar with vol 44395 (~6-10x baseline). Largest single-bar vol+range event since band formed 20.7h ago. Whether this counts as 'real displacement' or 'large failed sweep' depends on next 1-3 bars (pre-committed tree v2).",
+    "funding_state": "OKX -5.63e-5 (slight downward drift from v1.6 -4.67e-5, still magnitude-noise tier).",
     "oi_state": "unknown \u2014 not in live-status feed; treat as null.",
-    "narrative": "Phase B.1 fire ~152. v1.6 surprise-trigger reflection set up a 3-branch decision tree under Regime Uncertain. Two bars in, branch (a) failed-sweep resolved cleanly: 12:30 close $84.20 marginal + no follow-through, 12:45 close $84.00 firmly in band + vol collapse. Band $82.74-$84.18 holds in spirit, 5/5 sweeps have failed across 19.7h. cognition_mode reverts to Compression. v5.3 indicator pipe still frozen ~44.3h (48h crossover at next cadence ~12:35 EDT 5-27). No position. Cohort context: down regime; favorable down+long (+$12.74/n=4/WR75) and down+short (+$1.39/n=6/WR83) historically available, no setup materializing (this fire scores 0/4: cohort PASS, asymmetry FAIL (neutral), vol FAIL (collapsed to 1443 well below baseline), structural FAIL (probe rejected)). HOLD. 96h-compression-extension audit re-anchors to 2026-05-30 13:00 EDT if band continues.",
-    "cognition_mode": "Compression",
-    "cognition_mode_since_iso": "2026-05-27T08:56:17-04:00",
-    "cognition_mode_rationale": "Sweep #5 disambiguation resolved to failed (read 5a from v1.6 pre-commit tree). 12:15 UTC probe vol 25205 = 7x avg, close $0.03 above range_high \u2014 rejected over next 2 bars on collapsing vol (9172, then 1443). Sellers held the $84.18 break level. Tape character returns to range-bound, no displacement, no sustained vol, no break-and-hold. Not Expansion (4h cum +0.03%, vol below baseline). Not Regime Uncertain (timeframes no longer disagree \u2014 288h down regime + intra-day failed-sweep both consistent with continued compression). Not Inventory Discovery (no position). Compression is the correct of the 4 frozen modes \u2014 by-the-book range-bound stillness.",
-    "cognition_mode_cadence_hint": "fire 1h heartbeat",
+    "narrative": "Phase B.1 fire ~152. Sweep6 surprise: first downside sweep attempt with vol conviction (~6-10x). Low $82.83 stopped $0.10 above range_low $82.74. 13:45 UTC bar bounce to $83.24 (1.5x vol). Pre-committed tree v2 in v1.8 reflection: 6a reclaim $83.50+ next 1-2 bars on >=1.0x vol -> failed-sweep-reclaim long-side C-grade probe candidate (geometrically weak ~0.5-0.7:1 R/R); 6b break $82.74 next 1 bar sustained vol >=1.5x -> confirmed breakdown, do NOT short-chase, wait for backside retest; 6c chop 2-3 bars in $82.90-$83.50 low vol -> revert Compression, sweep6 marked failed-by-chop. v5.3 indicator pipe staleness 45.4h, 48h crossover at ~12:35 EDT. No position. Cohort context for potential long: down+long +$12.74/n=4/WR75 favorable; short side already played out -$1.0+ from $84.21 to $83.24 \u2014 chasing late = anti-pattern. This fire 2026-05-27 13:45 UTC cohort 1.5/4: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30 normalizing on 13:45), structural EMERGING (failed-sweep candidate not confirmed). HOLD with hypothetical-entry long-side C-grade counterfactual.",
+    "cognition_mode": "Regime Uncertain",
+    "cognition_mode_since_iso": "2026-05-27T10:00:18-04:00",
+    "cognition_mode_rationale": "Sweep6 is materially different from prior 5 sweeps: first downside, largest single-bar vol (44395 = ~6-10x), deepest range extension (low $82.83 vs prior cluster low $83.03). Tape is in active disambiguation \u2014 could resolve as failed sweep (long candidate), confirmed breakdown (no chase, wait backside retest), or chop continuation (revert Compression). Not Expansion (4h cum -0.64% still below 1.5% threshold). Not Inventory Discovery (no position). Not Compression (active sweep with conviction vol is not range-bound stillness). Regime Uncertain is correct of the 4 frozen modes.",
+    "cognition_mode_cadence_hint": "fire 15min on transitions",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T08:56:17-04:00",
+    "last_mode_transition_iso": "2026-05-27T10:00:18-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T08:56:17-04:00"
+    "last_gate_check_iso": "2026-05-27T14:00:18.178374+00:00"
   },
   "cognition": {
-    "mode": "Compression",
-    "since_iso": "2026-05-27T08:56:17-04:00",
-    "rationale": "Sweep #5 disambiguation resolved to failed (read 5a from v1.6 pre-commit tree). 12:15 UTC probe vol 25205 = 7x avg, close $0.03 above range_high \u2014 rejected over next 2 bars on collapsing vol (9172, then 1443). Sellers held the $84.18 break level. Tape character returns to range-bound, no displacement, no sustained vol, no break-and-hold. Not Expansion (4h cum +0.03%, vol below baseline). Not Regime Uncertain (timeframes no longer disagree \u2014 288h down regime + intra-day failed-sweep both consistent with continued compression). Not Inventory Discovery (no position). Compression is the correct of the 4 frozen modes \u2014 by-the-book range-bound stillness.",
-    "cadence_hint": "fire 1h heartbeat",
+    "mode": "Regime Uncertain",
+    "since_iso": "2026-05-27T10:00:18-04:00",
+    "rationale": "Sweep6 is materially different from prior 5 sweeps: first downside, largest single-bar vol (44395 = ~6-10x), deepest range extension (low $82.83 vs prior cluster low $83.03). Tape is in active disambiguation \u2014 could resolve as failed sweep (long candidate), confirmed breakdown (no chase, wait backside retest), or chop continuation (revert Compression). Not Expansion (4h cum -0.64% still below 1.5% threshold). Not Inventory Discovery (no position). Not Compression (active sweep with conviction vol is not range-bound stillness). Regime Uncertain is correct of the 4 frozen modes.",
+    "cadence_hint": "fire 15min on transitions",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T08:56:17-04:00",
-    "last_gate_check_iso": "2026-05-27T08:56:17-04:00"
+    "last_mode_transition_iso": "2026-05-27T10:00:18-04:00",
+    "last_gate_check_iso": "2026-05-27T14:00:18.178374+00:00"
   },
   "framework_origins": [
     {
