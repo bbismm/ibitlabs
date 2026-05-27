@@ -1,24 +1,30 @@
 {
-  "public_schema_version": 6,
-  "generated_at": 1779892623,
-  "generated_iso": "2026-05-27T10:37:03-0400",
+  "public_schema_version": 7,
+  "generated_at": 1779893943,
+  "generated_iso": "2026-05-27T10:59:03-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 155,
+    "decisions_total": 157,
     "actions": {
-      "HOLD": 154,
+      "HOLD": 156,
       "ENTER": 1
+    },
+    "grades": {
+      "HOLD": 151,
+      "HOLD_with_counterfactual": 3,
+      "ENTER_C": 1,
+      "HOLD_no_plausible": 2
     },
     "confidence": {
       "high": 143,
-      "medium": 5,
+      "medium": 7,
       "low": 7
     },
     "reasoning_chars_avg_all": 986,
-    "reasoning_chars_avg_last10": 1037,
+    "reasoning_chars_avg_last10": 1022,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T10:34:52-04:00",
+    "last_fire_iso": "2026-05-27T10:51:31-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -28,33 +34,58 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779892492.0,
-    "fire_iso": "2026-05-27T10:34:52-04:00",
+    "fire_ts": 1779893491.4959419,
+    "fire_iso": "2026-05-27T10:51:31-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": null,
-    "current_price": 83.39,
+    "position_at_fire": {
+      "direction": "long",
+      "entry_price": 83.63,
+      "qty": 1,
+      "unrealized_pnl_pct": -0.0019,
+      "minutes_held": 31
+    },
+    "current_price": 83.47,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
+      "momentum_pct": -0.0008,
       "rsi": 60.4
     },
     "decision": "HOLD",
+    "grade": null,
+    "size_multiplier": null,
+    "setup_type": null,
     "direction": null,
     "symbol": "SOL-PERP",
     "quantity": null,
     "leverage": null,
+    "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management for v1.9 hypothetical long @ $83.63 (Phase 0 DRY_RUN). Tape materially changed: 14:15 UTC bar closed $83.26 (low $83.04) on vol 20817 (~3-4x) - rejection from the 14:00 UTC reclaim. The $83.26 close is $0.04 below v1.9 pre-commit threshold $83.30, BUT pre-commit was tied to 14:30 UTC bar close not 14:15. 14:30 UTC bar 4min in: $83.26 -> $83.39 on vol 420 (negligible). Discipline requires honoring bar boundary - moving stops mid-thesis is the cognitive failure pre-commits prevent. Position ~-0.29% unrealized; SL $82.74 not hit; TP $83.95-$84.18 not hit; range_low $82.74 not broken. Probability of abort has risen materially given 14:15 structural weakness, but contract honors 14:30 UTC close at 14:45 UTC (~11min). HOLD this fire; next 1-2 fires resolve.",
+    "reasoning": "Position management fire #154 (hypothetical long @ $83.63 from v1.9 fire 152, ~31min held). PRE-COMMIT v1.9.2 RESOLVED: 14:30 UTC bar closed $83.42 (h $83.59 / l $83.23 / vol 12,244) \u2014 ABOVE abort threshold $83.30 by $0.12. HOLD branch of the pre-commit fires; position continues per binding contract. SL $82.74 not hit (deepest 14:15 UTC low $83.04 stopped $0.30 above). TP $83.95-$84.18 not hit (14:00 UTC high $83.96 touched, no close). Vol decay 5 bars consecutive (44k -> 12.6k -> 22.8k -> 20.8k -> 12.2k -> 189) = conviction draining both sides. Current $83.47 sits $0.03 below mid-band $83.50, reclaim arc wounded but pre-commit contract holds. Hard rules clean 10th fire: stale 46.5h (48h ~1.7h away), live-status $85.23 vs OHLCV $83.47 -2.10% div -> OHLCV, 4h cum -0.16% / avg vol 12k (~2x baseline, not Expansion). The cognitively important moment is the pre-commit honoring itself \u2014 moving stops mid-thesis is the exact failure pre-commits prevent. Decision: HOLD per contract.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "14:30 UTC bar closes <$83.30 -> EXIT (v1.9 pre-commit honored at bar boundary)",
-      "Price breaks $82.74 range_low with sustained vol >=1.5x -> EXIT (SL touch + structural confirmation)",
-      "Price reclaims $83.50 mid-band with conviction vol -> HOLD with TP zone in play"
-    ]
+      "SL $82.74 hit -> EXIT",
+      "TP zone $83.95-$84.18 first close -> EXIT (take profit at first contact)",
+      "Lever-5-mod analog: 8h held + pnl<0 + MFE<0.4% -> EXIT (~6.5h remaining in window; MFE currently ~+0.39% touched at 14:00 UTC)",
+      "Range_low $82.74 break with sustained vol >=1.5x -> EXIT immediate (thesis invalidated)",
+      "Mid-band $83.50 closes below for 2 consecutive 15m bars + vol returns >=1.5x -> EXIT (reclaim arc structurally broken)"
+    ],
+    "hypothetical_entry_record": {
+      "implied_grade": "C",
+      "direction": "long",
+      "entry_price": 83.47,
+      "sl_pct": 0.009,
+      "tp_pct": 0.006,
+      "predicted_2h_outcome": "drift_sideways",
+      "predicted_8h_outcome": "unclear",
+      "reasoning_30_words": "If not already in: same setup at $83.47 (chased further past ideal $83.50-$83.61 reclaim) is geometrically worse. Vol decay suggests neither side has conviction. C-grade lean long persists but conviction dropped."
+    },
+    "no_plausible_counterfactual": null,
+    "exploration_attribution": null,
+    "information_roi_record": null
   },
   "events": [
     {
@@ -78,10 +109,14 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "medium",
         "reasoning": "Managing hypothetical long from v1.9 fire 152 ENTER @ $83.63 (qty=1 C-grade, SL $82.74, TP $83.95-$84.18). 14:15 UTC bar in progress: high $83.79 (within $0.16 of TP zone) then faded to low $83.20 / current $83.28 on vol 17832 (~3x baseline). Position ~-0.42% unrealized; SL NOT hit, TP NOT hit. Pre-commit abort was '14:30 UTC bar close <$83.30' - 14:30 bar has NOT started (current is 14:15 in-progress). Vol is NOT low (~3x, not <0.5x) so the 'stall' abort branch is inactive. HOLD per pre-commit: cutting now at -0.42% on an in-progress bar is the early-exit-on-noise pattern v1.9 explicitly flagged. Next decision point at 14:30 close (~10:30 EDT, next fire). Hard rules clean fire #10: rule#1 stale=true age_sec=165172 (~45.9h, 48h crossover ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV $83.28 div -2.29% > 0.5% -> OHLCV used for price; rule#3 4h cum -0.40% / avg vol ~10k (~1.5x baseline) - not Expansion. Note Phase 0 DRY_RUN: live-status position=null (executor not wired); cognitively tracking the hypothetical position per 'treat as if acted upon' rule. cognition_mode remains Inventory Discovery.",
         "expected_holding_hours": null,
@@ -92,7 +127,20 @@
           "14:30/14:45 UTC bars stall $83.50-$83.70 with vol <0.5x -> tighten watch",
           "SL $82.74 hit at any time -> EXIT (-1.06% from entry)",
           "TP $83.95 hit at any time -> EXIT (+0.4% from entry)"
-        ]
+        ],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 83.28,
+          "sl_pct": 0.0063,
+          "tp_pct": 0.0052,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "unclear",
+          "reasoning_30_words": "14:15 bar rejected $83.79 high and faded to $83.28 close; sellers reasserted at upper mid-band; n=1 weak short lean, forced counterfactual to held long"
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -158,10 +206,14 @@
           "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
         },
         "decision": "ENTER",
+        "grade": "C",
+        "size_multiplier": 0.05,
+        "setup_type": "failed_downside_sweep_reclaim",
         "direction": "long",
         "symbol": "SOL-PERP",
         "quantity": 1,
         "leverage": 1,
+        "sl_pct": 0.0106,
         "confidence": "low",
         "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
         "expected_holding_hours": 1,
@@ -171,7 +223,11 @@
           "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
           "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
           "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
-        ]
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.9"
     },
@@ -197,10 +253,14 @@
           "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
         },
         "decision": "ENTER",
+        "grade": "C",
+        "size_multiplier": 0.05,
+        "setup_type": "failed_downside_sweep_reclaim",
         "direction": "long",
         "symbol": "SOL-PERP",
         "quantity": 1,
         "leverage": 1,
+        "sl_pct": 0.0106,
         "confidence": "low",
         "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
         "expected_holding_hours": 1,
@@ -210,7 +270,11 @@
           "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
           "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
           "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
-        ]
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -234,10 +298,14 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "medium",
         "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
         "expected_holding_hours": null,
@@ -246,7 +314,20 @@
           "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
           "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
           "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
-        ]
+        ],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 83.24,
+          "sl_pct": 0.006,
+          "tp_pct": 0.009,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "unclear",
+          "reasoning_30_words": "Failed downside sweep candidate: low $82.83 stopped above $82.74 on max single-bar vol; 1-bar bounce $83.24; cohort down+long favorable; geometric R/R weak (~0.7:1); lean long if forced."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.8"
     },
@@ -271,10 +352,14 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "medium",
         "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
         "expected_holding_hours": null,
@@ -283,7 +368,20 @@
           "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
           "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
           "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
-        ]
+        ],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 83.24,
+          "sl_pct": 0.006,
+          "tp_pct": 0.009,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "unclear",
+          "reasoning_30_words": "Failed downside sweep candidate: low $82.83 stopped above $82.74 on max single-bar vol; 1-bar bounce $83.24; cohort down+long favorable; geometric R/R weak (~0.7:1); lean long if forced."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -349,15 +447,23 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "Sweep #5 disambiguation resolved to failed-sweep (5a from v1.6 pre-commit tree). 12:15 UTC 7x-vol probe (close $84.21, $0.03 above range_high) was rejected over the next 2 bars: 12:30 close $84.20 (no follow-through above $84.31, $0.02 marginal), 12:45 close $84.00 (firmly back inside band $82.74-$84.18) on vol collapse 25205 -> 9172 -> 1443 (1443 ~0.45x baseline). Sellers reasserted at $84.18 break level. cognition_mode TRANSITIONS Regime Uncertain -> Compression. Live-status indicators_pro stale ~44.3h; using OHLCV-derived price $84.00 per hard-rule #2 (live-status $85.23 divergence +1.46%). Cohort framework: down regime, favorable cohorts available historically (down+long, down+short both small-sample positive), but this fire scores 0/4 on A+ shape \u2014 cohort PASS, asymmetry FAIL (neutral), vol FAIL (collapsed below baseline), structural FAIL (probe rejected). No tape character for ENTER. HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.7"
     },
@@ -382,15 +488,23 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "Sweep #5 disambiguation resolved to failed-sweep (5a from v1.6 pre-commit tree). 12:15 UTC 7x-vol probe (close $84.21, $0.03 above range_high) was rejected over the next 2 bars: 12:30 close $84.20 (no follow-through above $84.31, $0.02 marginal), 12:45 close $84.00 (firmly back inside band $82.74-$84.18) on vol collapse 25205 -> 9172 -> 1443 (1443 ~0.45x baseline). Sellers reasserted at $84.18 break level. cognition_mode TRANSITIONS Regime Uncertain -> Compression. Live-status indicators_pro stale ~44.3h; using OHLCV-derived price $84.00 per hard-rule #2 (live-status $85.23 divergence +1.46%). Cohort framework: down regime, favorable cohorts available historically (down+long, down+short both small-sample positive), but this fire scores 0/4 on A+ shape \u2014 cohort PASS, asymmetry FAIL (neutral), vol FAIL (collapsed below baseline), structural FAIL (probe rejected). No tape character for ENTER. HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -454,17 +568,25 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "medium",
         "reasoning": "5th sweep attempt 12:15 UTC: sweep-low $83.43 -> high $84.54 (clean print above range_high $84.18) -> close $84.21 ($0.03 / 0.04% above), vol 25205 = ~7x recent ~3.6k/15m avg. FIRST probe with vol conviction since band formed 19.5h ago; materially different from prior 4 sweeps. But close fade-from-high suggests sellers reasserted at $84.18; 12:30 UTC partial $84.20-$84.24 (vol 94 too early to read). Cohort-aware A+ shape ~1.5/4: cohort PASS (down+long +$12.74/n=4/WR75 favorable), asymmetry MARGINAL (one-bar bullish, indicator pack stale 44h), vol_ratio AMBIGUOUS (7x spike on 1 bar, not sustained), structural break MARGINAL ($0.03 above without retest). Geometry: long entry $84.21 has unbuildable SL (just-below-$84.18 = -0.3% gets clipped on any retest from above; range-low $82.74 = -1.75% too wide for $144 loss budget on n=4 cohort). Watching next 2-3 bars for (a) fade back below $84.18 -> failed sweep -> Compression; (b) hold + clean retest of $84.18 as support -> long setup candidate; (c) chop continuation. Hard rules clean: rule#1 stale=true age 158386s (44h, pipe still frozen); rule#2 live-status $85.23 vs OHLCV $84.22 divergence +1.20% > 0.5% -> OHLCV used; rule#3 4h cum +0.17% nowhere near Expansion trigger. cognition_mode TRANSITIONS Compression -> Regime Uncertain this fire (state.json + reflection v1.6 written).",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
         "abort_conditions": [
           "n/a \u2014 HOLD; watching next 2-3 bars for 5th-sweep resolution"
-        ]
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.6"
     },
@@ -489,17 +611,25 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "medium",
         "reasoning": "5th sweep attempt 12:15 UTC: sweep-low $83.43 -> high $84.54 (clean print above range_high $84.18) -> close $84.21 ($0.03 / 0.04% above), vol 25205 = ~7x recent ~3.6k/15m avg. FIRST probe with vol conviction since band formed 19.5h ago; materially different from prior 4 sweeps. But close fade-from-high suggests sellers reasserted at $84.18; 12:30 UTC partial $84.20-$84.24 (vol 94 too early to read). Cohort-aware A+ shape ~1.5/4: cohort PASS (down+long +$12.74/n=4/WR75 favorable), asymmetry MARGINAL (one-bar bullish, indicator pack stale 44h), vol_ratio AMBIGUOUS (7x spike on 1 bar, not sustained), structural break MARGINAL ($0.03 above without retest). Geometry: long entry $84.21 has unbuildable SL (just-below-$84.18 = -0.3% gets clipped on any retest from above; range-low $82.74 = -1.75% too wide for $144 loss budget on n=4 cohort). Watching next 2-3 bars for (a) fade back below $84.18 -> failed sweep -> Compression; (b) hold + clean retest of $84.18 as support -> long setup candidate; (c) chop continuation. Hard rules clean: rule#1 stale=true age 158386s (44h, pipe still frozen); rule#2 live-status $85.23 vs OHLCV $84.22 divergence +1.20% > 0.5% -> OHLCV used; rule#3 4h cum +0.17% nowhere near Expansion trigger. cognition_mode TRANSITIONS Compression -> Regime Uncertain this fire (state.json + reflection v1.6 written).",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
         "abort_conditions": [
           "n/a \u2014 HOLD; watching next 2-3 bars for 5th-sweep resolution"
-        ]
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -562,15 +692,23 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "Same baseline as fire 144 (05:34 EDT, v1.4-state). Hard rules executed 5th time clean: Rule #2 caught live-status indicators.price=85.23 vs OHLCV $83.87 (1.6% divergence, indicator pipe still frozen ~42h+). Tape: 4th failed sweep at $84.17/$84.18 already absorbed into state; subsequent 4 bars rolled to $83.50 then recovered to $83.87 on low vol (1075-2638). 4h cum +0.16%, avg vol ~2k/15m -- no Expansion transition. cognition_mode Compression unchanged. Cohort-aware A+ shape scores 1/4: cohort PASS (down regime, favorable down+long/down+short priors), asymmetry FAIL (5/8 both sides), vol FAIL (~0.5x), structural FAIL (no displacement/range-break/retest). HOLD. market_snapshot fields shown are stale live-status reads, kept for schema continuity; OHLCV-derived price is authoritative. Framework reflection v1.5 written (cadence trigger, drift-watch counter 0 to 1).",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.5"
     },
@@ -632,15 +770,23 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "Hard rules executed cleanly (stale=True age 40h, OHLCV-derived price $84.18 vs stale live-status $85.23 +1.25%, 4h cum +1.31% under 1.5% with avg vol ~2k under 1.0x = no mode transition). Tape since last fire 03:28 EDT: gradual drift $83.87 -> $84.18 (+0.37%), now testing prior range_high $84.10. Last two 15m bars closed $84.17/$84.18 = $0.07-$0.08 marginal upside break on LOW vol (1189 then 76, partial). First upside probe of this 15.5h band \u2014 outcome TBD (could resolve as failed sweep #4 or as confirmed break). v5.3 conditions still 5/8 both sides = no asymmetry; vol_ratio low; no structural confirmation (single marginal close, no retest, no vol). Cohort priors: rejection here -> down+short favorable (+$1.39/n=6/WR83); confirmed break -> down+long ok (+$12.74/n=4/WR75) but against regime. Neither trigger met yet. State.json widened range_high to $84.18 to absorb the probe; sweeps_attempted held at 3 pending resolution. HOLD \u2014 wait for next 1-2 bars to disambiguate. No reflection this fire (cadence next ~06:26 EDT; no surprise threshold tripped).",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -665,15 +811,23 @@
           "note": "live-status indicators_pro stale=true age 140076s (38.9h); switched to OHLCV-derived. Newest 15m close 83.87, 4h cum +0.131%, avg vol 3048/15m well below 1.5%+1.0x Expansion trigger."
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Same baseline as fire 144 (HOLD at $83.70 02:27 EDT). Tape drifted +0.20% to $83.87 over ~1h, no displacement, vol tapering 1-2k/15m post-00:30 sweep-low. Compression band $82.74-$84.10 (13.5h young at v1.4-state) intact, range now $82.74-$83.97 within tolerance. Hard rules all clean: (1) stale=true age 38.9h, ignored stale indicator pack; (2) price cross-check 85.23 vs OHLCV 83.87 divergence +1.62%, used OHLCV; (3) 4h cum +0.131% / vol 3048 below joint Expansion trigger. cohort-aware A+ shape scores 1/4 (cohort down OK, asymmetry FAIL, vol FAIL, structural FAIL). HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -697,15 +851,23 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "Hard rules: stale=true age 37.8h (live-status indicators_pro UNTRUSTED); live-status indicators.price $85.23 vs OHLCV-close $83.70 divergence +1.83% > 0.5% (USING OHLCV); 4h cum +0.10% avg vol 3224/15m (NO Expansion transition, well below 1.5%+1.0x joint). market_snapshot: stoch_rsi/rsi null (no trusted source), vol_ratio derived as 3224/3700-baseline = 0.87, momentum_pct = 4h cum +0.10%. Tape: $82.74-$84.10 range holding 13.5h, 3 sweeps all failed (latest $82.74 wick 00:30 EDT vol 4x, recovered <45min). Cohort-aware shape scores 0/4 -- cohort PASS (down regime, down+long +$12.74/down+short +$1.39 both non-worst), asymmetry FAIL (no directional skew at current mid-band), volume FAIL (compression), structural FAIL (no displacement, no clean range break, no retest). HOLD is correct under v0.9 shape + v1.4 cohort-AVOID priors. v1.4 reflection written this fire (substantive via SL-cluster pull: 6 worst SL trades all MFE<=1%, 4/6 are up+long cohort -- corroborates note-3/C3 up+long worst).",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.4"
     },
@@ -768,15 +930,23 @@
           "note": "live-status indicator pack stale=True age_sec=125376 (34.8h, pipe frozen 5-25 12:49 EDT). Values shown are last-known-stale; real-tape read via OHLCV (price 83.73, 4h vol avg 4085 /15m, 4h cum +0.084%, 1h +0.167%)."
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "State unchanged since v1.3 fire 22:20 EDT (price 83.64 -> 83.73, +0.1% over ~1h, immaterial). All 3 v1.2 hard rules ran clean: (1) stale=True age=125376s -> distrust indicators_pro, (2) live-status 85.23 vs OHLCV 83.73 = 1.79% divergence -> switch to OHLCV, (3) 4h cum +0.084% avg vol 4085 -> no Expansion transition. Tape still inside state.json band 83.21-84.10 (current .41-.08 over 5h, vol 1.8k-8k/15m). Cohort-aware A+ shape (v0.9) scores 1/4 (down regime cohort PASS, asymmetry FAIL flat-drift, volume FAIL well below 1.0x, structural FAIL no displacement/no range-break/no extreme StochRSI). Compression continues at new band, ~10.5h young. HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -837,15 +1007,23 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.3"
     },
@@ -870,15 +1048,23 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -902,15 +1088,23 @@
           "rsi": null
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "high",
         "reasoning": "v1.2 hard-rule pre-checks all applied: (1) system_gates.stale=true age_sec=114307 (31.7h since 5-25 12:49 EDT) \u2014 indicators_pro pack untrusted, BB/StochRSI/vol_ratio values listed in market_snapshot are stale data not current; (2) live-status price .23 vs Coinbase 15m close .69, divergence 1.85% \u2014 OHLCV is authoritative; (3) 4h cumulative move -0.07% over last 16 15m bars, avg vol 4341 \u2014 compression confirmed at agent layer, no displacement. Same baseline as fire 19:17 EDT (.67 \u2192 .69 now, +0.02 over ~1h). Tape sits mid-band of the new compression range (.21-.98, established ~13:00 EDT) \u2014 actually tighter intra-day (.41-.86 over last 4h). v0.9 cohort-aware A+ score on current tape: cohort=PASS (down regime, down+long +.74/n=4/WR75 + down+short +.39/n=6/WR83 both net+), asymmetry=FAIL (4h \u00b10.07% symmetric, no directional pressure), volume=FAIL (4h avg 4341 vs displacement-peak 40-70k earlier today = ~10-17% of vigor), structural=FAIL (no fresh sweep/break/displacement; current band 5+ hours old, narrowing not expanding). 1/4 on the 4-input gate. cognition_mode stays Compression \u2014 no transition required. No founder-note arrivals since 09:03 EDT note-3 (already addressed v1.2). HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -973,15 +1167,23 @@
           "note": "live-status indicators_pro stale 29.7h (system_gates.stale=true, age_sec=106830, available=false). Stale claim: indicators.price=85.23, BB lower=84.12, BB upper=85.93, StochRSI=0.5506, vol_ratio=0.56x. Real current from Coinbase: price $83.59 (22:00 UTC 15m close); $1.64/1.96% divergence vs stale. Recent band $83.21-$83.98 since 13:00 EDT. Volumes 5-20k last 5h (vs displacement-peak 40-70k 10:00-13:00 EDT)."
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Surprise this fire: discovered live-status indicator pack stale 29.7h. v0.3-v1.1 reflections anchored on stale $85.23/BB $84.12-$85.93/StochRSI 0.5506. Real Coinbase OHLCV: today 10:00-13:00 EDT ran failed $86 breakout (vol 68552) + 3h displacement leg to $83.03 sweep-low (vol 69102). Since 13:00 EDT (~5h) tape consolidating $83.21-$83.98 with tapering volume. Current $83.59. v0.9 cohort-aware A+ score on real tape: cohort PASS (regime=down; down+long +$12.74/n=4/WR75 and down+short +$1.39/n=6/WR83 both historically OK), asymmetry FAIL (post-displacement balance, no directional bias from candle reads), volume FAIL (recent 5-20k = ~0.3-0.5x of displacement-window normal), structural trigger FAIL (displacement was 5h ago \u2014 post-displacement consolidation is itself not a setup; need fresh trigger like range break with retest OR extreme indicator OR sweep with vol). Score 1/4 -> HOLD. Confidence low because the framework's primary data source partially invalidated this fire \u2014 three operational hard-rules committed in v1.2 framework reflection: per-fire stale-flag inspection, price cross-check vs latest 15m close, 4h cumulative-move slow-displacement detector. State.json fully rewritten with new band + cognition_mode_since_iso bumped to 13:00 EDT. No ENTER thesis available.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.2"
     },
@@ -1040,15 +1242,23 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Same baseline as v1.0 fire (13:24 EDT, ~4h ago) and the ~3 fires since. Price $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides. v0.9 cohort score 1/4 (cohort PASS down+either non-worst; asymmetry/volume/structural FAIL). Funding ticked 3.21e-5 -> -1.00e-4 (sign flip, magnitude tiny ~0.01%/8h, no squeeze signal, immaterial). v1.1 framework reflection written at this fire (cadence trigger, drift counter advances 1->2 warning). HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       },
       "_framework_version": "v1.1"
     },
@@ -1073,15 +1283,23 @@
           "rsi": 60.4
         },
         "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
         "direction": null,
         "symbol": "SOL-PERP",
         "quantity": null,
         "leverage": null,
+        "sl_pct": null,
         "confidence": "low",
         "reasoning": "Same baseline as v1.0 fire (13:24 EDT, ~4h ago) and the ~3 fires since. Price $85.23 mid-band, BB $84.12-$85.93, vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides. v0.9 cohort score 1/4 (cohort PASS down+either non-worst; asymmetry/volume/structural FAIL). Funding ticked 3.21e-5 -> -1.00e-4 (sign flip, magnitude tiny ~0.01%/8h, no squeeze signal, immaterial). v1.1 framework reflection written at this fire (cadence trigger, drift counter advances 1->2 warning). HOLD.",
         "expected_holding_hours": null,
         "expected_pnl_pct_target": null,
-        "abort_conditions": []
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
       }
     },
     {
@@ -1119,11 +1337,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 946,
+    "holds_since_framework": 4,
+    "avg_chars": 977,
     "since_iso": "2026-05-27T10:18:30-04:00",
     "since_framework_version": "v1.9",
-    "latest_fire_iso": "2026-05-27T10:34:52-04:00"
+    "latest_fire_iso": "2026-05-27T10:51:31-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1747,24 +1965,24 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.9.2 update 2026-05-27 10:34 EDT: state-material refresh, NO mode transition (Inventory Discovery held). 14:15 UTC bar CLOSED $83.26 (low $83.04) on vol 20817 (~3-4x) - rejection from reclaim confirmed, close $0.04 below pre-commit threshold $83.30 BUT pre-commit was tied to 14:30 UTC close not 14:15. 14:30 UTC bar in progress ~4min in: o=$83.26 / h=$83.39 / l=$83.26 / c=$83.39 / vol 420 (negligible) - tiny rebound on no conviction. Hypothetical long @ $83.63 now ~-0.29% unrealized ($83.39 current). Hard rules: rule#1 stale=true age_sec=166532 (~46.3h, 48h crossover ~12:35 EDT, ~2.0h); rule#2 live-status $85.23 vs OHLCV partial $83.39 div -2.21% > 0.5% -> OHLCV; rule#3 4h cum -0.21% / avg vol ~13k (~1.5-2x baseline) - elevated but not Expansion. Pre-commit machine: 14:30 UTC bar resolves at 14:45 UTC (~11 min from this fire). Next fire ~14:39 UTC won't see close; fire after (~14:44/14:49) catches it. Discipline: do NOT preempt pre-commit on 14:15 UTC close - the rule is 14:30 UTC. Probability of abort has risen materially given 14:15 UTC structural weakening, but the contract honors the bar boundary.",
-    "updated_ts": 1779892492,
-    "updated_iso": "2026-05-27T10:34:52-04:00",
-    "updated_by_fire_iso": "2026-05-27T10:34:52-04:00",
+    "comment": "Claude-trader v1.9.4 update 2026-05-27 10:57 EDT: 14:45 UTC bar FINALIZED $83.72 (h $83.78 / l $83.41 / vol 7,428) \u2014 first close above entry $83.63 since open. Unrealized +0.108% (+$0.45 on $418.60 notional). Bar shape constructive: opened at the bar low, high $83.78 reached within $0.17 of TP zone start $83.95, close $83.72 held strong. Pre-commit v1.9.2 hold-branch now resolving from 'wounded' (14:15 rejection low $83.04) -> 'wounded but intact' (14:30 close $83.42) -> 'alive-and-extending' (14:45 close $83.72). Vol 7,428 is baseline (not conviction-strong) \u2014 the read is 'sellers exhausted on 14:15 wound, no follow-through on bounce either, but directional bias has flipped back to long-side'. MFE still pinned at 14:00 UTC high $83.96 (+0.395%). MAE still pinned at 14:15 UTC low $83.04 (-0.706%). No SL hit, no TP hit, no Lever5-mod fire (~38min held, MFE=0.4% boundary effectively touched). Next decision boundaries unchanged: SL $82.74 / TP zone $83.95-$84.18 / Lever5-mod 8h+pnl<0+MFE<0.4%.",
+    "updated_ts": 1779893941,
+    "updated_iso": "2026-05-27T10:59:01-04:00",
+    "updated_by_fire_iso": "2026-05-27T10:59:01-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: sweep6 reclaim from v1.8 has wounded - 14:00 UTC reclaim $83.61 (vol 22844) -> 14:15 UTC rejection close $83.26 (vol 20817) -> 14:30 UTC partial $83.39 on tiny vol 420. The 2-bar reclaim narrative did not sustain into bar 3; range_low $82.74 still NOT broken.",
+    "regime_detail": "live-status 288h tag down unchanged BUT live-status stale 46.4h (~1.5h to 48h crossover). Pre-commit v1.9.2 hold-branch healing: 14:30 close $83.42 (above $83.30 abort) -> 14:45 close $83.72 (above entry $83.63). Reclaim arc graduating from wounded to alive-and-extending. Range $82.74-$84.18 holds in spirit; tape now $0.23 below mid-band TP zone start.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 21.4,
+    "compression_hours": 21.8,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
     "sweeps_attempted": 6,
-    "sweep_detail": "Six probes over 21.6h band life - 5 FAILED, sweep6 RECLAIMED-THEN-REJECTING. (1) failed $86.03 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x); (6) DOWNSIDE 13:30 UTC low $82.83 vol 44,395 (~6-10x) -> 14:00 UTC reclaim close $83.61 vol 22,844 (~2-3x) -> 14:15 UTC REJECTION close $83.26 vol 20817 (~3-4x) low $83.04. Reclaim arc: trigger -> wounded within 1 bar.",
+    "sweep_detail": "Six probes over 22h band life. (1) failed $86.03 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27; (4) failed $84.17/$84.18 upside 08:15-08:30 UTC; (5) FAILED $84.54/$84.21 upside 12:15 UTC vol 25205; (6) DOWNSIDE 13:30 UTC low $82.83 vol 44,395 -> 14:00 reclaim $83.61 vol 22,844 -> 14:15 rejection $83.04/c$83.26 vol 20,817 -> 14:30 marginal-hold $83.42 vol 12,244 -> 14:45 CLOSE-ABOVE-ENTRY $83.72 vol 7,428. Sweep6 = failed-then-reclaimed-then-wounded-then-healing.",
     "last_displacement_iso": "2026-05-27T09:30-04:00",
-    "last_displacement_detail": "13:30 UTC 5-27 bar (sweep6): high $83.54 -> low $82.84 -0.84% intra-bar vol 44,395 (~6-10x baseline). Largest single-bar vol+range event in band life. 14:15 UTC rejection bar adds 2nd-largest vol-shape with full range $83.79-$83.04 (-0.90%) on 20817.",
-    "funding_state": "OKX -5.69e-5 (slight downward drift from v1.6 -4.67e-5, still magnitude-noise tier).",
-    "oi_state": "unknown - not in live-status feed; treat as null.",
-    "narrative": "Phase B.1 fire 154 (managing hypothetical long from v1.9 fire 152). 14:15 UTC bar closed $83.26 (low $83.04) - rejection from reclaim confirmed, $0.04 below v1.9 pre-commit threshold $83.30, BUT pre-commit was tied to 14:30 UTC close not 14:15. 14:30 UTC bar 4min in: $83.26 -> $83.39 on vol 420 (noise). Hypothetical long @ $83.63 now ~-0.29% unrealized; SL $82.74 NOT hit; TP $83.95-$84.18 NOT hit. Pre-commit '14:30 UTC closes <$83.30' will evaluate at 14:45 UTC. Probability of abort is HIGH given 14:15 weakness, but discipline requires honoring the bar boundary - moving stops mid-thesis is exactly the cognitive failure pre-commits prevent. Decision: HOLD. Next 1-2 fires (~14:39, 14:44 UTC) will see resolution.",
+    "last_displacement_detail": "13:30 UTC 5-27 sweep6 bar: high $83.54 -> low $82.84 -0.84% vol 44,395. Still largest single-bar vol+range event of band life. Vol has decayed 5 bars consecutively since.",
+    "funding_state": "OKX -5.27e-5 (live-status fresh reading), magnitude-noise tier.",
+    "oi_state": "unknown - not in live-status feed.",
+    "narrative": "Phase B.1 fire ~155 (managing v1.9 hypothetical long). 14:45 UTC bar FINALIZED $83.72 \u2014 first close above entry $83.63 since open. Position unrealized +$0.45 (+0.108%) on $418.60 notional. Pre-commit v1.9.2 hold-branch is graduating: 14:00 conviction -> 14:15 wound -> 14:30 marginal hold -> 14:45 alive-and-extending. Bar high $83.78 came within $0.17 of TP zone start ($83.95), suggesting next 1-2 bars may probe the zone if vol returns. Vol 7,428 is light \u2014 not conviction-strong, but the directional bias has flipped back to long-side after 4-bar wound/healing arc. Decision: HOLD. Next boundaries: SL $82.74 / TP zone $83.95-$84.18 / Lever5-mod 8h+pnl<0+MFE<0.4% (38min held, MFE +0.395% marginal \u2014 Lever5-mod becomes meaningfully alive if MFE doesn't extend above ~0.5% by ~18:18 UTC). Hard rules: rule#1 stale=true age_sec=167015 (46.4h, 48h crossover ~1.5h); rule#2 live-status $85.23 vs OHLCV $83.72 div -1.81% > 0.5% -> OHLCV; rule#3 4h cum 11:00->14:45 = -0.30% / avg vol ~12k (1.5-2x baseline) \u2014 elevated but not Expansion.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-27T10:18:30-04:00",
     "cognition_mode_rationale": "Position open (hypothetical, Phase 0 DRY_RUN). Cadence 5min full while position open; mode-skip rules suspended until close.",
@@ -1776,7 +1994,23 @@
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T14:34:52+00:00"
+    "last_gate_check_iso": "2026-05-27T14:59:01+00:00",
+    "hypothetical_position": {
+      "direction": "long",
+      "symbol": "SOL-PERP",
+      "entry_price": 83.63,
+      "qty": 1,
+      "lev": 1.0,
+      "sl": 82.74,
+      "tp_zone_low": 83.95,
+      "tp_zone_high": 84.18,
+      "entry_iso": "2026-05-27T10:18:30-04:00",
+      "entry_fire": 152,
+      "grade": "C",
+      "setup_type": "failed_sweep_reclaim",
+      "max_favorable_excursion_pct": 0.0039,
+      "max_adverse_excursion_pct": -0.007
+    }
   },
   "cognition": {
     "mode": "Inventory Discovery",
@@ -1785,7 +2019,7 @@
     "cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
-    "last_gate_check_iso": "2026-05-27T14:34:52+00:00"
+    "last_gate_check_iso": "2026-05-27T14:59:01+00:00"
   },
   "framework_origins": [
     {
@@ -1815,5 +2049,29 @@
         "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
       ]
     }
-  ]
+  ],
+  "uncertainty_budget": {
+    "schema_version": 1,
+    "date_utc": "2026-05-27",
+    "daily_budget_pct": 0.01,
+    "daily_budget_usd": 8.94,
+    "balance_at_reset_usd": 894.08,
+    "rules": {
+      "force_b_after_no_enter_hours": 24,
+      "relaxed_threshold_holds": 30,
+      "aggressive_threshold_holds": 100,
+      "default_sl_pct_for_at_risk_estimate": 0.02
+    },
+    "last_enter_ts": 1779891510.828269,
+    "last_enter_iso": "2026-05-27T10:18:30-04:00",
+    "holds_in_a_row": 4,
+    "exploratory_at_risk_usd_today": 4.43,
+    "exploratory_entries_today": 1,
+    "hours_since_last_enter": 0.6,
+    "forced_exploration_due": false,
+    "forced_exploration_due_reason": null,
+    "threshold_state": "normal",
+    "last_updated_iso": "2026-05-27T14:56:53.533039+00:00",
+    "last_known_balance_usd": 894.08
+  }
 }
