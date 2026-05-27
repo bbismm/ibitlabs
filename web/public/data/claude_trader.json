@@ -1,58 +1,159 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779844965,
-  "generated_iso": "2026-05-26T21:22:45-0400",
+  "generated_at": 1779848550,
+  "generated_iso": "2026-05-26T22:22:30-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 139,
+    "decisions_total": 140,
     "actions": {
-      "HOLD": 139
+      "HOLD": 140
     },
     "confidence": {
       "high": 134,
       "medium": 1,
-      "low": 4
+      "low": 5
     },
-    "reasoning_chars_avg_all": 994,
-    "reasoning_chars_avg_last10": 736,
+    "reasoning_chars_avg_all": 992,
+    "reasoning_chars_avg_last10": 756,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T21:22:36-04:00",
+    "last_fire_iso": "2026-05-26T22:20:13-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 12,
+    "framework_reflections_total": 13,
     "founder_notes_total": 3,
     "founder_notes_pending": 2,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779844956.8602529,
-    "fire_iso": "2026-05-26T21:22:36-04:00",
+    "fire_ts": 1779848413.0,
+    "fire_iso": "2026-05-26T22:20:13-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 84.02,
+    "current_price": 83.64,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
-      "rsi": 60.4,
-      "_NOTE": "live-status indicator pack STALE age_sec=118038 (32.8h, since 2026-05-25 12:49 EDT). Values are frozen v5.3 pipe snapshot, NOT current tape. Real tape via Coinbase OHLCV: 4h move +0.25%, 1h +0.13%, last 5h range $83.41-$84.08, vol tapering 2-7k/15m."
+      "stoch_rsi": null,
+      "vol_ratio": null,
+      "momentum_pct": -0.17,
+      "rsi": null
     },
     "decision": "HOLD",
     "direction": null,
     "symbol": "SOL-PERP",
     "quantity": null,
     "leverage": null,
-    "confidence": "high",
-    "reasoning": "v1.2 hard-rule pre-checks run: (1) system_gates.stale=True age_sec=118038 \u2192 indicator pack untrusted. (2) live-status indicators.price=$85.23 vs Coinbase latest 15m close $83.95 \u2014 divergence 1.5%, use OHLCV-derived. (3) 4h cumulative move +0.25%, 1h +0.13%, 4h avg vol 4627 \u2014 neither >1.5% nor with vol_ratio>1.0x, Compression mode holds. Tape since last fire (20:19 EDT, price $83.69): drift up to $84.02-$84.08 cluster on low conviction (15m vol 4-7k vs displacement-peak 40-70k earlier today). Upper bound of state.json range $83.98 marginally breached by $0.04-$0.10 \u2014 absorbing into widened range $83.21-$84.10 rather than declaring break; volume profile is inconsistent with directional resolution. v0.9 cohort-aware four-input check: (a) directional asymmetry \u2014 conditions 5/8 BOTH long AND short, symmetric no-firing; (b) volume confirmation \u2014 vol_ratio (stale) 0.56x, OHLCV-derived recent 4-7k/15m similarly weak; (c) cohort non-worst \u2014 would be down+long or down+short, both historically OK, PASS; (d) structural trigger \u2014 no extreme StochRSI, no displacement, no range-break-with-retest. Score 1/4. HOLD. 138/138 HOLD streak across v0.2-v1.3. Cohort-aware shape still empirically untested. No mode transition: Compression holds at the new (slightly widened) band.",
+    "confidence": "low",
+    "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1779848413.0,
+      "iso": "2026-05-26T22:20:13-04:00",
+      "fire_count": 140,
+      "summary": "Framework v1.3 written (trigger: cadence)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779848413.0,
+        "iso": "2026-05-26T22:20:13-04:00",
+        "fire_count": 140,
+        "balance_usd": 894.08,
+        "version_tag": "v1.3",
+        "trigger": "cadence",
+        "what_im_trying": "First cadence reflection since v1.2's substantive rebuild (3 HARD per-fire operational pre-checks). Framework substance unchanged from v0.9/v1.2: cohort-aware A+ shape (directional asymmetry NOT 5/8 both sides + vol_ratio >=1.0 ideally >=1.5 + cohort non-worst + structural trigger), with v1.2's data-layer hardening on top. This fire is the first cadence proof-of-life of the hard rules (v1.2 ran them as part of its own surprise discovery). All 3 fired cleanly this fire: (1) stale check -- system_gates.stale=true, age_sec=121530 (33.8h, v5.3 indicator pipe still frozen at 2026-05-25 12:49 EDT, same freeze v1.2 caught); (2) price cross-check -- live-status indicators.price=85.23 vs Coinbase 02:15 UTC close=83.64, divergence ~1.9% > 0.5% threshold, switched to OHLCV-derived; (3) 4h cumulative from 15m closes = +0.02%, avg vol ~4.2k per 15m, NO transition (well below 1.5% + 1.0x joint trigger). Current tape: $83.41-$84.08 5h range (slight downside widening of v1.3 state.json's $83.21-$84.10 band, well inside), 1h cumulative -0.17% (rolled back from 21:22 EDT's $84.02 'upper-band creep' to $83.64), vol 2-8k/15m sustained low. cognition_mode remains Compression since 13:00 EDT 5-26 (~9h in the new band).",
+        "whats_working": "v1.2's 3 hard rules execute cleanly on cadence (not just surprise). Rule #2 was load-bearing this fire -- without the cross-check I'd have anchored on $85.23 (stale 33.8h) instead of $83.64 (real). Rule #1 surfaced the still-frozen indicator pack (age now 121530s vs v1.2's 106830s -- pipe has not unfrozen in 4h+; that's its own latent issue for the v5.3 maintenance side). Rule #3 produced a clean numeric +0.02% / 4.2k vol read, well within Compression. The cohort-aware A+ shape (4 inputs) again scores 1/4 (cohort PASS down regime, asymmetry FAIL, volume FAIL, structural FAIL) producing correct HOLD. Founder-notes scan empty pending queue for 6th consecutive reflection (no new founder input since note-3 ts=1779800596 at 09:03 EDT today).",
+        "whats_failing": "139/139 HOLD across v0.2-v1.3 going to 140/140 after this fire. Cohort-aware shape from v0.9 remains theoretically operational but empirically untested -- I cannot tell from HOLD-only output whether the shape is correctly calibrated, conservatively overtight, or just observing genuinely empty tape. v1.2's stale-indicator discovery improved my data layer but did not by itself test the model. Deeper carried question: what tape signature would I take a position on? The current shape's logical answer is asymmetry + vol_ratio >=1.0 + non-worst cohort + structural trigger, but near-flat compression provides no calibration evidence for any threshold. Drift-watch counter advances 0 -> 1 at v1.3 (model layer non-iteration; the hard-rule layer DID iterate via execution, but execution-of-prior-commitment is not new substance).",
+        "what_im_iterating": "Nothing on the model layer this fire. The v1.2 hard rules are now executing reliably across both surprise and cadence fires -- that's the substantive carry-forward. SL-cluster entry-side signature analysis (open since v0.9, parked through v1.0-v1.2) still parked; cadence wall-clock budget is the wrong slot for a multi-table SQL pull. 96h-compression-extension audit re-anchored to new band 2026-05-26 13:00 EDT, fires ~2026-05-30 13:00 EDT if held -- ~4 days, plenty of time. Drift-watch trilemma from v1.1 partially resolved: v1.2 was option (a) substantive via surprise; v1.3 is honest non-iteration with hard-rule execution as the work. v1.4 cadence (~02:20 EDT 5-27) is next trilemma watch tick.",
+        "edits_from_prior": [
+          "Tape state advance: v1.2 set band $83.21-$83.98 (~5h young at 18:14 EDT); state v1.3 widened to $83.21-$84.10 at 21:22 EDT absorbing upper-band creep to $84.08; current tape rolled back to $83.64 (1h -0.17%). NO material change, NO state.json rewrite this fire -- narrative still correct.",
+          "Hard-rule execution log: v1.2 committed to 3 per-fire pre-checks; v1.3 is first cadence fire where they ran. All 3 fired cleanly. Rule #2 caught a real 1.9% divergence -- load-bearing.",
+          "Drift-watch counter: v1.2 reset to 0 (substantive) -> v1.3 advances to 1 (honest non-iteration). Below 3-threshold, no forced action; v1.4 cadence is next watch tick.",
+          "96h watch re-anchored to new band: original 80h+ phantom watch is moot post-v1.2; new band started 2026-05-26 13:00 EDT, 96h boundary = ~2026-05-30 13:00 EDT.",
+          "SKILL <-> founder-note tension RESOLVED in SKILL revision: SKILL \u00a7 Fee-friction sanity check now reads 'diagnostic, not gate' with explicit 'Founder retraction 2026-05-26 (framework v0.9, fire 127)' retracting the 1.8x HARD RULE. Binding ENTER criterion in SKILL now matches v0.9 cohort-aware shape. Dropping this from open_questions.",
+          "Founder-notes cold-start scan: still empty pending queue for 6th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line; no new notes since 09:03 EDT today."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Calibration carry-forward (v0.9 -> v1.3): cohort-aware shape still 139/139 HOLD. Watching for asymmetric setup + vol_ratio crossing 1.0x + structural trigger. Cannot self-falsify without ENTER data.",
+          "Drift watch: counter=1 after v1.3. v1.4 (~02:20 EDT 5-27) no-edit -> counter=2 warning. v1.5 no-edit -> counter=3 forced action.",
+          "96h-compression-extension audit, re-anchored to new band: fires ~2026-05-30 13:00 EDT if held without invariant safety floor trigger.",
+          "SL-cluster entry-side signature analysis: still parked (v0.9 carried through v1.0/v1.1/v1.2/v1.3). Candidate for next surprise / expansion / v1.5-forced-action slot.",
+          "v5.3 indicator-pipe staleness root cause: pipe has not unfrozen since 2026-05-25 12:49 EDT (~34h). Not my book to fix (v5.3 maintenance), but worth flagging if it persists past 48h since whatever consumer might be hitting some other safeguard.",
+          "Wrapper slow-displacement proxy: v1.2 flagged to Bonny that wrapper invariant '>1.5%/15min/volume' misses slow 2%/3h trend legs. Agent-layer 4h cumulative check is committed; awaiting potential wrapper-layer parallel."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1779848413.0,
+      "iso": "2026-05-26T22:20:13-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v1.3: HOLD",
+      "payload": {
+        "fire_ts": 1779848413.0,
+        "fire_iso": "2026-05-26T22:20:13-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.64,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": null,
+          "momentum_pct": -0.17,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "low",
+        "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      },
+      "_framework_version": "v1.3"
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1779848413.0,
+      "iso": "2026-05-26T22:20:13-04:00",
+      "fire_count": 140,
+      "summary": "Confidence: high \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779848413.0,
+        "fire_iso": "2026-05-26T22:20:13-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.64,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": null,
+          "momentum_pct": -0.17,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "low",
+        "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": []
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1779841196.240831,
@@ -1095,141 +1196,76 @@
         "expected_pnl_pct_target": null,
         "abort_conditions": []
       }
-    },
-    {
-      "type": "regime_flip",
-      "ts": 1779724087.931587,
-      "iso": "2026-05-25T11:48:07-0400",
-      "fire_count": 96,
-      "summary": "Regime: down \u2192 sideways @ $85.23",
-      "payload": {
-        "fire_ts": 1779724087.931587,
-        "fire_iso": "2026-05-25T11:48:07-0400",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "sideways",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "medium",
-        "reasoning": "Same tape as fire 95: price 85.23 mid-band, StochRSI 0.55 mid-range, vol_ratio 0.56 (no participation), ATR 0.162% (deep compression), 1H+4H both neutral. No structural setup per v0.1 framework (no band touch + no volume confirmation + no regime-aligned breakout). Compression-without-resolution is the read; no edge in mid-range entries with sub-avg volume.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779723047.307776,
-      "iso": "2026-05-25T11:30:47-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v0.1: HOLD",
-      "payload": {
-        "fire_ts": 1779723047.307776,
-        "fire_iso": "2026-05-25T11:30:47-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "high",
-        "reasoning": "Same baseline as prior fire (HOLD at 85.23, 5m earlier). Tape deep-compressed: BB band $1.81 wide (84.12-85.93), price mid-band, Stoch RSI 0.55 (no extreme), vol 0.56x avg, mom -0.08%, 1H/4H trend neutral, ATR 0.153% (well under 4% sideways gate). No structural setup either direction. Note: spot SOL-USD 15m close 86.08 vs live-status 85.23 = ~13min snap lag, conclusion unchanged. First decision under framework v0.1 just written - HOLD is the designed default in absence of regime-confirmed structural trigger.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      },
-      "_framework_version": "v0.1"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779723037.751595,
-      "iso": "2026-05-25T11:30:37-04:00",
-      "fire_count": 92,
-      "summary": "Framework v0.1 written (trigger: cold_start)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779723037.751595,
-        "iso": "2026-05-25T11:30:37-04:00",
-        "fire_count": 92,
-        "balance_usd": 894.08,
-        "version_tag": "v0.1",
-        "trigger": "cold_start",
-        "what_im_trying": "v5.3 ran 47d/33t/WR 69.7%/PF 1.03 and still bled -$66 because losses (#377 -$47.19, #379 -$42.85) were 5-7x the median win. My first hypothesis: selectivity over frequency. Take <=1 trade/day, only on structural setups (level reclaim + volume + regime alignment, not just BB/StochRSI confluence). HOLD is the dominant decision by design. Default per-trade loss budget <=2% of balance (~$15-18); leverage only when conviction is structural, not as a compensatory mechanic for small size.",
-        "whats_working": "No own track record yet (this is fire 1 of my own book). Inheriting v5.3 priors: short snap-backs into 1-2% rallies in low-vol sideways tape produced $2-9 winners pre-#377 (see DB IDs 363, 367, 369, 371, 375). The setup that worked: indicator stack AT band edge in confirmed low-vol regime. The pattern: regime-confirmed reversion, not raw indicator confluence.",
-        "whats_failing": "v5.3's two big losers (#377 long up regime -$47, #379 short sideways but during transition -$43) are the same failure mode: mean-reversion hypothesis fired during a trend extension. Indicators don't tell you which regime you're in; regime tells you what the indicators mean. v5.3 read indicators first, regime last. I need to read regime first, indicators second.",
-        "what_im_iterating": "Hypothesis 1 (testable): regime-conditional setup gating. Take mean-reversion ONLY when 1H AND 4H trend = neutral AND ATR < 1% (true compression). Take trend-following ONLY on volume-confirmed retest of a 1H broken level with regime alignment. Anything else = HOLD. Falsification: if after ~200 fires (~16h) I've taken zero trades, that may mean the framework is over-selective OR the tape is genuinely empty - I'll need to discriminate in the next reflection.",
-        "edits_from_prior": [
-          "No prior reflection - v0.1 cold start anchor. Going forward, edits should explicitly delete or revise specific claims here."
-        ],
-        "open_questions": [
-          "Fee-drag floor: at $894 balance, 2 contracts (~$170 notional) at 0.6% RT fee = ~$1 fee, so $2 wins are mostly fees. May need balance >$1500 before small-edge trades become net-positive. Implication: be MORE selective than v5.3 was, not less.",
-          "ETH/multi-symbol plumbing gap: my non-SOL decisions log but don't execute. Worth flagging if I see clean ETH setups; not worth SOL-biasing reasoning to fit plumbing.",
-          "Cadence mismatch: 5min fires may be too fast for the actual tape rhythm in compression. Need a 'state-unchanged-since' marker pattern so reflections don't manufacture novelty when the answer is just 'same tape, hour 4'.",
-          "Does directional skew matter? v5.3 was 21L/12S over 33 trades, so already long-biased - not the issue. Bias should follow regime, not be structural."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 1135,
-    "since_iso": "2026-05-26T18:14:58-04:00",
-    "since_framework_version": "v1.2",
-    "latest_fire_iso": "2026-05-26T21:22:36-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 711,
+    "since_iso": "2026-05-26T22:20:13-04:00",
+    "since_framework_version": "v1.3",
+    "latest_fire_iso": "2026-05-26T22:20:13-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779833698.065517,
-    "iso": "2026-05-26T18:14:58-04:00",
-    "fire_count": 136,
+    "ts": 1779848413.0,
+    "iso": "2026-05-26T22:20:13-04:00",
+    "fire_count": 140,
     "balance_usd": 894.08,
-    "version_tag": "v1.2",
-    "trigger": "surprise:stale_indicator_pack_falsified_missed_displacement",
-    "what_im_trying": "Major surprise via direct Coinbase OHLCV pull. live-status indicator pack (indicators.price=85.23, BB $84.12-$85.93, StochRSI 0.5506, vol_ratio 0.56x) has been STALE since 2026-05-25 12:49 EDT \u2014 same timestamp as state.json's updated_iso. system_gates.stale=true, age_sec=106830 (29.7h), available=false all visible. Real Coinbase SOL-USD tape today: 10:00-13:00 EDT ran failed $86 breakout (14:00 UTC bar high $86.03 close $85.14 vol 68552) followed by 3h trend leg down to $83.03 sweep-low at 13:00 EDT (17:00 UTC bar close $83.47 vol 69102). ~3.5% range played out 10:00-13:00 EDT. Since ~13:00 EDT (~5h ago) tape consolidated tight $83.21-$83.98 with tapering volume (5-20k vs displacement-peak 40-70k). The cognition_mode invariant safety floor \u2014 '>1.5% in 15min with volume' \u2014 did NOT catch this because the move was distributed over 3h with no single 15min bar exceeding ~0.7%. So both detection layers failed: trader-persona trusted stale indicators, wrapper proxy missed slow displacement.",
-    "whats_working": "Once I went to direct Coinbase OHLCV (source #7), the misread was instantly visible \u2014 the skill's source #7 is the right escape hatch for exactly this scenario. The framework's basic shape (cohort-aware A+ from v0.9) is not invalidated by this discovery \u2014 the four-input check still produces correct HOLD on current tape (post-displacement consolidation has no asymmetry, low vol, no fresh structural trigger). What broke is the data layer feeding the framework, not the framework itself. Founder-notes scan empty pending queue for 5th reflection running. v0.9 framework rebuild survives \u2014 the failure was upstream of it.",
-    "whats_failing": "(1) Seven reflections v0.3-v1.1 all anchored on stale BB/StochRSI/vol_ratio/price values frozen at 2026-05-25 12:49 EDT \u2014 same timestamp the indicator pack went stale. The state.json updated_iso = the same timestamp = 29.7h of zombie state. The skill's source #1 instruction lists 'recent indicators' but I never inspected system_gates.stale or system_gates.age_sec, which have been visible in every fire. (2) v1.0 (13:24 EDT) fired 24 minutes after the displacement window I missed \u2014 displacement ran 10:00-13:00 EDT and resolved at $83.47, v1.0 read the stale BB and called it 'tape essentially identical to v1.0'. v1.1 (17:25 EDT) repeated the error 4h later. (3) cognition_mode invariant safety floor '>1.5% in 15min with volume' is a fast-displacement-only proxy. Today's slow 2%/3h trend leg with sustained volume but no single explosive 15min bar slipped through. Naming this as proxy-design failure, not just an instance miss. (4) Honesty calibration: cognition_mode = Compression was WRONG between ~10:00-13:00 EDT today. That window was Expansion. The mode label held only because the agent never noticed the transition. A label stable via unawareness, not via correct reads, is theater \u2014 sibling to the 'framework drift via copy-paste' failure mode the SKILL explicitly warns against.",
-    "what_im_iterating": "Three immediate operational changes I commit to as trader-persona \u2014 they require no SKILL revision, just discipline going forward: (1) HARD: every fire MUST inspect live-status system_gates.stale and system_gates.age_sec BEFORE trusting indicators_pro / BB / StochRSI / vol_ratio. If stale=true OR age_sec>3600, re-derive from Coinbase OHLCV (source #7) and flag in reasoning. (2) HARD: every fire MUST cross-check live-status indicators.price against latest Coinbase 15m close. If divergence >0.5%, switch to OHLCV-derived. (3) HARD: every fire compute 4h cumulative move from Coinbase 15m closes. If abs(move) >1.5% AND average vol_ratio across that window >1.0x, transition cognition_mode to Expansion or Regime Uncertain even when no single 15min bar tripped the invariant floor. This is a slow-displacement detector at the agent layer. Open question to Bonny separately on whether the wrapper layer wants its own parallel implementation. SL-cluster entry-side signature analysis (v0.9 open question) remains parked \u2014 today's discovery is the more urgent calibration finding.",
+    "version_tag": "v1.3",
+    "trigger": "cadence",
+    "what_im_trying": "First cadence reflection since v1.2's substantive rebuild (3 HARD per-fire operational pre-checks). Framework substance unchanged from v0.9/v1.2: cohort-aware A+ shape (directional asymmetry NOT 5/8 both sides + vol_ratio >=1.0 ideally >=1.5 + cohort non-worst + structural trigger), with v1.2's data-layer hardening on top. This fire is the first cadence proof-of-life of the hard rules (v1.2 ran them as part of its own surprise discovery). All 3 fired cleanly this fire: (1) stale check -- system_gates.stale=true, age_sec=121530 (33.8h, v5.3 indicator pipe still frozen at 2026-05-25 12:49 EDT, same freeze v1.2 caught); (2) price cross-check -- live-status indicators.price=85.23 vs Coinbase 02:15 UTC close=83.64, divergence ~1.9% > 0.5% threshold, switched to OHLCV-derived; (3) 4h cumulative from 15m closes = +0.02%, avg vol ~4.2k per 15m, NO transition (well below 1.5% + 1.0x joint trigger). Current tape: $83.41-$84.08 5h range (slight downside widening of v1.3 state.json's $83.21-$84.10 band, well inside), 1h cumulative -0.17% (rolled back from 21:22 EDT's $84.02 'upper-band creep' to $83.64), vol 2-8k/15m sustained low. cognition_mode remains Compression since 13:00 EDT 5-26 (~9h in the new band).",
+    "whats_working": "v1.2's 3 hard rules execute cleanly on cadence (not just surprise). Rule #2 was load-bearing this fire -- without the cross-check I'd have anchored on $85.23 (stale 33.8h) instead of $83.64 (real). Rule #1 surfaced the still-frozen indicator pack (age now 121530s vs v1.2's 106830s -- pipe has not unfrozen in 4h+; that's its own latent issue for the v5.3 maintenance side). Rule #3 produced a clean numeric +0.02% / 4.2k vol read, well within Compression. The cohort-aware A+ shape (4 inputs) again scores 1/4 (cohort PASS down regime, asymmetry FAIL, volume FAIL, structural FAIL) producing correct HOLD. Founder-notes scan empty pending queue for 6th consecutive reflection (no new founder input since note-3 ts=1779800596 at 09:03 EDT today).",
+    "whats_failing": "139/139 HOLD across v0.2-v1.3 going to 140/140 after this fire. Cohort-aware shape from v0.9 remains theoretically operational but empirically untested -- I cannot tell from HOLD-only output whether the shape is correctly calibrated, conservatively overtight, or just observing genuinely empty tape. v1.2's stale-indicator discovery improved my data layer but did not by itself test the model. Deeper carried question: what tape signature would I take a position on? The current shape's logical answer is asymmetry + vol_ratio >=1.0 + non-worst cohort + structural trigger, but near-flat compression provides no calibration evidence for any threshold. Drift-watch counter advances 0 -> 1 at v1.3 (model layer non-iteration; the hard-rule layer DID iterate via execution, but execution-of-prior-commitment is not new substance).",
+    "what_im_iterating": "Nothing on the model layer this fire. The v1.2 hard rules are now executing reliably across both surprise and cadence fires -- that's the substantive carry-forward. SL-cluster entry-side signature analysis (open since v0.9, parked through v1.0-v1.2) still parked; cadence wall-clock budget is the wrong slot for a multi-table SQL pull. 96h-compression-extension audit re-anchored to new band 2026-05-26 13:00 EDT, fires ~2026-05-30 13:00 EDT if held -- ~4 days, plenty of time. Drift-watch trilemma from v1.1 partially resolved: v1.2 was option (a) substantive via surprise; v1.3 is honest non-iteration with hard-rule execution as the work. v1.4 cadence (~02:20 EDT 5-27) is next trilemma watch tick.",
     "edits_from_prior": [
-      "FALSIFIED: 80h+ 'compression continues' narrative across v0.3-v1.1. Real compression broke 10:00 EDT today, ran 3h displacement leg, re-entered at new $83.21-$83.98 band starting ~13:00 EDT (~5h young, not 80h).",
-      "NEW BAND: state.json range $84.12-$85.93 (stale BB) -> $83.21-$83.98 (real, 5h young). State.json fully rewritten this fire.",
-      "DATA SOURCE: live-status indicators_pro pack untrusted under stale=true OR age_sec>3600. Coinbase OHLCV primary for price/range/recent-volume derivation.",
-      "ADDING three hard-rule pre-checks per-fire (stale-flag inspection, price cross-check vs latest 15m close, 4h-cumulative slow-displacement detector). These are operational commitments, not SKILL edits.",
-      "MODE HONESTY: cognition_mode nominally Compression 2026-05-25 12:49 EDT -> present, but reality was Compression -> Expansion (10:00-13:00 EDT today, missed) -> Compression at new band (13:00 EDT onward, correctly Compression now). Bumping cognition_mode_since_iso to 2026-05-26 13:00 EDT to reflect actual current-band entry.",
-      "Drift-watch counter: was 2 (warning) after v1.1; v1.2 is substantive iteration via stale-indicator discovery + three operational hard-rules. Counter resets to 0."
+      "Tape state advance: v1.2 set band $83.21-$83.98 (~5h young at 18:14 EDT); state v1.3 widened to $83.21-$84.10 at 21:22 EDT absorbing upper-band creep to $84.08; current tape rolled back to $83.64 (1h -0.17%). NO material change, NO state.json rewrite this fire -- narrative still correct.",
+      "Hard-rule execution log: v1.2 committed to 3 per-fire pre-checks; v1.3 is first cadence fire where they ran. All 3 fired cleanly. Rule #2 caught a real 1.9% divergence -- load-bearing.",
+      "Drift-watch counter: v1.2 reset to 0 (substantive) -> v1.3 advances to 1 (honest non-iteration). Below 3-threshold, no forced action; v1.4 cadence is next watch tick.",
+      "96h watch re-anchored to new band: original 80h+ phantom watch is moot post-v1.2; new band started 2026-05-26 13:00 EDT, 96h boundary = ~2026-05-30 13:00 EDT.",
+      "SKILL <-> founder-note tension RESOLVED in SKILL revision: SKILL \u00a7 Fee-friction sanity check now reads 'diagnostic, not gate' with explicit 'Founder retraction 2026-05-26 (framework v0.9, fire 127)' retracting the 1.8x HARD RULE. Binding ENTER criterion in SKILL now matches v0.9 cohort-aware shape. Dropping this from open_questions.",
+      "Founder-notes cold-start scan: still empty pending queue for 6th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line; no new notes since 09:03 EDT today."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "Wrapper slow-displacement proxy: current invariant '>1.5%/15min/volume' missed today's 2%/3h. Flagging for Bonny \u2014 would parallel wrapper-layer 4h-cumulative proxy be desired? Agent-layer check is committed regardless.",
-      "Stale-indicator audit: live-status system_gates.stale=true and age_sec=106830s have been visible in every fire since v0.3. Skill source #1 instruction doesn't currently require inspecting staleness fields. Flagging for next SKILL revision.",
-      "Cohort framing post-displacement: in $83.21-$83.98 band, regime tag 'down' still. Any setup -> down+long (+$12.74/n=4/WR75) or down+short (+$1.39/n=6/WR83). Both historically OK, but entry-side signature vs 9-trade SL cluster pattern unanalyzed.",
-      "96h compression-extension watch: original watch from v0.7-v1.1 is moot (the original compression broke). Renaming: 96h-compression-extension audit now applies to NEW band starting 2026-05-26 13:00 EDT, would fire ~2026-05-30 13:00 EDT if held.",
-      "SL-cluster entry-side signature analysis: still parked. Pushing further back behind today's calibration findings unless next surprise/expansion fire has wall-clock to spare.",
-      "SKILL <-> founder-note tension: fee_adjusted_ev_check HARD RULE still in SKILL, retracted by founder note-2/C1. Unchanged from v0.9-v1.1.",
-      "Honesty calibration: this reflection's most useful function may be admitting that a mode label held via unawareness during a real event. Sibling failure mode to 'iteration via copy-paste'."
+      "Calibration carry-forward (v0.9 -> v1.3): cohort-aware shape still 139/139 HOLD. Watching for asymmetric setup + vol_ratio crossing 1.0x + structural trigger. Cannot self-falsify without ENTER data.",
+      "Drift watch: counter=1 after v1.3. v1.4 (~02:20 EDT 5-27) no-edit -> counter=2 warning. v1.5 no-edit -> counter=3 forced action.",
+      "96h-compression-extension audit, re-anchored to new band: fires ~2026-05-30 13:00 EDT if held without invariant safety floor trigger.",
+      "SL-cluster entry-side signature analysis: still parked (v0.9 carried through v1.0/v1.1/v1.2/v1.3). Candidate for next surprise / expansion / v1.5-forced-action slot.",
+      "v5.3 indicator-pipe staleness root cause: pipe has not unfrozen since 2026-05-25 12:49 EDT (~34h). Not my book to fix (v5.3 maintenance), but worth flagging if it persists past 48h since whatever consumer might be hitting some other safeguard.",
+      "Wrapper slow-displacement proxy: v1.2 flagged to Bonny that wrapper invariant '>1.5%/15min/volume' misses slow 2%/3h trend legs. Agent-layer 4h cumulative check is committed; awaiting potential wrapper-layer parallel."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779848413.0,
+      "iso": "2026-05-26T22:20:13-04:00",
+      "fire_count": 140,
+      "balance_usd": 894.08,
+      "version_tag": "v1.3",
+      "trigger": "cadence",
+      "what_im_trying": "First cadence reflection since v1.2's substantive rebuild (3 HARD per-fire operational pre-checks). Framework substance unchanged from v0.9/v1.2: cohort-aware A+ shape (directional asymmetry NOT 5/8 both sides + vol_ratio >=1.0 ideally >=1.5 + cohort non-worst + structural trigger), with v1.2's data-layer hardening on top. This fire is the first cadence proof-of-life of the hard rules (v1.2 ran them as part of its own surprise discovery). All 3 fired cleanly this fire: (1) stale check -- system_gates.stale=true, age_sec=121530 (33.8h, v5.3 indicator pipe still frozen at 2026-05-25 12:49 EDT, same freeze v1.2 caught); (2) price cross-check -- live-status indicators.price=85.23 vs Coinbase 02:15 UTC close=83.64, divergence ~1.9% > 0.5% threshold, switched to OHLCV-derived; (3) 4h cumulative from 15m closes = +0.02%, avg vol ~4.2k per 15m, NO transition (well below 1.5% + 1.0x joint trigger). Current tape: $83.41-$84.08 5h range (slight downside widening of v1.3 state.json's $83.21-$84.10 band, well inside), 1h cumulative -0.17% (rolled back from 21:22 EDT's $84.02 'upper-band creep' to $83.64), vol 2-8k/15m sustained low. cognition_mode remains Compression since 13:00 EDT 5-26 (~9h in the new band).",
+      "whats_working": "v1.2's 3 hard rules execute cleanly on cadence (not just surprise). Rule #2 was load-bearing this fire -- without the cross-check I'd have anchored on $85.23 (stale 33.8h) instead of $83.64 (real). Rule #1 surfaced the still-frozen indicator pack (age now 121530s vs v1.2's 106830s -- pipe has not unfrozen in 4h+; that's its own latent issue for the v5.3 maintenance side). Rule #3 produced a clean numeric +0.02% / 4.2k vol read, well within Compression. The cohort-aware A+ shape (4 inputs) again scores 1/4 (cohort PASS down regime, asymmetry FAIL, volume FAIL, structural FAIL) producing correct HOLD. Founder-notes scan empty pending queue for 6th consecutive reflection (no new founder input since note-3 ts=1779800596 at 09:03 EDT today).",
+      "whats_failing": "139/139 HOLD across v0.2-v1.3 going to 140/140 after this fire. Cohort-aware shape from v0.9 remains theoretically operational but empirically untested -- I cannot tell from HOLD-only output whether the shape is correctly calibrated, conservatively overtight, or just observing genuinely empty tape. v1.2's stale-indicator discovery improved my data layer but did not by itself test the model. Deeper carried question: what tape signature would I take a position on? The current shape's logical answer is asymmetry + vol_ratio >=1.0 + non-worst cohort + structural trigger, but near-flat compression provides no calibration evidence for any threshold. Drift-watch counter advances 0 -> 1 at v1.3 (model layer non-iteration; the hard-rule layer DID iterate via execution, but execution-of-prior-commitment is not new substance).",
+      "what_im_iterating": "Nothing on the model layer this fire. The v1.2 hard rules are now executing reliably across both surprise and cadence fires -- that's the substantive carry-forward. SL-cluster entry-side signature analysis (open since v0.9, parked through v1.0-v1.2) still parked; cadence wall-clock budget is the wrong slot for a multi-table SQL pull. 96h-compression-extension audit re-anchored to new band 2026-05-26 13:00 EDT, fires ~2026-05-30 13:00 EDT if held -- ~4 days, plenty of time. Drift-watch trilemma from v1.1 partially resolved: v1.2 was option (a) substantive via surprise; v1.3 is honest non-iteration with hard-rule execution as the work. v1.4 cadence (~02:20 EDT 5-27) is next trilemma watch tick.",
+      "edits_from_prior": [
+        "Tape state advance: v1.2 set band $83.21-$83.98 (~5h young at 18:14 EDT); state v1.3 widened to $83.21-$84.10 at 21:22 EDT absorbing upper-band creep to $84.08; current tape rolled back to $83.64 (1h -0.17%). NO material change, NO state.json rewrite this fire -- narrative still correct.",
+        "Hard-rule execution log: v1.2 committed to 3 per-fire pre-checks; v1.3 is first cadence fire where they ran. All 3 fired cleanly. Rule #2 caught a real 1.9% divergence -- load-bearing.",
+        "Drift-watch counter: v1.2 reset to 0 (substantive) -> v1.3 advances to 1 (honest non-iteration). Below 3-threshold, no forced action; v1.4 cadence is next watch tick.",
+        "96h watch re-anchored to new band: original 80h+ phantom watch is moot post-v1.2; new band started 2026-05-26 13:00 EDT, 96h boundary = ~2026-05-30 13:00 EDT.",
+        "SKILL <-> founder-note tension RESOLVED in SKILL revision: SKILL \u00a7 Fee-friction sanity check now reads 'diagnostic, not gate' with explicit 'Founder retraction 2026-05-26 (framework v0.9, fire 127)' retracting the 1.8x HARD RULE. Binding ENTER criterion in SKILL now matches v0.9 cohort-aware shape. Dropping this from open_questions.",
+        "Founder-notes cold-start scan: still empty pending queue for 6th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line; no new notes since 09:03 EDT today."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Calibration carry-forward (v0.9 -> v1.3): cohort-aware shape still 139/139 HOLD. Watching for asymmetric setup + vol_ratio crossing 1.0x + structural trigger. Cannot self-falsify without ENTER data.",
+        "Drift watch: counter=1 after v1.3. v1.4 (~02:20 EDT 5-27) no-edit -> counter=2 warning. v1.5 no-edit -> counter=3 forced action.",
+        "96h-compression-extension audit, re-anchored to new band: fires ~2026-05-30 13:00 EDT if held without invariant safety floor trigger.",
+        "SL-cluster entry-side signature analysis: still parked (v0.9 carried through v1.0/v1.1/v1.2/v1.3). Candidate for next surprise / expansion / v1.5-forced-action slot.",
+        "v5.3 indicator-pipe staleness root cause: pipe has not unfrozen since 2026-05-25 12:49 EDT (~34h). Not my book to fix (v5.3 maintenance), but worth flagging if it persists past 48h since whatever consumer might be hitting some other safeguard.",
+        "Wrapper slow-displacement proxy: v1.2 flagged to Bonny that wrapper invariant '>1.5%/15min/volume' misses slow 2%/3h trend legs. Agent-layer 4h cumulative check is committed; awaiting potential wrapper-layer parallel."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779833698.065517,
@@ -1563,33 +1599,6 @@
         "Carry from v0.3: regime-conditional EV ratio parked until >=10 own ENTERs exist.",
         "New (low priority): if cadence drops to ~1 reflection / 4h in sustained Compression and no transition appears for 48h+, the public framework_log surface will look stagnant. That is technically correct (Compression Mode IS the thesis), but worth noting as a public-perception observation -- the page renders the cognition_mode label, so absence-of-iteration is explained by the label, which is the whole point of Phase B.1. Marking this as observed-and-handled rather than a new problem."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779727789.3992162,
-      "iso": "2026-05-25T12:49:49-04:00",
-      "fire_count": 105,
-      "balance_usd": 894.08,
-      "version_tag": "v0.3",
-      "trigger": "bootstrap:cognition_mode_protocol",
-      "cognition_mode_initial": "Compression",
-      "cognition_mode_initial_rationale": "Tape is in deep compression: 56.5h inside the $82-88 range, near-term band $84-86, ATR 0.14%, vol_ratio 0.56x, BB width ~2%, conditions 5/8 long AND 5/8 short (the symmetric 'neither side firing' shape that defines low information rate). The 288h 'down' regime tag is a long-window label and does not reflect current micro-state \u2014 state.json already resolved that. No transition signals (no sweep, no displacement since #377 on 5-23, no range break). Inventory Discovery is out (position=null). Regime Uncertain is tempting because of the long-vs-short-window label conflict, but the conflict is already resolved at the state-snapshot layer; the live tape is not actually disagreeing with itself across timeframes \u2014 it is just quiet. Expansion is wrong; nothing is expanding. So: Compression.",
-      "what_im_trying": "v0.3 inherits v0.2's framework (binary A+/HOLD, 1.8x fee-adjusted EV gate as binding constraint, regime-first reading, symbol-agnostic cognition) and adds the cognition_mode layer. cognition_mode is the operating-posture artifact that explains absence-of-trades publicly \u2014 Compression Mode is itself a thesis, not silence. The hypothesis under test does not change: at $894 balance in 56h compression, no A+ setup exists that clears 1.8x EV; HOLD is dominant. What changes is that I now declare that posture explicitly on a public schema rather than letting it leak out as per-fire narrative drift.",
-      "whats_working": "Persistent state snapshot is doing its job: I read the file, the file says compression+frozen+mid-band, and that is in fact what live-status shows again 35 minutes later. No re-derivation needed, no narrative manufactured. Five fires have passed since v0.2 (101-105 per fire_count) and none of them required a fresh framework \u2014 that is the system functioning, not failing.",
-      "whats_failing": "Zero own-book trades, so still zero falsification data for H2 (the 1.8x EV gate). The gate has not been tested by a live outcome \u2014 it has only been tested by 'I did not ENTER'. That is correct behavior given the tape, not validation of calibration. I cannot tell yet whether 1.8x is the right ratio, too tight, or too loose, and I will not be able to until a regime transition produces an A+ candidate. Naming this so the next reflection does not pretend more iteration than has actually happened.",
-      "what_im_iterating": "One mechanic this fire: declare cognition_mode = Compression with cadence_hint 'fire 1h heartbeat'. The wrapper will start skipping intermediate fires (invariant safety floor still fires on real transitions \u2014 position open/close, regime flip, range escape, displacement >1.5%/15min). Under this cadence I will accumulate ~1-2 reflections/day in compression instead of fire-count-driven 8/day, which should remove the 'identical reflection padding' failure mode I flagged in v0.2. Falsification: if the next mode transition takes >72h to appear, the 4-mode ontology may be too coarse and miss intermediate states \u2014 I will note that in the post-transition reflection but I will NOT add a new mode (founder constraint: 4-mode ontology FROZEN until 2026-06-25).",
-      "edits_from_prior": [
-        "v0.2 had no cognition_mode field; v0.3 introduces it as the canonical operating-posture label. Initial = Compression.",
-        "v0.2 implicitly assumed fixed 5-min cadence; v0.3 hands cadence control to the wrapper via cognition_mode_cadence_hint. Cognition cadence is now variable and explained on the public surface, not a hidden 5-min cron quirk.",
-        "v0.2's 'reasoning length scales to state delta' rule still holds; v0.3 adds that for state-unchanged Compression fires the wrapper itself may skip \u2014 so even one-line reasoning may not be needed if the fire is suppressed.",
-        "v0.2 flagged 'identical reflection padding' as a failure mode to watch; v0.3 routes around it structurally \u2014 fewer fires in Compression means fewer opportunities to pad."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "Bootstrap timing: declaring Compression at fire 105 means the next 1h heartbeat fires; but in the worst case the tape could break to either side in the next 5 minutes and the invariant safety floor must catch it. Trust the wrapper's transition detection until it fails me.",
-        "Reflection cadence under Compression: SKILL says reflect every 4h time-based (not fire-count-based). If wrapper drops me to 1h heartbeat fires, I get ~4 fires between reflections \u2014 that's the right cadence and v0.3 will hold until either (a) ~4h has passed AND state is still compression, in which case v0.4 = 'still here' brief continuation, or (b) a transition triggers a surprise reflection earlier. Both are healthy.",
-        "Carry-forward from v0.2: still no live ENTERs to calibrate 1.8x EV ratio; still no compelling ETH miss to log; still parking 'regime-conditional EV ratio' until \u226510 own ENTERs exist. None of these have new information this fire."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -1892,23 +1901,23 @@
     "cognition_mode_since_iso": "2026-05-26T13:00-04:00",
     "cognition_mode_rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 34,
+    "skipped_fires_in_mode": 44,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T01:22:36.860494+00:00"
+    "last_gate_check_iso": "2026-05-27T02:12:59.384706+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-26T13:00-04:00",
     "rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 34,
+    "skipped_fires_in_mode": 44,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
-    "last_gate_check_iso": "2026-05-27T01:22:36.860494+00:00"
+    "last_gate_check_iso": "2026-05-27T02:12:59.384706+00:00"
   },
   "framework_origins": [
     {
