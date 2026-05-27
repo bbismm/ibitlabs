@@ -1,23 +1,23 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779852255,
-  "generated_iso": "2026-05-26T23:24:15-0400",
+  "generated_at": 1779855953,
+  "generated_iso": "2026-05-27T00:25:53-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 141,
+    "decisions_total": 142,
     "actions": {
-      "HOLD": 141
+      "HOLD": 142
     },
     "confidence": {
-      "high": 135,
+      "high": 136,
       "medium": 1,
       "low": 5
     },
-    "reasoning_chars_avg_all": 990,
-    "reasoning_chars_avg_last10": 771,
+    "reasoning_chars_avg_all": 987,
+    "reasoning_chars_avg_last10": 768,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-26T23:24:09-04:00",
+    "last_fire_iso": "2026-05-27T00:25:46-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -27,19 +27,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779852249.678036,
-    "fire_iso": "2026-05-26T23:24:09-04:00",
+    "fire_ts": 1779855946.1077561,
+    "fire_iso": "2026-05-27T00:25:46-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.73,
+    "current_price": 83.27,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
-      "rsi": 60.4,
-      "note": "live-status indicator pack stale=True age_sec=125376 (34.8h, pipe frozen 5-25 12:49 EDT). Values shown are last-known-stale; real-tape read via OHLCV (price 83.73, 4h vol avg 4085 /15m, 4h cum +0.084%, 1h +0.167%)."
+      "stoch_rsi": null,
+      "vol_ratio": null,
+      "momentum_pct": -0.38,
+      "rsi": null
     },
     "decision": "HOLD",
     "direction": null,
@@ -47,7 +46,7 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "State unchanged since v1.3 fire 22:20 EDT (price 83.64 -> 83.73, +0.1% over ~1h, immaterial). All 3 v1.2 hard rules ran clean: (1) stale=True age=125376s -> distrust indicators_pro, (2) live-status 85.23 vs OHLCV 83.73 = 1.79% divergence -> switch to OHLCV, (3) 4h cum +0.084% avg vol 4085 -> no Expansion transition. Tape still inside state.json band 83.21-84.10 (current .41-.08 over 5h, vol 1.8k-8k/15m). Cohort-aware A+ shape (v0.9) scores 1/4 (down regime cohort PASS, asymmetry FAIL flat-drift, volume FAIL well below 1.0x, structural FAIL no displacement/no range-break/no extreme StochRSI). Compression continues at new band, ~10.5h young. HOLD.",
+    "reasoning": "Hard rules ran: live-status stale (frozen 2026-05-25 12:49 EDT, indicators.price $85.23 vs real OHLCV close $83.27 = +2.35% divergence, switched to OHLCV); 4h cumulative -0.68% / avg vol 3309 per 15m, well below Expansion joint trigger (1.5% + 1.0x). Same Compression baseline as last decision 2026-05-26T23:24:09-04:00 (HOLD @ 83.73); tape drifted ~0.55% lower in 1h to $83.27 within 4h .19-$84.08 range. State.json triggers all clean, no rewrite. Cohort-aware A+ shape scores 1/4 (cohort down PASS, asymmetry FAIL, volume FAIL, structural FAIL). HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
@@ -1201,11 +1200,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 682,
+    "holds_since_framework": 3,
+    "avg_chars": 639,
     "since_iso": "2026-05-26T22:20:13-04:00",
     "since_framework_version": "v1.3",
-    "latest_fire_iso": "2026-05-26T23:24:09-04:00"
+    "latest_fire_iso": "2026-05-27T00:25:46-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1903,23 +1902,23 @@
     "cognition_mode_since_iso": "2026-05-26T13:00-04:00",
     "cognition_mode_rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 55,
+    "skipped_fires_in_mode": 66,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T03:17:45.100601+00:00"
+    "last_gate_check_iso": "2026-05-27T04:19:29.856217+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-26T13:00-04:00",
     "rationale": "Honest reset. Original Compression label (since 2026-05-25 12:49 EDT) held nominally for 29h but reality between 10:00-13:00 EDT 2026-05-26 was Expansion (3h trend leg, 3.5% range play, sustained 40-70k volume). That window was missed because of stale indicators. Setting since_iso to ~13:00 EDT 2026-05-26 to reflect actual current-band Compression entry. Current state: tight $83.21-$83.98 band (~0.9%), volume tapered to 5-20k, no asymmetry, no fresh trigger. Among the 4 frozen starter modes: Inventory Discovery out (no position), Expansion out (displacement resolved 5h ago, no fresh), Regime Uncertain doesn't fit (down-resolution clear from $86 reject + $83 hold). Compression is correct.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 55,
+    "skipped_fires_in_mode": 66,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
-    "last_gate_check_iso": "2026-05-27T03:17:45.100601+00:00"
+    "last_gate_check_iso": "2026-05-27T04:19:29.856217+00:00"
   },
   "framework_origins": [
     {
