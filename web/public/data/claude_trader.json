@@ -1,24 +1,24 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779891651,
-  "generated_iso": "2026-05-27T10:20:51-0400",
+  "generated_at": 1779892623,
+  "generated_iso": "2026-05-27T10:37:03-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 153,
+    "decisions_total": 155,
     "actions": {
-      "HOLD": 152,
+      "HOLD": 154,
       "ENTER": 1
     },
     "confidence": {
       "high": 143,
-      "medium": 3,
+      "medium": 5,
       "low": 7
     },
-    "reasoning_chars_avg_all": 987,
-    "reasoning_chars_avg_last10": 1006,
+    "reasoning_chars_avg_all": 986,
+    "reasoning_chars_avg_last10": 1037,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T10:18:30-04:00",
+    "last_fire_iso": "2026-05-27T10:34:52-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -28,37 +28,73 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779891510.828269,
-    "fire_iso": "2026-05-27T10:18:30-04:00",
+    "fire_ts": 1779892492.0,
+    "fire_iso": "2026-05-27T10:34:52-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.63,
+    "current_price": 83.39,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": null,
-      "momentum_pct": null,
-      "rsi": null,
-      "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4
     },
-    "decision": "ENTER",
-    "direction": "long",
+    "decision": "HOLD",
+    "direction": null,
     "symbol": "SOL-PERP",
-    "quantity": 1,
-    "leverage": 1,
-    "confidence": "low",
-    "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
-    "expected_holding_hours": 1,
-    "expected_pnl_pct_target": 0.005,
+    "quantity": null,
+    "leverage": null,
+    "confidence": "medium",
+    "reasoning": "Position management for v1.9 hypothetical long @ $83.63 (Phase 0 DRY_RUN). Tape materially changed: 14:15 UTC bar closed $83.26 (low $83.04) on vol 20817 (~3-4x) - rejection from the 14:00 UTC reclaim. The $83.26 close is $0.04 below v1.9 pre-commit threshold $83.30, BUT pre-commit was tied to 14:30 UTC bar close not 14:15. 14:30 UTC bar 4min in: $83.26 -> $83.39 on vol 420 (negligible). Discipline requires honoring bar boundary - moving stops mid-thesis is the cognitive failure pre-commits prevent. Position ~-0.29% unrealized; SL $82.74 not hit; TP $83.95-$84.18 not hit; range_low $82.74 not broken. Probability of abort has risen materially given 14:15 structural weakness, but contract honors 14:30 UTC close at 14:45 UTC (~11min). HOLD this fire; next 1-2 fires resolve.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "14:30 UTC bar closes below $83.30 - failed reclaim, sellers reasserted at mid-band",
-      "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
-      "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
-      "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
+      "14:30 UTC bar closes <$83.30 -> EXIT (v1.9 pre-commit honored at bar boundary)",
+      "Price breaks $82.74 range_low with sustained vol >=1.5x -> EXIT (SL touch + structural confirmation)",
+      "Price reclaims $83.50 mid-band with conviction vol -> HOLD with TP zone in play"
     ]
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779891990.0,
+      "iso": "2026-05-27T10:26:30-04:00",
+      "fire_count": 154,
+      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779891990.0,
+        "fire_iso": "2026-05-27T10:26:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.28,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "confidence": "medium",
+        "reasoning": "Managing hypothetical long from v1.9 fire 152 ENTER @ $83.63 (qty=1 C-grade, SL $82.74, TP $83.95-$84.18). 14:15 UTC bar in progress: high $83.79 (within $0.16 of TP zone) then faded to low $83.20 / current $83.28 on vol 17832 (~3x baseline). Position ~-0.42% unrealized; SL NOT hit, TP NOT hit. Pre-commit abort was '14:30 UTC bar close <$83.30' - 14:30 bar has NOT started (current is 14:15 in-progress). Vol is NOT low (~3x, not <0.5x) so the 'stall' abort branch is inactive. HOLD per pre-commit: cutting now at -0.42% on an in-progress bar is the early-exit-on-noise pattern v1.9 explicitly flagged. Next decision point at 14:30 close (~10:30 EDT, next fire). Hard rules clean fire #10: rule#1 stale=true age_sec=165172 (~45.9h, 48h crossover ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV $83.28 div -2.29% > 0.5% -> OHLCV used for price; rule#3 4h cum -0.40% / avg vol ~10k (~1.5x baseline) - not Expansion. Note Phase 0 DRY_RUN: live-status position=null (executor not wired); cognitively tracking the hypothetical position per 'treat as if acted upon' rule. cognition_mode remains Inventory Discovery.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "14:30 UTC bar closes <$83.30 -> EXIT (long thesis falsified, breakdown of mid-band)",
+          "14:30 UTC bar closes >$83.50 with vol >=1.0x -> HOLD with TP $83.95-$84.18 in play",
+          "14:30/14:45 UTC bars stall $83.50-$83.70 with vol <0.5x -> tighten watch",
+          "SL $82.74 hit at any time -> EXIT (-1.06% from entry)",
+          "TP $83.95 hit at any time -> EXIT (+0.4% from entry)"
+        ]
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1779891510.828269,
@@ -1080,45 +1116,14 @@
           "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE for ENTER decisions; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. The retract is authoritative per evidence-not-rules protocol. v0.9 noted this for next SKILL revision; carrying forward."
         ]
       }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779816277.0,
-      "iso": "2026-05-26T13:24:37-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v1.0: HOLD",
-      "payload": {
-        "fire_ts": 1779816277.0,
-        "fire_iso": "2026-05-26T13:24:37-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "high",
-        "reasoning": "Same baseline as fire 12:27 EDT (~57min prior). Tape unchanged: $85.23 mid BB ($84.12-$85.93), vol_ratio 0.56x, StochRSI 0.5506, conditions 5/8 BOTH sides (symmetric no-firing). v0.9 cohort-aware ENTER shape: 1/4 inputs -- cohort passes (down+long +$12.74/n=4/WR75, down+short +$1.39/n=6/WR83 both non-worst); asymmetry, volume (<1.0), structural trigger (no extreme StochRSI, no displacement, no range break) all fail. Framework reflection v1.0 written this fire (cadence trigger, 4h since v0.9). HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      },
-      "_framework_version": "v1.0"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 0,
-    "avg_chars": 0,
-    "since_iso": null
+    "holds_since_framework": 2,
+    "avg_chars": 946,
+    "since_iso": "2026-05-27T10:18:30-04:00",
+    "since_framework_version": "v1.9",
+    "latest_fire_iso": "2026-05-27T10:34:52-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1742,27 +1747,27 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.9 update 2026-05-27 ~10:18 EDT: MODE TRANSITION Regime Uncertain -> Inventory Discovery (4th transition in ~1.5h, on first own-book ENTER). Sweep6 6a reclaim materialized cleanly per pre-commit (14:00 UTC bar close $83.61 above mid-band $83.50 on vol 22,844 ~2-3x). Cadence shifts to 5min full while position open. Hard rules: rule#1 stale=true age_sec=164569 (~45.7h, 48h crossover ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.63 divergence -1.87% > 0.5% -> OHLCV; rule#3 4h cum -0.32% (16 bars), avg vol 9851, not Expansion.",
-    "updated_ts": 1779891510.828269,
-    "updated_iso": "2026-05-27T10:18:30-04:00",
-    "updated_by_fire_iso": "2026-05-27T10:18:30-04:00",
+    "comment": "Claude-trader v1.9.2 update 2026-05-27 10:34 EDT: state-material refresh, NO mode transition (Inventory Discovery held). 14:15 UTC bar CLOSED $83.26 (low $83.04) on vol 20817 (~3-4x) - rejection from reclaim confirmed, close $0.04 below pre-commit threshold $83.30 BUT pre-commit was tied to 14:30 UTC close not 14:15. 14:30 UTC bar in progress ~4min in: o=$83.26 / h=$83.39 / l=$83.26 / c=$83.39 / vol 420 (negligible) - tiny rebound on no conviction. Hypothetical long @ $83.63 now ~-0.29% unrealized ($83.39 current). Hard rules: rule#1 stale=true age_sec=166532 (~46.3h, 48h crossover ~12:35 EDT, ~2.0h); rule#2 live-status $85.23 vs OHLCV partial $83.39 div -2.21% > 0.5% -> OHLCV; rule#3 4h cum -0.21% / avg vol ~13k (~1.5-2x baseline) - elevated but not Expansion. Pre-commit machine: 14:30 UTC bar resolves at 14:45 UTC (~11 min from this fire). Next fire ~14:39 UTC won't see close; fire after (~14:44/14:49) catches it. Discipline: do NOT preempt pre-commit on 14:15 UTC close - the rule is 14:30 UTC. Probability of abort has risen materially given 14:15 UTC structural weakening, but the contract honors the bar boundary.",
+    "updated_ts": 1779892492,
+    "updated_iso": "2026-05-27T10:34:52-04:00",
+    "updated_by_fire_iso": "2026-05-27T10:34:52-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: sweep6 RESOLVED as failed downside sweep + 2-bar mid-band reclaim with conviction vol. 14:00 UTC bar close $83.61 / vol 22,844 (~2-3x baseline). 14:15 UTC partial $83.63. First reclaim on this band.",
+    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: sweep6 reclaim from v1.8 has wounded - 14:00 UTC reclaim $83.61 (vol 22844) -> 14:15 UTC rejection close $83.26 (vol 20817) -> 14:30 UTC partial $83.39 on tiny vol 420. The 2-bar reclaim narrative did not sustain into bar 3; range_low $82.74 still NOT broken.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 21.0,
+    "compression_hours": 21.4,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
     "sweeps_attempted": 6,
-    "sweep_detail": "Six probes over 21.0h band life - 5 FAILED, 1 RECLAIMED. (1) failed $86.03 breakout 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 low vol; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x), rejected 12:30 + 12:45 fade; (6) RECLAIMED downside probe - 13:30 UTC low $82.83 close $82.93 vol 44,395 (~6-10x), then 13:45 UTC close $83.48 vol 12,609, then 14:00 UTC close $83.61 vol 22,844 (~2-3x) ABOVE mid-band $83.50 = failed-sweep reclaim trigger 6a per pre-commit tree v1.8.",
+    "sweep_detail": "Six probes over 21.6h band life - 5 FAILED, sweep6 RECLAIMED-THEN-REJECTING. (1) failed $86.03 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x); (6) DOWNSIDE 13:30 UTC low $82.83 vol 44,395 (~6-10x) -> 14:00 UTC reclaim close $83.61 vol 22,844 (~2-3x) -> 14:15 UTC REJECTION close $83.26 vol 20817 (~3-4x) low $83.04. Reclaim arc: trigger -> wounded within 1 bar.",
     "last_displacement_iso": "2026-05-27T09:30-04:00",
-    "last_displacement_detail": "13:30 UTC 5-27 bar (sweep6): high $83.54 -> low $82.84 -0.84% intra-bar vol 44,395 (~6-10x baseline). Largest single-bar vol+range event in band life. Resolved as failed-sweep + reclaim.",
-    "funding_state": "OKX -5.63e-5 (slight downward drift from v1.6 -4.67e-5, still magnitude-noise tier).",
+    "last_displacement_detail": "13:30 UTC 5-27 bar (sweep6): high $83.54 -> low $82.84 -0.84% intra-bar vol 44,395 (~6-10x baseline). Largest single-bar vol+range event in band life. 14:15 UTC rejection bar adds 2nd-largest vol-shape with full range $83.79-$83.04 (-0.90%) on 20817.",
+    "funding_state": "OKX -5.69e-5 (slight downward drift from v1.6 -4.67e-5, still magnitude-noise tier).",
     "oi_state": "unknown - not in live-status feed; treat as null.",
-    "narrative": "Phase B.1 fire 152 -> 153. First own-book ENTER: long C-grade SOL-PERP @ $83.63 qty=1 (~$418 notional), SL $82.74 (-1.06%), TP zone $83.95-$84.18 (+0.4%-0.66%). Pre-commit tree v1.8 branch 6a honored after 14:00 UTC bar reclaim above mid-band on conviction vol. Cohort context favorable (down+long +$12.74/n=4/WR75). Geometry weak (R/R ~0.5:1) hence C-grade not B. Now in Inventory Discovery mode - 5min full cognition while position open. Will hold through normal pullback to $83.50 retest as support; will exit at SL $82.74 OR TP zone OR if 14:30 UTC bar closes <$83.30 OR if 14:30/14:45 UTC bars show vol<0.5x and price stalls $83.50-$83.70.",
+    "narrative": "Phase B.1 fire 154 (managing hypothetical long from v1.9 fire 152). 14:15 UTC bar closed $83.26 (low $83.04) - rejection from reclaim confirmed, $0.04 below v1.9 pre-commit threshold $83.30, BUT pre-commit was tied to 14:30 UTC close not 14:15. 14:30 UTC bar 4min in: $83.26 -> $83.39 on vol 420 (noise). Hypothetical long @ $83.63 now ~-0.29% unrealized; SL $82.74 NOT hit; TP $83.95-$84.18 NOT hit. Pre-commit '14:30 UTC closes <$83.30' will evaluate at 14:45 UTC. Probability of abort is HIGH given 14:15 weakness, but discipline requires honoring the bar boundary - moving stops mid-thesis is exactly the cognitive failure pre-commits prevent. Decision: HOLD. Next 1-2 fires (~14:39, 14:44 UTC) will see resolution.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-27T10:18:30-04:00",
-    "cognition_mode_rationale": "Position just opened - first own-book ENTER in 152 fires. Inventory Discovery is the unambiguous correct mode of the 4 frozen modes when position is open per cognition_mode protocol. Not Compression / Regime Uncertain / Expansion (those are pre-entry modes). Cadence reverts to 5min full and skip rules suspended for the position lifetime.",
+    "cognition_mode_rationale": "Position open (hypothetical, Phase 0 DRY_RUN). Cadence 5min full while position open; mode-skip rules suspended until close.",
     "cognition_mode_cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
@@ -1771,16 +1776,16 @@
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T14:18:30+00:00"
+    "last_gate_check_iso": "2026-05-27T14:34:52+00:00"
   },
   "cognition": {
     "mode": "Inventory Discovery",
     "since_iso": "2026-05-27T10:18:30-04:00",
-    "rationale": "Position just opened - first own-book ENTER in 152 fires. Inventory Discovery is the unambiguous correct mode of the 4 frozen modes when position is open per cognition_mode protocol. Not Compression / Regime Uncertain / Expansion (those are pre-entry modes). Cadence reverts to 5min full and skip rules suspended for the position lifetime.",
+    "rationale": "Position open (hypothetical, Phase 0 DRY_RUN). Cadence 5min full while position open; mode-skip rules suspended until close.",
     "cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
-    "last_gate_check_iso": "2026-05-27T14:18:30+00:00"
+    "last_gate_check_iso": "2026-05-27T14:34:52+00:00"
   },
   "framework_origins": [
     {
