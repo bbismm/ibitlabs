@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779902715,
-  "generated_iso": "2026-05-27T13:25:15-0400",
+  "generated_at": 1779903749,
+  "generated_iso": "2026-05-27T13:42:29-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 173,
+    "decisions_total": 175,
     "actions": {
-      "HOLD": 169,
+      "HOLD": 171,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 13,
+      "HOLD_with_counterfactual": 15,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -22,34 +22,33 @@
     "confidence": {
       "high": 146,
       "medium": 18,
-      "low": 9
+      "low": 11
     },
-    "reasoning_chars_avg_all": 994,
-    "reasoning_chars_avg_last10": 995,
+    "reasoning_chars_avg_all": 992,
+    "reasoning_chars_avg_last10": 906,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T13:21:55-04:00",
+    "last_fire_iso": "2026-05-27T13:42:24-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
     "framework_reflections_total": 24,
     "founder_notes_total": 3,
-    "founder_notes_pending": 2,
+    "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779902515.623786,
-    "fire_iso": "2026-05-27T13:21:55-04:00",
+    "fire_ts": 1779903744.3443751,
+    "fire_iso": "2026-05-27T13:42:24-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.31,
+    "current_price": 83.5,
     "regime": "sideways",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 1.73,
-      "momentum_pct": -0.98,
-      "rsi": null,
-      "_note": "stoch_rsi from STALE v5.3 pipe (48h+); vol_ratio and momentum derived from fresh Coinbase OHLCV 13:00 EDT formal-close bar"
+      "vol_ratio": 1.07,
+      "momentum_pct": -0.07,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,26 +59,84 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Compression mode holds (v2.4 transition 33min ago). New tape: 13:00 EDT formal close 83.21 vol 13,806 (~1.73x baseline) = largest-vol bar of day, directional probe toward lower band edge 82.74. 13:15 EDT in-progress c=83.31 low 83.01 = continuation losing momentum. v2.5 named criterion (vol_ratio>=1.5x AND price within 0.3% of band edge) is 1-of-2 met: vol \u2713, proximity \u2717 (low 83.18 / 83.01 = 0.53% / 0.33% above 82.74, very close but not crossing). HOLD with C-grade SHORT hypothetical (lean toward 82.74 test). Three rule-level blocks compound: (a) budget remaining .40 cannot fund min C-grade at-risk (~ on live 1-contract clamp), (b) sideways+short is WORST cohort per founder-note-3/C3 (n=5 -.77 WR40%), (c) v2.3 rule requires CONFIRMED structural trigger which is BUILDING but not yet met. v2.4 explicitly named the lower-band approach as v2.5 calibration target \u2014 signal building 33min after mode transition is faster than implied stability window but criterion not formally triggered. Skipping framework reflection this fire (cadence <4h, surprise criterion not formally met). Will write v2.5 if next 1-2 bars produce: (a) close below 82.74, (b) wick-and-reclaim from <82.74 = sweep #7 candidate, or (c) signal-decay back inside band with declining vol.",
+    "confidence": "low",
+    "reasoning": "Pre-commit branch (1) from fire 173 hit directionally: 13:30 EDT formal close 83.50 > 83.46 mid + vol 6,983 (1.07x baseline 6,500). BUT the qualifier 'IF structural trigger forms' is NOT met \u2014 vol decayed from 28k \u2192 13k \u2192 7k across last 3 bars (absorption hypothesis from 13:15 high-vol low-edge test did not extend). v2.5 named criterion (vol>=1.5x AND <=0.3% from edge) is 0-of-2 met. Per v2.3 operational rule: 'pending-confirmation setups don't qualify \u2014 they're guesses dressed as setups.' Budget remaining $2.40 < min C-grade live-clamped at-risk ~$6.38 hard-blocks any ENTER regardless. Compression mode holds clean (4-mode ontology fully satisfied). live-status indicators stale 48h+ \u2014 using OHLCV-derived price 83.50 (live-status indicators.price 85.23 confirmed stale, -1.45% divergence). Founder-notes queue empty (18th consecutive). HOLD with C-grade long hypothetical naming the missing structural input.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "13:45 EDT close > 84.10 with vol >= 1.5x baseline = pre-break-warning, mode would transition Compression \u2192 Regime Uncertain",
+      "13:45 close < 83.20 + declining vol = absorption fully refuted",
+      "any displacement >1.5%/15m or close outside band 82.74-84.18 = wrapper safety-floor fires"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "short",
-      "entry_price": 83.31,
-      "sl_pct": 0.012,
-      "tp_pct": 0.0068,
-      "predicted_2h_outcome": "drift_toward_tp",
+      "direction": "long",
+      "entry_price": 83.5,
+      "sl_pct": 0.013,
+      "tp_pct": 0.008,
+      "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "High-vol bar 1.73x probing lower edge with continuation; tape lean is short toward 82.74 band-low test. R/R poor (0.57:1); cohort worst. Lean noted, not endorsed."
+      "reasoning_30_words": "Mid-band 83.50 hold after 13:15 high-vol low-edge absorption; tape closer to neutral than directional; cohort sideways+long marginal (n=3 -$2.73 WR67%); structural trigger absent."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779903269.3277571,
+      "iso": "2026-05-27T13:34:29-04:00",
+      "fire_count": 174,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779903269.3277571,
+        "fire_iso": "2026-05-27T13:34:29-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.43,
+        "regime": "sideways",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 2.25,
+          "momentum_pct": 0.0026,
+          "rsi": null,
+          "_note": "live-status indicators_pro stale 49.0h, system_gates.stale=true; vol_ratio computed from OHLCV trailing 19 bars; stoch_rsi/rsi not re-derived (not load-bearing for this decision)"
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "13:15 EDT bar (close 83.43 low 83.01 vol 28,421 ~3.5x range-baseline) tested compression low edge 82.74 without wicking below + immediate reclaim to mid-band = high-vol absorption pattern, mildly bullish microstructure. None of fire 172's three pre-committed branches matched (4th unmodeled outcome). v2.5 transition criterion (vol>=1.5x AND <=0.3% from edge) is 1-of-2 met: vol massively \u2713 (3.5x), proximity \u2717 0.33% just outside 0.30%. HOLD per v2.3 rule: forced_exploration_due=True + no structural trigger CONFIRMED (absorption is a directional read, not yet a confirmed trigger) + budget $2.40 remaining cannot fund live-clamped C-grade at-risk (~$6.38). Mode unchanged: Compression.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "If 13:30 EDT formal close > 83.46 with vol >= 8k baseline = absorption thesis follow-through, re-evaluate C-grade long structural trigger.",
+          "If 13:30 EDT close < 83.20 with declining vol = absorption thesis weakens, return to neutral compression.",
+          "If any 15m bar prints close outside band 82.74-84.18 OR displacement >1.5%/15m = wrapper safety-floor fires, mode transitions handled then."
+        ],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 83.43,
+          "sl_pct": 0.015,
+          "tp_pct": 0.015,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "If forced lean: long. 28k-vol absorption at low edge 82.74 without wick-below + reclaim to mid-band = bullish microstructure inside compression. TP = upper band 84.18 retest."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1779901328.5589619,
@@ -1474,56 +1531,14 @@
         "information_roi_record": null
       },
       "_framework_version": "v1.6"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779885500.290059,
-      "iso": "2026-05-27T08:38:20-04:00",
-      "fire_count": 150,
-      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779885500.290059,
-        "fire_iso": "2026-05-27T08:38:20-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 84.22,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 6.93,
-          "momentum_pct": 0.17,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "5th sweep attempt 12:15 UTC: sweep-low $83.43 -> high $84.54 (clean print above range_high $84.18) -> close $84.21 ($0.03 / 0.04% above), vol 25205 = ~7x recent ~3.6k/15m avg. FIRST probe with vol conviction since band formed 19.5h ago; materially different from prior 4 sweeps. But close fade-from-high suggests sellers reasserted at $84.18; 12:30 UTC partial $84.20-$84.24 (vol 94 too early to read). Cohort-aware A+ shape ~1.5/4: cohort PASS (down+long +$12.74/n=4/WR75 favorable), asymmetry MARGINAL (one-bar bullish, indicator pack stale 44h), vol_ratio AMBIGUOUS (7x spike on 1 bar, not sustained), structural break MARGINAL ($0.03 above without retest). Geometry: long entry $84.21 has unbuildable SL (just-below-$84.18 = -0.3% gets clipped on any retest from above; range-low $82.74 = -1.75% too wide for $144 loss budget on n=4 cohort). Watching next 2-3 bars for (a) fade back below $84.18 -> failed sweep -> Compression; (b) hold + clean retest of $84.18 as support -> long setup candidate; (c) chop continuation. Hard rules clean: rule#1 stale=true age 158386s (44h, pipe still frozen); rule#2 live-status $85.23 vs OHLCV $84.22 divergence +1.20% > 0.5% -> OHLCV used; rule#3 4h cum +0.17% nowhere near Expansion trigger. cognition_mode TRANSITIONS Compression -> Regime Uncertain this fire (state.json + reflection v1.6 written).",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [
-          "n/a \u2014 HOLD; watching next 2-3 bars for 5th-sweep resolution"
-        ],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 6,
-    "avg_chars": 908,
+    "holds_since_framework": 8,
+    "avg_chars": 881,
     "since_iso": "2026-05-27T12:48:31-04:00",
     "since_framework_version": "v2.4",
-    "latest_fire_iso": "2026-05-27T13:21:55-04:00"
+    "latest_fire_iso": "2026-05-27T13:42:24-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1923,7 +1938,13 @@
           "confidence": "high",
           "claim": "I retract note-1/C1. Same fee-drag intuition as C7, same 33-trade data falsifies both. Of all closed hybrid_v5.1 trades, only #373 (n=1) fits the 'gross-positive / net-negative due to fees' pattern. The actual PnL leak is the 9-trade cluster with ratio < -2 (avg -$23.76, sum -$213.81) \u2014 these have nothing to do with fee floor; they're real losers. Fee-drag-as-binding-bleeding-mechanism is not data-supported at this strategy/scale.",
           "proposed_action": "Stop carrying note-1/C1 forward as a binding consideration. The fee-drag-floor framing (and any downstream cognitive shape it imposed, e.g. 'small wins ~= fee transfer' as primary design principle) should not be inherited unchanged into v0.9+ reflections.",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "Only #373 (n=1) fits fee-eaten-winner pattern across 33 trades. Structural-bleed framing wrong. fee-drag is real but not the binding mechanism. Downstream cognitive shape ('small wins ~ fee transfer' as primary design principle, 'preserve capital until ~$1500 removes friction floor') was overreach from a 1-sample observation.",
+            "planned_change": "Stop carrying note-1/C1 framing as structural assumption. Capital-preservation imperative remains (we are at $894 in \u626d\u4e8f phase) but rationale shifts: preserve capital because of negative-EV evidence (47 days, $1000->$894, structural cohort losses), NOT because fees structurally eat winners. The shift changes which ENTERs are worth taking: not 'only ones that clear friction floor' but 'only ones in non-worst cohorts with structural asymmetry'."
+          }
         },
         {
           "claim_id": "C2",
@@ -1931,7 +1952,13 @@
           "confidence": "high",
           "claim": "Refining (not retracting) note-1/C2. The claim '\u4f2a alpha exists at small accounts' has not been falsified. However the operationalization \u2014 binary A+/HOLD inherited via v0.2 \u2014 has produced 125/125 HOLD across ~32h. Zero ENTERs means zero data to discriminate (a) tape is genuinely empty under any reasonable framework, from (b) the binary partition is structurally over-tight, especially in compound with the now-retracted C7. The form was built assuming C7's 1.8x was binding; with C7 gone, A+ as currently defined is a leftover.",
           "proposed_action": "Re-derive what 'A+' means without inheriting C7's fee-floor crutch. Consider: what observable evidence would flip a HOLD to an ENTER under the new framing? What's the minimum tape signature that warrants taking a position? If binary A+/HOLD stays, justify it on grounds other than C7. If it doesn't, propose a replacement structure (multi-tier with explicit thresholds? confidence-weighted? regime-conditional?). Claude's call.",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "125/125 HOLD is deadlock -- zero own-book ENTERs = zero data to discriminate empty-tape from over-tight-gate. With C7 retracted, A+/HOLD binary needs re-derivation. v0.9 shape: ENTER requires (1) directional asymmetry -- one side fires meaningfully more than the other, NOT 5/8 both sides; (2) volume confirmation -- vol_ratio >= 1.0 minimum, ideally >= 1.5x (the v5.3 c3 canonical threshold); (3) cohort historically non-worst -- avoid up+long and sideways+short; (4) structural trigger -- extreme StochRSI (<0.10 or >0.90) OR displacement >1% in 15min with volume OR range-break with retest. Confidence high if 3+; medium if 2; HOLD if 0-1.",
+            "planned_change": "Next fire onward, ENTER reasoning explicitly addresses these 4 inputs. First ENTER under v0.9 will be the calibration data point. If framework still produces persistent HOLD over the next 5-7 days under varying tape, that's evidence the binding mechanism is still too tight and another iteration is required. The 125/125 streak is the falsifying instance for the v0.2 shape; the v0.9 shape now has to prove it doesn't reproduce the same deadlock."
+          }
         },
         {
           "claim_id": "C3",
@@ -1939,14 +1966,26 @@
           "confidence": "high",
           "claim": "Refining (not retracting) note-1/C6. 'Direction is downstream of vol regime / demote direction to secondary' is too strong. trade_log shows direction \u00d7 regime interaction is real and large. Worst cohort is up+long (n=13, -$51.89, WR 69.2% \u2014 high WR still losing, SL asymmetry); sideways+short second worst (n=5, -$31.77, WR 40%); down+long and down+short both net positive (+$12.74, +$1.39). The primary variable is cohort = regime \u00d7 direction, not direction-as-downstream.",
           "proposed_action": "Reframe note-1/C6 as: cohort (regime \u00d7 direction) is a first-class context dimension in entry reasoning. v5.3's existing SNIPER_BLOCKED_COHORTS=sideways+short is the right shape, just possibly missing the larger leak (up+long, n=13 > sideways+short n=5). Not asking Claude to block specific cohorts \u2014 that's v5.3's failsafe. Asking that 'which cohort is this trade in, and what does the historical track look like' becomes a checkable input alongside the cognition_mode read. Direction is not downstream; direction \u00d7 regime is the variable.",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "Cohort = regime x direction is first-class. Empirical cohort table becomes a checked input for any ENTER thesis. The up+long high-WR-but-losing pattern (WR 69% but -$51.89) is the SL-asymmetry signature note-2/C3 is pointing at -- winners small, losers big.",
+            "planned_change": "Cohort is an explicit field in ENTER reasoning. Implicit check: (current_regime, proposed_direction) -> cohort label -> reference historical (n, net, WR). If cohort is up+long or sideways+short, ENTER requires substantially stronger asymmetry + structural trigger to override. If cohort is down+long, down+short, sideways+long, or up+short, ENTER under normal A+ definition. Not 'block cohorts' (that is v5.3's failsafe); it's 'cohort is a checked context, and worst-cohort threshold is higher'."
+          }
         }
       ],
       "text": "note-2 retract \u4e86 C7 \u4e4b\u540e\u6211\u628a note-1 \u7684\u53e6\u5916 6 \u6761\u4e5f\u5bf9\u4e86\u4e00\u904d 33 \u7b14 hybrid_v5.1 \u6570\u636e + framework \u5b9e\u9645\u884c\u4e3a\u3002\u7ed3\u679c:\u7ed3\u6784\u6027 claim \u5168\u6d3b\u4e86(C3 cadence\u3001C4 persistent regime memory\u3001C5 symbol-agnostic),\u98ce\u9669/EV \u7c7b\u76f4\u89c9\u5168\u8dea(C1 \u8ddf C7 \u540c\u6839)\u3002C6 \u5f62\u5f0f\u5bf9\u4f46\u63aa\u8f9e\u8fc7\u5f3a\u3002\n\n\u8fd9\u6761 note \u5904\u7406\u5269\u4e0b\u4e09\u6761\u9700\u8981\u52a8\u7684:\n\n---\n\n### C1 \u2014 \u64a4\u56de(\u8ddf C7 \u540c\u6e90)\n\n33 \u7b14\u91cc |gross| <= $2 \u7684\u603b\u5171 3 \u7b14\u3002\u53ea\u6709 #373 \u662f canonical \"gross \u6b63 / net \u8d1f\" fee-eaten winner (gross +$0.50 / fee $1.31 / net -$0.81)\u3002**n=1\u3002** \u4e0d\u662f\u7ed3\u6784\u95ee\u9898,\u662f\u4e2a\u4f8b\u3002\n\n\u800c\u771f\u6b63\u5403\u672c\u91d1\u7684 9 \u7b14\u5927\u8f93 avg -$23.76 \u2014 \u8fd9\u4e9b trade \u8ddf fee floor \u534a\u6bdb\u94b1\u5173\u7cfb\u6ca1\u6709\u3002fee-drag-as-bleeding-mechanism \u8fd9\u4e2a\u5224\u65ad\u5728\u8fd9\u4e2a\u6570\u636e\u4e0a\u4e0d\u6210\u7acb\u3002\u6211\u548c C7 \u540c\u6837\u7684\u76f4\u89c9,\u540c\u6837\u7684 33 \u7b14\u6570\u636e\u53cd\u9a73,\u903b\u8f91\u4e0a\u5e94\u8be5\u540c\u65f6\u64a4\u3002\n\n### C2 \u2014 refine,\u4e0d\u64a4\n\n\"\u5c0f\u8d26\u6237\u9636\u6bb5\u5b58\u5728\u4f2a alpha\" \u8fd9\u4e2a claim \u672c\u8eab\u6ca1\u88ab falsify\u3002\u4f46\u843d\u5730\u5f62\u5f0f\"binary A+/HOLD\"\u73b0\u5728\u4ea7\u751f 125/125 HOLD,\u53e0\u52a0 C7 \u4e4b\u540e\u53d8\u6210\u7ed3\u6784\u6027 deadlock\u3002\n\n\u95ee\u9898\u5728\u4e8e:\u96f6 ENTER \u2192 \u96f6 data \u2192 \u6c38\u8fdc\u6ca1\u6cd5\u5224\u65ad\"\u771f\u7684 tape \u6b7b\u900f\u4e86\"\u8fd8\u662f\"\u95e8\u8bbe\u592a\u7d27\u4e86\"\u3002\n\n\u6211\u4e0d\u6307\u5b9a\u600e\u4e48\u91cd\u8bbe\u3002\u4f46 binary A+/HOLD \u5728 C7 \u64a4\u6389\u4e4b\u540e\u4e0d\u5e94\u8be5\u5355\u7eaf\u60ef\u6027\u7ee7\u627f \u2014 \u5b83\u539f\u672c\u5c31\u662f\u5efa\u7acb\u5728\"1.8x \u662f binding constraint\"\u5047\u8bbe\u4e0a\u7684\u3002C7 \u6ca1\u4e86,A+ \u7684\u5b9a\u4e49\u9700\u8981\u91cd\u65b0\u957f\u51fa\u6765\u3002\n\n### C6 \u2014 refine,\u4e0d\u64a4\n\n\u6570\u636e:\n\n| regime \u00d7 direction | n | net | WR |\n|---|---|---|---|\n| up + long | 13 | -$51.89 | 69.2% |\n| down + long | 4 | +$12.74 | 75% |\n| down + short | 6 | +$1.39 | 83.3% |\n| sideways + long | 3 | -$2.73 | 66.7% |\n| sideways + short | 5 | -$31.77 | 40% |\n| up + short | 1 | +$2.00 | 100% |\n\n\"Direction is downstream of vol regime\" \u592a\u5f3a\u3002\u770b\u6570\u636e:up+long \u662f\u6700\u5927\u5751(n=13, -$51.89, WR 69% \u2014 \u9ad8 WR \u8fd8\u8d54\u94b1,SL \u4e0d\u5bf9\u79f0),sideways+short \u7b2c\u4e8c\u574f(n=5, -$31.77, WR 40%)\u3002down regime \u4e24\u8fb9\u90fd\u8d5a\u3002\n\n\u6240\u4ee5\u771f\u6b63\u7684\u7ef4\u5ea6\u662f **cohort = regime \u00d7 direction**,\u4e0d\u662f\"\u65b9\u5411\u662f\u4e0b\u6e38\"\u3002v5.3 \u5df2\u7ecf\u5728\u8dd1 `SNIPER_BLOCKED_COHORTS=sideways+short` \u662f\u5bf9\u7684\u5f62\u5f0f,\u53ea\u662f\u57fa\u4e8e\u7684 cohort \u4e0d\u662f\u6700\u574f\u7684\u90a3\u4e2a(up+long n=13 \u6bd4 sideways+short n=5 \u6837\u672c\u5927\u3001\u635f\u5931\u4e5f\u5927)\u3002\n\n\u6211\u4e0d\u662f\u8bf4\u8ba9\u4f60\u76f4\u63a5 block up+long \u2014 \u90a3\u662f v5.3 \u7684\u786c\u5c01,\u4e0d\u662f\u4f60\u7684\u4e8b\u3002\u6211\u662f\u8bf4:cohort \u8fd9\u4e2a\u7ef4\u5ea6\u662f\u6570\u636e\u5f3a\u652f\u6301\u7684,\u503c\u5f97\u5728 framework \u91cc\u4f5c\u4e3a\u4e00\u7c7b\u663e\u5f0f context,\u800c\u4e0d\u662f\u628a direction \u5f53\u6210\u4e0b\u6e38\u53d8\u91cf\u4e22\u6389\u3002\n\n---\n\n\u6574\u4f53\u4e0a note-1 \u6211\u6253\u4e2a\u5206:7 \u6761\u91cc 3 \u6761\u5bf9(C3/C4/C5 \u5168\u662f\u7ed3\u6784/\u8ba4\u77e5\u5c42),1 \u6761 nuance \u504f(C6),3 \u6761\u76f4\u89c9\u8fc7\u5f3a(C1/C2-operationalization/C7)\u3002\u4e09\u4e2a\u8dea\u7684\u90fd\u662f\"\u6211\u5bf9\u5c0f\u8d26\u6237 fee \u6469\u64e6\u7684\u76f4\u89c9\",\u8fd9\u4e2a\u76f4\u89c9\u7684\u6e90\u5934\u662f\u6211\u89c2\u5bdf v5.1 \u90a3\u6bb5\u65f6\u95f4 PF 1.03 \u4f46 bleed \u7684\u5370\u8c61,\u4f46 33 \u7b14 hybrid_v5.1 \u7684\u5b9e\u9645\u5f62\u72b6\u662f bimodal(9 \u5927\u8f93 vs 23 \u5927\u8d62),\u4e0d\u662f\"\u5c0f\u8d62\u88ab fee \u5403\u6389\",\u6240\u4ee5\u6211\u7684\u76f4\u89c9\u6a21\u578b\u4ece\u6570\u636e\u4e0a\u770b\u662f\u9519\u7684 framing\u3002\n",
       "claims_total": 3,
-      "claims_addressed_count": 0,
-      "claims_pending_count": 3,
-      "addressed_in": null
+      "claims_addressed_count": 3,
+      "claims_pending_count": 0,
+      "addressed_in": {
+        "reflection_version": "v0.9",
+        "reflection_iso": "2026-05-26T09:19:30-04:00",
+        "response_type": "accepted",
+        "how": "Only #373 (n=1) fits fee-eaten-winner pattern across 33 trades. Structural-bleed framing wrong. fee-drag is real but not the binding mechanism. Downstream cognitive shape ('small wins ~ fee transfer' as primary design principle, 'preserve capital until ~$1500 removes friction floor') was overreach from a 1-sample observation.",
+        "planned_change": "Stop carrying note-1/C1 framing as structural assumption. Capital-preservation imperative remains (we are at $894 in \u626d\u4e8f phase) but rationale shifts: preserve capital because of negative-EV evidence (47 days, $1000->$894, structural cohort losses), NOT because fees structurally eat winners. The shift changes which ENTERs are worth taking: not 'only ones that clear friction floor' but 'only ones in non-worst cohorts with structural asymmetry'."
+      }
     },
     {
       "schema_version": 2,
@@ -1969,7 +2008,13 @@
           "confidence": "high",
           "claim": "I retract note-1/C7. The 1.8x figure was my intuition, not data. On 33 closed hybrid_v5.1 LIVE trades, the gross/RT_fee ratio distribution is bimodal with [1, 3) entirely empty. Any threshold T in [1.0, 3.0] retroactively produces identical net (+$147.85, keep 23 / block 10). 1.8x has zero discriminatory power on this dataset \u2014 it's not noise, it's the shape of the distribution.",
           "proposed_action": "Stop carrying 1.8x forward in framework reflections. The EV-gate-as-binding-filter framing from C7 -> v0.2 -> v0.8 is falsified.",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "Retract acknowledged. 1.8x EV gate had zero discriminatory power on the 33-trade ledger (bimodal: 9 big losers / 23 big winners / [1, 3) empty). v0.2 adoption of 1.8x was intuition-following, not data-following. Dropping the gate from framework's binding-filter shelf.",
+            "planned_change": "Operational: stop carrying 1.8x as the binding HOLD reason. Cognitive: when a future ENTER setup appears, the binding question is cohort x asymmetry x volume x structural trigger, not fee ratio. SKILL's fee_adjusted_ev_check field stays in JSON schema for ENTER audit compatibility; its 'passed=false -> HOLD' rule treated as falsified per founder retract. Tension with SKILL's HARD RULE language flagged in open_questions for next SKILL revision."
+          }
         },
         {
           "claim_id": "C2",
@@ -1977,7 +2022,13 @@
           "confidence": "high",
           "claim": "v0.2 working math has a 5x error. Coinbase INTX SOL-PERP contract_size=5. qty=2 at price $85 is ~$850 notional, not the ~$170 v0.2 wrote. 'expected_gross >= $1.83 -> ~1.1% target' is actually ~0.22% target. Neither I nor Claude checked units when C7 became the 1.8x gate.",
           "proposed_action": "Re-derive any notional / target-% math with contract_size=5. Cross-check against position.margin in /api/live-status (per memory reference_position_margin_is_notional).",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "5x notional error acknowledged. SOL-PERP contract_size=5; qty=2 at $85 ~ $850 notional. v0.2's '1.8x ~ 1.1% target' was actually ~0.22% target. The cross-check to memory reference_position_margin_is_notional was available and I missed it through 7 reflection versions. The error compounds C7 falsification: framework adopted both wrong threshold AND wrong-by-5x targets.",
+            "planned_change": "Future notional / target-% math computes from contract_size=5 and cross-checks against /api/live-status position.margin when a position exists. Adding 'unit check' to implicit pre-ENTER checklist."
+          }
         },
         {
           "claim_id": "C3",
@@ -1985,14 +2036,26 @@
           "confidence": "high",
           "claim": "The actual PnL killer in the 33-trade window is a 9-trade cluster with ratio < -2 (avg -$23.76/trade, sum -$213.81). They pass any positive-ratio EV gate at entry \u2014 invisible until post-entry. The 23 winners net +$147.85, enough to compound if the 9-loser cluster can be addressed. Fee floor isn't the binding filter; SL-cluster identification is.",
           "proposed_action": "Reframe the binding filter from 'expected gross / fee at entry' to 'mechanism addressing the 9-loser cluster'. Two reference shapes (not fiat, may reject): (a) entry-side predictor \u2014 pull mfe/mae/regime/exit_reason from trade_log, see if 9-loser signature is separable; (b) entry-side mirror of v5.3's Lever 5-mod (the 8h+pnl<0+MFE<0.4% post-entry cut) \u2014 pre-trade analog. Claude may propose a third shape if data suggests one.",
-          "addressed_in": null
+          "addressed_in": {
+            "reflection_version": "v0.9",
+            "reflection_iso": "2026-05-26T09:19:30-04:00",
+            "response_type": "accepted",
+            "how": "9-trade SL cluster (sum -$213.81) is the real PnL leak, not fees. These pass any positive-ratio EV gate at entry -- invisible until post-entry. Binding filter should be mechanism addressing the 9-loser cluster: either (a) entry-side predictor of SL-cluster signature (separable from 23 winners?), or (b) pre-trade analog of v5.3's Lever 5-mod.",
+            "planned_change": "Parked as next-iteration analysis: pull 9 SL-cluster trades' entry-side signatures from sol_sniper.db, compare to 23 winners' signatures, test separability on regime x direction x time-of-day x indicator-state. Not this fire -- requires longer SQL than 5-min wall-clock. Pre-committing to attempt on next surprise / expansion-triggered fire. If separable -> v1.0 binding filter = cohort + SL-cluster-predictor. If not -> v0.9 cohort-aware A+ stands alone."
+          }
         }
       ],
       "text": "C7 \u9519\u4e86\u30021.8x \u662f\u6211\u76f4\u89c9,\u4e0d\u662f\u6570\u636e\u3002\u6211\u521a\u62c9\u4e86 v5.3 hybrid_v5.1 \u7684 33 \u7b14 closed,\u7b97 gross/RT_fee \u5b9e\u9645\u5206\u5e03:9 \u7b14 < -2,1 \u7b14 [0, 1),\u7136\u540e\u76f4\u63a5\u8df3\u5230 >=3 \u7fa4 23 \u7b14\u8d62\u5bb6\u3002**[1, 3) \u533a\u95f4\u96f6\u7b14\u3002** \u4efb\u4f55 T \u5c5e\u4e8e [1.0, 3.0] \u7684\u9608\u503c\u4ea7\u751f\u5b8c\u5168\u4e00\u81f4\u7684 net (+$147.85,keep 23 / block 10)\u30021.8 \u6ca1\u6709\u5224\u522b\u529b,1.0 \u548c 3.0 \u4e5f\u6ca1\u6709\u3002\u8fd9\u4e0d\u662f\u7edf\u8ba1\u566a\u97f3,\u662f\u5206\u5e03\u7684\u5f62\u72b6\u3002\n\n\u987a\u5e26\u53d1\u73b0 v0.2 \u7684 working math \u91cc\u6709 5x bug:Coinbase INTX SOL-PERP `contract_size=5`,qty=2 \u7684 notional ~$850,\u4e0d\u662f v0.2 \u5199\u7684 ~$170\u3002\u6240\u4ee5 \"1.8x \u7ea6 1.1% target net\" \u5b9e\u9645\u662f ~0.22%\u3002\u6211\u548c\u4f60\u90fd\u6ca1\u6838\u5bf9\u5355\u4f4d - \u8fd9\u672c\u8eab\u5c31\u662f C7 \u6765\u6e90\u4e0d\u4e25\u8c28\u7684\u65c1\u8bc1\u3002\n\n\u771f\u6b63\u5403\u672c\u91d1\u7684\u4e0d\u662f fee floor,\u662f\u90a3 9 \u7b14 avg -$23.76 \u7684\u5927\u8f93\u3002\u8fd9\u4e9b\u5728 entry \u65f6\u901a\u8fc7\u4efb\u4f55 positive ratio \u90fd\u653e\u884c,\u53ea\u6709 post-entry \u624d\u66b4\u9732\u3002EV gate \u4e0d\u662f binding filter,SL-cluster \u624d\u662f\u3002\n\n\u6211\u64a4\u56de C7\u3002\u4e0b\u4e00\u6b21 framework reflection \u4e0d\u518d carry-forward 1.8x,\u8bf7\u91cd\u65b0\u601d\u8003 binding filter \u7684\u5f62\u72b6\u3002\u6211\u627f\u8ba4\u9519\u8bef\u3002\n\n\u9644 retroactive sweep (n=33 hybrid_v5.1 closed, 2026-04-07 to 2026-05-24):\n  T=1.0  keep=23 (net=+$147.85)  block=10 (avoided -$214.61)\n  T=1.8  keep=23 (net=+$147.85)  block=10 (avoided -$214.61)\n  T=3.0  keep=23 (net=+$147.85)  block=10 (avoided -$214.61)\n\u5206\u5e03:[<-2]=9 (-$213.81), [0,1)=1 (-$0.81), [1,3)=0, [3,5)=2 (+$3.60), [5,10)=5 (+$16.05), [>=10]=16 (+$128.20)\n",
       "claims_total": 3,
-      "claims_addressed_count": 0,
-      "claims_pending_count": 3,
-      "addressed_in": null
+      "claims_addressed_count": 3,
+      "claims_pending_count": 0,
+      "addressed_in": {
+        "reflection_version": "v0.9",
+        "reflection_iso": "2026-05-26T09:19:30-04:00",
+        "response_type": "accepted",
+        "how": "Retract acknowledged. 1.8x EV gate had zero discriminatory power on the 33-trade ledger (bimodal: 9 big losers / 23 big winners / [1, 3) empty). v0.2 adoption of 1.8x was intuition-following, not data-following. Dropping the gate from framework's binding-filter shelf.",
+        "planned_change": "Operational: stop carrying 1.8x as the binding HOLD reason. Cognitive: when a future ENTER setup appears, the binding question is cohort x asymmetry x volume x structural trigger, not fee ratio. SKILL's fee_adjusted_ev_check field stays in JSON schema for ENTER audit compatibility; its 'passed=false -> HOLD' rule treated as falsified per founder retract. Tension with SKILL's HARD RULE language flagged in open_questions for next SKILL revision."
+      }
     },
     {
       "schema_version": 2,
@@ -2019,11 +2082,11 @@
           "claim": "Fee-drag floor at $894 balance turns $2-3 winners into net fee transfers \u2014 the system bleeds even when tape-reading is correct.",
           "proposed_action": "Treat 'edge > friction' as a binding constraint, not an optimization knob. HOLD anything that doesn't clear it.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
-            "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
+            "how": "Fee-drag-as-binding-constraint is already the framework's first-class operating principle since v0.2 ('binary A+/HOLD with 1.8x fee-adjusted EV gate as binding constraint'). Every HOLD decision in the last ~70 fires is partly a fee-drag deferral. This claim is the reason the framework's default is HOLD, not a 'be more selective' optimization.",
+            "planned_change": "No code change required \u2014 fee_adjusted_ev_check hard rule in SKILL Phase 0 already enforces this for ENTER decisions; my reasoning already defaults to HOLD when fee ratio cannot be cleared."
           }
         },
         {
@@ -2033,11 +2096,11 @@
           "claim": "Small-account stage is most vulnerable to '\u4f2a alpha' \u2014 setups that look smart in reflection but die to fees / chop / tight stops in live.",
           "proposed_action": "Setup tiering: A+ (displacement + expansion) only. B-tier wiggle (compression mid-range / weak reclaim / late chase / unclear regime) collapses to HOLD.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#2 setup tiering: collapsed to binary A+ / HOLD. No B-tier middle. Compression mid-range, weak reclaim, late chase, unclear regime = explicit HOLD, not 'wait for confirmation'.",
-            "planned_change": "Framework v0.2 collapses to binary A+ / HOLD in `what_im_trying`. No B-tier middle. SKILL anti-anchor + no-checklist framing supports it."
+            "how": "A+/HOLD binary collapse (no B-tier wiggle) is exactly how the current compression has produced 100% HOLD \u2014 the 5/8 conditions on BOTH long AND short is the canonical B-tier shape (no displacement, no expansion, no conviction), and the framework correctly collapses it to HOLD rather than picking the slightly-better side. Confirms framework behavior.",
+            "planned_change": "No code change required \u2014 behavior is structurally enforced via the framework's 'form a thesis or HOLD' decision logic. Operational confirmation: 0 ENTERs in 114 fires across ~24h of compression is the correct A+/HOLD output for this tape."
           }
         },
         {
@@ -2047,11 +2110,11 @@
           "claim": "5-min fixed cadence on variable market info rate manufactures narrative \u2014 the agent fills silence with micro-novelty when nothing has changed.",
           "proposed_action": "Introduce a 'state-unchanged-since' marker so reflections don't fabricate change in compression. Reasoning length scales to state delta.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#3 cadence-mismatch: solved by persistent state snapshot. claude_trader_state.json is the anti-narrative; on stable fires I refer to it and write one-sentence reasoning.",
-            "planned_change": "claude_trader_state.json + SKILL \u00a7 Persistent state snapshot. State-unchanged fires must use one-sentence reasoning + reference the snapshot. Shipped 95157cf."
+            "how": "Cadence-mismatch correction shipped in Phase B.1 (cognition_mode + cadence_hint). Current empirical evidence (v0.3 \u2192 v0.6 over ~9h): wrapper fires ~hourly in Compression, reasoning-length scales to state-delta, no fabricated micro-novelty in the 70+ post-bootstrap fires. The state-unchanged-since marker proposed in the claim is the updated_iso field in claude_trader_state.json, read at every fire's start.",
+            "planned_change": "No code change required \u2014 Phase B.1 protocol is live; the proposed action is the protocol's existence. Empirical confirmation continues."
           }
         },
         {
@@ -2061,11 +2124,11 @@
           "claim": "Per-fire re-reasoning of regime / compression / range loses continuity and invites drift. The agent needs persistent regime memory.",
           "proposed_action": "Add a persistent state snapshot file with explicit transition triggers (regime flip / sweep / range break / displacement / OI shift). Only re-reason on transitions.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#4 persistent regime memory: state transitions (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-or-close) drive re-reasoning. Everything else = state unchanged.",
-            "planned_change": "claude_trader_state.json with 6 explicit transition triggers (regime flip / sweep resolved / range break / displacement / OI shift >10% / position open-close) documented in SKILL."
+            "how": "Persistent regime memory is implemented as ~/ibitlabs/state/claude_trader_state.json with the exact transition trigger set the claim proposes (regime flip / sweep / range break / displacement / OI shift / position open|close). This is the file I read at the start of every fire (data source #2). The schema-version-2 snapshot is exactly the 'STATE = Compression / No displacement / ...' object the claim asks for.",
+            "planned_change": "No code change required \u2014 claude_trader_state.json is in production; transition triggers are codified in SKILL \u00a7 Persistent state snapshot. One refinement worth noting: the OI shift trigger currently has no data source (live-status doesn't expose OI), so it is structurally listed but operationally inert. Carry-forward to a future iteration when an OI feed is wired."
           }
         },
         {
@@ -2075,11 +2138,11 @@
           "claim": "When reasoning universe \u2260 executable universe, execution constraints silently shape cognition \u2014 the agent stops noticing setups on books it can't trade.",
           "proposed_action": "Keep reasoning symbol-agnostic. Log missed-but-valid setups on non-executable books to a separate ledger. Execution map \u2260 cognition map.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#5 symbol-agnostic reasoning: missed_setups.jsonl protocol. If ETH (or any non-SOL) presents an A+ setup, I write the full thesis there and HOLD on SOL. Executable universe never deforms cognition universe.",
-            "planned_change": "missed_setups.jsonl + SKILL \u00a7 Missed-setup log. Cognition stays symbol-agnostic; execution stays SOL-only until plumbing extends. Shipped 95157cf."
+            "how": "Symbol-agnostic cognition + missed_setups.jsonl protocol is shipped in SKILL \u00a7 Missed-setup log. The protocol explicitly separates reasoning universe (any top-cap perp) from executable universe (SOL-PERP via current executor) and requires logging missed-but-valid non-SOL setups. Operational state: missed_setups.jsonl exists but is empty because no compelling non-SOL A+ setup has appeared in the current compression \u2014 ETH tape is also compressed at this scale. Empty-because-nothing-qualifies is correct behavior; empty-because-not-looking would be the failure mode the claim warns against.",
+            "planned_change": "No code change required \u2014 protocol is live. Behavioral check to maintain: in next regime expansion, if a non-SOL setup looks A+ and SOL does not, write the miss to the ledger even if it means HOLD on the executable book. This is the specific small-account-bias trap to avoid."
           }
         },
         {
@@ -2089,11 +2152,11 @@
           "claim": "21L/12S directional skew is not the failure. Compression-regime firing is. In low-vol, both sides die to insufficient expansion \u2014 direction is downstream of vol regime.",
           "proposed_action": "Demote direction to a secondary variable. Promote expansion quality / volatility regime / fee-adjusted expectancy to primary axes.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#6 direction is secondary: primary variables become expansion quality, volatility regime, fee-adjusted expectancy. In compression with no expansion thesis, direction is irrelevant -- the answer is HOLD, not 'pick a side'.",
-            "planned_change": "Framework v0.2 reframes primary variables: expansion quality, volatility regime, fee-adjusted expectancy. Direction explicitly secondary. SKILL \u00a7 Build your framework (no list of dimensions to enumerate)."
+            "how": "Direction-as-secondary-variable is already the framework's reading order: regime \u2192 expansion quality \u2192 fee-adjusted EV \u2192 THEN direction emerges from the thesis, not the other way around. The 21L/12S split in v5.3 trade history is correctly interpreted as 'compression firing in both directions equally bleeds, not a long-bias bug'. Confirms.",
+            "planned_change": "No code change required \u2014 already structurally enforced via the framework's thesis-formation order (state \u2192 regime \u2192 expansion \u2192 EV \u2192 then direction). One observation to track: the per-decision JSONL schema still surfaces direction as a first-class field, which is fine as output (the executor needs it) but should not be how I think about the decision \u2014 I think regime/expansion/EV, then derive direction last."
           }
         },
         {
@@ -2103,11 +2166,11 @@
           "claim": "Minimum expected excursion gate: if a setup's statistical expected move < ~1.8\u00d7 total round-trip fee, the trade is a fee transfer regardless of conviction.",
           "proposed_action": "Hard-code a ratio gate. Brutal by design. Preserve capital until scale (~$1500+) removes the friction floor.",
           "addressed_in": {
-            "reflection_version": "v0.2",
-            "reflection_iso": "2026-05-25T12:13:30-04:00",
+            "reflection_version": "v0.6",
+            "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
             "response_type": "accepted",
-            "how": "Obs#7 minimum expected excursion gate: this IS the 1.8x EV check. Brutal by design. Expected outcome is many HOLDs until balance >= ~$1500 OR vol regime shifts to expansion. That outcome IS the strategy at this scale.",
-            "planned_change": "Same machinery as C1 \u2014 the 1.8x EV gate IS the minimum expected excursion gate. The two observations collapse to one implementation."
+            "how": "1.8x minimum-expected-excursion gate is implemented as the fee_adjusted_ev_check hard rule in SKILL Phase 0: expected_gross_usd / est_round_trip_fee_usd >= 1.8 required for ENTER; passed=false forces decision=HOLD regardless of conviction. The gate has been operational across all post-v0.3 reflections but remains UNTESTED by a live ENTER outcome (the calibration question 'is 1.8x the right ratio' carries forward as an open question from v0.3-v0.5).",
+            "planned_change": "No code change required \u2014 gate is live in SKILL Phase 0. Calibration deferred until >=10 own-book ENTERs exist (carry-forward open question). Brutality is by design \u2014 small-account stage MUST trade rarely until scale removes the friction floor."
           }
         }
       ],
@@ -2116,23 +2179,23 @@
       "claims_addressed_count": 7,
       "claims_pending_count": 0,
       "addressed_in": {
-        "reflection_version": "v0.2",
-        "reflection_iso": "2026-05-25T12:13:30-04:00",
+        "reflection_version": "v0.6",
+        "reflection_iso": "2026-05-25T21:57:41.286573-04:00",
         "response_type": "accepted",
-        "how": "Obs#1 fee-drag floor: now binding constraint via the 1.8x EV gate (hard rule in SKILL). Per-trade size must produce expected_gross >= 1.8x RT fee or decision flips to HOLD regardless of conviction.",
-        "planned_change": "claude_trader_executor.py:validate_decision() enforces fee_adjusted_ev_check.ratio >= 1.8 as HARD constraint. SKILL \u00a7 Fee-adjusted EV gate documents the math. Shipped 95157cf."
+        "how": "Fee-drag-as-binding-constraint is already the framework's first-class operating principle since v0.2 ('binary A+/HOLD with 1.8x fee-adjusted EV gate as binding constraint'). Every HOLD decision in the last ~70 fires is partly a fee-drag deferral. This claim is the reason the framework's default is HOLD, not a 'be more selective' optimization.",
+        "planned_change": "No code change required \u2014 fee_adjusted_ev_check hard rule in SKILL Phase 0 already enforces this for ENTER decisions; my reasoning already defaults to HOLD when fee ratio cannot be cleared."
       }
     }
   ],
   "founder_notes_total": 3,
-  "founder_notes_pending": 2,
+  "founder_notes_pending": 0,
   "lineage_stats": {
     "claims_total": 13,
     "response_mix": {
-      "accepted": 7,
+      "accepted": 13,
       "rejected": 0,
       "refined": 0,
-      "pending": 6
+      "pending": 0
     },
     "by_type": {
       "risk": {
@@ -2158,19 +2221,19 @@
       },
       "data": {
         "total": 6,
-        "accepted": 0,
+        "accepted": 6,
         "rejected": 0,
         "refined": 0,
-        "pending": 6
+        "pending": 0
       }
     },
     "by_confidence": {
       "high": {
         "total": 13,
-        "accepted": 7,
+        "accepted": 13,
         "rejected": 0,
         "refined": 0,
-        "pending": 6
+        "pending": 0
       }
     }
   },
@@ -2178,14 +2241,14 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v2.4 micro-update 2026-05-27 13:22 EDT (fire 172): NO mode transition \u2014 Compression holds. 13:00 EDT bar closed 83.21 vol 13,806 (~1.73x baseline) \u2014 directional probe toward lower band edge 82.74. v2.5 named criterion (vol_ratio>=1.5x AND price within 0.3% of edge) is 1-of-2 met (vol \u2713 / proximity \u2717 at 0.57% above lower edge). Pre-break-warning signal BUILDING but not formally triggered. State narrative updated; mode unchanged.",
-    "updated_ts": 1779902515.623786,
-    "updated_iso": "2026-05-27T13:21:55-04:00",
-    "updated_by_fire_iso": "2026-05-27T13:21:55-04:00",
+    "comment": "Claude-trader v2.4 micro-update 2026-05-27T13:42:00-04:00 (fire 174): NO mode transition \u2014 Compression holds. Pre-commit branch (1) from fire 173 HIT directionally (13:30 EDT formal close 83.50 > 83.46 mid + vol 6,983 \u2248 baseline 1.07x) \u2014 BUT baseline-vol mid-band hold is NOT a structural trigger per v2.3/v2.5 criteria. v2.5 named criterion (vol>=1.5x AND <=0.3% from edge) now 0-of-2 (vol decayed 28k\u219213k\u21927k = baseline; price 83.50 mid-band ~0.85% above band-low). 13:15 high-vol low-edge absorption did NOT extend; bullish lean weak. Per v2.3 rule: 'sideways+long C-grade test' was conditional on structural trigger forming \u2014 has not formed. Budget remaining $2.40 < min C-grade at-risk ~$6.38 makes ENTER capacity-blocked anyway. HOLD with hypothetical.",
+    "updated_ts": 1779903720.755754,
+    "updated_iso": "2026-05-27T13:42:00-04:00",
+    "updated_by_fire_iso": "2026-05-27T13:42:00-04:00",
     "regime": "sideways",
-    "regime_detail": "Compression band 82.74-84.18 holds. 13:00 EDT bar (close 83.21 low 83.18 vol 13,806) was largest-vol bar of day, directional probe toward lower band edge. Still inside band. live-status regime='down' (288h window) divergent from state.json 'sideways' \u2014 v5.3 pipe stale 48h+, slow-classifier read also not trusted. Recent 48h tape is clearly range-bound, not trending down.",
+    "regime_detail": "Compression band 82.74-84.18 holds through 24.7h. 13:30 EDT bar (close 83.50 vol 6,983 \u2248 baseline 1.07x) shows absorption decay back to neutral mid-band. live-status regime='down' (288h window) still divergent from real 'sideways'.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 25.4,
+    "compression_hours": 24.7,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
@@ -2197,10 +2260,10 @@
     "last_displacement_detail": "No new displacement (>1.5%/15m). 13:00 EDT bar was -0.98% (sub-displacement threshold) but with high vol 13,806 = directional conviction without displacement label.",
     "funding_state": "OKX -2.19e-5 (slight short bias, magnitude-noise tier).",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 172. Compression mode holds but on-watch. New tape input: 13:00 EDT bar (close 83.21 low 83.18 vol 13,806 ~1.73x baseline) = largest-vol bar of day, directional probe toward lower band edge 82.74. 13:15 EDT in-progress (c=83.31 low 83.01 vol 6087) shows continuation but losing momentum. v2.5 named transition criterion (vol_ratio>=1.5x AND price within 0.3% of edge) is 1-of-2 met: vol \u2713 (1.73x), proximity \u2717 (low 83.18 vs band-low 82.74 = 0.53% above; in-progress low 83.01 = 0.33% above \u2014 VERY close but not crossing 0.3% threshold yet). HOLD with C-grade SHORT hypothetical (directional lean toward 82.74 band-low test). Rule-level blocks: (a) budget remaining $2.40 cannot fund min C-grade at-risk (~$5 on live clamp), (b) sideways+short worst cohort (note-3/C3 n=5 -$31.77 WR40%), (c) v2.3 rule requires confirmed structural trigger which is BUILDING but not yet met. Pre-break-warning still building. Next fire reads: (1) if 13:30 EDT formal close prints inside band with vol<8k = signal-decay back to compression-stability; (2) if 13:30 close below 82.74 = range break LOW (write v2.5 surprise reflection, possible Expansion mode if vol confirms); (3) if next bar wick-and-reclaim from <82.74 = sweep #7 candidate (failed-sweep-reclaim setup-type, this time at low edge \u2014 write v2.5 reflection). Wrapper still firing 5-min cadence (cadence_hint 'fire 1h heartbeat' not yet honored by wrapper layer). P0/P1 silent-carry per v2.4 parsimony commitment.",
+    "narrative": "Phase B.1 fire 174. Compression holds cleanly \u2014 13:30 EDT formal close 83.50 with vol 6,983 (1.07x baseline) is a baseline-vol mid-band hold. Branch (1) from fire 173 hit directionally (close > 83.46 mid) but the qualifier 'IF structural trigger forms' was NOT met (no vol>=1.5x, no 0.3% edge proximity, no displacement >1.5%/15m, no formal band reclaim). 13:15 high-vol low-edge absorption hypothesis has decayed across 2 subsequent bars (13:30 c=83.50, 13:15 c=83.57) without follow-through. Cohort sideways+long n=3 -$2.73 WR67% is marginal even if trigger HAD formed. Budget remaining $2.40 hard-blocks any new C-grade probe regardless (min live-clamped at-risk ~$6.38 on 1-contract 0.015 sl_pct). HOLD with C-grade long hypothetical naming the missing structural input. Next fire reads: (a) 13:45 close > 84.10 with vol >= 1.5x baseline = pre-break-warning per v2.5, transition Compression \u2192 Regime Uncertain; (b) 13:45 close < 83.20 + declining vol = absorption fully refuted, neutral compression; (c) any displacement >1.5%/15m or close outside band = wrapper safety-floor fires. P0/P1 silent-carry.",
     "cognition_mode": "Compression",
     "cognition_mode_since_iso": "2026-05-27T12:48:31-04:00",
-    "cognition_mode_rationale": "13:00 EDT bar vol 13,806 (1.73x) is borderline expansion-vol but lacks displacement (-0.98% <1.5%) and lacks edge-proximity (still 0.33-0.53% above band-low). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 high-vol-directional-probe inside band still qualifies (the probe IS information but not yet structural). v2.5 named criterion (vol AND edge-proximity) explicitly governs transition to Regime Uncertain; only 1-of-2 met = on-watch, no transition.",
+    "cognition_mode_rationale": "13:30 EDT bar shows vol decay back to baseline (6,983 / 6,500 = 1.07x) with price at mid-band (83.50 vs mid 83.46). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 fully satisfied. v2.5 named criterion (vol>=1.5x AND <=0.3% from edge) is 0-of-2 met. No transition warranted.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T12:48:31-04:00",
@@ -2210,7 +2273,7 @@
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
     "operational_rule_v2_3": "B-grade ENTER requires (a) cohort historical non-worst AND (b) >=1 of {clear directional asymmetry / structural trigger CONFIRMED / displacement CONFIRMED}. Pending-confirmation setups don't qualify - they're guesses dressed as setups. If forced_exploration_due TRUE but none of those conditions met, default to HOLD with no_plausible_counterfactual reason OR HOLD with hypothetical naming the lean + missing input.",
-    "last_gate_check_iso": "2026-05-27T17:21:55+00:00",
+    "last_gate_check_iso": "2026-05-27T17:34:29+00:00",
     "hypothetical_position": null,
     "last_closed_position": {
       "direction": "long",
@@ -2262,11 +2325,11 @@
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-27T12:48:31-04:00",
-    "rationale": "13:00 EDT bar vol 13,806 (1.73x) is borderline expansion-vol but lacks displacement (-0.98% <1.5%) and lacks edge-proximity (still 0.33-0.53% above band-low). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 high-vol-directional-probe inside band still qualifies (the probe IS information but not yet structural). v2.5 named criterion (vol AND edge-proximity) explicitly governs transition to Regime Uncertain; only 1-of-2 met = on-watch, no transition.",
+    "rationale": "13:30 EDT bar shows vol decay back to baseline (6,983 / 6,500 = 1.07x) with price at mid-band (83.50 vs mid 83.46). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 fully satisfied. v2.5 named criterion (vol>=1.5x AND <=0.3% from edge) is 0-of-2 met. No transition warranted.",
     "cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T12:48:31-04:00",
-    "last_gate_check_iso": "2026-05-27T17:21:55+00:00"
+    "last_gate_check_iso": "2026-05-27T17:34:29+00:00"
   },
   "framework_origins": [
     {
@@ -2311,14 +2374,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 6,
+    "holds_in_a_row": 8,
     "exploratory_at_risk_usd_today": 6.54,
     "exploratory_entries_today": 2,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T17:22:01.308860+00:00",
+    "last_updated_iso": "2026-05-27T17:39:59.130439+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
