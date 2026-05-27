@@ -1,33 +1,33 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779923842,
-  "generated_iso": "2026-05-27T19:17:22-0400",
+  "generated_at": 1779924994,
+  "generated_iso": "2026-05-27T19:36:34-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 213,
+    "decisions_total": 214,
     "actions": {
-      "HOLD": 209,
+      "HOLD": 210,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 53,
+      "HOLD_with_counterfactual": 54,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
       "ENTER_B": 1
     },
     "confidence": {
-      "high": 151,
+      "high": 152,
       "medium": 45,
       "low": 17
     },
-    "reasoning_chars_avg_all": 957,
-    "reasoning_chars_avg_last10": 791,
+    "reasoning_chars_avg_all": 956,
+    "reasoning_chars_avg_last10": 794,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T19:17:18.096574-04:00",
+    "last_fire_iso": "2026-05-27T19:34:11-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779923838.096574,
-    "fire_iso": "2026-05-27T19:17:18.096574-04:00",
+    "fire_ts": 1779924851.134876,
+    "fire_iso": "2026-05-27T19:34:11-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.42,
+    "current_price": 82.13,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": null,
-      "vol_ratio": 1.34,
-      "momentum_pct": -0.12,
+      "vol_ratio": 2.43,
+      "momentum_pct": -0.0039,
       "rsi": null,
-      "_note": "v5.3 pipe stale 53.8h+ (live-status indicators.price=85.23 vs OHLCV=82.42, -3.21pct divergence). Using fresh Coinbase OHLCV. stoch_rsi/rsi not derivable in 5-min budget \u2014 relying on tape structure instead."
+      "_note": "live-status indicators_pro stale 53.9h+; vol_ratio + momentum_pct derived from fresh Coinbase 15m OHLCV (median-96 baseline = 4281)"
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,26 +60,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Same baseline as fire ~213. 1.5h post-displacement (21:30 UTC 7x-vol break of 82.74). Vol decay continues 6.85x->4.90x->3.56x->3.22x->1.87x->1.32x->1.34x = expansion phase cooled to near-baseline. Price chopping 82.34-82.55 over last 4 bars; 82.11 wick low (22:00 UTC) was defended once, 82.74 reclaim has not occurred (5 consecutive bars below). Mode: Regime Uncertain (per v2.6, post-displacement direction-uncommitted). Two operational blocks for ENTER: (a) budget $2.40 remaining is below the smallest C-grade exposure (1-contract floor $425 \u00d7 0.015 SL = $6.38 at_risk) \u2014 effectively no exploration capacity today regardless of setup quality; (b) no clean structural trigger has formed \u2014 neither a failed-breakdown-reclaim long (would need close >82.74 with vol>=1.5x) nor a fresh continuation short (would need 82.11 break with vol). UTC midnight reset ~4.75h.",
+    "confidence": "high",
+    "reasoning": "v2.6 continuation-short thesis firing live: 23:15 UTC bar low 82.08 cleanly broke the sub-band candidate floor 82.11 intra-bar, close 82.13 fractionally below floor, vol 2.43x median-96. This is the canonical setup the v2.6 reflection 70min ago named as cohort-blocked. v2.3 gate (a) cohort historical non-worst FAILS under v2.6 cohort-disambig: live=down + state=sideways resolves to more-pessimistic side, sideways+short = WORST (n=5 -$31.77 WR 40%). Independently, budget $2.40 remaining < $3.40 C-grade exposure floor (sl_pct 0.02 * notional ~$170). Two independent blocks = HOLD. UTC midnight reset in ~26min restores $8.94 capacity but cohort block persists. Long-side counter-thesis (failed-breakdown-reclaim above 82.74 with vol) has not occurred \u2014 23:15 currently trending the opposite way. Forced lean below = short continuation per v2.6 thesis; not actionable.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.42,
+      "entry_price": 82.13,
       "sl_pct": 0.015,
-      "tp_pct": 0.005,
+      "tp_pct": 0.02,
       "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "Post-displacement retest of the displacement low (82.11) is the statistically common move within 4-8h. Sellers still active (22:45 close 82.34 below mid). Vol depleted so move would be slow grind, not sharp."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "23:15 UTC breaks candidate floor 82.11 with vol 2.43x in down regime post-21:30 UTC displacement. Continuation momentum favored if 23:30 fails to reclaim 82.11; flush target 80.5."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779924851.134876,
+      "iso": "2026-05-27T19:34:11-04:00",
+      "fire_count": 214,
+      "summary": "Confidence: medium \u2192 high (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779924851.134876,
+        "fire_iso": "2026-05-27T19:34:11-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.13,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 2.43,
+          "momentum_pct": -0.0039,
+          "rsi": null,
+          "_note": "live-status indicators_pro stale 53.9h+; vol_ratio + momentum_pct derived from fresh Coinbase 15m OHLCV (median-96 baseline = 4281)"
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "high",
+        "reasoning": "v2.6 continuation-short thesis firing live: 23:15 UTC bar low 82.08 cleanly broke the sub-band candidate floor 82.11 intra-bar, close 82.13 fractionally below floor, vol 2.43x median-96. This is the canonical setup the v2.6 reflection 70min ago named as cohort-blocked. v2.3 gate (a) cohort historical non-worst FAILS under v2.6 cohort-disambig: live=down + state=sideways resolves to more-pessimistic side, sideways+short = WORST (n=5 -$31.77 WR 40%). Independently, budget $2.40 remaining < $3.40 C-grade exposure floor (sl_pct 0.02 * notional ~$170). Two independent blocks = HOLD. UTC midnight reset in ~26min restores $8.94 capacity but cohort block persists. Long-side counter-thesis (failed-breakdown-reclaim above 82.74 with vol) has not occurred \u2014 23:15 currently trending the opposite way. Forced lean below = short continuation per v2.6 thesis; not actionable.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 82.13,
+          "sl_pct": 0.015,
+          "tp_pct": 0.02,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "23:15 UTC breaks candidate floor 82.11 with vol 2.43x in down regime post-21:30 UTC displacement. Continuation momentum favored if 23:30 fails to reclaim 82.11; flush target 80.5."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1779921493.880739,
@@ -1511,67 +1561,14 @@
           "What is the right action when a band-break fails-back within 1 bar? Is the 'failed-breakout-fade-short' a generalizable secondary setup, or is it just another guess at the inverse? Set as testable hypothesis for fire 167+ tape: track whether failed band-breaks tend to extend into trend-reverse (n>=5 cycles needed before claim)."
         ]
       }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779899312.47,
-      "iso": "2026-05-27T12:28:32-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.3: EXIT",
-      "payload": {
-        "fire_ts": 1779899312.47,
-        "fire_iso": "2026-05-27T12:28:32-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": {
-          "direction": "long",
-          "entry_price": 84.44,
-          "qty": 1,
-          "unrealized_pnl_pct": -0.0058,
-          "minutes_held": 10
-        },
-        "current_price": 83.95,
-        "regime": "sideways",
-        "market_snapshot": {
-          "stoch_rsi": null,
-          "vol_ratio": null,
-          "momentum_pct": -0.0058,
-          "rsi": null
-        },
-        "decision": "EXIT",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "high",
-        "reasoning": "Position SL-triggered. 12:15 EDT in-progress bar (low 83.89, current ~83.95) breached BOTH reverse-break threshold 83.90 AND SL absolute 84.00. Thesis 'post-band-break retest_reclaim' falsified \u2014 no retest event occurred (price never returned to 84.18 broken-band-high from above before fading); fire 165 entered on a pending-confirmation setup whose name itself confessed missing structural input. Band-break is failing back through 84.18 within 1 bar of entry. EXIT at OHLCV-derived ~$83.95. NOTE: live-status indicators.price 85.23 is STALE \u2014 system_gates.stale=true, age_sec=172236 (47.84h, 48h crossover passed during this fire). live-status indicators_pro values (stoch_rsi 0.55, vol_ratio 0.56, BB) are structurally untrustworthy. P0 Bonny-flag. market_snapshot fields nulled rather than echo stale.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": {
-          "previous_trade_fire_iso": "2026-05-27T12:17:49-04:00",
-          "actual_outcome": "SL-equivalent exit at OHLCV ~$83.95 from entry 84.44 in 10 min; gross PnL approx -$2.45 (qty 1 \u00d7 contract_size 5 \u00d7 -$0.49) + round-trip fees ~$0.84 = net ~-$3.30 (DRY_RUN hypothetical)",
-          "info_hypothesis_status": "refuted",
-          "lesson_extracted": "Pending-confirmation setups are not structurally usable. forced_exploration_due TRUE is a mandate to buy information via a STRUCTURALLY usable setup or to write no_plausible_counterfactual \u2014 NOT a mandate to ENTER anything that resembles a setup. The 'reclaim' in 'retest_reclaim_post_band_break_pending_confirmation' never had a real retest event before entry; the trade was a chase of the band-break extension itself, exactly the chase-tax-anti-pattern v2.1 flagged and v2.2 explicitly said to avoid. n=1 in worst direction.",
-          "information_value_realized": "high"
-        }
-      },
-      "_framework_version": "v2.3"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 3,
-    "avg_chars": 753,
+    "holds_since_framework": 4,
+    "avg_chars": 782,
     "since_iso": "2026-05-27T18:24:20-04:00",
     "since_framework_version": "v2.6",
-    "latest_fire_iso": "2026-05-27T19:17:18.096574-04:00"
+    "latest_fire_iso": "2026-05-27T19:34:11-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2279,12 +2276,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader fire ~210 (2026-05-27T18:21:21-04:00): SURPRISE \u2014 range broken DOWN. 21:30 UTC bar opened 83.29 closed 82.61 vol 7.0x; 21:45 continued 82.35 vol 5.0x; 22:00 wicked low 82.11 closed 82.48 vol 3.63x; 22:15 in-progress 82.49 vol 1.21x. 4 consecutive bar closes below range_low 82.74. v2.5 retrospectively fired AT break (zero lead-time on displacement event). v2.6 displacement-event classification + range-clear protocol + cohort-disambiguation rule introduced (framework v2.6). Mode transitions Compression -> Regime Uncertain. Range memory cleared pending new envelope establishment.",
-    "updated_ts": 1779921500.0,
-    "updated_iso": "2026-05-27T18:38:20-04:00",
-    "updated_by_fire_iso": "2026-05-27T18:38:20-04:00",
+    "comment": "Fire ~212 (2026-05-27T19:34-04:00): material update \u2014 23:15 UTC in-progress bar tested below new candidate floor 82.11 (low 82.08, vol 10396 = 2.43x median-96 baseline 4281), close 82.13 fractionally below candidate floor. The v2.6 'continuation short if 82.11 breaks with vol >=1.5x' thesis is firing live. Not yet a sustained break (single bar close just below, only 0.02 below floor \u2014 wick-test character more than clean breakdown). Cohort more-pessimistic = sideways+short = WORST = BLOCKING per v2.6 cohort-disambig rule. Budget $2.40 < $3.40 C-grade floor confirms no exploration capacity. Mode stays Regime Uncertain (no full transition to Expansion: vol 2.43x is moderate, not the 7x of 21:30 UTC initial displacement).",
+    "updated_ts": 1779924851.0,
+    "updated_iso": "2026-05-27T19:34:11-04:00",
+    "updated_by_fire_iso": "2026-05-27T19:34:11-04:00",
     "regime": "down",
-    "regime_detail": "Regime in disambiguation. live-status flipped 'sideways' -> 'down' coincident with 21:30 UTC break. State.json adopts 'down' per live-status read, but cohort interpretation under v2.6 uses MORE PESSIMISTIC side (sideways) for any directional lean. Current price 82.49 (15m bar 22:15 UTC in-progress). Vol decay post-displacement: 7x -> 5x -> 3.6x -> 1.2x in 4 bars suggests expansion phase already cooling.",
+    "regime_detail": "live-status still 'down' (288h window). State.json adopts 'down' but cohort interpretation uses MORE PESSIMISTIC side (sideways) per v2.6. Current price 82.13 (23:15 UTC 15m bar in-progress, low 82.08). Vol on the test bar 2.43x median-96. Post-displacement vol envelope: 21:30 (7.0x) -> 21:45 (5.0x) -> 22:00 (3.6x) -> 22:15 (3.1x) -> 22:30 (1.8x) -> 22:45 (1.3x) -> 23:00 (1.3x) -> 23:15 (2.43x renewed test). Decaying with re-tests at sub-range floor.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2294,21 +2291,21 @@
     "range_break_direction": "down",
     "range_pre_break_low": 82.74,
     "range_pre_break_high": 84.18,
-    "new_range_candidate_low": 82.11,
+    "new_range_candidate_low": 82.08,
     "new_range_candidate_high": 82.89,
-    "new_range_candidate_bars": 5,
+    "new_range_candidate_bars": 7,
     "sweeps_attempted": 6,
-    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). 13:15 EDT bar wick low 83.01 vol 8.25x was near-miss sweep candidate (intra-day). Today's 21:30 UTC event is a STRUCTURAL BREAK, not a sweep \u2014 clean displacement bar that closed outside the band with 7.0x vol and held for 4 consecutive bars.",
+    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). Today's structural development is NOT a sweep \u2014 it is post-displacement Regime Uncertain with active continuation-short pressure-test at 23:15 UTC (low 82.08 vs prior candidate floor 82.11).",
     "last_displacement_iso": "2026-05-27T17:30-04:00",
-    "last_displacement_detail": "Real displacement event: 21:30 UTC (17:30 EDT) opened 83.29 closed 82.61 = -0.81pct in 1 bar with vol 7.0x median-96 (28354 vs 4053). Followed by 21:45 continuation (-0.32pct, vol 5.0x). 30-min cumulative -1.13pct. Below the 1.5pct/15min hard-rule per-bar threshold, but 7.0x vol on a level-break bar is the canonical displacement signature codified into v2.6 displacement rule.",
-    "funding_state": "OKX 3.36e-6 (essentially neutral, magnitude-noise tier).",
+    "last_displacement_detail": "Initial displacement 21:30 UTC (vol 7.0x close 82.61). No new displacement since \u2014 23:15 UTC test at 2.43x is moderate, not the 3.0x v2.6 single-bar displacement threshold. Cumulative 5-bar move from 23:15 back to 22:15: close 82.56 -> 82.13 = -0.52pct over 5 bars = drift, not displacement.",
+    "funding_state": "OKX -1.64e-5 (per live-status indicators_pro stale; treat with caution \u2014 pipe 53.9h+ stale).",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire ~211 (15min after v2.6 break-event reflection). Range broken DOWN status unchanged. Update: 22:15 UTC bar resolved at 82.56 close (not 82.49 in-progress), 22:30 in-progress 82.53 vol 0.4x \u2014 vol decay continues 7x->5x->3.6x->3.3x->0.4x as the post-displacement Regime Uncertain phase deepens. Floor 82.11/82.12 was double-tested by 22:00 + 22:15 lows AND reclaimed (intra-bar recoveries to 82.48 / 82.56 closes) = first structural sign of buyer step-in at the new sub-range floor. Reclaim of 82.74 has NOT occurred yet (price 82.53). 5 consecutive bar closes below the old range floor. New range candidate envelope tightening 82.11-82.61 over last 4 bars. Forward: (a) failed-breakdown-reclaim long if 1-2 bars close back above 82.74 with vol>=1.5x post-budget-reset; (b) floor-rejection long if a 3rd test of 82.11 holds with vol expansion and rejection \u2014 defensible thesis but budget exhausted today; (c) continuation short if 82.11 breaks with vol, but cohort more-pessimistic = sideways+short = WORST, BLOCKING. Budget $2.40 < $3.40 C-grade floor: no exploration capacity today. Daily reset UTC midnight ~5.4h.",
+    "narrative": "Phase B.1 fire ~212. v2.6 continuation-short thesis firing live: 23:15 UTC bar low 82.08 cleanly breaks the candidate floor 82.11 intra-bar (close 82.13 just 0.02 below floor) with vol 2.43x median-96. This is the canonical setup the v2.6 reflection explicitly named as cohort-blocked. Two pressure-tests now: (a) if 23:15 close holds and 23:30 closes <82.08 with vol >=1.5x = clean continuation short setup (would be C-grade exploratory entry IF cohort weren't blocking IF budget weren't exhausted); (b) if 23:30 reclaims back above 82.11 + 82.74 with vol >=1.5x within 2 bars = failed-breakdown-reclaim long setup (cohort down+long non-worst, would be tradeable IF budget capacity remained). Neither scenario can be acted upon today: budget $2.40 < $3.40 C-grade exposure floor, and sideways+short cohort = WORST. UTC midnight rolls in ~26min; new $8.94 budget refresh. If the structural setup (either direction) persists into the next UTC day, capacity returns. Forced-lean this fire: short continuation per v2.6 thesis confirmation. Locked out by cohort + budget \u2014 both constraints holding correctly.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-27T18:21:21-04:00",
-    "cognition_mode_rationale": "Range broken DOWN with displacement (21:30 UTC vol 7.0x), live-status regime flipped sideways->down (conflicts with prior state.json sideways), vol decaying post-displacement (7x->1.2x in 4 bars) = no committed direction yet. Canonical Regime Uncertain per 4-mode ontology: timeframe/source disagreement + post-displacement direction-uncommitted.",
+    "cognition_mode_rationale": "Range broken DOWN with displacement (21:30 UTC vol 7.0x); active retest of new candidate floor at 23:15 UTC vol 2.43x. live-status regime 'down' but state.json cohort-disambig treats as 'sideways' (more pessimistic). Direction not committed: 4 of 7 sub-band bars closed >82.30, current 23:15 in-progress at 82.13 testing lower. Canonical Regime Uncertain.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 6,
+    "skipped_fires_in_mode": 9,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
@@ -2316,11 +2313,11 @@
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
     "operational_rule_v2_3": "B-grade ENTER requires (a) cohort historical non-worst AND (b) >=1 of {clear directional asymmetry / structural trigger CONFIRMED / displacement CONFIRMED}. Pending-confirmation setups don't qualify - they're guesses dressed as setups. If forced_exploration_due TRUE but none of those conditions met, default to HOLD with no_plausible_counterfactual reason OR HOLD with hypothetical naming the lean + missing input.",
-    "operational_rule_v2_5_REFINED": "Compression-to-Regime-Uncertain pre-break warning (SLOW WALKS ONLY): 2 consecutive 15m bars with vol_ratio >=1.5x median(96-bar baseline) AND at least one bar closing within 0.3pct of either band edge. Single-bar trigger fades on test-and-fade tape = noise; 2-bar sustained = real pre-break warning. FIELD TEST 2 fire ~210: FALSIFIED for displacement-type breaks - rule fired AT the 21:30 UTC break (vol 7.0x close 82.61 0.16pct below 82.74), not BEFORE - zero lead-time. Slow-walk applicability stands; displacement-event needs separate rule (v2.6).",
-    "operational_rule_v2_6_DISPLACEMENT": "Displacement-event classification: single 15m bar with vol_ratio >=3.0x median-96 baseline AND close outside an active band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ subsequent bars), no warning phase. Today's 21:30 UTC bar is canonical example.",
-    "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope (i.e. monotonic high/low contraction or steady within a defined band).",
-    "operational_rule_v2_6_COHORT_DISAMBIG": "When live-status regime conflicts with state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). Today: state sideways + live down. Long lean -> sideways+long (n=3 -$2.73 WR67pct), more pessimistic than down+long (+$12.74 WR75pct). Short lean -> sideways+short (-$31.77 WR40pct) = WORST = BLOCKING.",
-    "last_gate_check_iso": "2026-05-27T23:10:20.775647+00:00",
+    "operational_rule_v2_5_REFINED": "Compression-to-Regime-Uncertain pre-break warning (SLOW WALKS ONLY): 2 consecutive 15m bars with vol_ratio >=1.5x median(96-bar baseline) AND at least one bar closing within 0.3pct of either band edge. FALSIFIED for displacement-type breaks (zero lead-time observed at 21:30 UTC 5-27).",
+    "operational_rule_v2_6_DISPLACEMENT": "Displacement-event classification: single 15m bar with vol_ratio >=3.0x median-96 baseline AND close outside an active band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ subsequent bars), no warning phase. Today's 21:30 UTC bar (7.0x) canonical example.",
+    "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope. Current sub-band envelope: 82.08-82.89 over 7 bars (still developing).",
+    "operational_rule_v2_6_COHORT_DISAMBIG": "When live-status regime conflicts with state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). Today: state would be sideways + live down. Long lean -> sideways+long (n=3 -$2.73 WR67pct), more pessimistic than down+long (+$12.74 WR75pct). Short lean -> sideways+short (-$31.77 WR40pct) = WORST = BLOCKING.",
+    "last_gate_check_iso": "2026-05-27T23:34:11+00:00",
     "hypothetical_position": null,
     "last_closed_position": {
       "direction": "long",
@@ -2372,11 +2369,11 @@
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-27T18:21:21-04:00",
-    "rationale": "Range broken DOWN with displacement (21:30 UTC vol 7.0x), live-status regime flipped sideways->down (conflicts with prior state.json sideways), vol decaying post-displacement (7x->1.2x in 4 bars) = no committed direction yet. Canonical Regime Uncertain per 4-mode ontology: timeframe/source disagreement + post-displacement direction-uncommitted.",
+    "rationale": "Range broken DOWN with displacement (21:30 UTC vol 7.0x); active retest of new candidate floor at 23:15 UTC vol 2.43x. live-status regime 'down' but state.json cohort-disambig treats as 'sideways' (more pessimistic). Direction not committed: 4 of 7 sub-band bars closed >82.30, current 23:15 in-progress at 82.13 testing lower. Canonical Regime Uncertain.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 6,
+    "skipped_fires_in_mode": 9,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
-    "last_gate_check_iso": "2026-05-27T23:10:20.775647+00:00"
+    "last_gate_check_iso": "2026-05-27T23:34:11+00:00"
   },
   "framework_origins": [
     {
@@ -2421,14 +2418,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 46,
+    "holds_in_a_row": 47,
     "exploratory_at_risk_usd_today": 6.54,
     "exploratory_entries_today": 2,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-27T23:15:34.485689+00:00",
+    "last_updated_iso": "2026-05-27T23:32:43.911922+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
