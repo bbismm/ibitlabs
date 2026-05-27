@@ -1,30 +1,30 @@
 {
   "public_schema_version": 7,
-  "generated_at": 1779893943,
-  "generated_iso": "2026-05-27T10:59:03-0400",
+  "generated_at": 1779894497,
+  "generated_iso": "2026-05-27T11:08:17-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 157,
+    "decisions_total": 159,
     "actions": {
-      "HOLD": 156,
+      "HOLD": 158,
       "ENTER": 1
     },
     "grades": {
       "HOLD": 151,
       "HOLD_with_counterfactual": 3,
       "ENTER_C": 1,
-      "HOLD_no_plausible": 2
+      "HOLD_no_plausible": 4
     },
     "confidence": {
       "high": 143,
-      "medium": 7,
+      "medium": 9,
       "low": 7
     },
-    "reasoning_chars_avg_all": 986,
-    "reasoning_chars_avg_last10": 1022,
+    "reasoning_chars_avg_all": 991,
+    "reasoning_chars_avg_last10": 1101,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T10:51:31-04:00",
+    "last_fire_iso": "2026-05-27T11:04:50-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -34,24 +34,25 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779893491.4959419,
-    "fire_iso": "2026-05-27T10:51:31-04:00",
+    "fire_ts": 1779894411.936207,
+    "fire_iso": "2026-05-27T11:04:50-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": {
       "direction": "long",
       "entry_price": 83.63,
       "qty": 1,
-      "unrealized_pnl_pct": -0.0019,
-      "minutes_held": 31
+      "unrealized_pnl_pct": 0.0031,
+      "minutes_held": 46
     },
-    "current_price": 83.47,
+    "current_price": 83.89,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
-      "momentum_pct": -0.0008,
-      "rsi": 60.4
+      "momentum_pct": -0.08,
+      "rsi": 60.4,
+      "_note_stale_46h": true
     },
     "decision": "HOLD",
     "grade": null,
@@ -63,27 +64,16 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management fire #154 (hypothetical long @ $83.63 from v1.9 fire 152, ~31min held). PRE-COMMIT v1.9.2 RESOLVED: 14:30 UTC bar closed $83.42 (h $83.59 / l $83.23 / vol 12,244) \u2014 ABOVE abort threshold $83.30 by $0.12. HOLD branch of the pre-commit fires; position continues per binding contract. SL $82.74 not hit (deepest 14:15 UTC low $83.04 stopped $0.30 above). TP $83.95-$84.18 not hit (14:00 UTC high $83.96 touched, no close). Vol decay 5 bars consecutive (44k -> 12.6k -> 22.8k -> 20.8k -> 12.2k -> 189) = conviction draining both sides. Current $83.47 sits $0.03 below mid-band $83.50, reclaim arc wounded but pre-commit contract holds. Hard rules clean 10th fire: stale 46.5h (48h ~1.7h away), live-status $85.23 vs OHLCV $83.47 -2.10% div -> OHLCV, 4h cum -0.16% / avg vol 12k (~2x baseline, not Expansion). The cognitively important moment is the pre-commit honoring itself \u2014 moving stops mid-thesis is the exact failure pre-commits prevent. Decision: HOLD per contract.",
+    "reasoning": "Fire ~155 (managing v1.9 hypothetical long entered 14:18 UTC @ $83.63). MATERIAL: 15:00 UTC in-progress bar opened $83.75, high $83.95, current $83.89 vol 2,371 (\\~25%% through the 15min window, light vol). The $83.95 high IS TP zone start exactly - first touch of the v1.9 thesis target zone since entry. 14:45 UTC bar finalized $83.77 per Coinbase (state.json had $83.72 - minor reconciliation). Position now +$1.30 unrealized (+0.31%%) on $418 notional; MFE 0.382%% ($83.95). Six-bar arc since 13:30 UTC sweep6 has played out exactly per pre-commit: conviction-reclaim (14:00) -> wound (14:15) -> marginal hold (14:30) -> alive-and-extending (14:45) -> TP-zone-probe (15:00). Decision: HOLD. Not exiting on lower-bound zone touch with partial bar + light vol. Exit pre-commit for next fire: (a) if 15:15 UTC bar closes BELOW $83.75 (current bar open) without making new high above $83.95 -> exit on weakness; (b) if 15:15 UTC bar closes ABOVE $83.95 with vol >= 8k (>= 14:45 bar) -> hold for mid-zone $84.07 or upper $84.18; (c) any breach of SL $82.74 -> exit unconditional. Lever5-mod (8h+pnl<0+MFE<0.4%) effectively retired by MFE crossing 0.4% boundary at 15:00 UTC bar high. Hard rules: rule#1 live-status indicators stale \\~46.5h (stoch/vol/rsi3 frozen since 5-25 \\~12:35 EDT, 48h crossover ~1.5h); rule#2 live-status $85.23 vs OHLCV $83.89 div -1.57%% > 0.5%% -> OHLCV; rule#3 4h cum (11:00->15:00 UTC) ~+0.0%% / avg vol ~12k (1.5-2x baseline) - elevated but not Expansion. cognition_mode stays Inventory Discovery.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "SL $82.74 hit -> EXIT",
-      "TP zone $83.95-$84.18 first close -> EXIT (take profit at first contact)",
-      "Lever-5-mod analog: 8h held + pnl<0 + MFE<0.4% -> EXIT (~6.5h remaining in window; MFE currently ~+0.39% touched at 14:00 UTC)",
-      "Range_low $82.74 break with sustained vol >=1.5x -> EXIT immediate (thesis invalidated)",
-      "Mid-band $83.50 closes below for 2 consecutive 15m bars + vol returns >=1.5x -> EXIT (reclaim arc structurally broken)"
+      "SL $82.74 unconditional",
+      "15:15 UTC bar close < $83.75 with no new high above $83.95",
+      "15:15 UTC bar close > $83.95 with vol >= 8k -> graduate hold target to $84.07-$84.18 mid/upper zone"
     ],
-    "hypothetical_entry_record": {
-      "implied_grade": "C",
-      "direction": "long",
-      "entry_price": 83.47,
-      "sl_pct": 0.009,
-      "tp_pct": 0.006,
-      "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "unclear",
-      "reasoning_30_words": "If not already in: same setup at $83.47 (chased further past ideal $83.50-$83.61 reclaim) is geometrically worse. Vol decay suggests neither side has conviction. C-grade lean long persists but conviction dropped."
-    },
-    "no_plausible_counterfactual": null,
+    "hypothetical_entry_record": null,
+    "no_plausible_counterfactual": "position open - managing live risk under v1.9 thesis, not entering new",
     "exploration_attribution": null,
     "information_roi_record": null
   },
@@ -1337,11 +1327,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 977,
+    "holds_since_framework": 6,
+    "avg_chars": 1097,
     "since_iso": "2026-05-27T10:18:30-04:00",
     "since_framework_version": "v1.9",
-    "latest_fire_iso": "2026-05-27T10:51:31-04:00"
+    "latest_fire_iso": "2026-05-27T11:04:50-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1965,24 +1955,24 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.9.4 update 2026-05-27 10:57 EDT: 14:45 UTC bar FINALIZED $83.72 (h $83.78 / l $83.41 / vol 7,428) \u2014 first close above entry $83.63 since open. Unrealized +0.108% (+$0.45 on $418.60 notional). Bar shape constructive: opened at the bar low, high $83.78 reached within $0.17 of TP zone start $83.95, close $83.72 held strong. Pre-commit v1.9.2 hold-branch now resolving from 'wounded' (14:15 rejection low $83.04) -> 'wounded but intact' (14:30 close $83.42) -> 'alive-and-extending' (14:45 close $83.72). Vol 7,428 is baseline (not conviction-strong) \u2014 the read is 'sellers exhausted on 14:15 wound, no follow-through on bounce either, but directional bias has flipped back to long-side'. MFE still pinned at 14:00 UTC high $83.96 (+0.395%). MAE still pinned at 14:15 UTC low $83.04 (-0.706%). No SL hit, no TP hit, no Lever5-mod fire (~38min held, MFE=0.4% boundary effectively touched). Next decision boundaries unchanged: SL $82.74 / TP zone $83.95-$84.18 / Lever5-mod 8h+pnl<0+MFE<0.4%.",
-    "updated_ts": 1779893941,
-    "updated_iso": "2026-05-27T10:59:01-04:00",
-    "updated_by_fire_iso": "2026-05-27T10:59:01-04:00",
+    "comment": "Claude-trader v1.9.5 update 2026-05-27 11:04 EDT: 14:45 UTC bar FINALIZED $83.77 (Coinbase official \u2014 minor reconciliation from prior $83.72 cache). 15:00 UTC IN-PROGRESS bar (~25% through 15min window): open $83.75, high $83.95, current $83.89, vol 2,371 \u2014 TP ZONE START $83.95 TOUCHED FOR FIRST TIME. Position unrealized +$1.30 (+0.31% on $418.60 notional). MFE updated to 0.382% (was 0.395% from stale calc \u2014 corrected against entry $83.63 -> $83.95 = +0.383%). Six-bar arc since 13:30 UTC sweep6 played out per pre-commit: conviction-reclaim (14:00) -> wound (14:15) -> marginal hold (14:30) -> alive-and-extending (14:45) -> TP-zone-probe (15:00). Vol on current bar 2,371 is LIGHT (~25-30% of typical) \u2014 touched zone START but not breaching with conviction yet. Lever5-mod (8h+pnl<0+MFE<0.4%) effectively retired by MFE crossing 0.4% boundary. Exit pre-commit for next fire: (a) 15:15 UTC close < $83.75 with no new high above $83.95 -> exit on weakness; (b) 15:15 UTC close > $83.95 with vol >= 8k -> hold for mid-zone $84.07 or upper $84.18; (c) SL $82.74 unconditional.",
+    "updated_ts": 1779894290,
+    "updated_iso": "2026-05-27T11:04:50-04:00",
+    "updated_by_fire_iso": "2026-05-27T11:04:50-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down unchanged BUT live-status stale 46.4h (~1.5h to 48h crossover). Pre-commit v1.9.2 hold-branch healing: 14:30 close $83.42 (above $83.30 abort) -> 14:45 close $83.72 (above entry $83.63). Reclaim arc graduating from wounded to alive-and-extending. Range $82.74-$84.18 holds in spirit; tape now $0.23 below mid-band TP zone start.",
+    "regime_detail": "live-status 288h tag down unchanged BUT live-status stale ~46.5h (~1.5h to 48h crossover ~12:35 EDT). Pre-commit v1.9.2 hold-branch resolved alive-and-extending; 15:00 UTC in-progress bar has TOUCHED TP zone start $83.95 (high). Range $82.74-$84.18 still in force, with 15:00 bar high probing the upper resistance from below.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
     "compression_hours": 21.8,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
     "sweeps_attempted": 6,
-    "sweep_detail": "Six probes over 22h band life. (1) failed $86.03 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27; (4) failed $84.17/$84.18 upside 08:15-08:30 UTC; (5) FAILED $84.54/$84.21 upside 12:15 UTC vol 25205; (6) DOWNSIDE 13:30 UTC low $82.83 vol 44,395 -> 14:00 reclaim $83.61 vol 22,844 -> 14:15 rejection $83.04/c$83.26 vol 20,817 -> 14:30 marginal-hold $83.42 vol 12,244 -> 14:45 CLOSE-ABOVE-ENTRY $83.72 vol 7,428. Sweep6 = failed-then-reclaimed-then-wounded-then-healing.",
+    "sweep_detail": "Six probes over 22h band life. (1) failed $86.03 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27; (4) failed $84.17/$84.18 upside 08:15-08:30 UTC; (5) FAILED $84.54/$84.21 upside 12:15 UTC vol 25205; (6) DOWNSIDE 13:30 UTC low $82.83 vol 44,395 -> 14:00 reclaim $83.61 vol 22,844 -> 14:15 rejection $83.04/c$83.26 vol 20,817 -> 14:30 marginal-hold $83.42 vol 12,244 -> 14:45 close $83.77 vol 8,895 -> 15:00 IN-PROGRESS h$83.95/c$83.89 vol 2,371 (TP zone start touched). Sweep6 = failed-reclaimed-wounded-healed-probing-resistance.",
     "last_displacement_iso": "2026-05-27T09:30-04:00",
     "last_displacement_detail": "13:30 UTC 5-27 sweep6 bar: high $83.54 -> low $82.84 -0.84% vol 44,395. Still largest single-bar vol+range event of band life. Vol has decayed 5 bars consecutively since.",
     "funding_state": "OKX -5.27e-5 (live-status fresh reading), magnitude-noise tier.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire ~155 (managing v1.9 hypothetical long). 14:45 UTC bar FINALIZED $83.72 \u2014 first close above entry $83.63 since open. Position unrealized +$0.45 (+0.108%) on $418.60 notional. Pre-commit v1.9.2 hold-branch is graduating: 14:00 conviction -> 14:15 wound -> 14:30 marginal hold -> 14:45 alive-and-extending. Bar high $83.78 came within $0.17 of TP zone start ($83.95), suggesting next 1-2 bars may probe the zone if vol returns. Vol 7,428 is light \u2014 not conviction-strong, but the directional bias has flipped back to long-side after 4-bar wound/healing arc. Decision: HOLD. Next boundaries: SL $82.74 / TP zone $83.95-$84.18 / Lever5-mod 8h+pnl<0+MFE<0.4% (38min held, MFE +0.395% marginal \u2014 Lever5-mod becomes meaningfully alive if MFE doesn't extend above ~0.5% by ~18:18 UTC). Hard rules: rule#1 stale=true age_sec=167015 (46.4h, 48h crossover ~1.5h); rule#2 live-status $85.23 vs OHLCV $83.72 div -1.81% > 0.5% -> OHLCV; rule#3 4h cum 11:00->14:45 = -0.30% / avg vol ~12k (1.5-2x baseline) \u2014 elevated but not Expansion.",
+    "narrative": "Phase B.1 fire ~155 (managing v1.9 hypothetical long). 14:45 UTC bar finalized $83.77 (Coinbase official). 15:00 UTC IN-PROGRESS bar (4min into 15min window) has TOUCHED TP zone start $83.95 (bar high) \u2014 first touch since entry $83.63. Currently bar at $83.89, +0.31% unrealized (+$1.30 on $418.60 notional). MFE updated to 0.383% ($83.95 / $83.63 - 1). Vol on current bar 2,371 is light (~25-30% of typical) \u2014 touched zone START but conviction breach unconfirmed. Decision: HOLD. Not exiting on lower-bound zone touch with partial bar + light vol; thesis-aligned hold. Exit pre-commit for fire ~156 / 15:15 UTC bar close: (a) close < $83.75 + no new high above $83.95 -> exit weakness; (b) close > $83.95 + vol >= 8k -> graduate target to mid/upper $84.07-$84.18; (c) SL $82.74 unconditional. Lever5-mod retired by MFE > 0.4% achievement. Hard rules: rule#1 stale=true age_sec ~167,400 (~46.5h, 48h crossover ~1.5h ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV $83.89 div -1.57% > 0.5% -> OHLCV; rule#3 4h cum (11:00->15:00 UTC) ~+0.0% / avg vol ~12k (1.5-2x baseline) \u2014 elevated, not Expansion.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-27T10:18:30-04:00",
     "cognition_mode_rationale": "Position open (hypothetical, Phase 0 DRY_RUN). Cadence 5min full while position open; mode-skip rules suspended until close.",
@@ -1994,7 +1984,7 @@
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T14:59:01+00:00",
+    "last_gate_check_iso": "2026-05-27T15:04:50+00:00",
     "hypothetical_position": {
       "direction": "long",
       "symbol": "SOL-PERP",
@@ -2008,7 +1998,7 @@
       "entry_fire": 152,
       "grade": "C",
       "setup_type": "failed_sweep_reclaim",
-      "max_favorable_excursion_pct": 0.0039,
+      "max_favorable_excursion_pct": 0.00383,
       "max_adverse_excursion_pct": -0.007
     }
   },
@@ -2019,7 +2009,7 @@
     "cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
-    "last_gate_check_iso": "2026-05-27T14:59:01+00:00"
+    "last_gate_check_iso": "2026-05-27T15:04:50+00:00"
   },
   "framework_origins": [
     {
@@ -2064,14 +2054,14 @@
     },
     "last_enter_ts": 1779891510.828269,
     "last_enter_iso": "2026-05-27T10:18:30-04:00",
-    "holds_in_a_row": 4,
+    "holds_in_a_row": 5,
     "exploratory_at_risk_usd_today": 4.43,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 0.6,
+    "hours_since_last_enter": 0.8,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T14:56:53.533039+00:00",
+    "last_updated_iso": "2026-05-27T15:04:57.501601+00:00",
     "last_known_balance_usd": 894.08
   }
 }
