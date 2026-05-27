@@ -10,6 +10,8 @@ Called by run_claude_trader.sh after each fire. Idempotent on the input file —
 no state, no side effects beyond the output JSON.
 """
 
+from __future__ import annotations
+
 import json
 import os
 import sys
@@ -23,6 +25,10 @@ FRAMEWORK_FILE = HOME / "ibitlabs/logs/claude-trader/framework_log.jsonl"
 FOUNDER_NOTES_FILE = HOME / "ibitlabs/logs/claude-trader/founder_notes.jsonl"
 MISSED_SETUPS_FILE = HOME / "ibitlabs/logs/claude-trader/missed_setups.jsonl"
 STATE_FILE = HOME / "ibitlabs/state/claude_trader_state.json"
+BUDGET_STATE_FILE = HOME / "ibitlabs/state/claude_trader_uncertainty_budget.json"
+PAPER_STATE_PATH = HOME / "ibitlabs/state/claude_trader_paper_state.json"
+PAPER_TRADES_PATH = HOME / "ibitlabs/logs/claude-trader/paper_trades.jsonl"
+EXECUTIONS_PATH = HOME / "ibitlabs/logs/claude-trader/executions.jsonl"
 OUTPUT_FILE = HOME / "ibitlabs/web/public/data/claude_trader.json"
 
 # How many framework reflections to include in the public history.
@@ -35,6 +41,13 @@ EVENT_TIMELINE_LIMIT = 30
 FOUNDER_NOTES_LIMIT = 10
 MISSED_SETUPS_LIMIT = 10
 
+# How many paper trades (most recent) to include in the public JSON.
+PAPER_TRADES_LIMIT = 20
+
+# Reasoning text in paper position/trade records is trimmed before going
+# public — full text already lives in decisions.jsonl on disk.
+PAPER_REASONING_PUBLIC_CHARS = 600
+
 # Schema version of the OUTPUT artifact (separate from per-decision schema_version).
 # v3: dropped verbose `recent` stream; added `events` timeline + `hold_summary`.
 # v4: added `founder_notes` channel, `state_snapshot`, `missed_setups`.
@@ -43,7 +56,15 @@ MISSED_SETUPS_LIMIT = 10
 #     surfaces cognition_mode + rationale + cadence_hint + skipped_fires_in_mode
 #     for the always-visible mode strip. Wrapper gate may now skip fires when
 #     mode permits, so `latest.fire_iso` is no longer a guaranteed 5min cadence.
-PUBLIC_SCHEMA_VERSION = 6
+# v7: tiered grading + uncertainty budget (founder design 2026-05-26) —
+#     adds `summary.grades` (S/A/B/C distribution) + top-level
+#     `uncertainty_budget` snapshot. Filters _test_synthetic (since v6.1).
+#     Surfaces the "exploration authorization" layer to the public page.
+# v8: paper trading layer (2026-05-27) — adds top-level `paper` block with
+#     state snapshot + summary (WR/PF/avg hold) + last-N closed trades.
+#     `mode` field now reflects actual executor mode from executions.jsonl
+#     instead of hardcoded "DRY_RUN" — flips to "PAPER" when CLAUDE_TRADER_PAPER=1.
+PUBLIC_SCHEMA_VERSION = 8
 
 
 def load_decisions(path: Path) -> list[dict]:
@@ -56,17 +77,30 @@ def load_decisions(path: Path) -> list[dict]:
             if not line:
                 continue
             try:
-                out.append(json.loads(line))
+                d = json.loads(line)
             except json.JSONDecodeError:
                 # Skip malformed lines; never break public output on parse error.
                 continue
+            # Filter operator-injected synthetic test entries (e.g. Phase 0
+            # LIVE-gate wiring validation, 2026-05-26). They remain in the
+            # jsonl for audit trail but must never count toward public
+            # decisions_total / actions / events / hold_summary, because
+            # they did not originate from Claude's cognition layer.
+            if d.get("_test_synthetic"):
+                continue
+            out.append(d)
     return out
 
 
 def sanitize(d: dict) -> dict:
     """Return a public-safe view of a decision. Today the input is already
     public-safe (no secrets, no operational data beyond balance), but keep this
-    boundary so future schema additions are intentional, not accidental."""
+    boundary so future schema additions are intentional, not accidental.
+
+    Schema additions 2026-05-26: grade / size_multiplier / setup_type / sl_pct /
+    hypothetical_entry_record / no_plausible_counterfactual (tiered grading +
+    counterfactual shadow on HOLD).
+    """
     return {
         "fire_ts": d.get("fire_ts"),
         "fire_iso": d.get("fire_iso"),
@@ -77,16 +111,63 @@ def sanitize(d: dict) -> dict:
         "regime": d.get("regime"),
         "market_snapshot": d.get("market_snapshot"),
         "decision": d.get("decision"),
+        "grade": d.get("grade"),
+        "size_multiplier": d.get("size_multiplier"),
+        "setup_type": d.get("setup_type"),
         "direction": d.get("direction"),
         "symbol": d.get("symbol"),
         "quantity": d.get("quantity"),
         "leverage": d.get("leverage"),
+        "sl_pct": d.get("sl_pct"),
         "confidence": d.get("confidence"),
         "reasoning": d.get("reasoning"),
         "expected_holding_hours": d.get("expected_holding_hours"),
         "expected_pnl_pct_target": d.get("expected_pnl_pct_target"),
         "abort_conditions": d.get("abort_conditions"),
+        "hypothetical_entry_record": d.get("hypothetical_entry_record"),
+        "no_plausible_counterfactual": d.get("no_plausible_counterfactual"),
+        "exploration_attribution": d.get("exploration_attribution"),
+        "information_roi_record": d.get("information_roi_record"),
     }
+
+
+def compute_grade_distribution(decisions: list[dict]) -> dict:
+    """Tiered S/A/B/C grade counter (founder design 2026-05-26). Counts each
+    decision by its (action, grade) combination + flags HOLDs that include a
+    hypothetical_entry_record (counterfactual shadow) vs raw HOLDs.
+
+    Pre-2026-05-27 decisions have no `grade` field — bucketed as
+    `ENTER_no_grade` / `HOLD` to preserve historical visibility.
+    """
+    out = Counter()
+    for d in decisions:
+        action = (d.get("decision") or "").upper()
+        grade = d.get("grade")
+        if action == "ENTER":
+            key = f"ENTER_{grade}" if grade in ("S", "A", "B", "C") else "ENTER_no_grade"
+        elif action == "HOLD":
+            if d.get("hypothetical_entry_record"):
+                key = "HOLD_with_counterfactual"
+            elif d.get("no_plausible_counterfactual"):
+                key = "HOLD_no_plausible"
+            else:
+                key = "HOLD"
+        elif action == "EXIT":
+            key = "EXIT"
+        else:
+            key = action or "UNKNOWN"
+        out[key] += 1
+    return dict(out)
+
+
+def load_budget_state(path: Path):
+    """Read the daily uncertainty budget snapshot. Returns dict or None."""
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
 
 
 def compute_summary(decisions: list[dict]) -> dict:
@@ -118,6 +199,7 @@ def compute_summary(decisions: list[dict]) -> dict:
     return {
         "decisions_total": len(decisions),
         "actions": dict(actions),
+        "grades": compute_grade_distribution(decisions),
         "confidence": dict(confs),
         "reasoning_chars_avg_all": avg_chars,
         "reasoning_chars_avg_last10": last_chars,
@@ -416,6 +498,205 @@ def load_framework_reflections(path: Path) -> list[dict]:
     return out
 
 
+def detect_executor_mode(path: Path) -> str:
+    """Read the tail of executions.jsonl to find the actual mode the
+    executor is running in. Falls back to DRY_RUN if file missing or empty.
+
+    Why tail-based: the plist env vars are the source of truth for the
+    cron's environment, but reading them from the public-page generator is
+    awkward. The executor stamps `mode` into every execution record, so the
+    last record is the authoritative recent reading.
+    """
+    if not path.exists():
+        return "DRY_RUN"
+    last_mode = None
+    try:
+        with path.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                m = rec.get("mode")
+                if m:
+                    last_mode = m
+    except OSError:
+        return "DRY_RUN"
+    if not last_mode:
+        return "DRY_RUN"
+    return str(last_mode).upper()  # paper → PAPER
+
+
+def _sanitize_paper_position(pos: dict | None) -> dict | None:
+    """Return a public-safe view of the current open paper position.
+    Trims reasoning to PAPER_REASONING_PUBLIC_CHARS."""
+    if not pos:
+        return None
+    reasoning = pos.get("entry_reasoning") or ""
+    if len(reasoning) > PAPER_REASONING_PUBLIC_CHARS:
+        reasoning = reasoning[:PAPER_REASONING_PUBLIC_CHARS] + "…"
+    return {
+        "symbol": pos.get("symbol"),
+        "symbol_base": pos.get("symbol_base"),
+        "direction": pos.get("direction"),
+        "qty": pos.get("qty"),
+        "leverage": pos.get("leverage"),
+        "contract_size": pos.get("contract_size"),
+        "entry_price": pos.get("entry_price"),
+        "entry_ts": pos.get("entry_ts"),
+        "entry_iso": pos.get("entry_iso"),
+        "entry_fire_ts": pos.get("entry_fire_ts"),
+        "entry_fire_iso": pos.get("entry_fire_iso"),
+        "entry_notional": pos.get("entry_notional"),
+        "entry_fee": pos.get("entry_fee"),
+        "entry_regime": pos.get("entry_regime"),
+        "entry_confidence": pos.get("entry_confidence"),
+        "entry_reasoning": reasoning,
+    }
+
+
+def _sanitize_paper_trade(t: dict) -> dict:
+    """Return a public-safe view of a closed paper trade. Trims reasonings."""
+    def _trim(s):
+        if not s:
+            return None
+        return s if len(s) <= PAPER_REASONING_PUBLIC_CHARS else s[:PAPER_REASONING_PUBLIC_CHARS] + "…"
+    return {
+        "entry_fire_ts": t.get("entry_fire_ts"),
+        "entry_fire_iso": t.get("entry_fire_iso"),
+        "exit_fire_ts": t.get("exit_fire_ts"),
+        "exit_fire_iso": t.get("exit_fire_iso"),
+        "closed_iso": t.get("closed_iso"),
+        "symbol": t.get("symbol"),
+        "direction": t.get("direction"),
+        "qty": t.get("qty"),
+        "leverage": t.get("leverage"),
+        "entry_price": t.get("entry_price"),
+        "exit_price": t.get("exit_price"),
+        "hold_seconds": t.get("hold_seconds"),
+        "gross_pnl": t.get("gross_pnl"),
+        "total_fees": t.get("total_fees"),
+        "net_pnl": t.get("net_pnl"),
+        "entry_regime": t.get("entry_regime"),
+        "exit_regime": t.get("exit_regime"),
+        "entry_confidence": t.get("entry_confidence"),
+        "exit_confidence": t.get("exit_confidence"),
+        "entry_reasoning": _trim(t.get("entry_reasoning")),
+        "exit_reasoning": _trim(t.get("exit_reasoning")),
+    }
+
+
+def compute_paper_summary(state: dict | None, trades: list[dict]) -> dict:
+    """Profit factor, win rate, avg hold, etc. Returns an empty-but-typed
+    dict when there are no closed trades — keeps the page render
+    consistent with later data."""
+    summary = {
+        "trades_total": 0,
+        "wins": 0,
+        "losses": 0,
+        "scratches": 0,  # net_pnl == 0 to the cent
+        "win_rate_pct": None,
+        "gross_profit": 0.0,
+        "gross_loss": 0.0,
+        "profit_factor": None,
+        "avg_win": None,
+        "avg_loss": None,
+        "avg_hold_minutes": None,
+        "max_win": None,
+        "max_loss": None,
+        "long_wins": 0, "long_losses": 0,
+        "short_wins": 0, "short_losses": 0,
+    }
+    if not trades:
+        return summary
+
+    wins = [t for t in trades if (t.get("net_pnl") or 0) > 0]
+    losses = [t for t in trades if (t.get("net_pnl") or 0) < 0]
+    scratches = [t for t in trades if (t.get("net_pnl") or 0) == 0]
+
+    gross_profit = sum(t.get("net_pnl") or 0 for t in wins)
+    gross_loss_abs = abs(sum(t.get("net_pnl") or 0 for t in losses))
+    hold_seconds = [t.get("hold_seconds") or 0 for t in trades]
+
+    summary["trades_total"] = len(trades)
+    summary["wins"] = len(wins)
+    summary["losses"] = len(losses)
+    summary["scratches"] = len(scratches)
+    summary["win_rate_pct"] = (
+        round(100.0 * len(wins) / len(trades), 1) if trades else None
+    )
+    summary["gross_profit"] = round(gross_profit, 4)
+    summary["gross_loss"] = round(gross_loss_abs, 4)
+    summary["profit_factor"] = (
+        round(gross_profit / gross_loss_abs, 3)
+        if gross_loss_abs > 0
+        else (None if not wins else float("inf"))
+    )
+    summary["avg_win"] = round(gross_profit / len(wins), 4) if wins else None
+    summary["avg_loss"] = round(-gross_loss_abs / len(losses), 4) if losses else None
+    summary["avg_hold_minutes"] = (
+        round(sum(hold_seconds) / len(hold_seconds) / 60.0, 2) if hold_seconds else None
+    )
+    summary["max_win"] = round(max((t.get("net_pnl") or 0) for t in trades), 4)
+    summary["max_loss"] = round(min((t.get("net_pnl") or 0) for t in trades), 4)
+
+    for t in trades:
+        d = t.get("direction")
+        pnl = t.get("net_pnl") or 0
+        if d == "long":
+            if pnl > 0:
+                summary["long_wins"] += 1
+            elif pnl < 0:
+                summary["long_losses"] += 1
+        elif d == "short":
+            if pnl > 0:
+                summary["short_wins"] += 1
+            elif pnl < 0:
+                summary["short_losses"] += 1
+
+    # Infinite profit_factor isn't JSON-friendly; mark it explicitly.
+    if summary["profit_factor"] == float("inf"):
+        summary["profit_factor"] = None
+        summary["profit_factor_inf"] = True
+
+    return summary
+
+
+def build_paper_block(
+    state_path: Path,
+    trades_path: Path,
+) -> dict | None:
+    """Read paper state + trades + assemble the public-facing paper block.
+    Returns None if no paper state exists yet (paper mode never ran)."""
+    state = load_state_snapshot(state_path)
+    if state is None:
+        return None
+    trades = load_jsonl(trades_path)
+    summary = compute_paper_summary(state, trades)
+    sanitized_trades = [_sanitize_paper_trade(t) for t in trades]
+    # Most-recent first; cap to limit.
+    sanitized_trades.sort(key=lambda t: t.get("closed_iso") or "", reverse=True)
+    sanitized_trades = sanitized_trades[:PAPER_TRADES_LIMIT]
+
+    return {
+        "starting_cash": state.get("starting_cash"),
+        "cash": state.get("cash"),
+        "cumulative_net_pnl": state.get("cumulative_net_pnl"),
+        "cumulative_gross_pnl": state.get("cumulative_gross_pnl"),
+        "cumulative_fees": state.get("cumulative_fees"),
+        "opened_count": state.get("opened_count"),
+        "closed_count": state.get("closed_count"),
+        "position": _sanitize_paper_position(state.get("position")),
+        "trades_recent": sanitized_trades,
+        "summary": summary,
+        "started_iso": state.get("started_iso"),
+        "updated_iso": state.get("updated_iso"),
+    }
+
+
 def main() -> int:
     decisions = load_decisions(DECISIONS_FILE)
     reflections = load_framework_reflections(FRAMEWORK_FILE)
@@ -433,8 +714,10 @@ def main() -> int:
         "generated_at": int(time.time()),
         "generated_iso": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "experiment": "iBitLabs claude-trader Phase 0",
-        "mode": "DRY_RUN",
+        "mode": detect_executor_mode(EXECUTIONS_PATH),
     }
+
+    paper_block = build_paper_block(PAPER_STATE_PATH, PAPER_TRADES_PATH)
 
     # Cognition rollup — convenience extraction of cognition_mode fields from
     # the state snapshot, so the page doesn't have to dig into state_snapshot.
@@ -462,6 +745,13 @@ def main() -> int:
         if str(r.get("trigger") or "").startswith("bootstrap:")
     ]
 
+    # Uncertainty budget snapshot (founder design 2026-05-26) — gives the
+    # public page direct visibility into the exploration authorization layer:
+    # daily $-budget, spent_today, forced_exploration_due, holds_in_a_row,
+    # threshold_state. Surfaces the "why HOLD streak is now a failure mode,
+    # not a virtue" reframing.
+    budget_state = load_budget_state(BUDGET_STATE_FILE)
+
     common_extras = {
         "founder_notes_recent": list(reversed(founder_notes[-FOUNDER_NOTES_LIMIT:])),
         "founder_notes_total": len(founder_notes),
@@ -472,6 +762,8 @@ def main() -> int:
         "state_snapshot": state_snapshot,
         "cognition": cognition,
         "framework_origins": origin_reflections,  # full list, chronological
+        "uncertainty_budget": budget_state,
+        "paper": paper_block,
     }
 
     if not decisions:

@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779901178,
-  "generated_iso": "2026-05-27T12:59:38-0400",
+  "generated_at": 1779901335,
+  "generated_iso": "2026-05-27T13:02:15-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 169,
+    "decisions_total": 170,
     "actions": {
-      "HOLD": 165,
+      "HOLD": 166,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 9,
+      "HOLD_with_counterfactual": 10,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 146,
-      "medium": 14,
+      "medium": 15,
       "low": 9
     },
     "reasoning_chars_avg_all": 994,
-    "reasoning_chars_avg_last10": 1043,
+    "reasoning_chars_avg_last10": 1026,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T12:55:09-04:00",
+    "last_fire_iso": "2026-05-27T13:02:08-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,18 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779900909.585382,
-    "fire_iso": "2026-05-27T12:55:09-04:00",
+    "fire_ts": 1779901328.5589619,
+    "fire_iso": "2026-05-27T13:02:08-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.98,
+    "current_price": 84.08,
     "regime": "sideways",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.0008,
-      "rsi": 60.4
+      "stoch_rsi": null,
+      "vol_ratio": 0.55,
+      "momentum_pct": 0.0016,
+      "rsi": null,
+      "note": "live-status pipe stale 48.1h (system_gates.stale=true, age_sec=172967, indicators_pro frozen). OHLCV-derived: 12:45 EDT close 84.08 vol 7993 inside compression band 82.74-84.18. vol_ratio rough estimate vs baseline ~14.5k = 0.55. live-status indicators_pro values ignored per hard rule #1."
     },
     "decision": "HOLD",
     "grade": null,
@@ -59,26 +60,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "high",
-    "reasoning": "Same baseline as fire 168 reflection v2.4 (Compression mode just committed). 12:45 EDT in-progress bar c=83.98 vol 6427 \u2014 vol decay continues (sub-baseline 3rd consecutive bar), price still mid-band 82.74-84.18. No material state change in 5min. Per Compression cadence_hint this is a heartbeat-style fire; per v2.3 op-rule HOLD definitive: budget remaining $2.40 cannot fund any ENTER, and even if it could, sideways+short is WORST cohort + vol-floor below 8k = no structural input to confirm. Note: live-status indicators_pro stale 48.1h (system_gates.stale=true, age_sec=172967) \u2014 indicators.price 85.23 is wrong; OHLCV-derived 83.98 used per hard rule #1+#2 (silent-carry P0 per v2.4 parsimony commit).",
+    "confidence": "medium",
+    "reasoning": "Compression mode confirmed (transitioned v2.4 fire 168, 12 min ago). 12:45 EDT bar close 84.08 inside band 82.74-84.18, vol 7993 (sub-8k conv floor) = compression sustaining. Price drifted from 12:30 close 83.95 back to 84.08 \u2014 0.12% from upper band edge 84.18, but vol still sub-conviction so v2.5 calibration target NOT triggered (need vol_ratio >=1.5x AND price within 0.3% of edge \u2014 one met, one not). v2.3 rule binding: B-grade ENTER requires cohort non-worst AND (asymmetry OR structural trigger OR displacement) \u2014 current candidates: short on upper-band retest = sideways+short cohort (WORST: n=5 -$31.77 WR40%); long inside compression = no structural trigger. Budget remaining $2.40 cannot fund any B/C-grade at_risk even on tight SL (1-contract $425 notional \u00d7 0.005 = $2.13 borderline; budget tracker uses default 0.02 = $8.50 estimate). HOLD with C-grade hypothetical short lean toward mid-band 83.46 = the committed directional lean, naming missing inputs (worst cohort + budget capacity + no structural trigger). No reflection this fire \u2014 v2.4 was 12 min ago, no surprise.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 83.98,
-      "sl_pct": 0.012,
-      "tp_pct": 0.0062,
+      "entry_price": 84.08,
+      "sl_pct": 0.005,
+      "tp_pct": 0.007,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Mid-band lean short toward 83.46. Price upper-half of band, vol fading 3 bars, mean-reversion bias. Cohort sideways+short worst \u2014 committed lean low-conviction; missing structural input (no rejection wick / no vol pulse)."
+      "reasoning_30_words": "Compression mid-band reversion lean: price 84.08 closer to upper edge 84.18 than mid 83.46. Vol-floor failed both prior fade attempts. Cohort worst (sideways+short) blocks live ENTER."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779901328.5589619,
+      "iso": "2026-05-27T13:02:08-04:00",
+      "fire_count": 170,
+      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779901328.5589619,
+        "fire_iso": "2026-05-27T13:02:08-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 84.08,
+        "regime": "sideways",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 0.55,
+          "momentum_pct": 0.0016,
+          "rsi": null,
+          "note": "live-status pipe stale 48.1h (system_gates.stale=true, age_sec=172967, indicators_pro frozen). OHLCV-derived: 12:45 EDT close 84.08 vol 7993 inside compression band 82.74-84.18. vol_ratio rough estimate vs baseline ~14.5k = 0.55. live-status indicators_pro values ignored per hard rule #1."
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Compression mode confirmed (transitioned v2.4 fire 168, 12 min ago). 12:45 EDT bar close 84.08 inside band 82.74-84.18, vol 7993 (sub-8k conv floor) = compression sustaining. Price drifted from 12:30 close 83.95 back to 84.08 \u2014 0.12% from upper band edge 84.18, but vol still sub-conviction so v2.5 calibration target NOT triggered (need vol_ratio >=1.5x AND price within 0.3% of edge \u2014 one met, one not). v2.3 rule binding: B-grade ENTER requires cohort non-worst AND (asymmetry OR structural trigger OR displacement) \u2014 current candidates: short on upper-band retest = sideways+short cohort (WORST: n=5 -$31.77 WR40%); long inside compression = no structural trigger. Budget remaining $2.40 cannot fund any B/C-grade at_risk even on tight SL (1-contract $425 notional \u00d7 0.005 = $2.13 borderline; budget tracker uses default 0.02 = $8.50 estimate). HOLD with C-grade hypothetical short lean toward mid-band 83.46 = the committed directional lean, naming missing inputs (worst cohort + budget capacity + no structural trigger). No reflection this fire \u2014 v2.4 was 12 min ago, no surprise.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 84.08,
+          "sl_pct": 0.005,
+          "tp_pct": 0.007,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "drift_sideways",
+          "reasoning_30_words": "Compression mid-band reversion lean: price 84.08 closer to upper edge 84.18 than mid 83.46. Vol-floor failed both prior fade attempts. Cohort worst (sideways+short) blocks live ENTER."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1779900909.585382,
@@ -1465,53 +1516,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779885480.924845,
-      "iso": "2026-05-27T08:38:00-04:00",
-      "fire_count": 150,
-      "summary": "Framework v1.6 written (trigger: surprise:range_break_probe_with_vol_conviction)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779885480.924845,
-        "iso": "2026-05-27T08:38:00-04:00",
-        "fire_count": 150,
-        "balance_usd": 894.08,
-        "version_tag": "v1.6",
-        "trigger": "surprise:range_break_probe_with_vol_conviction",
-        "what_im_trying": "Surprise-trigger reflection: 5th sweep attempt this fire is the first probe with vol conviction in 19.5h band life. 12:15 UTC bar (sweep-low $83.43 / high $84.54 / close $84.21 / vol 25205 = ~7x avg) marginally broke range_high $84.18 by $0.03. cognition_mode TRANSITIONS Compression -> Regime Uncertain because (a) the 288h-down regime tag is unchanged but (b) the intra-day tape just produced an event materially different from the prior 4 failed sweeps. Model substance unchanged: v0.9/v1.4 cohort-aware A+ shape (cohort + asymmetry + vol_ratio + structural trigger), with v1.2 hard rules on data layer. This fire scores ~1.5/4: cohort PASS (down regime favorable both ways historically), asymmetry MARGINAL (one-bar bullish, indicator pack still stale 44h), vol_ratio AMBIGUOUS (7x on 1 bar not sustained), structural break MARGINAL ($0.03 above without retest). HOLD on decision; watching next 2-3 bars to disambiguate failed-sweep vs break-and-test vs chop.",
-        "whats_working": "v1.2 hard rules now fired cleanly for 6th fire. Rule #1: stale=true age_sec=158386 (44h, pipe still frozen since 2026-05-25 12:49 EDT \u2014 crossed the 48h informal watch line as I predicted in v1.5). Rule #2: live-status $85.23 vs OHLCV-derived $84.22 (12:30 partial) -> divergence +1.20% > 0.5% trigger, switched cleanly. Rule #3: 4h cum +0.17% nowhere near 1.5%/1.0x joint Expansion trigger, correctly NOT auto-transitioning to Expansion. The reason I transitioned to Regime Uncertain instead of Expansion is exactly this: hard-rule #3 said 'not Expansion', and my qualitative read is 'mixed signals', not 'sustained vol-confirmed displacement'. Hard rules + qualitative read agree this fire. Cohort framework continues to provide directional context (down regime today, down+long and down+short both historically favorable, n=4 and n=6 respectively).",
-        "whats_failing": "Still 149/149 own-book HOLD before this fire (-> 150/150 after). The 12:15 UTC probe is the first setup-CANDIDATE since v0.9 was written 32h ago, but I will not flip HOLD to ENTER on a marginal $0.03 break without retest confirmation. The cohort-aware shape remains theoretically operational but empirically untested by an ENTER. Geometry-of-trade hasn't changed: if I were to long here at $84.21, the natural SL is below $84.00 (-0.25% \u2014 too tight, gets clipped on any retest from above) or below $82.74 (range_low, -1.75% \u2014 too wide given the $144 loss budget). Without a clean retest of $84.18-as-support, the long entry is unbuildable. This is the same geometry problem v0.9/v1.4 anticipated: cohort prior alone is not enough to flip HOLD; you need structural confirmation + sized SL. Calibration of 'how marginal is too marginal' for structural triggers remains untested.",
-        "what_im_iterating": "Nothing on model substance \u2014 the framework correctly evaluated this fire's tape as MARGINAL setup, score 1.5/4, HOLD. The substantive carry-forward is the mode transition itself: Compression -> Regime Uncertain. Cadence shifts from 1h heartbeat to 15min on transitions. Next 1-2 fires (~08:48 EDT and ~09:03 EDT) will see the 12:30, 12:45 UTC bars and answer the question 'did the break confirm or fade?'. SL-cluster pre-entry predictor (parked since v0.9, deferred v1.5) remains queued for v1.7 forced-action slot OR next surprise \u2014 but THIS surprise is the more time-sensitive event; predictor pull stays parked one more cadence.",
-        "edits_from_prior": [
-          "MODE TRANSITION: Compression (since 2026-05-26T13:00-04:00, 19.5h) -> Regime Uncertain (this fire). Triggered by 12:15 UTC vol-conviction range test. Public timeline event.",
-          "Cadence hint shifts: '1h heartbeat' -> '15min on transitions'. Next fire expected ~08:48 EDT.",
-          "5th sweep attempt logged in state.json. First with vol conviction (25205 = 7x avg). Materially different from prior 4 sweeps.",
-          "Hard-rule track record now 6 fires (v1.2 surprise, v1.3 cadence, v1.4 state-only, v1.4 cadence, v1.5 cadence, v1.6 surprise). 6/6 clean execution; rule #2 caught divergence again this fire.",
-          "v5.3 indicator-pipe staleness has crossed 48h informal watch (now 44h+ \u2014 crosses 48h at v1.7 cadence ~10:30 EDT if pipe stays frozen). Formal Bonny-flag escalation maintained from v1.5 open_questions; if pipe is still frozen at v1.7 the flag should escalate further.",
-          "Drift-watch counter: v1.5 (counter=1 honest non-iteration) -> v1.6 (counter=0 substantive via mode transition + 5th sweep state update). Surprise broke the drift cycle.",
-          "Founder-notes cold-start scan: still empty pending queue for 9th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~23.5h)."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "5th sweep disambiguation: next 2-3 bars (12:30/12:45/13:00 UTC) need to show (a) fade back below $84.18 -> failed sweep -> revert to Compression; (b) hold above $84.18 + clean retest as support -> long setup candidate forming; (c) further range expansion with new high above $84.54 without retest -> chase risk, likely still HOLD pending pullback. Pre-committing decision tree.",
-          "If 5b materializes (clean retest of $84.18 as support with sustained vol >=1.0x), what's the ENTER call? Cohort is favorable (down+long +$12.74/n=4/WR75). SL geometry: tight just below $84.18 (~-0.3%), but n=4 cohort is too small for confident sizing. Default qty=1 contract = ~$425 notional / -0.3% SL = ~$1.3 risk + ~$1 fees = ~$2.30 total = ~1.6% of $144 loss budget. Geometrically OK. Worth flipping HOLD on confirmation, but the structural confirmation has to actually arrive.",
-          "Pre-entry SL-cluster predictor: still parked. Deferred again this fire due to time-sensitive surprise. Target v1.7 forced-action OR next non-time-sensitive cadence.",
-          "v5.3 indicator-pipe staleness now 44h+, crosses 48h boundary at next cadence fire (~v1.7). Formal Bonny-flag carried.",
-          "Calibration carry-forward: 'how marginal is too marginal' for structural break triggers remains untested. The $0.03/0.04% above range_high in this fire is data point #1 in the calibration. If 5a fades back, then '$0.03 above on 1 bar = noise'. If 5b confirms, then '$0.03 above on 7x vol bar = signal'.",
-          "Drift watch: counter=0 after v1.6. v1.7 (if no further surprise) no-edit -> counter=1.",
-          "96h compression-extension audit: moot if range breaks meaningfully; otherwise re-anchors. Tentative 2026-05-30 13:00 EDT if some band-of-some-shape still applies."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 703,
+    "holds_since_framework": 3,
+    "avg_chars": 830,
     "since_iso": "2026-05-27T12:48:31-04:00",
     "since_framework_version": "v2.4",
-    "latest_fire_iso": "2026-05-27T12:55:09-04:00"
+    "latest_fire_iso": "2026-05-27T13:02:08-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2299,14 +2311,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 2,
+    "holds_in_a_row": 3,
     "exploratory_at_risk_usd_today": 6.54,
     "exploratory_entries_today": 2,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T16:53:58.608648+00:00",
+    "last_updated_iso": "2026-05-27T17:00:33.056400+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
