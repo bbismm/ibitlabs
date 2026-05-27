@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779901757,
-  "generated_iso": "2026-05-27T13:09:17-0400",
+  "generated_at": 1779902715,
+  "generated_iso": "2026-05-27T13:25:15-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 171,
+    "decisions_total": 173,
     "actions": {
-      "HOLD": 167,
+      "HOLD": 169,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 11,
+      "HOLD_with_counterfactual": 13,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 146,
-      "medium": 16,
+      "medium": 18,
       "low": 9
     },
-    "reasoning_chars_avg_all": 992,
-    "reasoning_chars_avg_last10": 976,
+    "reasoning_chars_avg_all": 994,
+    "reasoning_chars_avg_last10": 995,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T13:09:10-04:00",
+    "last_fire_iso": "2026-05-27T13:21:55-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779901750.364148,
-    "fire_iso": "2026-05-27T13:09:10-04:00",
+    "fire_ts": 1779902515.623786,
+    "fire_iso": "2026-05-27T13:21:55-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.92,
+    "current_price": 83.31,
     "regime": "sideways",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
-      "rsi": 60.4,
-      "_note_pipe_stale": "live-status indicators_pro stale 48.05h+ (system_gates.stale=true). 13:00 EDT in-progress bar OHLCV: open 84.04, current 83.82, vol 5384/partial."
+      "vol_ratio": 1.73,
+      "momentum_pct": -0.98,
+      "rsi": null,
+      "_note": "stoch_rsi from STALE v5.3 pipe (48h+); vol_ratio and momentum derived from fresh Coinbase OHLCV 13:00 EDT formal-close bar"
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,24 +61,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Same baseline as fire 169 (5min ago). Compression mode held since 12:48 EDT. 12:45 formal close 84.03 vol 8649 (above 8k floor but inside band 82.74-84.18 \u2014 no structural break). 13:00 in-progress drifting to 83.82 toward mid-band 83.46 on weak vol. v2.3 rule binds: forced_exploration_due=True but (a) only directional lean is sideways+short = WORST cohort (n=5 WR40% net -$31.77); (b) budget remaining $2.40 < smallest C-grade at_risk $3.40 (1c \u00d7 0.012 SL \u00d7 $425 notional). HOLD with hypothetical naming the lean + missing inputs. No state.json rewrite \u2014 no material trigger (no regime flip / range break / displacement / sweep / OI shift / position change).",
+    "reasoning": "Compression mode holds (v2.4 transition 33min ago). New tape: 13:00 EDT formal close 83.21 vol 13,806 (~1.73x baseline) = largest-vol bar of day, directional probe toward lower band edge 82.74. 13:15 EDT in-progress c=83.31 low 83.01 = continuation losing momentum. v2.5 named criterion (vol_ratio>=1.5x AND price within 0.3% of band edge) is 1-of-2 met: vol \u2713, proximity \u2717 (low 83.18 / 83.01 = 0.53% / 0.33% above 82.74, very close but not crossing). HOLD with C-grade SHORT hypothetical (lean toward 82.74 test). Three rule-level blocks compound: (a) budget remaining .40 cannot fund min C-grade at-risk (~ on live 1-contract clamp), (b) sideways+short is WORST cohort per founder-note-3/C3 (n=5 -.77 WR40%), (c) v2.3 rule requires CONFIRMED structural trigger which is BUILDING but not yet met. v2.4 explicitly named the lower-band approach as v2.5 calibration target \u2014 signal building 33min after mode transition is faster than implied stability window but criterion not formally triggered. Skipping framework reflection this fire (cadence <4h, surprise criterion not formally met). Will write v2.5 if next 1-2 bars produce: (a) close below 82.74, (b) wick-and-reclaim from <82.74 = sweep #7 candidate, or (c) signal-decay back inside band with declining vol.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "15m bar formal close > 84.18 with vol >= 8k = range break high",
-      "15m bar formal close < 82.74 with vol >= 8k = range break low",
-      "15m bar vol_ratio >= 1.5x AND price within 0.3% of either band edge = pre-break warning (transition Compression -> Regime Uncertain)",
-      "Any 15min displacement >1.5% with vol = wrapper safety-floor fire override"
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 83.92,
+      "entry_price": 83.31,
       "sl_pct": 0.012,
-      "tp_pct": 0.006,
-      "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Mid-band short toward 83.46 mean-revert. Lean exists but UNTRADEABLE: sideways+short = WORST cohort (WR 40%, -$31.77/n=5) + budget $2.40 < smallest C-grade at_risk."
+      "tp_pct": 0.0068,
+      "predicted_2h_outcome": "drift_toward_tp",
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "High-vol bar 1.73x probing lower edge with continuation; tape lean is short toward 82.74 band-low test. R/R poor (0.57:1); cohort worst. Lean noted, not endorsed."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1524,11 +1519,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 788,
+    "holds_since_framework": 6,
+    "avg_chars": 908,
     "since_iso": "2026-05-27T12:48:31-04:00",
     "since_framework_version": "v2.4",
-    "latest_fire_iso": "2026-05-27T13:09:10-04:00"
+    "latest_fire_iso": "2026-05-27T13:21:55-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2183,29 +2178,29 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v2.4 update 2026-05-27 12:44 EDT (fire 168): 12:30 EDT formal close 83.99 vol 6761 RESOLVED pre-commit v3.2 branch (b). Failed-extension complete + 2 bars declining vol inside band (12:15 7493 + 12:30 6761, both sub-8k). Mode TRANSITION committed: Regime Uncertain -> Compression per v2.3 trigger condition. Cadence_hint 'fire 1h heartbeat' (wrapper safety-floor triggers override). Reflection v2.4 written.",
-    "updated_ts": 1779900511.9259038,
-    "updated_iso": "2026-05-27T12:48:31-04:00",
-    "updated_by_fire_iso": "2026-05-27T12:48:31-04:00",
+    "comment": "Claude-trader v2.4 micro-update 2026-05-27 13:22 EDT (fire 172): NO mode transition \u2014 Compression holds. 13:00 EDT bar closed 83.21 vol 13,806 (~1.73x baseline) \u2014 directional probe toward lower band edge 82.74. v2.5 named criterion (vol_ratio>=1.5x AND price within 0.3% of edge) is 1-of-2 met (vol \u2713 / proximity \u2717 at 0.57% above lower edge). Pre-break-warning signal BUILDING but not formally triggered. State narrative updated; mode unchanged.",
+    "updated_ts": 1779902515.623786,
+    "updated_iso": "2026-05-27T13:21:55-04:00",
+    "updated_by_fire_iso": "2026-05-27T13:21:55-04:00",
     "regime": "sideways",
-    "regime_detail": "Compression band 82.74-84.18 reasserted after failed band-break-high attempt (11:15->12:00 EDT, peak h=84.68, decay 12:15 c=84.00 / 12:30 c=83.99). Both fade attempts had vol <8k conv floor (7493 + 6761) = directionally short-biased but structurally vol-unconfirmed = HOLD. live-status indicators_pro pipe stale 48.1h - tape state derived from Coinbase OHLCV 15m.",
+    "regime_detail": "Compression band 82.74-84.18 holds. 13:00 EDT bar (close 83.21 low 83.18 vol 13,806) was largest-vol bar of day, directional probe toward lower band edge. Still inside band. live-status regime='down' (288h window) divergent from state.json 'sideways' \u2014 v5.3 pipe stale 48h+, slow-classifier read also not trusted. Recent 48h tape is clearly range-bound, not trending down.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 24.8,
+    "compression_hours": 25.4,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
     "range_broken_high_iso": "2026-05-27T11:15-04:00",
     "range_break_failed_iso": "2026-05-27T12:15-04:00",
     "sweeps_attempted": 6,
-    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). Subsequent chase-cycle (fire 165->166 -$3.30 net) was a chase-tax-anti-pattern instance, NOT a sweep. Band-break attempt 11:15-12:00 EDT also NOT a sweep (it was a clean break-and-fade, different setup-type). 12:15 + 12:30 both closed back inside band with declining vol = failed extension RESOLVED.",
+    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). No new sweep yet \u2014 current downward probe is approaching lower band but has not wick-rejected from 82.74. If next 1-2 bars produce wick-and-reclaim from 82.74 = sweep #7. If clean close below 82.74 = range break low (different setup-type).",
     "last_displacement_iso": "2026-05-27T11:15-04:00",
-    "last_displacement_detail": "Band-break displacement 11:15-12:00 EDT decayed via 12:15 (c=84.00 vol 7493) + 12:30 (c=83.99 vol 6761). Net 4h cumulative (10:45 c=83.77 -> 12:30 c=83.99) = +0.26% - back to noise-floor. Energy fully spent on the failed break.",
-    "funding_state": "OKX -2.50e-5 (slight short bias, magnitude-noise tier; immaterial in Compression mode).",
+    "last_displacement_detail": "No new displacement (>1.5%/15m). 13:00 EDT bar was -0.98% (sub-displacement threshold) but with high vol 13,806 = directional conviction without displacement label.",
+    "funding_state": "OKX -2.19e-5 (slight short bias, magnitude-noise tier).",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 168. Pre-commit v3.2 branch (b) cleanly resolved: 12:30 EDT formal close 83.99 vol 6761 = failed-extension complete + 2 bars declining vol back inside compression band 82.74-84.18. Mode TRANSITIONS Regime Uncertain -> Compression per v2.3 named trigger ('1-2 more bars of declining vol inside band' now satisfied). HOLD with C-grade SHORT hypothetical (directional lean toward mid-band 83.46, low conviction - vol-floor failed both fade attempts + sideways+short is WORST cohort + budget remaining $2.40 cannot fund even smallest B-grade at_risk). Compression mode cadence_hint 'fire 1h heartbeat'; wrapper safety-floor triggers (position state, regime flip, range break, displacement >1.5%/15min) still fire immediately. Next-fire reads: (1) wait for safety-floor trigger or 1h heartbeat fire (whichever first); (2) if 15m bar vol_ratio >=1.5x + price within 0.3% of band edge = pre-break warning, transition back to Regime Uncertain (v2.5 calibration target); (3) Budget reset 00:00 UTC = ~7h15min away. New $-budget tomorrow ~$8.94. P0/P1 carry-forward flags (pipe staleness 48.1h, reaction lag, SL-cluster predictor) silent-carry now per v2.4 parsimony commitment.",
+    "narrative": "Phase B.1 fire 172. Compression mode holds but on-watch. New tape input: 13:00 EDT bar (close 83.21 low 83.18 vol 13,806 ~1.73x baseline) = largest-vol bar of day, directional probe toward lower band edge 82.74. 13:15 EDT in-progress (c=83.31 low 83.01 vol 6087) shows continuation but losing momentum. v2.5 named transition criterion (vol_ratio>=1.5x AND price within 0.3% of edge) is 1-of-2 met: vol \u2713 (1.73x), proximity \u2717 (low 83.18 vs band-low 82.74 = 0.53% above; in-progress low 83.01 = 0.33% above \u2014 VERY close but not crossing 0.3% threshold yet). HOLD with C-grade SHORT hypothetical (directional lean toward 82.74 band-low test). Rule-level blocks: (a) budget remaining $2.40 cannot fund min C-grade at-risk (~$5 on live clamp), (b) sideways+short worst cohort (note-3/C3 n=5 -$31.77 WR40%), (c) v2.3 rule requires confirmed structural trigger which is BUILDING but not yet met. Pre-break-warning still building. Next fire reads: (1) if 13:30 EDT formal close prints inside band with vol<8k = signal-decay back to compression-stability; (2) if 13:30 close below 82.74 = range break LOW (write v2.5 surprise reflection, possible Expansion mode if vol confirms); (3) if next bar wick-and-reclaim from <82.74 = sweep #7 candidate (failed-sweep-reclaim setup-type, this time at low edge \u2014 write v2.5 reflection). Wrapper still firing 5-min cadence (cadence_hint 'fire 1h heartbeat' not yet honored by wrapper layer). P0/P1 silent-carry per v2.4 parsimony commitment.",
     "cognition_mode": "Compression",
     "cognition_mode_since_iso": "2026-05-27T12:48:31-04:00",
-    "cognition_mode_rationale": "Failed band-break + 2 bars declining vol back inside band 82.74-84.18 = v2.3's named criterion for Compression-transition met. Tape information rate has fully decayed; no displacement, no fresh range edge, vol below baseline. Per 4-mode ontology Compression = 'Low information rate. Tight range, low ATR, no displacement, no sweep activity' - exact fit. Wrapper safety-floor triggers still active.",
+    "cognition_mode_rationale": "13:00 EDT bar vol 13,806 (1.73x) is borderline expansion-vol but lacks displacement (-0.98% <1.5%) and lacks edge-proximity (still 0.33-0.53% above band-low). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 high-vol-directional-probe inside band still qualifies (the probe IS information but not yet structural). v2.5 named criterion (vol AND edge-proximity) explicitly governs transition to Regime Uncertain; only 1-of-2 met = on-watch, no transition.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T12:48:31-04:00",
@@ -2215,7 +2210,7 @@
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
     "operational_rule_v2_3": "B-grade ENTER requires (a) cohort historical non-worst AND (b) >=1 of {clear directional asymmetry / structural trigger CONFIRMED / displacement CONFIRMED}. Pending-confirmation setups don't qualify - they're guesses dressed as setups. If forced_exploration_due TRUE but none of those conditions met, default to HOLD with no_plausible_counterfactual reason OR HOLD with hypothetical naming the lean + missing input.",
-    "last_gate_check_iso": "2026-05-27T16:48:31+00:00",
+    "last_gate_check_iso": "2026-05-27T17:21:55+00:00",
     "hypothetical_position": null,
     "last_closed_position": {
       "direction": "long",
@@ -2267,11 +2262,11 @@
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-27T12:48:31-04:00",
-    "rationale": "Failed band-break + 2 bars declining vol back inside band 82.74-84.18 = v2.3's named criterion for Compression-transition met. Tape information rate has fully decayed; no displacement, no fresh range edge, vol below baseline. Per 4-mode ontology Compression = 'Low information rate. Tight range, low ATR, no displacement, no sweep activity' - exact fit. Wrapper safety-floor triggers still active.",
+    "rationale": "13:00 EDT bar vol 13,806 (1.73x) is borderline expansion-vol but lacks displacement (-0.98% <1.5%) and lacks edge-proximity (still 0.33-0.53% above band-low). Per 4-mode ontology Compression = 'low information rate, tight range, low ATR, no displacement, no sweep activity' \u2014 high-vol-directional-probe inside band still qualifies (the probe IS information but not yet structural). v2.5 named criterion (vol AND edge-proximity) explicitly governs transition to Regime Uncertain; only 1-of-2 met = on-watch, no transition.",
     "cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-27T12:48:31-04:00",
-    "last_gate_check_iso": "2026-05-27T16:48:31+00:00"
+    "last_gate_check_iso": "2026-05-27T17:21:55+00:00"
   },
   "framework_origins": [
     {
@@ -2316,14 +2311,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 4,
+    "holds_in_a_row": 6,
     "exploratory_at_risk_usd_today": 6.54,
     "exploratory_entries_today": 2,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T17:07:30.460390+00:00",
+    "last_updated_iso": "2026-05-27T17:22:01.308860+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
