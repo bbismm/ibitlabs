@@ -1,32 +1,32 @@
 {
   "public_schema_version": 7,
-  "generated_at": 1779897517,
-  "generated_iso": "2026-05-27T11:58:37-0400",
+  "generated_at": 1779898088,
+  "generated_iso": "2026-05-27T12:08:08-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 163,
+    "decisions_total": 164,
     "actions": {
-      "HOLD": 161,
+      "HOLD": 162,
       "ENTER": 1,
       "EXIT": 1
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 5,
+      "HOLD_with_counterfactual": 6,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 1
     },
     "confidence": {
       "high": 144,
-      "medium": 12,
+      "medium": 13,
       "low": 7
     },
-    "reasoning_chars_avg_all": 994,
-    "reasoning_chars_avg_last10": 1110,
+    "reasoning_chars_avg_all": 997,
+    "reasoning_chars_avg_last10": 1145,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T11:58:31-04:00",
+    "last_fire_iso": "2026-05-27T12:08:04-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -36,28 +36,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779897511.21207,
-    "fire_iso": "2026-05-27T11:58:31-04:00",
+    "fire_ts": 1779898084.546564,
+    "fire_iso": "2026-05-27T12:08:04-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 84.25,
+    "current_price": 84.5,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio_live_status_stale": 0.56,
-      "vol_ratio_ohlcv_real_4h_avg": 1.99,
-      "momentum_pct": -0.08,
-      "rsi": 60.4,
-      "ohlcv_15m_latest_close": 84.25,
-      "ohlcv_15m_in_progress_low_high": [
-        84.18,
-        84.36
-      ],
-      "live_status_price_stale": 85.23,
-      "live_status_vs_ohlcv_div_pct": -1.16,
-      "v53_pipe_staleness_hours": 47.1,
-      "fourh_cum_pct": 0.51
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.0008,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -69,19 +59,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Pre-commit v3.1 (state.json fire 162, 12min ago) branch (a) \u2014 backside retest of broken band-high 84.18 from above + reclaim = continuation long. 15:45 UTC in-progress bar tagged retest EXACTLY (l=84.18) and currently c=84.25 above the level. Geometry textbook. BUT vol on retest is weak: 3,749 in ~10 of 15 min, pro-rated full-bar ~5.6k vs 8k conviction floor. Morning's failed-sweep-reclaim ENTER had vol-confirmed reclaim bars 22.8k+; this retest is the dim analogue. 4h cum dropped +1.05% (v2.2) \u2192 +0.51% (this fire) = Expansion intensity fading. Bar NOT formally closed (5min remaining). Per v2.1 open question + v2.2 carry: in-progress vs formal-close trigger ambiguity codification target. Discipline call: wait one fire (~5min) for 15:45 UTC formal close + early 16:00 UTC bar. If 15:45 UTC formal close > 84.18 with vol-confirmed (full-bar \u2265 8k) reclaim \u2192 (a) ENTER next fire. If close < 84.18 within 2-3 bars (this + next) \u2192 (b) failed-extension fade short. If chop in 84.18-84.35 zone with weak vol both ways \u2192 drift candidate, HOLD continues. Live-status indicators_pro (price 85.23 vs OHLCV 84.25, vol_ratio 0.56 vs real ~2x baseline) ignored \u2014 pipe stale 47.1h, OHLCV authoritative. Budget remaining $4.51 / $8.94 daily; preserving for stronger conviction trigger rather than chase a vol-weak in-progress reclaim.",
+    "reasoning": "Fire 163's pre-commit was explicit: ENTER long IF 15:45 UTC formal close > 84.18 AND vol-confirmed (full-bar >= 8k). Formal close came in 84.28 (PASS); vol came in 7,145 (FAIL 8k floor by ~11%). Per literal pre-commit discipline: HOLD. 16:00 UTC in-progress (4min in) low 84.28 / high 84.50 / close 84.50 / vol 2,450 partial \u2014 pro-rated ~9.2k full-bar would meet conviction floor IF sustained, but 84.50 is now AT pre-commit branch (c) chase-tax threshold. So I am wedged: branch (a) trigger condition technically failed by vol, branch (c) HOLD is activating, branch (b) failed-extension fade not yet armed (no close back < 84.18). 4h cum further decayed +1.05% (v2.2) -> +0.51% (fire 163) -> +0.20% (this fire), Expansion intensity continues fading. Live-status pipe stale 47.4h confirmed: shows price 85.23 vs real OHLCV 84.50 (=1.40% delta, pipe still frozen). Honor pre-commit; HOLD. Wait for one of: (a') cleaner retest of 84.18 with conviction-vol-confirmed reclaim -> ENTER long; (b) close back below 84.18 within next 1-2 bars -> ENTER short fade; (c) continued extension above 84.50 with vol-conviction -> HOLD until structural reset. Budget script reads forced_exploration_due=True but its own spent_today=$4.43/1 ENTER contradicts the null last_enter_iso \u2014 script-state inconsistency; spirit-of-rule (24h+ no trade) does not apply given fire 152->161 closed cycle ~1.7h ago. Hypothetical entry written below as the required directional commitment.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "long",
-      "entry_price": 84.25,
-      "sl_pct": 0.003,
-      "tp_pct": 0.0065,
+      "entry_price": 84.5,
+      "sl_pct": 0.005,
+      "tp_pct": 0.0036,
       "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Backside retest of broken band-high 84.18 tagged + held; cohort down+long n=5 WR80%; structural geometry textbook; vol-weak in-progress bar is sole caveat; pre-commit v3.1 branch (a) directional lean if forced."
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "Pre-commit (a) vol-conf failed (7145 < 8k); 16:00 UTC in-progress extends to chase threshold 84.50 on partial vol; long lean if forced but chase tax activated; C-grade only."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1426,11 +1416,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 1057,
+    "holds_since_framework": 3,
+    "avg_chars": 1191,
     "since_iso": "2026-05-27T11:43:32-04:00",
     "since_framework_version": "v2.2",
-    "latest_fire_iso": "2026-05-27T11:58:31-04:00"
+    "latest_fire_iso": "2026-05-27T12:08:04-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2188,14 +2178,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 1,
+    "holds_in_a_row": 2,
     "exploratory_at_risk_usd_today": 4.43,
     "exploratory_entries_today": 1,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T15:55:08.645373+00:00",
+    "last_updated_iso": "2026-05-27T16:03:58.084383+00:00",
     "last_known_balance_usd": 894.08
   }
 }
