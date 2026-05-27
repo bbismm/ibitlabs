@@ -1,14 +1,14 @@
 {
   "public_schema_version": 7,
-  "generated_at": 1779898088,
-  "generated_iso": "2026-05-27T12:08:08-0400",
+  "generated_at": 1779898700,
+  "generated_iso": "2026-05-27T12:18:20-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 164,
+    "decisions_total": 165,
     "actions": {
       "HOLD": 162,
-      "ENTER": 1,
+      "ENTER": 2,
       "EXIT": 1
     },
     "grades": {
@@ -16,17 +16,18 @@
       "HOLD_with_counterfactual": 6,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
-      "EXIT": 1
+      "EXIT": 1,
+      "ENTER_B": 1
     },
     "confidence": {
       "high": 144,
       "medium": 13,
-      "low": 7
+      "low": 8
     },
     "reasoning_chars_avg_all": 997,
-    "reasoning_chars_avg_last10": 1145,
+    "reasoning_chars_avg_last10": 1170,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T12:08:04-04:00",
+    "last_fire_iso": "2026-05-27T12:17:49-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -36,48 +37,99 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779898084.546564,
-    "fire_iso": "2026-05-27T12:08:04-04:00",
+    "fire_ts": 1779898669.937956,
+    "fire_iso": "2026-05-27T12:17:49-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 84.5,
+    "current_price": 84.44,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
-      "momentum_pct": -0.0008,
-      "rsi": 60.4
+      "momentum_pct": -0.08,
+      "rsi": null,
+      "note_indicators_stale": "v5.3 pipe stale ~47h; values from live-status untrustworthy. OHLCV-derived: real price ~84.44, 16:00 UTC in-progress bar vol 9,328 (1.17x 8k floor), 4h trailing vol ~10k = ~1.5-2x baseline."
     },
-    "decision": "HOLD",
-    "grade": null,
-    "size_multiplier": null,
-    "setup_type": null,
-    "direction": null,
+    "decision": "ENTER",
+    "grade": "B",
+    "size_multiplier": 0.35,
+    "setup_type": "retest_reclaim_post_band_break_pending_confirmation",
+    "direction": "long",
     "symbol": "SOL-PERP",
-    "quantity": null,
-    "leverage": null,
-    "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Fire 163's pre-commit was explicit: ENTER long IF 15:45 UTC formal close > 84.18 AND vol-confirmed (full-bar >= 8k). Formal close came in 84.28 (PASS); vol came in 7,145 (FAIL 8k floor by ~11%). Per literal pre-commit discipline: HOLD. 16:00 UTC in-progress (4min in) low 84.28 / high 84.50 / close 84.50 / vol 2,450 partial \u2014 pro-rated ~9.2k full-bar would meet conviction floor IF sustained, but 84.50 is now AT pre-commit branch (c) chase-tax threshold. So I am wedged: branch (a) trigger condition technically failed by vol, branch (c) HOLD is activating, branch (b) failed-extension fade not yet armed (no close back < 84.18). 4h cum further decayed +1.05% (v2.2) -> +0.51% (fire 163) -> +0.20% (this fire), Expansion intensity continues fading. Live-status pipe stale 47.4h confirmed: shows price 85.23 vs real OHLCV 84.50 (=1.40% delta, pipe still frozen). Honor pre-commit; HOLD. Wait for one of: (a') cleaner retest of 84.18 with conviction-vol-confirmed reclaim -> ENTER long; (b) close back below 84.18 within next 1-2 bars -> ENTER short fade; (c) continued extension above 84.50 with vol-conviction -> HOLD until structural reset. Budget script reads forced_exploration_due=True but its own spent_today=$4.43/1 ENTER contradicts the null last_enter_iso \u2014 script-state inconsistency; spirit-of-rule (24h+ no trade) does not apply given fire 152->161 closed cycle ~1.7h ago. Hypothetical entry written below as the required directional commitment.",
-    "expected_holding_hours": null,
-    "expected_pnl_pct_target": null,
-    "abort_conditions": [],
-    "hypothetical_entry_record": {
-      "implied_grade": "C",
-      "direction": "long",
-      "entry_price": 84.5,
-      "sl_pct": 0.005,
-      "tp_pct": 0.0036,
-      "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Pre-commit (a) vol-conf failed (7145 < 8k); 16:00 UTC in-progress extends to chase threshold 84.50 on partial vol; long lean if forced but chase tax activated; C-grade only."
-    },
+    "quantity": 1,
+    "leverage": 1.0,
+    "sl_pct": 0.005,
+    "confidence": "low",
+    "reasoning": "Budget forced_exploration_due TRUE + plausible long lean exists per v3.1 branch (a) -> protocol mandates B-grade ENTER. Tape: 22.3h compression band broken HIGH at 15:15 UTC c=84.34>84.18 (vol 9.6k = 1.2x floor). Post-break: 15:30 UTC c=84.28 + 15:45 UTC c=84.28 held above broken band but low 84.06 wicked BELOW band-high before reclaim; 16:00 UTC in-progress c=84.44 h=84.60 extends. Honest read: setup MID-FORMATION not clean (a)-trigger. Vol decelerating across post-break bars (13.3k->11.8k->7.1k->9.3k = conviction fading). R/R geometric weak (~0.75:1 at entry 84.44 / SL 84.00 below recent wick low / TP 84.78 lower TP-zone). Confidence low. live-status indicators_pro untrustworthy (47h stale pipe); used OHLCV per hard rule #2. v5.3 conditions symmetric 5/8 long+short = no v5.3 directional signal; LONG selection is via tree v3.1 (a) structural framing not v5.3 conditions and not cohort math (down+long n=5 +.64 WR80 is noise-tier prior). Recency caution: prior closed long-failed_sweep_reclaim ~55min ago at +.90 net.",
+    "expected_holding_hours": 2,
+    "expected_pnl_pct_target": 0.004,
+    "abort_conditions": [
+      "next 15m bar close back below 84.18 = failed reclaim, exit immediately",
+      "next 2 bars vol both <7k = no conviction, exit at BE+ if reachable else flat",
+      "elapsed >2h with no progress toward 84.70 = time-cut exit",
+      "reverse break: any 15m close <83.90 = SL-equivalent exit"
+    ],
+    "hypothetical_entry_record": null,
     "no_plausible_counterfactual": null,
-    "exploration_attribution": null,
+    "exploration_attribution": {
+      "reason": "setup_archetype_underrepresented",
+      "info_hypothesis": "tests whether post-band-break consolidation-with-decelerating-vol-and-wick-below-band produces clean continuation upon reclaim \u2014 structurally distinct from prior failed_sweep_reclaim (this is closer to broken band, vol fading not building, R/R geometrically weaker; n=0 closed cycles on this exact archetype)",
+      "predicted_information_value": "medium"
+    },
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "enter",
+      "ts": 1779898669.937956,
+      "iso": "2026-05-27T12:17:49-04:00",
+      "fire_count": 165,
+      "summary": "ENTER long SOL-PERP @ $84.44 qty=1 lev=1.0",
+      "payload": {
+        "fire_ts": 1779898669.937956,
+        "fire_iso": "2026-05-27T12:17:49-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 84.44,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": null,
+          "note_indicators_stale": "v5.3 pipe stale ~47h; values from live-status untrustworthy. OHLCV-derived: real price ~84.44, 16:00 UTC in-progress bar vol 9,328 (1.17x 8k floor), 4h trailing vol ~10k = ~1.5-2x baseline."
+        },
+        "decision": "ENTER",
+        "grade": "B",
+        "size_multiplier": 0.35,
+        "setup_type": "retest_reclaim_post_band_break_pending_confirmation",
+        "direction": "long",
+        "symbol": "SOL-PERP",
+        "quantity": 1,
+        "leverage": 1.0,
+        "sl_pct": 0.005,
+        "confidence": "low",
+        "reasoning": "Budget forced_exploration_due TRUE + plausible long lean exists per v3.1 branch (a) -> protocol mandates B-grade ENTER. Tape: 22.3h compression band broken HIGH at 15:15 UTC c=84.34>84.18 (vol 9.6k = 1.2x floor). Post-break: 15:30 UTC c=84.28 + 15:45 UTC c=84.28 held above broken band but low 84.06 wicked BELOW band-high before reclaim; 16:00 UTC in-progress c=84.44 h=84.60 extends. Honest read: setup MID-FORMATION not clean (a)-trigger. Vol decelerating across post-break bars (13.3k->11.8k->7.1k->9.3k = conviction fading). R/R geometric weak (~0.75:1 at entry 84.44 / SL 84.00 below recent wick low / TP 84.78 lower TP-zone). Confidence low. live-status indicators_pro untrustworthy (47h stale pipe); used OHLCV per hard rule #2. v5.3 conditions symmetric 5/8 long+short = no v5.3 directional signal; LONG selection is via tree v3.1 (a) structural framing not v5.3 conditions and not cohort math (down+long n=5 +.64 WR80 is noise-tier prior). Recency caution: prior closed long-failed_sweep_reclaim ~55min ago at +.90 net.",
+        "expected_holding_hours": 2,
+        "expected_pnl_pct_target": 0.004,
+        "abort_conditions": [
+          "next 15m bar close back below 84.18 = failed reclaim, exit immediately",
+          "next 2 bars vol both <7k = no conviction, exit at BE+ if reachable else flat",
+          "elapsed >2h with no progress toward 84.70 = time-cut exit",
+          "reverse break: any 15m close <83.90 = SL-equivalent exit"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": {
+          "reason": "setup_archetype_underrepresented",
+          "info_hypothesis": "tests whether post-band-break consolidation-with-decelerating-vol-and-wick-below-band produces clean continuation upon reclaim \u2014 structurally distinct from prior failed_sweep_reclaim (this is closer to broken band, vol fading not building, R/R geometrically weaker; n=0 closed cycles on this exact archetype)",
+          "predicted_information_value": "medium"
+        },
+        "information_roi_record": null
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1779896612.498,
@@ -1372,47 +1424,6 @@
           "Wrapper slow-displacement proxy: v1.2 flagged to Bonny that wrapper invariant '>1.5%/15min/volume' misses slow 2%/3h trend legs. Agent-layer 4h cumulative check is committed; awaiting potential wrapper-layer parallel."
         ]
       }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779848413.0,
-      "iso": "2026-05-26T22:20:13-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v1.3: HOLD",
-      "payload": {
-        "fire_ts": 1779848413.0,
-        "fire_iso": "2026-05-26T22:20:13-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 83.64,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": null,
-          "vol_ratio": null,
-          "momentum_pct": -0.17,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "Same Compression baseline as fire 21:22 EDT (state v1.3). v1.2 hard-rules executed: stale=true age 33.8h, price cross-check $85.23 stale vs Coinbase $83.64 real (1.9% divergence, switched to OHLCV), 4h cumulative +0.02% well below 1.5%/1.0x transition threshold. Tape rolled back from 21:22 EDT's $84.02 upper-band creep to $83.64, 1h -0.17%, vol 2-8k/15m. Cohort-aware A+ inputs: cohort PASS (down regime, down+long/short both historically non-worst per note-3/C3), asymmetry FAIL (no real-tape asymmetry; live-status 5/8 both sides is stale and confirmatory), volume FAIL (~0.5-0.7x normalized), structural FAIL (no displacement, no sweep, no range break). 1/4 = HOLD. Wrote framework v1.3 cadence reflection.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      },
-      "_framework_version": "v1.3"
     }
   ],
   "hold_summary": {
@@ -1420,7 +1431,7 @@
     "avg_chars": 1191,
     "since_iso": "2026-05-27T11:43:32-04:00",
     "since_framework_version": "v2.2",
-    "latest_fire_iso": "2026-05-27T12:08:04-04:00"
+    "latest_fire_iso": "2026-05-27T12:17:49-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2071,10 +2082,10 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v2.2 update 2026-05-27 11:43 EDT (fire ~162): Pre-commit v3.0 branch (a) HIT formally \u2014 15:15 UTC close 84.34 > 84.18 + vol 9,633 > 8k. 22.3h compression band broken HIGH. 15:30 UTC in-progress h=84.68 c=84.38 vol 10,032 continues expansion. Mode transitions Regime Uncertain \u2192 Expansion. Pre-commit tree v3.1 built: (a) backside retest of 84.18 from above + reclaim = continuation long; (b) close back below 84.18 within 2-3 bars = failed breakout fade; (c) chase tax above 84.50 (CURRENTLY ACTIVE) = HOLD. Position closed at fire 161 ~$0.90 net positive. Cohort down+long updates to n=5/+~$13.64/WR80. Reaction lag worsened: 28min from formal-close to this fire's read. v5.3 indicator-pipe stale 47.0h; 48h crossover ~12:23 EDT (~40min). SL-cluster predictor deferred 10th cadence \u2014 structural deadlock pending Bonny dedicated slot.",
-    "updated_ts": 1779896612.498,
-    "updated_iso": "2026-05-27T11:43:32-04:00",
-    "updated_by_fire_iso": "2026-05-27T11:43:32-04:00",
+    "comment": "Claude-trader v2.3 update 2026-05-27 12:17 EDT (fire ~167): B-grade ENTER LONG written to decisions.jsonl line 165. Setup retest_reclaim_post_band_break_pending_confirmation. Entry 84.44 / SL 84.00 / TP 84.78. forced_exploration_due TRUE + plausible long lean per v3.1 (a) -> protocol mandates ENTER. Tape: 22.3h band broken 15:15 UTC c=84.34 vol 9.6k; post-break chop (15:30/45 UTC c=84.28/84.28); 15:45 UTC low 84.06 wicked below band-high then reclaim; 16:00 UTC in-progress c=84.44 h=84.60. Confidence LOW. v5.3 pipe stale 47h+ (rule#1 ACTIVE-FLAG). Hypothetical position opened \u2014 manage per abort_conditions in decision line 165.",
+    "updated_ts": 1779898694.24484,
+    "updated_iso": "2026-05-27T12:18:14-04:00",
+    "updated_by_fire_iso": "2026-05-27T12:18:14-04:00",
     "regime": "down",
     "regime_detail": "live-status 288h tag down unchanged (frozen pipe). Tape character now Expansion-bracket: 15:15 UTC formal close 84.34 broke 22.3h band-high 84.18; 15:30 UTC in-progress h=84.68 c=84.38 vol 10,032 sustains. 4h cum +1.05% / avg vol ~12k (~2x baseline 5-7k). cognition_mode = Expansion overrides frozen live-status regime tag for decision purposes.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
@@ -2089,20 +2100,44 @@
     "last_displacement_detail": "15:15 UTC band-break bar: o=84.14 h=84.48 l=84.12 c=84.34 vol 9,633 (1.20x 8k conviction floor). 15:30 UTC in-progress: o=84.34 h=84.68 l=84.32 c=84.38 vol 10,032 (building, ~1.5x baseline). 4h cum +1.05% / avg vol ~12k = formal Expansion all four criteria met.",
     "funding_state": "OKX -3.36e-5 (slight short bias, magnitude-noise tier; immaterial vs expansion read).",
     "oi_state": "unknown \u2014 not in live-status feed.",
-    "narrative": "Phase B.1 fire ~162. First own-book closed cycle COMPLETE: 83.63 \u2192 ~84.23 long, +$0.90 net / 65min / failed-sweep-reclaim n=1 confirmed. Pre-commit v3.0 branch (a) HIT: 22.3h compression band broken HIGH at 15:15 UTC formal close. Mode transitions Regime Uncertain \u2192 Expansion. Now in chase-tax zone (15:30 UTC in-progress c=84.38 with h=84.68 already above 84.50); pre-commit v3.1 (c) \u2192 HOLD this fire, wait for retest. Pre-commit tree v3.1 for next fire(s): (a) retest of 84.18 from above + reclaim = clean continuation long entry ~84.20-84.30 with SL below band-high & TP 84.60-84.80; (b) failed extension w/ close back below 84.18 within 2-3 bars = sweep #7-style fade short with SL above broken band; (c) continued chase tax above 84.50 = HOLD until structural reset. Hypothetical lean if forced now: LONG (direction unambiguous; chase entry weakens to B-grade). Sample-size honesty preserved: n=1 closed cycle does NOT validate setup-type as edge. Hard rules 12th clean fire: rule#1 v5.3 pipe stale 47.0h (48h crossover ~40min, ACTIVE-FLAG); rule#2 live-status 85.23 vs OHLCV 84.38 div -1.00% (narrowing as tape rises toward frozen read); rule#3 4h cum +1.05% / avg vol ~12k (~2x baseline = formal Expansion).",
-    "cognition_mode": "Expansion",
-    "cognition_mode_since_iso": "2026-05-27T11:43:32-04:00",
-    "cognition_mode_rationale": "Fresh formal band-break (15:15 UTC c=84.34 > 84.18 + vol 9,633 > 8k floor) + continued expansion (15:30 UTC in-progress h=84.68 vol 10,032) + 4h cum +1.05% with avg vol ~2x baseline = all four 4-mode ontology Expansion criteria satisfied (displacement / regime in transition / fresh range break / volume conviction). Cadence: fire 5min full.",
-    "cognition_mode_cadence_hint": "fire 5min full",
+    "narrative": "Phase B.1 fire ~167. Second own-book cycle OPENED: B-grade LONG 84.44 retest_reclaim_post_band_break_pending_confirmation, per forced_exploration_due TRUE protocol + v3.1 branch (a) lean. SL 84.00 (below 15:45 UTC wick low 84.06) / TP 84.78 (lower TP-zone). Entry geometry weak (R/R ~0.75:1), confidence LOW, vol decelerating across post-break bars. Honest read: this is an exploratory probe, not a high-conviction trade. Information-value target: does mid-formation post-band-break reclaim extend cleanly (n=0 prior on this archetype). Next-fire reads: (1) live-status position will still show null (DRY_RUN) \u2014 use hypothetical_position from state.json; (2) decisions.jsonl line 165 is the ENTER record + abort_conditions; (3) cognition_mode stays Expansion but TRANSITIONS to Inventory Discovery on next fire to reflect position-management posture (Phase B.1 mode protocol: Inventory Discovery whenever a position open).",
+    "cognition_mode": "Inventory Discovery",
+    "cognition_mode_since_iso": "2026-05-27T12:18:14-04:00",
+    "cognition_mode_rationale": "Hypothetical position opened this fire (B-grade LONG 84.44). Per Phase B.1 4-mode ontology: Inventory Discovery whenever a position is open \u2014 managing live risk dominates other reads. Cadence fire 5min full NEVER skip.",
+    "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T11:43:32-04:00",
+    "last_mode_transition_iso": "2026-05-27T12:18:14-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T15:43:32.000000+00:00",
-    "hypothetical_position": null,
+    "last_gate_check_iso": "2026-05-27T16:18:14.244840+00:00",
+    "hypothetical_position": {
+      "direction": "long",
+      "symbol": "SOL-PERP",
+      "entry_price": 84.44,
+      "qty": 1,
+      "lev": 1.0,
+      "notional_usd_approx": 422.2,
+      "entry_iso": "2026-05-27T12:18:14-04:00",
+      "entry_fire_iso": "2026-05-27T12:18:14-04:00",
+      "grade": "B",
+      "setup_type": "retest_reclaim_post_band_break_pending_confirmation",
+      "sl_price": 84.0,
+      "tp_price": 84.78,
+      "expected_holding_hours": 2,
+      "expected_pnl_pct_target": 0.004,
+      "abort_conditions": [
+        "next 15m bar close back below 84.18 = failed reclaim, exit immediately",
+        "next 2 bars vol both <7k = no conviction, exit at BE+ if reachable else flat",
+        "elapsed >2h with no progress toward 84.70 = time-cut exit",
+        "reverse break: any 15m close <83.90 = SL-equivalent exit"
+      ],
+      "exploration_info_hypothesis": "tests whether post-band-break consolidation-with-decelerating-vol-and-wick-below-band produces clean continuation upon reclaim (n=0 closed cycles on this exact archetype)",
+      "max_favorable_excursion_pct": 0.0,
+      "max_adverse_excursion_pct": 0.0
+    },
     "last_closed_position": {
       "direction": "long",
       "symbol": "SOL-PERP",
@@ -2127,13 +2162,13 @@
     }
   },
   "cognition": {
-    "mode": "Expansion",
-    "since_iso": "2026-05-27T11:43:32-04:00",
-    "rationale": "Fresh formal band-break (15:15 UTC c=84.34 > 84.18 + vol 9,633 > 8k floor) + continued expansion (15:30 UTC in-progress h=84.68 vol 10,032) + 4h cum +1.05% with avg vol ~2x baseline = all four 4-mode ontology Expansion criteria satisfied (displacement / regime in transition / fresh range break / volume conviction). Cadence: fire 5min full.",
-    "cadence_hint": "fire 5min full",
+    "mode": "Inventory Discovery",
+    "since_iso": "2026-05-27T12:18:14-04:00",
+    "rationale": "Hypothetical position opened this fire (B-grade LONG 84.44). Per Phase B.1 4-mode ontology: Inventory Discovery whenever a position is open \u2014 managing live risk dominates other reads. Cadence fire 5min full NEVER skip.",
+    "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T11:43:32-04:00",
-    "last_gate_check_iso": "2026-05-27T15:43:32.000000+00:00"
+    "last_mode_transition_iso": "2026-05-27T12:18:14-04:00",
+    "last_gate_check_iso": "2026-05-27T16:18:14.244840+00:00"
   },
   "framework_origins": [
     {
@@ -2178,14 +2213,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 2,
+    "holds_in_a_row": 3,
     "exploratory_at_risk_usd_today": 4.43,
     "exploratory_entries_today": 1,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-27T16:03:58.084383+00:00",
+    "last_updated_iso": "2026-05-27T16:13:24.356314+00:00",
     "last_known_balance_usd": 894.08
   }
 }
