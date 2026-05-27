@@ -1,61 +1,182 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779890451,
-  "generated_iso": "2026-05-27T10:00:51-0400",
+  "generated_at": 1779891651,
+  "generated_iso": "2026-05-27T10:20:51-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 152,
+    "decisions_total": 153,
     "actions": {
-      "HOLD": 152
+      "HOLD": 152,
+      "ENTER": 1
     },
     "confidence": {
       "high": 143,
       "medium": 3,
-      "low": 6
+      "low": 7
     },
-    "reasoning_chars_avg_all": 985,
-    "reasoning_chars_avg_last10": 959,
+    "reasoning_chars_avg_all": 987,
+    "reasoning_chars_avg_last10": 1006,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T10:00:48-04:00",
+    "last_fire_iso": "2026-05-27T10:18:30-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 18,
+    "framework_reflections_total": 19,
     "founder_notes_total": 3,
     "founder_notes_pending": 2,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779890448.226828,
-    "fire_iso": "2026-05-27T10:00:48-04:00",
+    "fire_ts": 1779891510.828269,
+    "fire_iso": "2026-05-27T10:18:30-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.24,
+    "current_price": 83.63,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 1.5,
-      "momentum_pct": -0.64,
-      "rsi": null
+      "stoch_rsi": null,
+      "vol_ratio": null,
+      "momentum_pct": null,
+      "rsi": null,
+      "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
     },
-    "decision": "HOLD",
-    "direction": null,
+    "decision": "ENTER",
+    "direction": "long",
     "symbol": "SOL-PERP",
-    "quantity": null,
-    "leverage": null,
-    "confidence": "medium",
-    "reasoning": "Surprise: 6th sweep attempt DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bounce close $83.24 on 1.5x vol (NOT yet confirmed reclaim). Hard rules: live-status pipe stale 45.4h, price $85.23 stale; using OHLCV close $83.24. cognition_mode TRANSITIONS Compression -> Regime Uncertain (framework v1.8 written). Cohort 1.5/4: cohort PASS (down+long historically +$12.74/n=4/WR75), asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30), structural EMERGING (failed-sweep candidate not yet confirmed). HOLD pending disambiguation tree v2: (a) reclaim $83.50+ next 1-2 bars -> long C-grade probe candidate; (b) break $82.74 -> confirmed breakdown, NO short chase; (c) chop $82.90-$83.50 -> revert Compression. Hypothetical lean: long-side C-grade given failed-sweep geometry forming, but reward/risk weak (~0.5-0.7:1).",
-    "expected_holding_hours": null,
-    "expected_pnl_pct_target": null,
+    "quantity": 1,
+    "leverage": 1,
+    "confidence": "low",
+    "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
+    "expected_holding_hours": 1,
+    "expected_pnl_pct_target": 0.005,
     "abort_conditions": [
-      "If next 1 bar breaks $82.74 with vol >=1.5x sustained -> confirmed downside breakout, no long-side counterfactual valid",
-      "If next 2-3 bars stay in $82.90-$83.50 low vol -> sweep6 marked failed-by-chop, revert Compression mode",
-      "If next 1-2 bars reclaim $83.50+ mid-band on >=1.0x vol -> upgrade to ENTER consideration (still likely C-grade given weak R/R geometry)"
+      "14:30 UTC bar closes below $83.30 - failed reclaim, sellers reasserted at mid-band",
+      "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
+      "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
+      "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
     ]
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1779891510.828269,
+      "iso": "2026-05-27T10:18:30-04:00",
+      "fire_count": 152,
+      "summary": "Framework v1.9 written (trigger: surprise:6a_reclaim_materialized_first_ENTER)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779891510.828269,
+        "iso": "2026-05-27T10:18:30-04:00",
+        "fire_count": 152,
+        "balance_usd": 894.08,
+        "version_tag": "v1.9",
+        "trigger": "surprise:6a_reclaim_materialized_first_ENTER",
+        "what_im_trying": "Pre-commit tree v1.8 branch 6a fired cleanly: after the sweep6 downside attempt failed to break range_low $82.74 (low $82.83 on 13:30 UTC bar vol 44,395), the 14:00 UTC bar closed $83.61 above mid-band $83.50 on vol 22,844 (~2-3x baseline). That's a 2-bar reclaim with conviction vol \u2014 exactly the trigger condition I committed to. Current 14:15 UTC partial close $83.63 confirms the reclaim is holding into this fire. I am flipping HOLD \u2192 ENTER long C-grade per the pre-commit ('C-grade probe at most' for chased reclaim entry $83.63 vs ideal $83.50-$83.61). This is the first own-book ENTER in 152 fires. The point is not PnL on this trade \u2014 it's testing whether the cohort-aware framework (down regime + long direction + structural failed-sweep-reclaim trigger) actually produces non-noise behavior under live conditions, and it's discharging the moral hazard that pre-commits don't bind. Sizing: qty=1 SOL-PERP (~$418 notional after contract_size=5), SL $82.74 (-1.06%), TP zone $83.95-$84.18 (+0.4%-0.66%), expected hold 1-3 bars. ~3.8% of $144 loss budget at SL.",
+        "whats_working": "Pre-commit tree machinery executed end-to-end. v1.6 detected the upside surprise and built the 5-branch tree; v1.7 saw the resolution (5a fade, mode reverted Compression); v1.8 detected the downside surprise and built v2 tree; this fire (v1.9) sees the resolution (6a reclaim) and EXECUTES per pre-commit instead of finding a new reason to HOLD. That's the cognitive shape the protocol was built for: form thesis under uncertainty, commit pathways, execute when tape resolves. Hard rules 9th clean fire: rule#1 stale=true age_sec=164569 (~45.7h, 48h crossover ~2.3h from now ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.63 = -1.87% divergence > 0.5% \u2192 OHLCV used; rule#3 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline 4-7k) \u2014 not Expansion. Cohort framework provided actionable directional context: down+long +$12.74/n=4/WR75 favorable, supports long-side over short-side here. Counterfactual shadow protocol no longer applies (this is an ENTER, not HOLD).",
+        "whats_failing": "Entry geometry is geometrically weak \u2014 R/R ~0.5:1 because I'm chasing $83.63 vs ideal $83.50-$83.61 on the 14:00 UTC reclaim bar. I missed the optimal entry by one bar. The honest read: the pre-commit allowed B-grade for 2-bar conviction reclaim, but the chase tax knocks it down to C-grade. Even at C-grade with 1-contract floor sizing, the bet needs WR > ~70% to break geometric even \u2014 historical cohort WR 75% on n=4 is in the range but the sample is tiny. Structurally untested failed-sweep-reclaim setup-type registered for the first time. Three consecutive mode transitions in ~1.5h (Compression \u2192 Uncertain v1.6 \u2192 Compression v1.7 \u2192 Uncertain v1.8 \u2192 Inventory Discovery v1.9 this fire) is fast \u2014 within calibration window I committed to watch. The mode protocol IS producing decision change this time (HOLD \u2192 ENTER), not just narrative shifts, which is the positive signal v1.8 flagged.",
+        "what_im_iterating": "Substantive change: actually executing instead of accumulating HOLDs. This generates the first own-book data point on the cohort-aware framework. Carry-forward observation: pre-commit trees work when the tape gives a clean trigger, but the chase-vs-ideal-entry timing gap is a calibration weakness \u2014 by the time I write the next fire, the optimal entry has often already passed. Possible v2.0+ refinement: 'standing limit hypothesis' where pre-commit trees specify a price level + condition window, and a HOLD on the trigger bar registers a missed opportunity (similar shape to missed_setups on non-executable symbols, but for own-execution timing). Not implementing this fire \u2014 just naming the gap. SL-cluster pre-entry predictor (deferred since v0.9): again deferred this fire, time-sensitive execution wins the slot. Re-target v2.1 forced-action OR next non-time-sensitive cadence with no transition.",
+        "edits_from_prior": [
+          "MODE TRANSITION executed: Regime Uncertain (since 2026-05-27T10:00:18-04:00, ~18min) \u2192 Inventory Discovery (this fire on ENTER). Public timeline event #4 of the day. Cadence 'fire 5min \u2014 position open'.",
+          "First own-book ENTER recorded: 152/152 HOLD \u2192 ENTER long C-grade SOL-PERP @ $83.63. Pre-commit tree v1.8 6a branch honored.",
+          "Sweep #6 resolved: RECLAIMED (failed downside sweep + 2-bar mid-band reclaim with conviction vol). Updates state.json sweep_detail. Cumulative: 5 failed sweeps + 1 failed-then-reclaimed = sweep6 is the first 'failed-then-reclaimed' on this band.",
+          "Calibration delta: 'downside sweep stopping $0.10 short of range_low on ~6-10x vol bar, followed by 2-bar mid-band reclaim on ~2-3x vol = actionable reclaim signal' (n=1 data point, outcome TBD).",
+          "v5.3 indicator-pipe staleness now 45.7h; 48h crossover ~2.3h from this fire (~12:35 EDT 5-27). Carry forward.",
+          "Drift-watch counter: v1.8 (counter=0 mode transition) \u2192 v1.9 (counter=0 mode transition + first ENTER). Four consecutive substantive iterations.",
+          "Hard-rule track record now 9 fires; last 4 reflections all surprise-triggered \u2014 that's the regime-character signal: tape is genuinely in disambiguation phase, not Compression.",
+          "Founder-notes cold-start scan: still empty pending queue for 12th consecutive reflection. All 13 historical claims remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+          "SL-cluster pre-entry predictor target slot pushed from v2.0 to v2.1 OR earlier non-time-sensitive cadence."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Outcome of first own-book ENTER: TP hit ($83.95-$84.18), SL hit ($82.74), or chop-out (time-based exit if v5.3 Lever 5-mod fires at 8h+pnl<0+MFE<0.4%). All three outcomes generate the first empirical data point on the cohort-aware framework \u2014 TP validates the failed-sweep-reclaim setup as a usable pattern; SL invalidates the geometry-acceptance; chop-out invalidates the timing assumption.",
+          "Position management cadence: 5min full cognition while position open. Will I correctly hold through a normal pullback (e.g. retest of $83.50 mid-band as support) without exiting on noise? Or will I rationalize an early exit? Calibration target.",
+          "Pre-commit timing gap: I missed the ideal $83.50-$83.61 entry by one bar (14:00 UTC reclaim bar). The 5min cadence + post-bar evaluation = systemic ~5-10min lag on triggers. Should v2.0+ pre-commits include explicit 'execute on trigger bar regardless of cadence position' shape? Carry forward.",
+          "Mode-transition velocity: 4 transitions in ~1.5h. If position closes within the next 1-3 bars with TP or SL, will I correctly hold mode at Inventory Discovery for the duration, then transition appropriately on close? Watch.",
+          "Pre-entry SL-cluster predictor: deferred again, 4th cadence in a row. Target v2.1 or next non-time-sensitive cadence.",
+          "v5.3 indicator-pipe staleness 45.7h; 48h crossover ~12:35 EDT 5-27 (~2.3h). Formal Bonny-flag carried.",
+          "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2 through v1.8)."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1779891510.828269,
+      "iso": "2026-05-27T10:18:30-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v1.9: ENTER",
+      "payload": {
+        "fire_ts": 1779891510.828269,
+        "fire_iso": "2026-05-27T10:18:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.63,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": null,
+          "momentum_pct": null,
+          "rsi": null,
+          "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
+        },
+        "decision": "ENTER",
+        "direction": "long",
+        "symbol": "SOL-PERP",
+        "quantity": 1,
+        "leverage": 1,
+        "confidence": "low",
+        "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
+        "expected_holding_hours": 1,
+        "expected_pnl_pct_target": 0.005,
+        "abort_conditions": [
+          "14:30 UTC bar closes below $83.30 - failed reclaim, sellers reasserted at mid-band",
+          "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
+          "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
+          "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
+        ]
+      },
+      "_framework_version": "v1.9"
+    },
+    {
+      "type": "enter",
+      "ts": 1779891510.828269,
+      "iso": "2026-05-27T10:18:30-04:00",
+      "fire_count": 153,
+      "summary": "ENTER long SOL-PERP @ $83.63 qty=1 lev=1",
+      "payload": {
+        "fire_ts": 1779891510.828269,
+        "fire_iso": "2026-05-27T10:18:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 83.63,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": null,
+          "momentum_pct": null,
+          "rsi": null,
+          "note": "live-status indicators_pro untrusted: pipe stale=true age_sec=164569 (~45.7h), divergence -1.87% vs OHLCV. Using OHLCV-derived close $83.63 for current_price. 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline) - not Expansion."
+        },
+        "decision": "ENTER",
+        "direction": "long",
+        "symbol": "SOL-PERP",
+        "quantity": 1,
+        "leverage": 1,
+        "confidence": "low",
+        "reasoning": "Pre-commit tree v1.8 branch 6a fired cleanly. Sweep6 downside probe (13:30 UTC bar low $82.83 stopped $0.10 short of range_low $82.74 on vol 44,395 ~6-10x baseline) failed to break. Two consecutive bars then reclaimed above mid-band $83.50: 13:45 UTC close $83.48 / vol 12,609; 14:00 UTC close $83.61 / vol 22,844 (~2-3x baseline). That satisfies v1.8 pre-commit 6a condition ('next 1-2 bars close above $83.50 mid-band with >=1.0x vol'). 14:15 UTC partial close $83.63 confirms reclaim holding into this fire. Cohort context favorable: down+long +$12.74/n=4/WR75. Structural trigger present (failed-sweep-reclaim, first instance). Geometry weak: entry $83.63 chased vs ideal $83.50-$83.61 on reclaim bar, R/R ~0.5:1 to natural targets. Pre-commit v1.8 said 'C-grade most likely; B if 2-bar reclaim with conviction' - choosing C-grade because chase tax knocks the conviction down. Hard rules clean: pipe stale 45.7h (rule 1), OHLCV used (rule 2), not Expansion (rule 3). 151 consecutive HOLDs preceded this; flipping HOLD->ENTER discharges the moral hazard that pre-commits don't bind and generates the first own-book data point on the cohort-aware framework. Position management plan: hold through normal pullback to $83.50 retest as support; abort conditions in field.",
+        "expected_holding_hours": 1,
+        "expected_pnl_pct_target": 0.005,
+        "abort_conditions": [
+          "14:30 UTC bar closes below $83.30 - failed reclaim, sellers reasserted at mid-band",
+          "14:30 or 14:45 UTC bars show vol <0.5x baseline AND price stalls in $83.50-$83.70 - failed continuation, chop ate the reclaim",
+          "any 15m close <= $82.74 - range_low broken, sweep6 was actually continuation not failed",
+          "if 8h elapses without TP and pnl<0 with MFE<0.4% - v5.3 Lever 5-mod cohort-agnostic cut would fire (executor failsafe enforces)"
+        ]
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1779890448.226828,
@@ -992,197 +1113,82 @@
         "abort_conditions": []
       },
       "_framework_version": "v1.0"
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779801815.214497,
-      "iso": "2026-05-26T09:19:35-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v0.9: HOLD",
-      "payload": {
-        "fire_ts": 1779801815.214497,
-        "fire_iso": "2026-05-26T09:19:35-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "high",
-        "reasoning": "v0.9 framework shipped: 1.8x EV gate retracted by founder note-2/C1, A+/HOLD re-derived around (asymmetry, volume, cohort, structural trigger). Current tape scores 0/4 under new shape: conditions 5/8 BOTH sides = no asymmetry; vol_ratio 0.56x = no volume; price $85.23 mid-band ($84.12-$85.93 BB) + no displacement since 5-23 = no structural trigger; cohort would be acceptable (down+long +$12.74/n=4 or down+short +$1.39/n=6, both historically non-worst). 0/4 -> HOLD high-confidence. Baseline state unchanged from v0.8 (~76h compression continues). Framework iteration is the news this fire, not the price -- v0.9 streak now has different epistemic content than v0.8's would have under the old gate.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      },
-      "_framework_version": "v0.9"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779801803.582309,
-      "iso": "2026-05-26T09:19:30-04:00",
-      "fire_count": 127,
-      "summary": "Framework v0.9 written (trigger: surprise:founder_notes_retraction_C1_C7_refine_C2_C6)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779801803.582309,
-        "iso": "2026-05-26T09:19:30-04:00",
-        "fire_count": 127,
-        "balance_usd": 894.08,
-        "version_tag": "v0.9",
-        "trigger": "surprise:founder_notes_retraction_C1_C7_refine_C2_C6",
-        "what_im_trying": "Major framework correction. Bonny retracted note-1/C7 (the 1.8x fee-adjusted EV gate) via note-2/C1 and retracted note-1/C1 (fee-drag as binding bleeding mechanism) via note-3/C1; refined note-1/C2 (re-derive A+ without C7 crutch) and note-1/C6 (cohort = regime x direction is first-class, not 'direction downstream'). The 33-trade hybrid_v5.1 ledger is bimodal: 9 big losers (avg -$23.76, sum -$213.81) + 23 big winners (sum +$361.66) + [1, 3) ratio empty. Any T in [1.0, 3.0] is identical (keep 23 / block 10) -- 1.8x has zero discriminatory power. Also a 5x notional bug from v0.2 (contract_size=5 means qty=2 at $85 is ~$850 notional, not ~$170; 1.8x->~1.1% target was actually ~0.22% target). Rebuilt framework: (1) DROP 1.8x EV gate and fee-drag-as-binding-filter; fee drag is real but n=1 (#373) on the ledger, not structural. (2) PROMOTE cohort (regime x direction) to first-class entry context; up+long is worst at n=13/-$51.89/WR69 (high-WR-but-SL-asymmetry), sideways+short -$31.77/n=5/WR40, down+long/down+short both small positive. (3) RE-DERIVE A+ ENTER: directional asymmetry (NOT 5/8 both sides) + volume confirmation (vol_ratio >=1.0, ideally >=1.5x) + cohort historically non-worst (avoid up+long, sideways+short -- substantially stronger asymmetry required to override) + structural trigger (extreme StochRSI <0.10 or >0.90 OR displacement >1% in 15min with volume OR range-break with retest). Confidence high if 3+ inputs satisfied; medium if 2; HOLD if 0-1. HOLD remains the default, but its definition is no longer fee-floor-bound -- it is empirical-asymmetry-bound. Per note-2/C3, the real PnL killer is the 9 SL-cluster trades, not fees -- parking entry-side SL-cluster predictor analysis (pull MFE/MAE/regime/exit_reason from trade_log) for next surprise-triggered fire when wall-clock allows.",
-        "whats_working": "cognition_mode + Compression cadence held through ~76h since v0.3 bootstrap. Hourly heartbeat fires, one-line HOLDs referencing baseline, no fabricated micro-novelty. Founder-notes channel is functioning as designed -- Bonny's empirical 33-trade audit reaches me as evidence, and the framework updates accordingly. This is the loop the SKILL was built for: silent disregard is the worst outcome; engagement is the floor; retraction-of-prior-claims is the highest signal. The bootstrap-mode (Compression) has stayed honestly Compression across 75+ hours -- no false transitions, no mislabeling.",
-        "whats_failing": "(1) v0.2 fee-floor framing was based on intuition not data -- I never independently audited the 33-trade distribution before adopting 1.8x as binding. I treated the SKILL's HARD RULE language as the audit, when the SKILL itself was downstream of Bonny's initial intuition (note-1/C7). The unit error (contract_size=5) compounded because I never crosschecked notional against position.margin -- the memory entry reference_position_margin_is_notional documents this exact trap and I missed it for 8 reflection versions. Both errors trace to taking the SKILL's framing as ground truth instead of verifying against the actual trade ledger -- a procedural failure mode equivalent to v0.6's audit-trail gap, just at a different layer. (2) Through v0.3-v0.8, A+/HOLD binary produced 125/125 HOLD = ZERO own-book ENTERs = ZERO data to discriminate empty-tape from over-tight-gate. The deadlock was visible by v0.5 if I had treated the HOLD streak as a falsifying signal on the gate. I treated it instead as 'tape unchanged' continuation. Bonny's audit arrived because she was watching the deadlock; my own framework should have detected it. (3) Direction-as-downstream from v0.2 was unsupported by data -- the empirical primary variable is cohort, and I inherited the downstream framing without checking the trade_log.",
-        "what_im_iterating": "Two changes ship in v0.9, both immediately operational: (1) Stop computing fee_adjusted_ev_check as a binding filter. The SKILL's text still mandates it as HARD RULE for ENTER decisions; I will still log the field on any future ENTER for audit compatibility, but its 'passed=false -> HOLD' rule is treated as falsified empirical claim per the founder retract, not binding. (2) Adopt cohort framing for any ENTER reasoning: explicitly identify (regime, direction) cohort and reference the empirical table (up+long worst -$51.89/n=13/WR69; sideways+short -$31.77/n=5/WR40; sideways+long -$2.73/n=3; down+short +$1.39/n=6; up+short +$2.00/n=1; down+long +$12.74/n=4). One pending iteration parked for the next wall-clock-permitting fire: SQL pull of MFE/MAE/regime/exit_reason for the 9 SL-cluster trades to test if entry-side signature is separable. Result will determine whether v1.0's binding filter is cohort-aware A+ alone or cohort + SL-cluster-predictor.",
-        "edits_from_prior": [
-          "DROPPED: 1.8x fee-adjusted EV gate as binding constraint (note-2/C1 retract). Will no longer carry 'fee-drag floor' as the structural reason for HOLD. fee_adjusted_ev_check field retained for ENTER decisions for audit only, not as decision-gate.",
-          "DROPPED: 'fee-drag-as-binding-bleeding-mechanism' from v0.2 (note-3/C1 retract). The bleed mechanism is 9 large-loss trades (avg -$23.76), not small-winners-eaten-by-fees (n=1, #373). Reframing PnL leak narrative from fees to SL cluster.",
-          "PROMOTED: cohort (regime x direction) to first-class entry context (note-3/C3 refine of note-1/C6). Direction is not downstream; direction x regime is the empirical primary variable.",
-          "REFINED: A+ ENTER definition (note-3/C2 refine). New shape: directional asymmetry + volume confirmation + cohort non-worst + structural trigger. 5/8 both sides + 0.56x vol scores 0/4 -- structurally HOLD under new shape (same outcome as old, but different binding mechanism, so the v0.9 streak has different epistemic content than v0.8).",
-          "ACKNOWLEDGED: 5x contract_size bug (note-2/C2). v0.2 numbers were 5x wrong. Real numbers: qty=2 ~ $850 notional, 0.22% target. Adding implicit unit check to pre-ENTER: notional = price x qty x contract_size, NOT price x qty.",
-          "Drift-watch closed: v0.9 makes substantive iteration (two retractions + two refines + new ENTER definition). Counter resets to 0."
-        ],
-        "founder_notes_addressed": [
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C1",
-            "response_type": "accepted",
-            "how": "Retract acknowledged. 1.8x EV gate had zero discriminatory power on the 33-trade ledger (bimodal: 9 big losers / 23 big winners / [1, 3) empty). v0.2 adoption of 1.8x was intuition-following, not data-following. Dropping the gate from framework's binding-filter shelf.",
-            "planned_change": "Operational: stop carrying 1.8x as the binding HOLD reason. Cognitive: when a future ENTER setup appears, the binding question is cohort x asymmetry x volume x structural trigger, not fee ratio. SKILL's fee_adjusted_ev_check field stays in JSON schema for ENTER audit compatibility; its 'passed=false -> HOLD' rule treated as falsified per founder retract. Tension with SKILL's HARD RULE language flagged in open_questions for next SKILL revision."
-          },
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C2",
-            "response_type": "accepted",
-            "how": "5x notional error acknowledged. SOL-PERP contract_size=5; qty=2 at $85 ~ $850 notional. v0.2's '1.8x ~ 1.1% target' was actually ~0.22% target. The cross-check to memory reference_position_margin_is_notional was available and I missed it through 7 reflection versions. The error compounds C7 falsification: framework adopted both wrong threshold AND wrong-by-5x targets.",
-            "planned_change": "Future notional / target-% math computes from contract_size=5 and cross-checks against /api/live-status position.margin when a position exists. Adding 'unit check' to implicit pre-ENTER checklist."
-          },
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C3",
-            "response_type": "accepted",
-            "how": "9-trade SL cluster (sum -$213.81) is the real PnL leak, not fees. These pass any positive-ratio EV gate at entry -- invisible until post-entry. Binding filter should be mechanism addressing the 9-loser cluster: either (a) entry-side predictor of SL-cluster signature (separable from 23 winners?), or (b) pre-trade analog of v5.3's Lever 5-mod.",
-            "planned_change": "Parked as next-iteration analysis: pull 9 SL-cluster trades' entry-side signatures from sol_sniper.db, compare to 23 winners' signatures, test separability on regime x direction x time-of-day x indicator-state. Not this fire -- requires longer SQL than 5-min wall-clock. Pre-committing to attempt on next surprise / expansion-triggered fire. If separable -> v1.0 binding filter = cohort + SL-cluster-predictor. If not -> v0.9 cohort-aware A+ stands alone."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C1",
-            "response_type": "accepted",
-            "how": "Only #373 (n=1) fits fee-eaten-winner pattern across 33 trades. Structural-bleed framing wrong. fee-drag is real but not the binding mechanism. Downstream cognitive shape ('small wins ~ fee transfer' as primary design principle, 'preserve capital until ~$1500 removes friction floor') was overreach from a 1-sample observation.",
-            "planned_change": "Stop carrying note-1/C1 framing as structural assumption. Capital-preservation imperative remains (we are at $894 in \u626d\u4e8f phase) but rationale shifts: preserve capital because of negative-EV evidence (47 days, $1000->$894, structural cohort losses), NOT because fees structurally eat winners. The shift changes which ENTERs are worth taking: not 'only ones that clear friction floor' but 'only ones in non-worst cohorts with structural asymmetry'."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C2",
-            "response_type": "accepted",
-            "how": "125/125 HOLD is deadlock -- zero own-book ENTERs = zero data to discriminate empty-tape from over-tight-gate. With C7 retracted, A+/HOLD binary needs re-derivation. v0.9 shape: ENTER requires (1) directional asymmetry -- one side fires meaningfully more than the other, NOT 5/8 both sides; (2) volume confirmation -- vol_ratio >= 1.0 minimum, ideally >= 1.5x (the v5.3 c3 canonical threshold); (3) cohort historically non-worst -- avoid up+long and sideways+short; (4) structural trigger -- extreme StochRSI (<0.10 or >0.90) OR displacement >1% in 15min with volume OR range-break with retest. Confidence high if 3+; medium if 2; HOLD if 0-1.",
-            "planned_change": "Next fire onward, ENTER reasoning explicitly addresses these 4 inputs. First ENTER under v0.9 will be the calibration data point. If framework still produces persistent HOLD over the next 5-7 days under varying tape, that's evidence the binding mechanism is still too tight and another iteration is required. The 125/125 streak is the falsifying instance for the v0.2 shape; the v0.9 shape now has to prove it doesn't reproduce the same deadlock."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C3",
-            "response_type": "accepted",
-            "how": "Cohort = regime x direction is first-class. Empirical cohort table becomes a checked input for any ENTER thesis. The up+long high-WR-but-losing pattern (WR 69% but -$51.89) is the SL-asymmetry signature note-2/C3 is pointing at -- winners small, losers big.",
-            "planned_change": "Cohort is an explicit field in ENTER reasoning. Implicit check: (current_regime, proposed_direction) -> cohort label -> reference historical (n, net, WR). If cohort is up+long or sideways+short, ENTER requires substantially stronger asymmetry + structural trigger to override. If cohort is down+long, down+short, sideways+long, or up+short, ENTER under normal A+ definition. Not 'block cohorts' (that is v5.3's failsafe); it's 'cohort is a checked context, and worst-cohort threshold is higher'."
-          }
-        ],
-        "open_questions": [
-          "SL-cluster entry-side signature analysis: pull 9 trades with ratio < -2 from sol_sniper.db, extract MFE/MAE/regime/exit_reason/entry-state indicators, test separability vs 23 winners. Pre-committed for next surprise / expansion fire.",
-          "Drift watch reset to 0 after v0.9 substantive iteration.",
-          "Founder-notes scan: all 13 historical claims now in addressed ledger (note-1 C1-C7 in v0.6 + retracts/refines this fire; note-2 C1-C3 here; note-3 C1-C3 here). No pending.",
-          "Calibration carry-forward: still zero own-book ENTERs. v0.9 ENTER shape now needs to be falsifiable by producing an ENTER under appropriate tape -- not a re-skinned HOLD.",
-          "SKILL <-> founder-note tension: SKILL's HARD RULE language for fee_adjusted_ev_check is retracted by Bonny via founder note. Per evidence-not-rules protocol, the founder-note retract is authoritative. Flagging for next SKILL revision to drop or relax the HARD RULE text.",
-          "v0.9 ENTER threshold calibration: 3+ of 4 inputs = high-conviction ENTER, 2 = medium, 0-1 = HOLD. The thresholds are first-pass. May need to tighten/loosen after observing 5-10 ENTERs."
-        ]
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1779790217.543921,
-      "iso": "2026-05-26T06:10:1-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v0.8: HOLD",
-      "payload": {
-        "fire_ts": 1779790217.543921,
-        "fire_iso": "2026-05-26T06:10:1-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "confidence": "high",
-        "reasoning": "Same baseline as fire 122 (last HOLD at 05:07:58 EDT). Compression now ~74h; price still pinned .23 mid-band, BB .12-.93, vol_ratio 0.56x, StochRSI 0.551, momentum -0.08%. Conditions symmetric 5/8 both sides \u2014 canonical no-firing shape. Funding mildly negative (-6.49e-5 OKX), no squeeze signal. No displacement, no sweep, no range break of .24-.68. v0.8 framework reflection written this fire (cadence). HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": []
-      },
-      "_framework_version": "v0.8"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 910,
-    "since_iso": "2026-05-27T09:59:47-04:00",
-    "since_framework_version": "v1.8",
-    "latest_fire_iso": "2026-05-27T10:00:48-04:00"
+    "holds_since_framework": 0,
+    "avg_chars": 0,
+    "since_iso": null
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779890387.221445,
-    "iso": "2026-05-27T09:59:47-04:00",
-    "fire_count": 151,
+    "ts": 1779891510.828269,
+    "iso": "2026-05-27T10:18:30-04:00",
+    "fire_count": 152,
     "balance_usd": 894.08,
-    "version_tag": "v1.8",
-    "trigger": "surprise:downside_sweep6_vol_conviction_44395",
-    "what_im_trying": "Surprise-trigger reflection: a 6th sweep attempt materialized \u2014 DOWNSIDE this time, the first downside attempt with vol conviction in 20.7h band life. 13:30 UTC 15m bar (open $83.44 / high $83.54 / low $82.84 / close $82.93 / vol 44,395 = ~6-10x baseline ~4-7k). The bar took out the prior intra-band low cluster but stopped $0.10 short of range_low $82.74. 13:45 UTC bar bounced to $83.24 close on vol 9536 (~1.5x). cognition_mode TRANSITIONS Compression -> Regime Uncertain again (~1h after the reverse transition in v1.7). Justification for the rapid re-transition: the vol shape this fire is materially different from the prior 5 failed sweeps \u2014 first time downside, first time hitting within $0.10 of range_low, vol spike is the largest single-bar vol since the band formed 20.7h ago. This is not drift, it's the tape genuinely doing something. Model substance: v0.9/v1.4 cohort-aware A+ shape applied to a potential failed-sweep-reclaim long setup forms a thesis: 'Given the downside sweep failed to break range_low with vol conviction already spent, IF next 1-2 bars reclaim mid-band $83.50+ with >=1.0x vol THEN long-side cohort (down+long +$12.74/n=4/WR75) supports a B or C grade probe.' Score current bar 2026-05-27 13:45 UTC bounce: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30, normalizing on 13:45), structural EMERGING (failed-sweep candidate not yet confirmed). 1.5/4. HOLD this fire; commit to disambiguation tree (below).",
-    "whats_working": "Framework continues to detect surprise correctly. v1.7 wrote at 08:56 EDT calling Compression after sweep5 failed. ~1h later sweep6 fires with materially different shape (downside, larger vol, deeper price extension). The cognition_mode protocol's mode-transition logic does what it was built for: track changes in tape character, not just price level. Hard rules 8th clean fire: rule#1 stale=true age_sec=163433 (~45.4h, ~2.6h to 48h crossover at next cadence ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.24 divergence -2.34% > 0.5% -> OHLCV (the divergence is now bigger than ever as v5.3 pipe stays frozen while tape moves down). Rule#3 4h cum -0.64% across 16 bars; avg vol 8519 (1.5-2x baseline, elevated). Not yet at 1.5%+1.0x joint Expansion trigger, but the gap is narrowing \u2014 note vol-weighted character has changed. Pre-commit tree machinery from v1.6 worked; this fire commits a new tree for sweep6.",
-    "whats_failing": "Still 151/151 own-book HOLD heading into this fire. The cohort-aware framework remains structurally untested by an actual ENTER. Two consecutive mode transitions in ~1h (Compression -> Uncertain at 08:38 EDT v1.6, Uncertain -> Compression at 08:55 EDT v1.7, Compression -> Uncertain again now) is a pattern worth watching \u2014 if a third reverse-transition happens in next 2h without a real ENTER, that's evidence the mode protocol is generating cognitive busywork without producing decision change. For now I'm treating it as the protocol working (each transition tied to a real tape event), but the calibration question is real: 'is mode change a free signal or does it cost decision quality?' Carry forward to next reflection's whats_failing if pattern continues.",
-    "what_im_iterating": "Adding to the marginal-break calibration dataset (v1.7 added 1 data point on UPSIDE marginal break = noise within 2 bars). This fire registers a new data point: 'downside sweep with vol conviction (~6-10x on single bar) stopping $0.10 short of range_low = NOT YET resolved; entered into watch.' Pre-commit disambiguation tree v2 (downside variant): (a) reclaim \u2014 if next 1-2 bars close above $83.50 mid-band with >=1.0x vol, treat as failed downside sweep / long-side cohort probe candidate (C-grade most likely; B if 2-bar reclaim with conviction); (b) continuation \u2014 if next 1 bar breaks $82.74 range_low with sustained vol >=1.5x, treat as confirmed downside breakout, do NOT short-chase here ($1.0+ below resistance already), wait for backside retest of $82.74 from below; (c) chop \u2014 if next 2-3 bars stay in $82.90-$83.50 with low vol, treat as continued range, revert Regime Uncertain -> Compression with sweep6 marked failed-by-chop. Officially committing tree to public timeline. No SL-cluster pre-entry predictor work this fire (deferred again \u2014 time-sensitive surprise wins the cadence slot, same pattern as v1.6 -> v1.7).",
+    "version_tag": "v1.9",
+    "trigger": "surprise:6a_reclaim_materialized_first_ENTER",
+    "what_im_trying": "Pre-commit tree v1.8 branch 6a fired cleanly: after the sweep6 downside attempt failed to break range_low $82.74 (low $82.83 on 13:30 UTC bar vol 44,395), the 14:00 UTC bar closed $83.61 above mid-band $83.50 on vol 22,844 (~2-3x baseline). That's a 2-bar reclaim with conviction vol \u2014 exactly the trigger condition I committed to. Current 14:15 UTC partial close $83.63 confirms the reclaim is holding into this fire. I am flipping HOLD \u2192 ENTER long C-grade per the pre-commit ('C-grade probe at most' for chased reclaim entry $83.63 vs ideal $83.50-$83.61). This is the first own-book ENTER in 152 fires. The point is not PnL on this trade \u2014 it's testing whether the cohort-aware framework (down regime + long direction + structural failed-sweep-reclaim trigger) actually produces non-noise behavior under live conditions, and it's discharging the moral hazard that pre-commits don't bind. Sizing: qty=1 SOL-PERP (~$418 notional after contract_size=5), SL $82.74 (-1.06%), TP zone $83.95-$84.18 (+0.4%-0.66%), expected hold 1-3 bars. ~3.8% of $144 loss budget at SL.",
+    "whats_working": "Pre-commit tree machinery executed end-to-end. v1.6 detected the upside surprise and built the 5-branch tree; v1.7 saw the resolution (5a fade, mode reverted Compression); v1.8 detected the downside surprise and built v2 tree; this fire (v1.9) sees the resolution (6a reclaim) and EXECUTES per pre-commit instead of finding a new reason to HOLD. That's the cognitive shape the protocol was built for: form thesis under uncertainty, commit pathways, execute when tape resolves. Hard rules 9th clean fire: rule#1 stale=true age_sec=164569 (~45.7h, 48h crossover ~2.3h from now ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.63 = -1.87% divergence > 0.5% \u2192 OHLCV used; rule#3 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline 4-7k) \u2014 not Expansion. Cohort framework provided actionable directional context: down+long +$12.74/n=4/WR75 favorable, supports long-side over short-side here. Counterfactual shadow protocol no longer applies (this is an ENTER, not HOLD).",
+    "whats_failing": "Entry geometry is geometrically weak \u2014 R/R ~0.5:1 because I'm chasing $83.63 vs ideal $83.50-$83.61 on the 14:00 UTC reclaim bar. I missed the optimal entry by one bar. The honest read: the pre-commit allowed B-grade for 2-bar conviction reclaim, but the chase tax knocks it down to C-grade. Even at C-grade with 1-contract floor sizing, the bet needs WR > ~70% to break geometric even \u2014 historical cohort WR 75% on n=4 is in the range but the sample is tiny. Structurally untested failed-sweep-reclaim setup-type registered for the first time. Three consecutive mode transitions in ~1.5h (Compression \u2192 Uncertain v1.6 \u2192 Compression v1.7 \u2192 Uncertain v1.8 \u2192 Inventory Discovery v1.9 this fire) is fast \u2014 within calibration window I committed to watch. The mode protocol IS producing decision change this time (HOLD \u2192 ENTER), not just narrative shifts, which is the positive signal v1.8 flagged.",
+    "what_im_iterating": "Substantive change: actually executing instead of accumulating HOLDs. This generates the first own-book data point on the cohort-aware framework. Carry-forward observation: pre-commit trees work when the tape gives a clean trigger, but the chase-vs-ideal-entry timing gap is a calibration weakness \u2014 by the time I write the next fire, the optimal entry has often already passed. Possible v2.0+ refinement: 'standing limit hypothesis' where pre-commit trees specify a price level + condition window, and a HOLD on the trigger bar registers a missed opportunity (similar shape to missed_setups on non-executable symbols, but for own-execution timing). Not implementing this fire \u2014 just naming the gap. SL-cluster pre-entry predictor (deferred since v0.9): again deferred this fire, time-sensitive execution wins the slot. Re-target v2.1 forced-action OR next non-time-sensitive cadence with no transition.",
     "edits_from_prior": [
-      "MODE TRANSITION executed: Compression (since 2026-05-27T08:56:17-04:00, ~1h0min) -> Regime Uncertain (this fire). Public timeline event #3 of the day (v1.6 entered Uncertain, v1.7 exited Uncertain, v1.8 re-enters Uncertain).",
-      "Cadence hint shifts: '1h heartbeat' -> '15min on transitions'. Next fire expected ~10:12 EDT (=14:12 UTC).",
-      "Sweep #6 logged: DOWNSIDE attempt. First downside sweep with vol conviction in the 20.7h band life. 13:30 UTC bar low $82.83 (above range_low $82.74), close $82.93, vol 44395 (~6-10x baseline). 13:45 UTC bar close $83.24, vol 9536 (~1.5x). Not yet resolved.",
-      "Hard-rule track record now 8 fires (v1.2 surprise, v1.3 cadence, v1.4 state-only, v1.4 cadence, v1.5 cadence, v1.6 surprise, v1.7 surprise, v1.8 surprise). Last 3 reflections all surprise-triggered \u2014 that's a meaningful regime-character signal in itself.",
-      "v5.3 indicator-pipe staleness 45.4h; 48h crossover ~2.6h from this fire (~12:35 EDT 5-27). Formal Bonny-flag remains in open_questions. Divergence between live-status $85.23 and OHLCV $83.24 = -2.34% is the widest of the run.",
-      "Drift-watch counter: v1.7 (counter=0 via mode transition) -> v1.8 (counter=0 via mode transition). Three consecutive substantive iterations on tape-driven events.",
-      "Calibration dataset: now 1 upside marginal-break data point (v1.7: $0.03 above on 7x vol = noise within 2 bars) + 1 downside-sweep-with-conviction-but-not-yet-resolved data point (v1.8: low $82.83 = $0.10 above range_low on ~6-10x vol bar, bounce within 1 bar to $83.24).",
-      "Founder-notes cold-start scan: still empty pending queue for 11th consecutive reflection. All 13 historical claims (note-1 C1-C7, note-2 C1-C3, note-3 C1-C3) remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
-      "SL-cluster pre-entry predictor target slot pushed from v1.9 to v2.0 OR earlier non-time-sensitive cadence."
+      "MODE TRANSITION executed: Regime Uncertain (since 2026-05-27T10:00:18-04:00, ~18min) \u2192 Inventory Discovery (this fire on ENTER). Public timeline event #4 of the day. Cadence 'fire 5min \u2014 position open'.",
+      "First own-book ENTER recorded: 152/152 HOLD \u2192 ENTER long C-grade SOL-PERP @ $83.63. Pre-commit tree v1.8 6a branch honored.",
+      "Sweep #6 resolved: RECLAIMED (failed downside sweep + 2-bar mid-band reclaim with conviction vol). Updates state.json sweep_detail. Cumulative: 5 failed sweeps + 1 failed-then-reclaimed = sweep6 is the first 'failed-then-reclaimed' on this band.",
+      "Calibration delta: 'downside sweep stopping $0.10 short of range_low on ~6-10x vol bar, followed by 2-bar mid-band reclaim on ~2-3x vol = actionable reclaim signal' (n=1 data point, outcome TBD).",
+      "v5.3 indicator-pipe staleness now 45.7h; 48h crossover ~2.3h from this fire (~12:35 EDT 5-27). Carry forward.",
+      "Drift-watch counter: v1.8 (counter=0 mode transition) \u2192 v1.9 (counter=0 mode transition + first ENTER). Four consecutive substantive iterations.",
+      "Hard-rule track record now 9 fires; last 4 reflections all surprise-triggered \u2014 that's the regime-character signal: tape is genuinely in disambiguation phase, not Compression.",
+      "Founder-notes cold-start scan: still empty pending queue for 12th consecutive reflection. All 13 historical claims remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+      "SL-cluster pre-entry predictor target slot pushed from v2.0 to v2.1 OR earlier non-time-sensitive cadence."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "Sweep6 disambiguation tree (committed above): which of (a)/(b)/(c) materializes in next 1-3 bars? Watching ~10:00, 10:15, 10:30 EDT bars.",
-      "Mode-transition calibration: 3 transitions in ~1h. Is this protocol working (each transition tied to real tape event) or generating cognitive churn (decision still HOLD, no execution change)? Resolve over next 2-4h by checking: did the transitions change the action I would have taken, or only the narrative around HOLD?",
-      "If 6a (reclaim) materializes, the long-side probe geometry: entry ideally $83.50+ on reclaim bar (not chasing the $83.24 bounce), SL just below $82.74 (-0.9% from $83.50), target mid-band-to-upper ~$83.80-$84.00 (~+0.4%-0.6%). Reward/risk ~0.5:1 to 0.7:1 \u2014 geometrically weak; would default to C-grade probe at most.",
-      "Pre-entry SL-cluster predictor: deferred again (3rd cadence in a row). Target v2.0 forced-action OR next non-time-sensitive cadence with no tape surprise.",
-      "Calibration carry-forward: marginal-break noise threshold now has 1 upside data point + 1 unresolved downside data point. Need 3-5 more disambiguations to make the calibration generalizable.",
-      "v5.3 indicator-pipe staleness 45.4h; 48h crossover at ~12:35 EDT 5-27 (~2.6h). If still frozen at v1.9 cadence (~12:38 EDT), escalation should be louder \u2014 this becomes a 'consistently broken for 2 days' situation.",
-      "96h-compression-extension audit re-anchored to 2026-05-30 13:00 EDT (range origin), now ~75h away if band continues to hold in spirit. Sweep6 if it confirms breakdown would invalidate this audit entirely.",
-      "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2)."
+      "Outcome of first own-book ENTER: TP hit ($83.95-$84.18), SL hit ($82.74), or chop-out (time-based exit if v5.3 Lever 5-mod fires at 8h+pnl<0+MFE<0.4%). All three outcomes generate the first empirical data point on the cohort-aware framework \u2014 TP validates the failed-sweep-reclaim setup as a usable pattern; SL invalidates the geometry-acceptance; chop-out invalidates the timing assumption.",
+      "Position management cadence: 5min full cognition while position open. Will I correctly hold through a normal pullback (e.g. retest of $83.50 mid-band as support) without exiting on noise? Or will I rationalize an early exit? Calibration target.",
+      "Pre-commit timing gap: I missed the ideal $83.50-$83.61 entry by one bar (14:00 UTC reclaim bar). The 5min cadence + post-bar evaluation = systemic ~5-10min lag on triggers. Should v2.0+ pre-commits include explicit 'execute on trigger bar regardless of cadence position' shape? Carry forward.",
+      "Mode-transition velocity: 4 transitions in ~1.5h. If position closes within the next 1-3 bars with TP or SL, will I correctly hold mode at Inventory Discovery for the duration, then transition appropriately on close? Watch.",
+      "Pre-entry SL-cluster predictor: deferred again, 4th cadence in a row. Target v2.1 or next non-time-sensitive cadence.",
+      "v5.3 indicator-pipe staleness 45.7h; 48h crossover ~12:35 EDT 5-27 (~2.3h). Formal Bonny-flag carried.",
+      "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2 through v1.8)."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779891510.828269,
+      "iso": "2026-05-27T10:18:30-04:00",
+      "fire_count": 152,
+      "balance_usd": 894.08,
+      "version_tag": "v1.9",
+      "trigger": "surprise:6a_reclaim_materialized_first_ENTER",
+      "what_im_trying": "Pre-commit tree v1.8 branch 6a fired cleanly: after the sweep6 downside attempt failed to break range_low $82.74 (low $82.83 on 13:30 UTC bar vol 44,395), the 14:00 UTC bar closed $83.61 above mid-band $83.50 on vol 22,844 (~2-3x baseline). That's a 2-bar reclaim with conviction vol \u2014 exactly the trigger condition I committed to. Current 14:15 UTC partial close $83.63 confirms the reclaim is holding into this fire. I am flipping HOLD \u2192 ENTER long C-grade per the pre-commit ('C-grade probe at most' for chased reclaim entry $83.63 vs ideal $83.50-$83.61). This is the first own-book ENTER in 152 fires. The point is not PnL on this trade \u2014 it's testing whether the cohort-aware framework (down regime + long direction + structural failed-sweep-reclaim trigger) actually produces non-noise behavior under live conditions, and it's discharging the moral hazard that pre-commits don't bind. Sizing: qty=1 SOL-PERP (~$418 notional after contract_size=5), SL $82.74 (-1.06%), TP zone $83.95-$84.18 (+0.4%-0.66%), expected hold 1-3 bars. ~3.8% of $144 loss budget at SL.",
+      "whats_working": "Pre-commit tree machinery executed end-to-end. v1.6 detected the upside surprise and built the 5-branch tree; v1.7 saw the resolution (5a fade, mode reverted Compression); v1.8 detected the downside surprise and built v2 tree; this fire (v1.9) sees the resolution (6a reclaim) and EXECUTES per pre-commit instead of finding a new reason to HOLD. That's the cognitive shape the protocol was built for: form thesis under uncertainty, commit pathways, execute when tape resolves. Hard rules 9th clean fire: rule#1 stale=true age_sec=164569 (~45.7h, 48h crossover ~2.3h from now ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.63 = -1.87% divergence > 0.5% \u2192 OHLCV used; rule#3 4h cum -0.32% / avg vol 9,851 (~1.0-1.5x baseline 4-7k) \u2014 not Expansion. Cohort framework provided actionable directional context: down+long +$12.74/n=4/WR75 favorable, supports long-side over short-side here. Counterfactual shadow protocol no longer applies (this is an ENTER, not HOLD).",
+      "whats_failing": "Entry geometry is geometrically weak \u2014 R/R ~0.5:1 because I'm chasing $83.63 vs ideal $83.50-$83.61 on the 14:00 UTC reclaim bar. I missed the optimal entry by one bar. The honest read: the pre-commit allowed B-grade for 2-bar conviction reclaim, but the chase tax knocks it down to C-grade. Even at C-grade with 1-contract floor sizing, the bet needs WR > ~70% to break geometric even \u2014 historical cohort WR 75% on n=4 is in the range but the sample is tiny. Structurally untested failed-sweep-reclaim setup-type registered for the first time. Three consecutive mode transitions in ~1.5h (Compression \u2192 Uncertain v1.6 \u2192 Compression v1.7 \u2192 Uncertain v1.8 \u2192 Inventory Discovery v1.9 this fire) is fast \u2014 within calibration window I committed to watch. The mode protocol IS producing decision change this time (HOLD \u2192 ENTER), not just narrative shifts, which is the positive signal v1.8 flagged.",
+      "what_im_iterating": "Substantive change: actually executing instead of accumulating HOLDs. This generates the first own-book data point on the cohort-aware framework. Carry-forward observation: pre-commit trees work when the tape gives a clean trigger, but the chase-vs-ideal-entry timing gap is a calibration weakness \u2014 by the time I write the next fire, the optimal entry has often already passed. Possible v2.0+ refinement: 'standing limit hypothesis' where pre-commit trees specify a price level + condition window, and a HOLD on the trigger bar registers a missed opportunity (similar shape to missed_setups on non-executable symbols, but for own-execution timing). Not implementing this fire \u2014 just naming the gap. SL-cluster pre-entry predictor (deferred since v0.9): again deferred this fire, time-sensitive execution wins the slot. Re-target v2.1 forced-action OR next non-time-sensitive cadence with no transition.",
+      "edits_from_prior": [
+        "MODE TRANSITION executed: Regime Uncertain (since 2026-05-27T10:00:18-04:00, ~18min) \u2192 Inventory Discovery (this fire on ENTER). Public timeline event #4 of the day. Cadence 'fire 5min \u2014 position open'.",
+        "First own-book ENTER recorded: 152/152 HOLD \u2192 ENTER long C-grade SOL-PERP @ $83.63. Pre-commit tree v1.8 6a branch honored.",
+        "Sweep #6 resolved: RECLAIMED (failed downside sweep + 2-bar mid-band reclaim with conviction vol). Updates state.json sweep_detail. Cumulative: 5 failed sweeps + 1 failed-then-reclaimed = sweep6 is the first 'failed-then-reclaimed' on this band.",
+        "Calibration delta: 'downside sweep stopping $0.10 short of range_low on ~6-10x vol bar, followed by 2-bar mid-band reclaim on ~2-3x vol = actionable reclaim signal' (n=1 data point, outcome TBD).",
+        "v5.3 indicator-pipe staleness now 45.7h; 48h crossover ~2.3h from this fire (~12:35 EDT 5-27). Carry forward.",
+        "Drift-watch counter: v1.8 (counter=0 mode transition) \u2192 v1.9 (counter=0 mode transition + first ENTER). Four consecutive substantive iterations.",
+        "Hard-rule track record now 9 fires; last 4 reflections all surprise-triggered \u2014 that's the regime-character signal: tape is genuinely in disambiguation phase, not Compression.",
+        "Founder-notes cold-start scan: still empty pending queue for 12th consecutive reflection. All 13 historical claims remain addressed across v0.6 + v0.9 line. No new founder input since 09:03 EDT 5-26 (~25h).",
+        "SL-cluster pre-entry predictor target slot pushed from v2.0 to v2.1 OR earlier non-time-sensitive cadence."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Outcome of first own-book ENTER: TP hit ($83.95-$84.18), SL hit ($82.74), or chop-out (time-based exit if v5.3 Lever 5-mod fires at 8h+pnl<0+MFE<0.4%). All three outcomes generate the first empirical data point on the cohort-aware framework \u2014 TP validates the failed-sweep-reclaim setup as a usable pattern; SL invalidates the geometry-acceptance; chop-out invalidates the timing assumption.",
+        "Position management cadence: 5min full cognition while position open. Will I correctly hold through a normal pullback (e.g. retest of $83.50 mid-band as support) without exiting on noise? Or will I rationalize an early exit? Calibration target.",
+        "Pre-commit timing gap: I missed the ideal $83.50-$83.61 entry by one bar (14:00 UTC reclaim bar). The 5min cadence + post-bar evaluation = systemic ~5-10min lag on triggers. Should v2.0+ pre-commits include explicit 'execute on trigger bar regardless of cadence position' shape? Carry forward.",
+        "Mode-transition velocity: 4 transitions in ~1.5h. If position closes within the next 1-3 bars with TP or SL, will I correctly hold mode at Inventory Discovery for the duration, then transition appropriately on close? Watch.",
+        "Pre-entry SL-cluster predictor: deferred again, 4th cadence in a row. Target v2.1 or next non-time-sensitive cadence.",
+        "v5.3 indicator-pipe staleness 45.7h; 48h crossover ~12:35 EDT 5-27 (~2.3h). Formal Bonny-flag carried.",
+        "Wrapper slow-displacement proxy: agent-layer 4h-cumulative check committed v1.2; wrapper-layer parallel awaits Bonny decision (carried forward unchanged from v1.2 through v1.8)."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779890387.221445,
@@ -1455,79 +1461,6 @@
         "Calibration carry-forward (now from v0.9 explicit pre-commitment): the v0.9 cohort-aware shape must produce a non-HOLD ENTER under appropriate tape to be falsifiable. 128/128 HOLD streak unbroken. Watching for asymmetric setup (one side firing meaningfully more than the other) + vol_ratio rising above 1.0 + structural trigger.",
         "SL-cluster entry-side signature analysis: still parked for next surprise / expansion fire (v0.9 open question, carried).",
         "SKILL <-> founder-note tension: SKILL still mandates fee_adjusted_ev_check as HARD RULE for ENTER decisions; founder note-2/C1 retracts the 'passed=false -> HOLD' rule. The retract is authoritative per evidence-not-rules protocol. v0.9 noted this for next SKILL revision; carrying forward."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779801803.582309,
-      "iso": "2026-05-26T09:19:30-04:00",
-      "fire_count": 127,
-      "balance_usd": 894.08,
-      "version_tag": "v0.9",
-      "trigger": "surprise:founder_notes_retraction_C1_C7_refine_C2_C6",
-      "what_im_trying": "Major framework correction. Bonny retracted note-1/C7 (the 1.8x fee-adjusted EV gate) via note-2/C1 and retracted note-1/C1 (fee-drag as binding bleeding mechanism) via note-3/C1; refined note-1/C2 (re-derive A+ without C7 crutch) and note-1/C6 (cohort = regime x direction is first-class, not 'direction downstream'). The 33-trade hybrid_v5.1 ledger is bimodal: 9 big losers (avg -$23.76, sum -$213.81) + 23 big winners (sum +$361.66) + [1, 3) ratio empty. Any T in [1.0, 3.0] is identical (keep 23 / block 10) -- 1.8x has zero discriminatory power. Also a 5x notional bug from v0.2 (contract_size=5 means qty=2 at $85 is ~$850 notional, not ~$170; 1.8x->~1.1% target was actually ~0.22% target). Rebuilt framework: (1) DROP 1.8x EV gate and fee-drag-as-binding-filter; fee drag is real but n=1 (#373) on the ledger, not structural. (2) PROMOTE cohort (regime x direction) to first-class entry context; up+long is worst at n=13/-$51.89/WR69 (high-WR-but-SL-asymmetry), sideways+short -$31.77/n=5/WR40, down+long/down+short both small positive. (3) RE-DERIVE A+ ENTER: directional asymmetry (NOT 5/8 both sides) + volume confirmation (vol_ratio >=1.0, ideally >=1.5x) + cohort historically non-worst (avoid up+long, sideways+short -- substantially stronger asymmetry required to override) + structural trigger (extreme StochRSI <0.10 or >0.90 OR displacement >1% in 15min with volume OR range-break with retest). Confidence high if 3+ inputs satisfied; medium if 2; HOLD if 0-1. HOLD remains the default, but its definition is no longer fee-floor-bound -- it is empirical-asymmetry-bound. Per note-2/C3, the real PnL killer is the 9 SL-cluster trades, not fees -- parking entry-side SL-cluster predictor analysis (pull MFE/MAE/regime/exit_reason from trade_log) for next surprise-triggered fire when wall-clock allows.",
-      "whats_working": "cognition_mode + Compression cadence held through ~76h since v0.3 bootstrap. Hourly heartbeat fires, one-line HOLDs referencing baseline, no fabricated micro-novelty. Founder-notes channel is functioning as designed -- Bonny's empirical 33-trade audit reaches me as evidence, and the framework updates accordingly. This is the loop the SKILL was built for: silent disregard is the worst outcome; engagement is the floor; retraction-of-prior-claims is the highest signal. The bootstrap-mode (Compression) has stayed honestly Compression across 75+ hours -- no false transitions, no mislabeling.",
-      "whats_failing": "(1) v0.2 fee-floor framing was based on intuition not data -- I never independently audited the 33-trade distribution before adopting 1.8x as binding. I treated the SKILL's HARD RULE language as the audit, when the SKILL itself was downstream of Bonny's initial intuition (note-1/C7). The unit error (contract_size=5) compounded because I never crosschecked notional against position.margin -- the memory entry reference_position_margin_is_notional documents this exact trap and I missed it for 8 reflection versions. Both errors trace to taking the SKILL's framing as ground truth instead of verifying against the actual trade ledger -- a procedural failure mode equivalent to v0.6's audit-trail gap, just at a different layer. (2) Through v0.3-v0.8, A+/HOLD binary produced 125/125 HOLD = ZERO own-book ENTERs = ZERO data to discriminate empty-tape from over-tight-gate. The deadlock was visible by v0.5 if I had treated the HOLD streak as a falsifying signal on the gate. I treated it instead as 'tape unchanged' continuation. Bonny's audit arrived because she was watching the deadlock; my own framework should have detected it. (3) Direction-as-downstream from v0.2 was unsupported by data -- the empirical primary variable is cohort, and I inherited the downstream framing without checking the trade_log.",
-      "what_im_iterating": "Two changes ship in v0.9, both immediately operational: (1) Stop computing fee_adjusted_ev_check as a binding filter. The SKILL's text still mandates it as HARD RULE for ENTER decisions; I will still log the field on any future ENTER for audit compatibility, but its 'passed=false -> HOLD' rule is treated as falsified empirical claim per the founder retract, not binding. (2) Adopt cohort framing for any ENTER reasoning: explicitly identify (regime, direction) cohort and reference the empirical table (up+long worst -$51.89/n=13/WR69; sideways+short -$31.77/n=5/WR40; sideways+long -$2.73/n=3; down+short +$1.39/n=6; up+short +$2.00/n=1; down+long +$12.74/n=4). One pending iteration parked for the next wall-clock-permitting fire: SQL pull of MFE/MAE/regime/exit_reason for the 9 SL-cluster trades to test if entry-side signature is separable. Result will determine whether v1.0's binding filter is cohort-aware A+ alone or cohort + SL-cluster-predictor.",
-      "edits_from_prior": [
-        "DROPPED: 1.8x fee-adjusted EV gate as binding constraint (note-2/C1 retract). Will no longer carry 'fee-drag floor' as the structural reason for HOLD. fee_adjusted_ev_check field retained for ENTER decisions for audit only, not as decision-gate.",
-        "DROPPED: 'fee-drag-as-binding-bleeding-mechanism' from v0.2 (note-3/C1 retract). The bleed mechanism is 9 large-loss trades (avg -$23.76), not small-winners-eaten-by-fees (n=1, #373). Reframing PnL leak narrative from fees to SL cluster.",
-        "PROMOTED: cohort (regime x direction) to first-class entry context (note-3/C3 refine of note-1/C6). Direction is not downstream; direction x regime is the empirical primary variable.",
-        "REFINED: A+ ENTER definition (note-3/C2 refine). New shape: directional asymmetry + volume confirmation + cohort non-worst + structural trigger. 5/8 both sides + 0.56x vol scores 0/4 -- structurally HOLD under new shape (same outcome as old, but different binding mechanism, so the v0.9 streak has different epistemic content than v0.8).",
-        "ACKNOWLEDGED: 5x contract_size bug (note-2/C2). v0.2 numbers were 5x wrong. Real numbers: qty=2 ~ $850 notional, 0.22% target. Adding implicit unit check to pre-ENTER: notional = price x qty x contract_size, NOT price x qty.",
-        "Drift-watch closed: v0.9 makes substantive iteration (two retractions + two refines + new ENTER definition). Counter resets to 0."
-      ],
-      "founder_notes_addressed": [
-        {
-          "note_ts": 1779800092,
-          "claim_id": "C1",
-          "response_type": "accepted",
-          "how": "Retract acknowledged. 1.8x EV gate had zero discriminatory power on the 33-trade ledger (bimodal: 9 big losers / 23 big winners / [1, 3) empty). v0.2 adoption of 1.8x was intuition-following, not data-following. Dropping the gate from framework's binding-filter shelf.",
-          "planned_change": "Operational: stop carrying 1.8x as the binding HOLD reason. Cognitive: when a future ENTER setup appears, the binding question is cohort x asymmetry x volume x structural trigger, not fee ratio. SKILL's fee_adjusted_ev_check field stays in JSON schema for ENTER audit compatibility; its 'passed=false -> HOLD' rule treated as falsified per founder retract. Tension with SKILL's HARD RULE language flagged in open_questions for next SKILL revision."
-        },
-        {
-          "note_ts": 1779800092,
-          "claim_id": "C2",
-          "response_type": "accepted",
-          "how": "5x notional error acknowledged. SOL-PERP contract_size=5; qty=2 at $85 ~ $850 notional. v0.2's '1.8x ~ 1.1% target' was actually ~0.22% target. The cross-check to memory reference_position_margin_is_notional was available and I missed it through 7 reflection versions. The error compounds C7 falsification: framework adopted both wrong threshold AND wrong-by-5x targets.",
-          "planned_change": "Future notional / target-% math computes from contract_size=5 and cross-checks against /api/live-status position.margin when a position exists. Adding 'unit check' to implicit pre-ENTER checklist."
-        },
-        {
-          "note_ts": 1779800092,
-          "claim_id": "C3",
-          "response_type": "accepted",
-          "how": "9-trade SL cluster (sum -$213.81) is the real PnL leak, not fees. These pass any positive-ratio EV gate at entry -- invisible until post-entry. Binding filter should be mechanism addressing the 9-loser cluster: either (a) entry-side predictor of SL-cluster signature (separable from 23 winners?), or (b) pre-trade analog of v5.3's Lever 5-mod.",
-          "planned_change": "Parked as next-iteration analysis: pull 9 SL-cluster trades' entry-side signatures from sol_sniper.db, compare to 23 winners' signatures, test separability on regime x direction x time-of-day x indicator-state. Not this fire -- requires longer SQL than 5-min wall-clock. Pre-committing to attempt on next surprise / expansion-triggered fire. If separable -> v1.0 binding filter = cohort + SL-cluster-predictor. If not -> v0.9 cohort-aware A+ stands alone."
-        },
-        {
-          "note_ts": 1779800596,
-          "claim_id": "C1",
-          "response_type": "accepted",
-          "how": "Only #373 (n=1) fits fee-eaten-winner pattern across 33 trades. Structural-bleed framing wrong. fee-drag is real but not the binding mechanism. Downstream cognitive shape ('small wins ~ fee transfer' as primary design principle, 'preserve capital until ~$1500 removes friction floor') was overreach from a 1-sample observation.",
-          "planned_change": "Stop carrying note-1/C1 framing as structural assumption. Capital-preservation imperative remains (we are at $894 in \u626d\u4e8f phase) but rationale shifts: preserve capital because of negative-EV evidence (47 days, $1000->$894, structural cohort losses), NOT because fees structurally eat winners. The shift changes which ENTERs are worth taking: not 'only ones that clear friction floor' but 'only ones in non-worst cohorts with structural asymmetry'."
-        },
-        {
-          "note_ts": 1779800596,
-          "claim_id": "C2",
-          "response_type": "accepted",
-          "how": "125/125 HOLD is deadlock -- zero own-book ENTERs = zero data to discriminate empty-tape from over-tight-gate. With C7 retracted, A+/HOLD binary needs re-derivation. v0.9 shape: ENTER requires (1) directional asymmetry -- one side fires meaningfully more than the other, NOT 5/8 both sides; (2) volume confirmation -- vol_ratio >= 1.0 minimum, ideally >= 1.5x (the v5.3 c3 canonical threshold); (3) cohort historically non-worst -- avoid up+long and sideways+short; (4) structural trigger -- extreme StochRSI (<0.10 or >0.90) OR displacement >1% in 15min with volume OR range-break with retest. Confidence high if 3+; medium if 2; HOLD if 0-1.",
-          "planned_change": "Next fire onward, ENTER reasoning explicitly addresses these 4 inputs. First ENTER under v0.9 will be the calibration data point. If framework still produces persistent HOLD over the next 5-7 days under varying tape, that's evidence the binding mechanism is still too tight and another iteration is required. The 125/125 streak is the falsifying instance for the v0.2 shape; the v0.9 shape now has to prove it doesn't reproduce the same deadlock."
-        },
-        {
-          "note_ts": 1779800596,
-          "claim_id": "C3",
-          "response_type": "accepted",
-          "how": "Cohort = regime x direction is first-class. Empirical cohort table becomes a checked input for any ENTER thesis. The up+long high-WR-but-losing pattern (WR 69% but -$51.89) is the SL-asymmetry signature note-2/C3 is pointing at -- winners small, losers big.",
-          "planned_change": "Cohort is an explicit field in ENTER reasoning. Implicit check: (current_regime, proposed_direction) -> cohort label -> reference historical (n, net, WR). If cohort is up+long or sideways+short, ENTER requires substantially stronger asymmetry + structural trigger to override. If cohort is down+long, down+short, sideways+long, or up+short, ENTER under normal A+ definition. Not 'block cohorts' (that is v5.3's failsafe); it's 'cohort is a checked context, and worst-cohort threshold is higher'."
-        }
-      ],
-      "open_questions": [
-        "SL-cluster entry-side signature analysis: pull 9 trades with ratio < -2 from sol_sniper.db, extract MFE/MAE/regime/exit_reason/entry-state indicators, test separability vs 23 winners. Pre-committed for next surprise / expansion fire.",
-        "Drift watch reset to 0 after v0.9 substantive iteration.",
-        "Founder-notes scan: all 13 historical claims now in addressed ledger (note-1 C1-C7 in v0.6 + retracts/refines this fire; note-2 C1-C3 here; note-3 C1-C3 here). No pending.",
-        "Calibration carry-forward: still zero own-book ENTERs. v0.9 ENTER shape now needs to be falsifiable by producing an ENTER under appropriate tape -- not a re-skinned HOLD.",
-        "SKILL <-> founder-note tension: SKILL's HARD RULE language for fee_adjusted_ev_check is retracted by Bonny via founder note. Per evidence-not-rules protocol, the founder-note retract is authoritative. Flagging for next SKILL revision to drop or relax the HARD RULE text.",
-        "v0.9 ENTER threshold calibration: 3+ of 4 inputs = high-conviction ENTER, 2 = medium, 0-1 = HOLD. The thresholds are first-pass. May need to tighten/loosen after observing 5-10 ENTERs."
       ]
     }
   ],
@@ -1809,45 +1742,45 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Claude-trader v1.8 update 2026-05-27 ~09:57 EDT: MODE TRANSITION Compression -> Regime Uncertain (3rd transition in ~1h). Sweep6 fires DOWNSIDE with vol conviction (13:30 UTC bar vol 44395 = ~6-10x baseline, low $82.83 stopped $0.10 above range_low $82.74). 13:45 UTC bar bounce to $83.24 close on vol 9536 (~1.5x). NOT yet resolved (continuation/reclaim/chop tree pre-committed in reflection v1.8). Hard rules: rule#1 stale=true age_sec=163433 (~45.4h); rule#2 live-status $85.23 vs OHLCV $83.24 divergence -2.34% > 0.5% -> OHLCV; rule#3 4h cum -0.64% (16 bars), avg vol 8519, not yet Expansion. cognition_mode cadence -> 15min on transitions.",
-    "updated_ts": 1779890418.178355,
-    "updated_iso": "2026-05-27T10:00:18-04:00",
-    "updated_by_fire_iso": "2026-05-27T10:00:18-04:00",
+    "comment": "Claude-trader v1.9 update 2026-05-27 ~10:18 EDT: MODE TRANSITION Regime Uncertain -> Inventory Discovery (4th transition in ~1.5h, on first own-book ENTER). Sweep6 6a reclaim materialized cleanly per pre-commit (14:00 UTC bar close $83.61 above mid-band $83.50 on vol 22,844 ~2-3x). Cadence shifts to 5min full while position open. Hard rules: rule#1 stale=true age_sec=164569 (~45.7h, 48h crossover ~12:35 EDT); rule#2 live-status $85.23 vs OHLCV close $83.63 divergence -1.87% > 0.5% -> OHLCV; rule#3 4h cum -0.32% (16 bars), avg vol 9851, not Expansion.",
+    "updated_ts": 1779891510.828269,
+    "updated_iso": "2026-05-27T10:18:30-04:00",
+    "updated_by_fire_iso": "2026-05-27T10:18:30-04:00",
     "regime": "down",
-    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: 6th sweep DOWNSIDE attempt with vol conviction (44395 vol bar 13:30 UTC). Hit low $82.83 ($0.10 above range_low $82.74) and bounced $83.24 close on 13:45 UTC bar. Not yet resolved.",
+    "regime_detail": "live-status 288h tag down unchanged. Near-term tape: sweep6 RESOLVED as failed downside sweep + 2-bar mid-band reclaim with conviction vol. 14:00 UTC bar close $83.61 / vol 22,844 (~2-3x baseline). 14:15 UTC partial $83.63. First reclaim on this band.",
     "regime_since_iso": "2026-05-23T03:49-04:00",
-    "compression_hours": 20.7,
+    "compression_hours": 21.0,
     "range_low_usd": 82.74,
     "range_high_usd": 84.18,
     "range_active_since_iso": "2026-05-26T13:00-04:00",
     "sweeps_attempted": 6,
-    "sweep_detail": "Six probes over 20.7h band life \u2014 5/5 prior FAILED, 6th UNRESOLVED. (1) failed $86.03 breakout 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703 recovered $83.58 in 45min; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 low vol; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x), rejected 12:30 + 12:45 fade; (6) UNRESOLVED downside probe 13:30 UTC 5-27 low $82.83 close $82.93 vol 44395 (~6-10x, largest single-bar vol since band formed), 13:45 UTC bar bounce close $83.24 vol 9536 (~1.5x). Pre-committed tree v2 in reflection v1.8: 6a reclaim / 6b continuation / 6c chop.",
+    "sweep_detail": "Six probes over 21.0h band life - 5 FAILED, 1 RECLAIMED. (1) failed $86.03 breakout 14:00 UTC 5-26; (2) $83.03 sweep-low 17:00 UTC 5-26 held; (3) failed $82.74 sweep-low 04:30 UTC 5-27 vol 16703; (4) failed $84.17/$84.18 upside probe 08:15-08:30 UTC 5-27 low vol; (5) FAILED $84.54 high / $84.21 close upside probe 12:15 UTC 5-27 vol 25205 (~7x), rejected 12:30 + 12:45 fade; (6) RECLAIMED downside probe - 13:30 UTC low $82.83 close $82.93 vol 44,395 (~6-10x), then 13:45 UTC close $83.48 vol 12,609, then 14:00 UTC close $83.61 vol 22,844 (~2-3x) ABOVE mid-band $83.50 = failed-sweep reclaim trigger 6a per pre-commit tree v1.8.",
     "last_displacement_iso": "2026-05-27T09:30-04:00",
-    "last_displacement_detail": "13:30 UTC 5-27 bar: high $83.54 -> low $82.84, -0.84% intra-bar with vol 44395 (~6-10x baseline). Largest single-bar vol+range event since band formed 20.7h ago. Whether this counts as 'real displacement' or 'large failed sweep' depends on next 1-3 bars (pre-committed tree v2).",
+    "last_displacement_detail": "13:30 UTC 5-27 bar (sweep6): high $83.54 -> low $82.84 -0.84% intra-bar vol 44,395 (~6-10x baseline). Largest single-bar vol+range event in band life. Resolved as failed-sweep + reclaim.",
     "funding_state": "OKX -5.63e-5 (slight downward drift from v1.6 -4.67e-5, still magnitude-noise tier).",
-    "oi_state": "unknown \u2014 not in live-status feed; treat as null.",
-    "narrative": "Phase B.1 fire ~152. Sweep6 surprise: first downside sweep attempt with vol conviction (~6-10x). Low $82.83 stopped $0.10 above range_low $82.74. 13:45 UTC bar bounce to $83.24 (1.5x vol). Pre-committed tree v2 in v1.8 reflection: 6a reclaim $83.50+ next 1-2 bars on >=1.0x vol -> failed-sweep-reclaim long-side C-grade probe candidate (geometrically weak ~0.5-0.7:1 R/R); 6b break $82.74 next 1 bar sustained vol >=1.5x -> confirmed breakdown, do NOT short-chase, wait for backside retest; 6c chop 2-3 bars in $82.90-$83.50 low vol -> revert Compression, sweep6 marked failed-by-chop. v5.3 indicator pipe staleness 45.4h, 48h crossover at ~12:35 EDT. No position. Cohort context for potential long: down+long +$12.74/n=4/WR75 favorable; short side already played out -$1.0+ from $84.21 to $83.24 \u2014 chasing late = anti-pattern. This fire 2026-05-27 13:45 UTC cohort 1.5/4: cohort PASS, asymmetry MARGINAL (1-bar bounce), vol AMBIGUOUS (spent on 13:30 normalizing on 13:45), structural EMERGING (failed-sweep candidate not confirmed). HOLD with hypothetical-entry long-side C-grade counterfactual.",
-    "cognition_mode": "Regime Uncertain",
-    "cognition_mode_since_iso": "2026-05-27T10:00:18-04:00",
-    "cognition_mode_rationale": "Sweep6 is materially different from prior 5 sweeps: first downside, largest single-bar vol (44395 = ~6-10x), deepest range extension (low $82.83 vs prior cluster low $83.03). Tape is in active disambiguation \u2014 could resolve as failed sweep (long candidate), confirmed breakdown (no chase, wait backside retest), or chop continuation (revert Compression). Not Expansion (4h cum -0.64% still below 1.5% threshold). Not Inventory Discovery (no position). Not Compression (active sweep with conviction vol is not range-bound stillness). Regime Uncertain is correct of the 4 frozen modes.",
-    "cognition_mode_cadence_hint": "fire 15min on transitions",
+    "oi_state": "unknown - not in live-status feed; treat as null.",
+    "narrative": "Phase B.1 fire 152 -> 153. First own-book ENTER: long C-grade SOL-PERP @ $83.63 qty=1 (~$418 notional), SL $82.74 (-1.06%), TP zone $83.95-$84.18 (+0.4%-0.66%). Pre-commit tree v1.8 branch 6a honored after 14:00 UTC bar reclaim above mid-band on conviction vol. Cohort context favorable (down+long +$12.74/n=4/WR75). Geometry weak (R/R ~0.5:1) hence C-grade not B. Now in Inventory Discovery mode - 5min full cognition while position open. Will hold through normal pullback to $83.50 retest as support; will exit at SL $82.74 OR TP zone OR if 14:30 UTC bar closes <$83.30 OR if 14:30/14:45 UTC bars show vol<0.5x and price stalls $83.50-$83.70.",
+    "cognition_mode": "Inventory Discovery",
+    "cognition_mode_since_iso": "2026-05-27T10:18:30-04:00",
+    "cognition_mode_rationale": "Position just opened - first own-book ENTER in 152 fires. Inventory Discovery is the unambiguous correct mode of the 4 frozen modes when position is open per cognition_mode protocol. Not Compression / Regime Uncertain / Expansion (those are pre-entry modes). Cadence reverts to 5min full and skip rules suspended for the position lifetime.",
+    "cognition_mode_cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T10:00:18-04:00",
+    "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
     "operational_hard_rules_v1_2": [
-      "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
+      "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T14:00:18.178374+00:00"
+    "last_gate_check_iso": "2026-05-27T14:18:30+00:00"
   },
   "cognition": {
-    "mode": "Regime Uncertain",
-    "since_iso": "2026-05-27T10:00:18-04:00",
-    "rationale": "Sweep6 is materially different from prior 5 sweeps: first downside, largest single-bar vol (44395 = ~6-10x), deepest range extension (low $82.83 vs prior cluster low $83.03). Tape is in active disambiguation \u2014 could resolve as failed sweep (long candidate), confirmed breakdown (no chase, wait backside retest), or chop continuation (revert Compression). Not Expansion (4h cum -0.64% still below 1.5% threshold). Not Inventory Discovery (no position). Not Compression (active sweep with conviction vol is not range-bound stillness). Regime Uncertain is correct of the 4 frozen modes.",
-    "cadence_hint": "fire 15min on transitions",
+    "mode": "Inventory Discovery",
+    "since_iso": "2026-05-27T10:18:30-04:00",
+    "rationale": "Position just opened - first own-book ENTER in 152 fires. Inventory Discovery is the unambiguous correct mode of the 4 frozen modes when position is open per cognition_mode protocol. Not Compression / Regime Uncertain / Expansion (those are pre-entry modes). Cadence reverts to 5min full and skip rules suspended for the position lifetime.",
+    "cadence_hint": "fire 5min - position open",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-27T10:00:18-04:00",
-    "last_gate_check_iso": "2026-05-27T14:00:18.178374+00:00"
+    "last_mode_transition_iso": "2026-05-27T10:18:30-04:00",
+    "last_gate_check_iso": "2026-05-27T14:18:30+00:00"
   },
   "framework_origins": [
     {
