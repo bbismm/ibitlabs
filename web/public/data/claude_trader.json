@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779916668,
-  "generated_iso": "2026-05-27T17:17:48-0400",
+  "generated_at": 1779917545,
+  "generated_iso": "2026-05-27T17:32:25-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 205,
+    "decisions_total": 207,
     "actions": {
-      "HOLD": 201,
+      "HOLD": 203,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 45,
+      "HOLD_with_counterfactual": 47,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -22,12 +22,12 @@
     "confidence": {
       "high": 150,
       "medium": 40,
-      "low": 15
+      "low": 17
     },
-    "reasoning_chars_avg_all": 963,
-    "reasoning_chars_avg_last10": 759,
+    "reasoning_chars_avg_all": 962,
+    "reasoning_chars_avg_last10": 798,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T17:17:44-04:00",
+    "last_fire_iso": "2026-05-27T17:32:08-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,18 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779916664.566997,
-    "fire_iso": "2026-05-27T17:17:44-04:00",
+    "fire_ts": 1779917528.953589,
+    "fire_iso": "2026-05-27T17:32:08-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.55,
+    "current_price": 83.38,
     "regime": "sideways",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 1.0,
-      "momentum_pct": -0.0008,
-      "rsi": 60.4
+      "vol_ratio": 0.62,
+      "momentum_pct": -0.0014,
+      "rsi": null
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,19 +60,23 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "low",
-    "reasoning": "Same baseline as fire 198 (17:09 EDT). 17:00 EDT bar finalized OHLCV c=83.55 v=3992 (1.00x median-96 4010-rolled-to-3992) vs state's in-progress read c=83.62 v=2483 \u2014 final vol higher but ratio still under v2.5 floor 1.5x. Compression band 82.74-84.18 intact ~28h. Drift back toward mid-band (~83.46) after upper-band tests failed at 15:15 (2.57x) and 16:00 (2.47x) both via v2.5 proximity gate. No new sweep, no break, no displacement, no position. v5.3 pipe stale 52.7h+ (indicators.price 85.23 fake vs 83.55 real). v2.3 rule: forced_exploration_due True but cohort sideways+short worst historical (n=5 WR40%) AND vol floor unmet AND no structural trigger \u2014 HOLD with hypothetical, missing input = vol floor not cleared. Budget $2.40 < smallest viable C-grade exposure ~$2.13 only if SL 0.005 (fragile, sub-noise). HOLD.",
+    "reasoning": "Same baseline as fire ~198 (2026-05-27T17:09:30) and last decision fire (17:24:53). Live-status pipe stale 52.95h (age_sec=190631, indicators.price 85.23 vs OHLCV 83.38 = -2.17% div \u2014 silent-carry per v2.4). OHLCV: 17:00 c=83.50 v=4957 (1.25x baseline 3963 = sub-1.5x v2.5 vol floor), 17:15 in-progress c=83.38 v=2441 (0.62x). 4h cumulative +0.06%. Compression band 82.74-84.18 intact ~28.5h. Micro-direction is mild decay toward range_low (83.84 16:00\u219283.38 17:15 = -0.55% over 1.25h), but cohort sideways+short worst historical (n=5 -$31.77 WR40%) AND no v2.5 trigger AND no structural confirmation = v2.3 (a) block holds. Budget $2.40 < C-grade at-risk floor $3.40 = no exploration capacity today even under forced_exploration_due=True (UTC reset in ~6.5h). HOLD with hypothetical naming the lean.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "15m close above 84.18 with vol_ratio>=1.5x = real upper-band break \u2192 reassess",
+      "Wick into 82.74 with reclaim and vol>=1.5x = sweep #7 long candidate (down+long cohort marginal+, n=6 +$10 WR67%)",
+      "2 consecutive 15m bars >=1.5x with >=1 within 0.3% of band edge = v2.5 trigger \u2192 Regime Uncertain"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 83.55,
-      "sl_pct": 0.008,
-      "tp_pct": 0.009,
-      "predicted_2h_outcome": "drift_sideways",
+      "entry_price": 83.38,
+      "sl_pct": 0.012,
+      "tp_pct": 0.008,
+      "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Two failed upper-band tests today (15:15 + 16:00) both faded into mid-band. Lean short on drift continuation toward range_low 82.74. Worst-cohort sideways+short caveat acknowledged."
+      "reasoning_30_words": "Mild but persistent decay 83.84\u219283.38 over 1.25h within range; lean is continuation toward range_low 82.74 test. Cohort sideways+short worst historical = real-trade-blocker but the committed directional lean is short."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1573,11 +1577,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 14,
-    "avg_chars": 739,
+    "holds_since_framework": 16,
+    "avg_chars": 749,
     "since_iso": "2026-05-27T15:44:50-04:00",
     "since_framework_version": "v2.5",
-    "latest_fire_iso": "2026-05-27T17:17:44-04:00"
+    "latest_fire_iso": "2026-05-27T17:32:08-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2414,14 +2418,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 38,
+    "holds_in_a_row": 40,
     "exploratory_at_risk_usd_today": 6.54,
     "exploratory_entries_today": 2,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-27T21:15:55.880317+00:00",
+    "last_updated_iso": "2026-05-27T21:30:19.920289+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
