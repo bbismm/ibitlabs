@@ -1,23 +1,23 @@
 {
   "public_schema_version": 6,
-  "generated_at": 1779877828,
-  "generated_iso": "2026-05-27T06:30:28-0400",
+  "generated_at": 1779881549,
+  "generated_iso": "2026-05-27T07:32:29-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "DRY_RUN",
   "summary": {
-    "decisions_total": 148,
+    "decisions_total": 149,
     "actions": {
-      "HOLD": 148
+      "HOLD": 149
     },
     "confidence": {
-      "high": 141,
+      "high": 142,
       "medium": 1,
       "low": 6
     },
     "reasoning_chars_avg_all": 983,
-    "reasoning_chars_avg_last10": 861,
+    "reasoning_chars_avg_last10": 834,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T06:27:30-04:00",
+    "last_fire_iso": "2026-05-27T07:30:30-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -27,12 +27,12 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779877823.74074,
-    "fire_iso": "2026-05-27T06:27:30-04:00",
+    "fire_ts": 1779881517.0399659,
+    "fire_iso": "2026-05-27T07:30:30-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.87,
+    "current_price": 84.05,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -46,7 +46,7 @@
     "quantity": null,
     "leverage": null,
     "confidence": "high",
-    "reasoning": "Same baseline as fire 144 (05:34 EDT, v1.4-state). Hard rules executed 5th time clean: Rule #2 caught live-status indicators.price=85.23 vs OHLCV $83.87 (1.6% divergence, indicator pipe still frozen ~42h+). Tape: 4th failed sweep at $84.17/$84.18 already absorbed into state; subsequent 4 bars rolled to $83.50 then recovered to $83.87 on low vol (1075-2638). 4h cum +0.16%, avg vol ~2k/15m -- no Expansion transition. cognition_mode Compression unchanged. Cohort-aware A+ shape scores 1/4: cohort PASS (down regime, favorable down+long/down+short priors), asymmetry FAIL (5/8 both sides), vol FAIL (~0.5x), structural FAIL (no displacement/range-break/retest). HOLD. market_snapshot fields shown are stale live-status reads, kept for schema continuity; OHLCV-derived price is authoritative. Framework reflection v1.5 written (cadence trigger, drift-watch counter 0 to 1).",
+    "reasoning": "Same compression baseline as fire v1.5 (06:27 EDT, decision #144). Hard rules: live-status stale=true (pipe age ~43h, indicators_pro frozen at stoch=0.55/vol=0.56); live-status price USD 85.23 vs OHLCV-derived USD 84.05 = +1.4% divergence > 0.5% threshold -> use OHLCV. 4h cum ~+0.5% (low USD 83.50 -> current USD 84.05), avg vol ~1880/15m, NO Expansion transition. Range USD 82.74-84.18 holds (current USD 84.05 mid-to-upper, last 15m bar high USD 84.10 inside). No new sweep, no displacement, no position event. Cohort-aware A+ shape: cohort PASS (down regime; down+long +USD 12.74/n=4/WR75 and down+short +USD 1.39/n=6/WR83 historically OK), asymmetry FAIL (5/8 both sides on stale read, OHLCV-implied neutral midband), vol FAIL (~0.5x baseline), structural FAIL (no displacement+retest). Score 1/4. HOLD. Sequence advances to 145/145 own-book ENTERs = 0. [Note: prior version of this line had USD-amount chars stripped by shell interpolation; corrected via in-place rewrite of last line, no schema change.]",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": []
@@ -1158,11 +1158,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 872,
+    "holds_since_framework": 2,
+    "avg_chars": 941,
     "since_iso": "2026-05-27T06:27:30-04:00",
     "since_framework_version": "v1.5",
-    "latest_fire_iso": "2026-05-27T06:27:30-04:00"
+    "latest_fire_iso": "2026-05-27T07:30:30-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -1871,23 +1871,23 @@
     "cognition_mode_since_iso": "2026-05-26T13:00-04:00",
     "cognition_mode_rationale": "Unchanged. Compression has held 14.5h with 4/4 failed sweeps both sides \u2014 the canonical Compression signature. Today's resolved 4th sweep ($84.17/$84.18 -> $83.60 fade) is in-mode evidence, not a transition signal. 4h cum +0.01% << 1.5% threshold; avg vol ~2k/15m << 1.0x baseline; no displacement; no position. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-tag intact + tape consistent with down-resolution thesis), Inventory Discovery out (no position). Compression remains correct.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 131,
+    "skipped_fires_in_mode": 142,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio \u2014 re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement)."
     ],
-    "last_gate_check_iso": "2026-05-27T10:22:10.625553+00:00"
+    "last_gate_check_iso": "2026-05-27T11:25:43.126225+00:00"
   },
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-26T13:00-04:00",
     "rationale": "Unchanged. Compression has held 14.5h with 4/4 failed sweeps both sides \u2014 the canonical Compression signature. Today's resolved 4th sweep ($84.17/$84.18 -> $83.60 fade) is in-mode evidence, not a transition signal. 4h cum +0.01% << 1.5% threshold; avg vol ~2k/15m << 1.0x baseline; no displacement; no position. Among 4 frozen starter modes: Expansion out (no sustained displacement/vol), Regime Uncertain out (down-tag intact + tape consistent with down-resolution thesis), Inventory Discovery out (no position). Compression remains correct.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 131,
+    "skipped_fires_in_mode": 142,
     "last_mode_transition_iso": "2026-05-26T13:00-04:00",
-    "last_gate_check_iso": "2026-05-27T10:22:10.625553+00:00"
+    "last_gate_check_iso": "2026-05-27T11:25:43.126225+00:00"
   },
   "framework_origins": [
     {
