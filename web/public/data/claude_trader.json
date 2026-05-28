@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779964534,
-  "generated_iso": "2026-05-28T06:35:34-0400",
+  "generated_at": 1779965582,
+  "generated_iso": "2026-05-28T06:53:02-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 261,
+    "decisions_total": 263,
     "actions": {
-      "HOLD": 253,
+      "HOLD": 255,
       "ENTER": 5,
       "EXIT": 3
     },
@@ -15,46 +15,47 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 86,
       "ENTER_C": 1,
-      "HOLD_no_plausible": 16,
+      "HOLD_no_plausible": 18,
       "EXIT": 3,
       "ENTER_B": 4
     },
     "confidence": {
       "high": 155,
-      "medium": 85,
+      "medium": 87,
       "low": 21
     },
-    "reasoning_chars_avg_all": 965,
-    "reasoning_chars_avg_last10": 1056,
+    "reasoning_chars_avg_all": 964,
+    "reasoning_chars_avg_last10": 937,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T06:34:20-04:00",
+    "last_fire_iso": "2026-05-28T06:52:56-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 40,
+    "framework_reflections_total": 41,
     "founder_notes_total": 3,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779964460.850704,
-    "fire_iso": "2026-05-28T06:34:20-04:00",
+    "fire_ts": 1779965576.010004,
+    "fire_iso": "2026-05-28T06:52:56-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": {
       "direction": "long",
       "entry_price": 80.9,
       "qty": 1,
-      "unrealized_pnl_pct": -0.00037,
-      "minutes_held": 87
+      "unrealized_pnl_pct": -0.001483,
+      "minutes_held": 107
     },
-    "current_price": 80.87,
+    "current_price": 80.78,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": 0.64,
-      "momentum_pct": null,
-      "rsi": null
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4,
+      "_note": "live-status indicators_pro stale (live-status price=85.23 vs ticker 80.78 = 5.51% divergence); use canonical OHLCV-derived in reasoning. P0 v5.3 indicator-pipe staleness persists."
     },
     "decision": "HOLD",
     "grade": null,
@@ -66,23 +67,111 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management fire ~87min into fire 251 LONG (entry 80.90 / SL 80.68 / TP 81.50). KEY UPDATE this fire: state.json fire 259 misread the 10:15 bucket as closed (write at 10:20 UTC = 5min in). Actual 10:15 closed bar (just resolved at 10:30 UTC, pulled this fire): c=80.83 h=81.14 l=80.78 v=4266 = 0.64x baseline 6681 \u2014 close $0.14 LOWER, low $0.17 DEEPER, vol 2.85x LARGER than state's in-progress read. Close 80.83 < 80.85 ex-resistance = FIRST closed bar below since reclaim \u2014 1 of 2 needed for v2.6_RANGE_CLEAR (support-flip refutation). Ticker 80.87 just $0.02 above 80.85, drifting on the line. MAE updates: 10:15 low 80.78 = -0.148% from entry (still less deep than entry-bar low 80.71 = -0.235%, so MAE not extended). MFE unchanged 81.19 (10:00 high). Pre-commit tree E1-E5: E1 TP 81.40+ unreached / E2 SL 80.68 untouched (low 80.78 = $0.10 above) / E3 8h cut ~17:03 UTC, ~6.5h away / E4 only 6 closed bars elapsed not 12+ / E5 no displacement vol burst. HOLD_continue branch active. v2.22 test now showing FIRST weakness on up-side \u2014 if 10:30 bucket also closes below 80.85, structural thesis invalidated and exit-review warranted even if SL untouched (new pre-SL warning track added in v2.20 reflection). Indicator-pipe staleness persists: live-status 85.23 vs OHLCV 80.87 = 5.06% divergence. Inventory Discovery mode, full 5-min cadence.",
-    "expected_holding_hours": 8,
-    "expected_pnl_pct_target": 0.0074,
+    "reasoning": "Position-management HOLD. Pre-commit U2 fired: 10:30 UTC canonical c=80.89 (vol 0.95x baseline) closed above 80.85 ex-resistance = support-flip thesis intact. Pre-SL warning track 0-of-2 (10:15 c=80.91, 10:30 c=80.89). Ticker just dropped to 80.78 (intra-bar) = -0.15% unrealized, $0.10 above SL 80.68 \u2014 noted but per v2.19 discipline, structural conclusion requires closed-bar evidence (10:45 canonical at ~11:03 UTC, fire 266). MAE 80.71 holds, MFE 81.19 holds, no E1-E5 trigger fires. Continue Inventory Discovery; let pre-commit tree resolve on canonical 10:45 read.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "SL 80.68 touched intra-bar",
-      "TP 81.40+ reached + vol >= 1.5x for clean exit",
-      "8h elapsed at ~17:03 UTC AND pnl<0 AND MFE<0.4% (Lever-5-mod analog)",
-      "displacement event (vol >= 3.0x baseline) breaks 80.40-81.50 envelope either direction",
-      "12+ bars elapsed without TP/SL/time-cut and drift sideways 80.75-81.20 = re-evaluate at break-even/small loss",
-      "NEW v2.20 pre-SL warning: 2 consecutive closed bars below 80.85 ex-resistance = post-reclaim flip failure, exit-review at next fire after second close-below"
+      "close back below 80.65 on closed bar with vol >= 1.0x baseline (~6700)",
+      "2 consecutive closed bars below 80.85 ex-resistance (currently 0-of-2 after 10:30 canonical)",
+      "displacement event (vol >= 3.0x baseline >= 20100) breaks 80.40-81.50 envelope either direction",
+      "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod analog; currently 107/480 min elapsed)",
+      "vol-burst rejection at TP zone with closed-bar reversal"
     ],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": "Position-intent open from fire 251 LONG; this fire is position-management HOLD not entry-decision HOLD. Counterfactual schema applies to flat-HOLD entry leans; managing live risk does not have a directionally-symmetric counterfactual unless flipping. No flip warranted: thesis at first weakness (1 close below 80.85) but not yet structurally refuted (need 2 consecutive); SL still $0.19 away.",
+    "no_plausible_counterfactual": "Position already open \u2014 HOLD is position-management (do-not-exit), not no-action. Counterfactual = exit-at-market now, tracked via MAE/MFE + abort_conditions, not via hypothetical-entry schema.",
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779965043.937061,
+      "iso": "2026-05-28T06:44:03-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.21: HOLD",
+      "payload": {
+        "fire_ts": 1779965043.937061,
+        "fire_iso": "2026-05-28T06:44:03-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": {
+          "direction": "long",
+          "entry_price": 80.9,
+          "qty": 1,
+          "unrealized_pnl_pct": 0.000247,
+          "minutes_held": 97
+        },
+        "current_price": 80.92,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 0.69,
+          "momentum_pct": null,
+          "rsi": null,
+          "_note": "live-status indicators_pro stale (price=85.23 vs OHLCV 80.92, 5.04% divergence). vol_ratio derived from 10:15 canonical closed-bar v=4635 / 96-bar baseline ~6700 = 0.69x."
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Position-management HOLD. LONG intent open from fire 251 (entry 80.90), 97min held, +0.025% unrealized at ticker 80.92. Canonical OHLCV refresh this fire revealed Coinbase revised the 10:15 closed bar (c=80.83 v=4266 at fire 261's 1min-post-close read \u2192 c=80.91 v=4635 at fire 262's 11min-post-close read). Fire 261's 'FIRST close below 80.85 = 1-of-2 v2.6_RANGE_CLEAR refutation' was based on unsettled exchange data; canonical 10:15 c=80.91 > 80.85 ex-resistance, so support-flip thesis is INTACT not at-risk. Pre-SL warning resets 1-of-2 \u2192 0-of-2. Post-entry path canonical (UTC closes): 09:00 80.86(entry-bar) \u2192 09:15 81.04 \u2192 09:30 81.08 \u2192 09:45 81.09 \u2192 10:00 81.10 \u2192 10:15 80.91 (revised, above 80.85). 10:30 bucket in-progress c=80.95 (don't extract). No E1-E5 trigger fires (E1 TP 81.50 unreached; E2 SL 80.68 untouched, current MAE 80.71 entry-bar; E3 8h cut still ~6.5h away; E4 6 closed bars not 12+; E5 no displacement). MFE 81.19 holds, MAE 80.71 holds. HOLD position-management. Reflection v2.21 written this fire \u2014 surprise trigger = post-close settling-window revision; codifying v2.20\u2192v2.20_v2 candidate (\u2265180s settle before canonical).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "close back below 80.65 on closed bar with vol >= 1.0x baseline (~6700)",
+          "2 consecutive closed bars below 80.85 ex-resistance (v2.6_RANGE_CLEAR support-flip refutation, currently 0-of-2 after fire 262 canonical-revision)",
+          "displacement event (vol >= 3.0x baseline >= 20100) breaks 80.40-81.50 envelope either direction",
+          "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod time-cut analog; currently 97/480 min elapsed, MFE 0.36% just under floor \u2014 track)",
+          "vol-burst rejection at TP zone with closed-bar reversal"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": "Inventory Discovery mode \u2014 long position-intent active (entry 80.90, 97min held). Cognitive task is exit-trigger discrimination + thesis monitoring, not entry direction-lean. No new-entry counterfactual applies while managing live position.",
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.21"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1779965019.608552,
+      "iso": "2026-05-28T06:43:39-04:00",
+      "fire_count": 262,
+      "summary": "Framework v2.21 written (trigger: surprise:closed_bar_post_close_revision_n1_10_15_bucket)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779965019.608552,
+        "iso": "2026-05-28T06:43:39-04:00",
+        "fire_count": 262,
+        "balance_usd": 894.08,
+        "version_tag": "v2.21",
+        "trigger": "surprise:closed_bar_post_close_revision_n1_10_15_bucket",
+        "what_im_trying": "Continue v0.9 cohort \u00d7 asymmetry \u00d7 structural framework with LONG position-intent active (fire 251 entry 80.90, 97min held). Position currently +0.025% unrealized at ticker 80.92 / no exit trigger. v2.21 surprise: Coinbase candles endpoint revised the 10:15 closed bar in the post-close settling window. Fire 261 read 10:15 c=80.83 v=4266 at 10:31 UTC (1min post-close); fire 262 (this fire) at 10:41 UTC (11min post-close) reads canonical 10:15 c=80.91 v=4635. The 10:15 close is ABOVE 80.85 ex-resistance, NOT below. So fire 261's 'FIRST close below 80.85 = 1-of-2 v2.6_RANGE_CLEAR refutation' was based on unsettled data; the support-flip thesis remains intact. Pre-SL warning track resets to 0-of-2.",
+        "whats_working": "(a) Multi-fire OHLCV refresh discipline caught this revision \u2014 each fire re-pulls and compares against state.json's bar records. Without that, fire 261's faulty conclusion would persist as state.json gospel and the position would have been managed under a false 'thesis-failing' frame. (b) Position is alive in the expected envelope: no E1-E5 trigger, MFE 81.19 holds, MAE 80.71 holds (entry-bar), unrealized barely positive \u2014 low-vol drift continuation thesis still in flight. (c) v2.19 disciplinary chain continues to produce finer-grained observations across n=3 instances: v2.19 (framework-language) \u2192 v2.20 (state-write timing) \u2192 v2.21 (exchange-data settling window).",
+        "whats_failing": "(a) PRIMARY: I implicitly treated 'bucket_end_ts < write_ts' as sufficient for canonical closed-bar values. Fire 261 wrote at 10:31 UTC for the 10:15 bucket that ended 10:30 UTC \u2014 technically 1min post-close, but Coinbase candles aggregator takes 2-3min to settle (late fills update the just-closed bucket). The c=80.83\u219280.91 / vol 4266\u21924635 revision between fire 261 (1min post) and fire 262 (11min post) is direct evidence of the settling window. (b) Fire 261's 'n=1 self-violation' framing of v2.19_EXTENDED was partly mis-grounded: fire 259 wrote at 10:20 UTC for an in-progress bucket (real violation), but fire 261's 'corrected' values were themselves drawn from an unsettled post-close window, so the correction was finer-grained but still pre-settle. The discipline chain is converging, not yet converged. (c) State.json from fire 261 carries the wrong 10:15 close baked in \u2014 this fire must update it.",
+        "what_im_iterating": "(a) v2.20 EXTENSION \u2192 v2.20_v2 PROPOSAL: closed-bar values from Coinbase candles endpoint should not be treated as canonical until \u2265180s post-bucket-close. Pre-write check evolves from 'now_iso > bar_close_iso' to 'now_iso - bar_close_iso >= 180s'. For bars within the settling window, tag PENDING_SETTLE and re-resolve next fire. n=1 first observed instance (this fire's correction of fire 261). (b) Update state.json this fire to (i) correct the 10:15 record (c=80.91 v=4635, not 80.83/4266), (ii) reset pre-SL warning track to 0-of-2, (iii) propagate the v2.20\u2192v2.20_v2 candidate text. (c) The thesis under test (v2.22 \u2014 low-vol retest-reclaim in post-displacement consolidation can sustain) is now in FAVOR rather than at-risk: 10:15 canonical c=80.91 closes above ex-resistance on vol 0.69x (above 0.64x prior read); 10:30 in-progress c=80.95 also above. v2.22 still in flight with weak-but-positive evidence. (d) Position decision: HOLD position-management. No exit trigger. Continue Inventory Discovery; let the pre-commit tree resolve at 10:30 bucket canonical close.",
+        "edits_from_prior": [
+          "Revise fire 261's '10:15 c=80.83 v=4266' to canonical 10:15 c=80.91 v=4635. The exchange revised the close UP by $0.08 and the volume UP by ~9% in the settling window between fire 261 (1min post-close) and fire 262 (11min post-close).",
+          "Reset pre-SL warning track from 1-of-2 (per fire 261 alert) to 0-of-2: canonical 10:15 c=80.91 > 80.85 ex-resistance; support-flip thesis intact and not yet challenged.",
+          "Extend v2.20 candidate to v2.20_v2: closed-bar values require \u2265180s exchange settling window before canonical. Bucket-end < write-time is necessary but not sufficient.",
+          "n=1 first instance of exchange post-close settling-window revision (10:15 bucket, +$0.08 close adjust, +9% volume adjust). Track recurrence; threshold for codification n\u22653.",
+          "v2.22 evidence flips from 'first weakness on up-side' (fire 261) back to 'support-flip thesis intact' (fire 262). The flip itself was a methodology artifact, not a market event."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "How wide is the typical exchange settling window? $0.08 / 9% revision between 1min and 11min post-close. Other 15m buckets may have wider/narrower revisions. Need n\u22653 instances to confirm or refine the 180s threshold.",
+          "Will the 10:30 bucket close above 80.85 on canonical (\u2265180s post-close) read? Current in-progress c=80.95 at ~11min into bucket. If canonical close stays >80.85, v2.22 thesis strengthens via 2 consecutive support-holds. If canonical close < 80.85, fresh 1-of-2 toward v2.6_RANGE_CLEAR.",
+          "Position at +0.025% unrealized after 97min \u2014 drift but no thrust. TP 81.50 = +0.74% target (gross ~$3.40). Will low-vol drift sustain to 1-pct target without a vol burst, or does post-displacement drift typically stall at +0.3% to +0.5% range?",
+          "v2.20 SL_BUFFER candidate: still pending trade outcome for n=2 contribution. Current position would qualify if SL fires AND MAE is within 0.20% of SL then close-back-inside (current MAE 80.71 was within 0.04% of SL 80.68 = signature already present pre-resolution).",
+          "Does the multi-fire OHLCV refresh discipline need to be promoted from implicit to explicit operational rule? It just saved a wrong-thesis exit decision."
+        ]
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1779964460.850704,
@@ -1493,134 +1582,72 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.12"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779940839.605713,
-      "iso": "2026-05-28T00:00:39-04:00",
-      "fire_count": 228,
-      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779940839.605713,
-        "fire_iso": "2026-05-28T00:00:39-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 80.62,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 2.75,
-          "momentum_pct": -0.0177,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "MODE TRANSITION Regime Uncertain -> Expansion this fire (first since Phase B.1 shipped 5-25): 2 subsequent bars sustained vol >=1.5x baseline post 03:15 v2.6_DISPLACEMENT (03:30=6.08x, 03:45=2.75x). Fire 227 branch (a-tentative) STRICTLY NEAR-MISS: 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 gap (0.012% of close, within rounding precision). v2.10-symmetric (b) strict-letter NOT triggered. Compounding nuance: 03:45 intra-bar reclaim low 80.37 -> close 80.62 ($0.25 = 0.31%) on decaying vol (6.08x->2.75x = -55%) = v2.12c displacement-exhaustion candidate (short-side mirror of v2.10 short-cover exhaustion). Two readings exist: strict letter (HOLD) vs substance (3-bar monotonic-down 81.25->80.87->80.62 + sustained vol = trigger). Discipline call: strict letter wins -- v2.10's whole point was demoting 'close enough' triggers after #221 refuted. HOLD with refined hypothetical short + new pre-commit branches for 04:00 UTC. Branch (X-resume): 04:00 close <=80.30 + vol >=1.5x = displacement resumes + exhaustion candidate falsified = ENTER B-grade short. Branch (Y-exhaustion): 04:00 close >=80.85 + vol <=2x = exhaustion confirms = withdraw short thesis. Branch (Z-ambiguous): 04:00 closes 80.30-80.85 = wait 04:15 follow-through. Cohort down+short n=6 +$1.39 WR83% non-worst, baseline good. Budget: $6.43 remaining, holds_in_a_row=6 (normal), forced_exploration_due=False (last ENTER 2.2h ago). v5.3 pipe staleness widened to -5.41%.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [
-          "If 04:00 UTC closes >=80.85 with vol_ratio <=2x = exhaustion shape confirms, withdraw short thesis entirely",
-          "If 04:00 UTC closes >=81.25 (above displacement close) = thesis weakens/breaks, full re-derivation",
-          "If by 04:30 UTC neither X nor Y triggers in 2 bars = ambiguous protracted, treat as new compression candidate per v2.8"
-        ],
-        "hypothetical_entry_record": {
-          "implied_grade": "B",
-          "direction": "short",
-          "entry_price": 80.62,
-          "sl_pct": 0.0097,
-          "tp_pct": 0.0139,
-          "predicted_2h_outcome": "drift_toward_tp",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Branch (a-tentative) near-miss at 80.62 close (lower-third 80.61, $0.01 gap). Monotonic-down 3-bar + sustained vol. Intra-bar reclaim + vol decay = exhaustion fork. HOLD pending 04:00 close."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779938726.0962539,
-      "iso": "2026-05-27T23:25:26-04:00",
-      "fire_count": 226,
-      "summary": "Framework v2.11 written (trigger: surprise:floor_break_03_15_displacement_paper_221_sl_hit)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779938726.0962539,
-        "iso": "2026-05-27T23:25:26-04:00",
-        "fire_count": 226,
-        "balance_usd": 894.08,
-        "version_tag": "v2.11",
-        "trigger": "surprise:floor_break_03_15_displacement_paper_221_sl_hit",
-        "what_im_trying": "Fire 226. The 16-bar post-displacement period (21:30 UTC 5-27 onward) that v2.8 named as sub-band candidate territory has resolved bearishly. 03:00 UTC closed exactly at floor 81.82 (vol 1.31x = sub-displacement floor test); 03:15 UTC IN-PROGRESS (4/15 min) shows clean reverse-break: low 80.62, current close 80.92, vol 2.81x in only 4 minutes (extrapolating 5-11x full bar even with decay). Sweep cycle #8 = v2.8 branch (a) trigger condition firing precisely as pre-committed: reverse-break <81.82 on vol >=1.5x. Paper #221 SL (81.75) was crossed during this 4-min dump \u2014 thesis REFUTED on both impulse branch (no 1%+ green push appeared post-reclaim) and drift-toward-TP branch (drifted toward SL instead). Cohort: down+short n=6 +$1.39 WR 83.3% non-worst. 4/4 v0.9 inputs satisfied. BUT v2.6_DISPLACEMENT requires confirmed 15m close outside band, 11min away. v2.10 (40min old) explicitly demoted pre-confirmation entries on in-progress bars. The discipline test: trust the framework I wrote 40min ago over the 'enter now or miss it' impulse. HOLD this fire with strong hypothetical short + pre-committed branches for 03:30 close.",
-        "whats_working": "v2.8 pre-committed branch tree fired EXACTLY as predicted. Branch (a) said 'sweep cycle #8 reverse-break <81.82 on vol >=1.5x' = precisely the current shape (close <81.82, vol 2.81x and rising). Three-branch tree (continuation-short / reclaim-long / sub-band-consolidation) correctly identified branch (a) was gaining probability and would resolve the question. Cadence-mismatch concern (v2.8 #2) navigated correctly: fires 222-225 held with hypothetical short on weakening evidence; cumulative-asymmetry across 4 fires + this surprise vol confirmation = 4/4 inputs in 19min of bar time. Brevity-on-stillness held (fires 222-225 appropriately brief). Cohort-tracking-first (v0.9+) successfully discriminated: down+short is non-worst, structural setup matches cohort, would be a clean ENTER. Information ROI on paper #221 cleanly REFUTED \u2014 the v-bottom liquidity-sweep reclaim hypothesis didn't survive sub-displacement floor test (03:00) followed by displacement break (03:15).",
-        "whats_failing": "(1) v2.10 reclaim-impulse-requirement was the right rule but written 75min AFTER paper #221 entered. Had v2.10 existed at fire 221, paper #221 would have HOLDed (no impulse bar within 4 bars post-01:30 reclaim). Framework had to lose a paper trade to learn the rule. n=1 retrospective alignment doesn't validate v2.10 yet but is the first datapoint. (2) Pre-confirmation entries now 2/2 refuted (#165 drift-reclaim + #221 sweep-reclaim). Two different pattern shapes, same timing failure mode, same refutation outcome. Strong enough to consider promotion to operational rule: 'entry on in-progress bars forbidden regardless of pattern shape.' (3) State.json content-staleness shape #3: fire 225 (23:01 EDT) read up to 03:00 in-progress with vol just kicking; this fire (23:19 EDT) sees 03:00 finalized + 03:15 in-progress with displacement firing. 18min between fires covered the full structural transition. Wrapper P1 alignment 3rd shape observed = promote P1->P0 candidate. (4) v5.3 indicator-pipe staleness CROSSED -5% threshold: live-status price 85.23 vs OHLCV-derived 80.92 = -5.32%. Was -3.50% at v2.9, -3.83% at fire 225's state.json. Slow widening accelerated by this fire's actual price drop. Promotion-to-active-P0 trigger met. (5) Calibration dataset: 3 cycles net ~-$4.90 (2 real -$2.40 + 1 paper -$2.50 refuted). Avg -$1.63/cycle. Trend: refutation-heavy. This is OK at n=3 \u2014 exploration is paying for hypothesis discrimination.",
-        "what_im_iterating": "Substantive v2.11 iterations: (a) Pre-confirmation operational rule promotion CANDIDATE: 'entry on in-progress bars forbidden regardless of pattern shape' \u2014 n=2 refuted (165 drift, 221 sweep). Field-test discipline THIS fire by HOLDING despite 4/4 input satisfaction. One more refutation = codify; one confirmation = wait for n>=5. (b) Descriptive shape DISCRIMINATOR introduced: displacement-continuation-vs-displacement-sweep by PRECEDING CONTEXT, not the displacement bar itself. 01:15 sweep was preceded by 5 higher-lows (recovery context = reversal-prone). 03:15 is preceded by 3 bars of drift+grind toward floor (continuation context = reversal-unlikely). Discriminator is NOVEL \u2014 descriptive only, not operational, need 2-3 more events per category before codifying. (c) Information ROI on paper #221: REFUTED on both branches. info_hypothesis_status = refuted; lesson = 'Reclaim sustaining 2-4 bars with vol but no impulse bar = short-cover exhaustion not fresh demand. Pre-confirmation timing compounds: thesis was already weak; thesis-pre-confirmation entry doubled the structural risk.' (d) State.json update this fire: sweeps_attempted 7->8, last_displacement_iso advanced to 23:15 EDT (03:15 UTC bar), new_range_candidate_low/high cleared (broken), narrative updated, pending_decision (paper #221) moved to last_closed_position with refuted thesis. Mode stays Regime Uncertain per v2.6 (need 2+ subsequent bars sustained vol for Expansion).",
-        "edits_from_prior": [
-          "v2.8 branch (a) trigger fired as predicted. Sweep cycle #8 (reverse-break <81.82 on vol >=1.5x) is firing now at 03:15 UTC with 2.81x vol in 4min, extrapolating much higher. v2.8 tree machinery validated end-to-end.",
-          "Pre-confirmation refutation streak now 2/2 (#165 drift-reclaim + #221 sweep-reclaim). Promote-to-operational-rule CANDIDATE: 'entry on in-progress bars forbidden regardless of pattern shape.' Field-test discipline THIS fire by HOLDING despite 4/4 v0.9 input satisfaction.",
-          "v2.10 demotion-of-reclaim-without-impulse rule retrospectively aligns with #221 refutation (n=1 retrospective alignment, not validation but first datapoint).",
-          "NEW descriptive discriminator: displacement-continuation vs displacement-sweep \u2014 distinguished by PRECEDING CONTEXT (recovery=reversal-prone, grind/drift=reversal-unlikely), not by the displacement bar itself. Descriptive only, need 2-3 more events per category before codifying.",
-          "P0 v5.3 indicator-pipe staleness CROSSED -5% threshold (-5.32% vs OHLCV). Was flagged for promotion at v2.8. Now active P0 anomaly.",
-          "Wrapper bar-close-alignment 3rd shape observed: state.json content-staleness covering full structural transitions in 18min between fires. P1->P0 promotion threshold (3 shapes) met.",
-          "Calibration dataset: 3 cycles net ~-$4.90 (2 real -$2.40 + 1 paper -$2.50 refuted). Avg -$1.63/cycle. Refutation-heavy at n=3 \u2014 acceptable exploration cost for hypothesis discrimination.",
-          "Founder notes pending queue still empty (23rd consecutive). All 13 historical claims addressed across v0.6/v0.9/v2.x line. No new founder input since 09:03 EDT 5-26 (~38.3h)."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Does 03:15 UTC close finalize displacement (close <81.50 on vol >=3x), or fade back above 81.82 in remaining 11min? Mechanically: low already 80.62 with 11min to recover would require ~+1.5% green from current 80.92 = unprecedented at recent pace.",
-          "If displacement CONFIRMS at 03:30 close, what's the entry shape? Short at 03:30 close + 03:45 follow-through? Or short at next fire with explicit displacement-confirmation reading? v2.10 impulse-requirement applies symmetrically \u2014 does a downside displacement need bar-2 follow-through to qualify as ENTRY-CONFIRMABLE for SHORT side?",
-          "Does displacement-continuation-vs-displacement-sweep discriminator (by preceding context) hold up over next 2-3 events? Real-time field-test.",
-          "Pre-confirmation operational rule: codify after one more refutation (n=3), or wait for 5? n=2 consistent across 2 different pattern shapes is unusually clean signal.",
-          "Cohort math sanity: down+short n=6 small sample, WR 83.3% / +$1.39 means $0.23/trade avg = fee-pressure-sensitive. If this trade executes, cohort baseline becomes n=7.",
-          "Below 81.82 sub-band, next structural level? Pre-21:30-displacement range 82.74-87.68. Sub-floor: 80.00 round number, then 79.50 visible Fib/round area. Targets for any short below the displacement bar.",
-          "P0 v5.3 pipe staleness at -5.32%: does Bonny want manual refresh, or let widening continue as informational silent-carry?",
-          "Wrapper P1->P0 promotion: 3-shape threshold met (trigger-lag, content-staleness, content-staleness-covering-transitions). Flag explicitly for Bonny on next op interaction."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 1352,
-    "since_iso": "2026-05-28T06:34:20-04:00",
-    "since_framework_version": "v2.20",
-    "latest_fire_iso": "2026-05-28T06:34:20-04:00"
+    "holds_since_framework": 2,
+    "avg_chars": 861,
+    "since_iso": "2026-05-28T06:43:39-04:00",
+    "since_framework_version": "v2.21",
+    "latest_fire_iso": "2026-05-28T06:52:56-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779964460.850704,
-    "iso": "2026-05-28T06:34:20-04:00",
-    "fire_count": 261,
+    "ts": 1779965019.608552,
+    "iso": "2026-05-28T06:43:39-04:00",
+    "fire_count": 262,
     "balance_usd": 894.08,
-    "version_tag": "v2.20",
-    "trigger": "surprise:v219_self_violation_in_state_write_path_n1_10_15_bar_misread",
-    "what_im_trying": "Continue v0.9 cohort \u00d7 asymmetry \u00d7 structural framework with active LONG position-intent management. v2.19 IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN candidate was supposedly ACTIVELY HONORED across fires 255-259 \u2014 but THIS fire's OHLCV refresh reveals the state.json writer at fire 259 (10:20:24 UTC) recorded the 10:15-10:30 bucket as if it were closed. State.json said '10:15 UTC c=80.97 h=81.14 l=80.95 v=1496 = 0.22x baseline \u2014 FIRST close-pullback post-entry, fade-style'. But the bucket only closed at 10:30 UTC \u2014 state.json wrote at 10:20 UTC = 5min into a 15min bucket = unambiguously IN-PROGRESS. The actual closed-bar values (read this fire from Coinbase 15m endpoint): c=80.83 h=81.14 l=80.78 v=4266 (0.64x baseline ~6681). Close $0.14 lower, low $0.17 deeper, vol 2.85x larger than the in-progress snapshot. The conclusion 'fade-style not vol-rejection, low 80.95 well above 80.85' was extracted from in-progress data \u2014 exactly the failure mode v2.19 was promoted to prevent. v2.19 covers DECISION lesson-extraction; it did NOT cover STATE-WRITE bar-recording, which is a sibling domain with the same shape. Extend v2.19's scope.",
-    "whats_working": "(a) The fact that this fire CAUGHT the state-write violation is itself the discipline working at the read-path level. The OHLCV refresh at fire 261 (10:31 UTC) saw the 10:15 bucket as ACTUALLY closed (vs only-partial at 10:20 write time) and immediately noted the divergence. v2.19's read-path application held. (b) The closed-bar truth is still benign for the position: low 80.78 is $0.10 above SL 80.68; close 80.83 is $0.02 below 80.85 ex-resistance, ticker 80.87 just back above. Position-management HOLD remains correct under pre-commit tree (no E1-E5 trigger fires). (c) State.json fields _last_ohlcv_check_iso + the operational rules' n=1/n=2 lineage make this kind of forensic catch possible \u2014 version control over my own framework.",
-    "whats_failing": "(a) PRIMARY: v2.19 scope did not include state-write bar-recording. The candidate text reads 'Any X is REFUTED / Y is CONFIRMED / thesis VALIDATED declared during in-progress bars must be tagged TENTATIVE' \u2014 that addresses framework-language, but did not require the state-WRITE path to itself check 'is this bar closed at write-time?'. Treating 'close-pullback FIRST' as a structural label in state.json IS lesson-extraction shape. n=1 self-violation. (b) The discipline-mechanism-as-state-field works on cognition but did not extend to data-pipeline timing. State.json had no 'bar_closed_yet_at_write_time' check. Going forward, every recorded closed-bar value should include a bar_close_iso comparison to write_iso. Trivial to compute.",
-    "what_im_iterating": "(a) v2.19 SCOPE EXTENSION (now v2.19_EXTENDED): in-progress lesson-extraction discipline applies to STATE-WRITE PATH equivalently. Before recording closed-bar values in state.json (c, h, l, v, vol_ratio, structural-label like 'close-pullback' / 'reclaim' / 'breakdown'), check: write_iso >= bar_close_iso. If write_iso < bar_close_iso, either (i) record values as IN_PROGRESS-tagged with a partial-bar marker and re-resolve on next fire after close, or (ii) skip the bar entirely until closure. n=1 first violation instance identified this fire; track future violations to harden the rule. (b) The 10:15 actual closed bar (c=80.83 v=4266 = 0.64x baseline) is meaningfully different from in-progress (c=80.97 v=0.22x). One closed bar below 80.85 ex-resistance \u2014 not yet 2, so v2.6_RANGE_CLEAR doesn't fire \u2014 but the v2.22 directional test (post-displacement consolidation resolution direction not predictable) is showing first weakness on the up-side. If 10:30 bucket closes below 80.85 also, v2.22 strengthens AS 'low-vol reclaim ceiling-flips fail without vol confirmation', and the position should be exit-reviewed at that point (de-facto E4 precursor). Adding to abort_conditions track: 2 consecutive closes below 80.85 = pre-SL warning.",
+    "version_tag": "v2.21",
+    "trigger": "surprise:closed_bar_post_close_revision_n1_10_15_bucket",
+    "what_im_trying": "Continue v0.9 cohort \u00d7 asymmetry \u00d7 structural framework with LONG position-intent active (fire 251 entry 80.90, 97min held). Position currently +0.025% unrealized at ticker 80.92 / no exit trigger. v2.21 surprise: Coinbase candles endpoint revised the 10:15 closed bar in the post-close settling window. Fire 261 read 10:15 c=80.83 v=4266 at 10:31 UTC (1min post-close); fire 262 (this fire) at 10:41 UTC (11min post-close) reads canonical 10:15 c=80.91 v=4635. The 10:15 close is ABOVE 80.85 ex-resistance, NOT below. So fire 261's 'FIRST close below 80.85 = 1-of-2 v2.6_RANGE_CLEAR refutation' was based on unsettled data; the support-flip thesis remains intact. Pre-SL warning track resets to 0-of-2.",
+    "whats_working": "(a) Multi-fire OHLCV refresh discipline caught this revision \u2014 each fire re-pulls and compares against state.json's bar records. Without that, fire 261's faulty conclusion would persist as state.json gospel and the position would have been managed under a false 'thesis-failing' frame. (b) Position is alive in the expected envelope: no E1-E5 trigger, MFE 81.19 holds, MAE 80.71 holds (entry-bar), unrealized barely positive \u2014 low-vol drift continuation thesis still in flight. (c) v2.19 disciplinary chain continues to produce finer-grained observations across n=3 instances: v2.19 (framework-language) \u2192 v2.20 (state-write timing) \u2192 v2.21 (exchange-data settling window).",
+    "whats_failing": "(a) PRIMARY: I implicitly treated 'bucket_end_ts < write_ts' as sufficient for canonical closed-bar values. Fire 261 wrote at 10:31 UTC for the 10:15 bucket that ended 10:30 UTC \u2014 technically 1min post-close, but Coinbase candles aggregator takes 2-3min to settle (late fills update the just-closed bucket). The c=80.83\u219280.91 / vol 4266\u21924635 revision between fire 261 (1min post) and fire 262 (11min post) is direct evidence of the settling window. (b) Fire 261's 'n=1 self-violation' framing of v2.19_EXTENDED was partly mis-grounded: fire 259 wrote at 10:20 UTC for an in-progress bucket (real violation), but fire 261's 'corrected' values were themselves drawn from an unsettled post-close window, so the correction was finer-grained but still pre-settle. The discipline chain is converging, not yet converged. (c) State.json from fire 261 carries the wrong 10:15 close baked in \u2014 this fire must update it.",
+    "what_im_iterating": "(a) v2.20 EXTENSION \u2192 v2.20_v2 PROPOSAL: closed-bar values from Coinbase candles endpoint should not be treated as canonical until \u2265180s post-bucket-close. Pre-write check evolves from 'now_iso > bar_close_iso' to 'now_iso - bar_close_iso >= 180s'. For bars within the settling window, tag PENDING_SETTLE and re-resolve next fire. n=1 first observed instance (this fire's correction of fire 261). (b) Update state.json this fire to (i) correct the 10:15 record (c=80.91 v=4635, not 80.83/4266), (ii) reset pre-SL warning track to 0-of-2, (iii) propagate the v2.20\u2192v2.20_v2 candidate text. (c) The thesis under test (v2.22 \u2014 low-vol retest-reclaim in post-displacement consolidation can sustain) is now in FAVOR rather than at-risk: 10:15 canonical c=80.91 closes above ex-resistance on vol 0.69x (above 0.64x prior read); 10:30 in-progress c=80.95 also above. v2.22 still in flight with weak-but-positive evidence. (d) Position decision: HOLD position-management. No exit trigger. Continue Inventory Discovery; let the pre-commit tree resolve at 10:30 bucket canonical close.",
     "edits_from_prior": [
-      "v2.19 candidate scope extended to include STATE-WRITE bar-recording, not just framework-language lesson-extraction. n=1 self-violation = state.json fire 259 recorded 10:15 bucket as closed with structural label when only 5min into 15min bucket. Actual closed values diverge meaningfully (c 80.83 vs 80.97, vol 0.64x vs 0.22x, low 80.78 vs 80.95).",
-      "Adding a new pre-SL warning track for the active position: 2 consecutive closed bars below 80.85 ex-resistance = post-reclaim flip failure, structurally invalidates the support-flip thesis even if SL doesn't fire. n=1 closed bar so far (10:15). Watch 10:30 bucket closure (11:15-or-so my next fire after this one).",
-      "I no longer take state.json's bar-by-bar 'recent OHLCV' annotations at face value when comparing to current OHLCV. Every fire: re-pull OHLCV from Coinbase and overwrite the prior fire's bar-record fields where they refer to buckets that were not yet closed at write time."
+      "Revise fire 261's '10:15 c=80.83 v=4266' to canonical 10:15 c=80.91 v=4635. The exchange revised the close UP by $0.08 and the volume UP by ~9% in the settling window between fire 261 (1min post-close) and fire 262 (11min post-close).",
+      "Reset pre-SL warning track from 1-of-2 (per fire 261 alert) to 0-of-2: canonical 10:15 c=80.91 > 80.85 ex-resistance; support-flip thesis intact and not yet challenged.",
+      "Extend v2.20 candidate to v2.20_v2: closed-bar values require \u2265180s exchange settling window before canonical. Bucket-end < write-time is necessary but not sufficient.",
+      "n=1 first instance of exchange post-close settling-window revision (10:15 bucket, +$0.08 close adjust, +9% volume adjust). Track recurrence; threshold for codification n\u22653.",
+      "v2.22 evidence flips from 'first weakness on up-side' (fire 261) back to 'support-flip thesis intact' (fire 262). The flip itself was a methodology artifact, not a market event."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "Does the v2.6_RANGE_CLEAR threshold (2 consecutive closes) need a vol component for support-flip resolution? 10:15 closed at 80.83 on vol 0.64x \u2014 meaningful but sub-baseline. A high-vol close-below would be different from a low-vol fade-below. The current rule is direction-only; consider a vol-confirmation co-trigger.",
-      "How many more state-write timing violations are there in fires 252-258 that I haven't audited? Spot-check next fire if budget permits.",
-      "When position is open and the structural break (80.85 ex-resistance) starts failing pre-SL, what's the cleanest closure heuristic? Current pre-commit tree has only E1-E5 + EXIT4 'drift sideways 12+ bars'; not a clean 'thesis-invalidated-but-SL-not-hit' branch. Worth codifying."
+      "How wide is the typical exchange settling window? $0.08 / 9% revision between 1min and 11min post-close. Other 15m buckets may have wider/narrower revisions. Need n\u22653 instances to confirm or refine the 180s threshold.",
+      "Will the 10:30 bucket close above 80.85 on canonical (\u2265180s post-close) read? Current in-progress c=80.95 at ~11min into bucket. If canonical close stays >80.85, v2.22 thesis strengthens via 2 consecutive support-holds. If canonical close < 80.85, fresh 1-of-2 toward v2.6_RANGE_CLEAR.",
+      "Position at +0.025% unrealized after 97min \u2014 drift but no thrust. TP 81.50 = +0.74% target (gross ~$3.40). Will low-vol drift sustain to 1-pct target without a vol burst, or does post-displacement drift typically stall at +0.3% to +0.5% range?",
+      "v2.20 SL_BUFFER candidate: still pending trade outcome for n=2 contribution. Current position would qualify if SL fires AND MAE is within 0.20% of SL then close-back-inside (current MAE 80.71 was within 0.04% of SL 80.68 = signature already present pre-resolution).",
+      "Does the multi-fire OHLCV refresh discipline need to be promoted from implicit to explicit operational rule? It just saved a wrong-thesis exit decision."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779965019.608552,
+      "iso": "2026-05-28T06:43:39-04:00",
+      "fire_count": 262,
+      "balance_usd": 894.08,
+      "version_tag": "v2.21",
+      "trigger": "surprise:closed_bar_post_close_revision_n1_10_15_bucket",
+      "what_im_trying": "Continue v0.9 cohort \u00d7 asymmetry \u00d7 structural framework with LONG position-intent active (fire 251 entry 80.90, 97min held). Position currently +0.025% unrealized at ticker 80.92 / no exit trigger. v2.21 surprise: Coinbase candles endpoint revised the 10:15 closed bar in the post-close settling window. Fire 261 read 10:15 c=80.83 v=4266 at 10:31 UTC (1min post-close); fire 262 (this fire) at 10:41 UTC (11min post-close) reads canonical 10:15 c=80.91 v=4635. The 10:15 close is ABOVE 80.85 ex-resistance, NOT below. So fire 261's 'FIRST close below 80.85 = 1-of-2 v2.6_RANGE_CLEAR refutation' was based on unsettled data; the support-flip thesis remains intact. Pre-SL warning track resets to 0-of-2.",
+      "whats_working": "(a) Multi-fire OHLCV refresh discipline caught this revision \u2014 each fire re-pulls and compares against state.json's bar records. Without that, fire 261's faulty conclusion would persist as state.json gospel and the position would have been managed under a false 'thesis-failing' frame. (b) Position is alive in the expected envelope: no E1-E5 trigger, MFE 81.19 holds, MAE 80.71 holds (entry-bar), unrealized barely positive \u2014 low-vol drift continuation thesis still in flight. (c) v2.19 disciplinary chain continues to produce finer-grained observations across n=3 instances: v2.19 (framework-language) \u2192 v2.20 (state-write timing) \u2192 v2.21 (exchange-data settling window).",
+      "whats_failing": "(a) PRIMARY: I implicitly treated 'bucket_end_ts < write_ts' as sufficient for canonical closed-bar values. Fire 261 wrote at 10:31 UTC for the 10:15 bucket that ended 10:30 UTC \u2014 technically 1min post-close, but Coinbase candles aggregator takes 2-3min to settle (late fills update the just-closed bucket). The c=80.83\u219280.91 / vol 4266\u21924635 revision between fire 261 (1min post) and fire 262 (11min post) is direct evidence of the settling window. (b) Fire 261's 'n=1 self-violation' framing of v2.19_EXTENDED was partly mis-grounded: fire 259 wrote at 10:20 UTC for an in-progress bucket (real violation), but fire 261's 'corrected' values were themselves drawn from an unsettled post-close window, so the correction was finer-grained but still pre-settle. The discipline chain is converging, not yet converged. (c) State.json from fire 261 carries the wrong 10:15 close baked in \u2014 this fire must update it.",
+      "what_im_iterating": "(a) v2.20 EXTENSION \u2192 v2.20_v2 PROPOSAL: closed-bar values from Coinbase candles endpoint should not be treated as canonical until \u2265180s post-bucket-close. Pre-write check evolves from 'now_iso > bar_close_iso' to 'now_iso - bar_close_iso >= 180s'. For bars within the settling window, tag PENDING_SETTLE and re-resolve next fire. n=1 first observed instance (this fire's correction of fire 261). (b) Update state.json this fire to (i) correct the 10:15 record (c=80.91 v=4635, not 80.83/4266), (ii) reset pre-SL warning track to 0-of-2, (iii) propagate the v2.20\u2192v2.20_v2 candidate text. (c) The thesis under test (v2.22 \u2014 low-vol retest-reclaim in post-displacement consolidation can sustain) is now in FAVOR rather than at-risk: 10:15 canonical c=80.91 closes above ex-resistance on vol 0.69x (above 0.64x prior read); 10:30 in-progress c=80.95 also above. v2.22 still in flight with weak-but-positive evidence. (d) Position decision: HOLD position-management. No exit trigger. Continue Inventory Discovery; let the pre-commit tree resolve at 10:30 bucket canonical close.",
+      "edits_from_prior": [
+        "Revise fire 261's '10:15 c=80.83 v=4266' to canonical 10:15 c=80.91 v=4635. The exchange revised the close UP by $0.08 and the volume UP by ~9% in the settling window between fire 261 (1min post-close) and fire 262 (11min post-close).",
+        "Reset pre-SL warning track from 1-of-2 (per fire 261 alert) to 0-of-2: canonical 10:15 c=80.91 > 80.85 ex-resistance; support-flip thesis intact and not yet challenged.",
+        "Extend v2.20 candidate to v2.20_v2: closed-bar values require \u2265180s exchange settling window before canonical. Bucket-end < write-time is necessary but not sufficient.",
+        "n=1 first instance of exchange post-close settling-window revision (10:15 bucket, +$0.08 close adjust, +9% volume adjust). Track recurrence; threshold for codification n\u22653.",
+        "v2.22 evidence flips from 'first weakness on up-side' (fire 261) back to 'support-flip thesis intact' (fire 262). The flip itself was a methodology artifact, not a market event."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "How wide is the typical exchange settling window? $0.08 / 9% revision between 1min and 11min post-close. Other 15m buckets may have wider/narrower revisions. Need n\u22653 instances to confirm or refine the 180s threshold.",
+        "Will the 10:30 bucket close above 80.85 on canonical (\u2265180s post-close) read? Current in-progress c=80.95 at ~11min into bucket. If canonical close stays >80.85, v2.22 thesis strengthens via 2 consecutive support-holds. If canonical close < 80.85, fresh 1-of-2 toward v2.6_RANGE_CLEAR.",
+        "Position at +0.025% unrealized after 97min \u2014 drift but no thrust. TP 81.50 = +0.74% target (gross ~$3.40). Will low-vol drift sustain to 1-pct target without a vol burst, or does post-displacement drift typically stall at +0.3% to +0.5% range?",
+        "v2.20 SL_BUFFER candidate: still pending trade outcome for n=2 contribution. Current position would qualify if SL fires AND MAE is within 0.20% of SL then close-back-inside (current MAE 80.71 was within 0.04% of SL 80.68 = signature already present pre-resolution).",
+        "Does the multi-fire OHLCV refresh discipline need to be promoted from implicit to explicit operational rule? It just saved a wrong-thesis exit decision."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779964460.850704,
@@ -1982,40 +2009,6 @@
         "P0 v5.3 pipe staleness at -5.41%: 1.4% widening over ~3 fires. ALERT-LEVEL widening. Bonny intervention candidate.",
         "Wrapper P1->P0 promotion (3 shapes observed across fires 226-227): still flagged for Bonny next op interaction."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779938726.0962539,
-      "iso": "2026-05-27T23:25:26-04:00",
-      "fire_count": 226,
-      "balance_usd": 894.08,
-      "version_tag": "v2.11",
-      "trigger": "surprise:floor_break_03_15_displacement_paper_221_sl_hit",
-      "what_im_trying": "Fire 226. The 16-bar post-displacement period (21:30 UTC 5-27 onward) that v2.8 named as sub-band candidate territory has resolved bearishly. 03:00 UTC closed exactly at floor 81.82 (vol 1.31x = sub-displacement floor test); 03:15 UTC IN-PROGRESS (4/15 min) shows clean reverse-break: low 80.62, current close 80.92, vol 2.81x in only 4 minutes (extrapolating 5-11x full bar even with decay). Sweep cycle #8 = v2.8 branch (a) trigger condition firing precisely as pre-committed: reverse-break <81.82 on vol >=1.5x. Paper #221 SL (81.75) was crossed during this 4-min dump \u2014 thesis REFUTED on both impulse branch (no 1%+ green push appeared post-reclaim) and drift-toward-TP branch (drifted toward SL instead). Cohort: down+short n=6 +$1.39 WR 83.3% non-worst. 4/4 v0.9 inputs satisfied. BUT v2.6_DISPLACEMENT requires confirmed 15m close outside band, 11min away. v2.10 (40min old) explicitly demoted pre-confirmation entries on in-progress bars. The discipline test: trust the framework I wrote 40min ago over the 'enter now or miss it' impulse. HOLD this fire with strong hypothetical short + pre-committed branches for 03:30 close.",
-      "whats_working": "v2.8 pre-committed branch tree fired EXACTLY as predicted. Branch (a) said 'sweep cycle #8 reverse-break <81.82 on vol >=1.5x' = precisely the current shape (close <81.82, vol 2.81x and rising). Three-branch tree (continuation-short / reclaim-long / sub-band-consolidation) correctly identified branch (a) was gaining probability and would resolve the question. Cadence-mismatch concern (v2.8 #2) navigated correctly: fires 222-225 held with hypothetical short on weakening evidence; cumulative-asymmetry across 4 fires + this surprise vol confirmation = 4/4 inputs in 19min of bar time. Brevity-on-stillness held (fires 222-225 appropriately brief). Cohort-tracking-first (v0.9+) successfully discriminated: down+short is non-worst, structural setup matches cohort, would be a clean ENTER. Information ROI on paper #221 cleanly REFUTED \u2014 the v-bottom liquidity-sweep reclaim hypothesis didn't survive sub-displacement floor test (03:00) followed by displacement break (03:15).",
-      "whats_failing": "(1) v2.10 reclaim-impulse-requirement was the right rule but written 75min AFTER paper #221 entered. Had v2.10 existed at fire 221, paper #221 would have HOLDed (no impulse bar within 4 bars post-01:30 reclaim). Framework had to lose a paper trade to learn the rule. n=1 retrospective alignment doesn't validate v2.10 yet but is the first datapoint. (2) Pre-confirmation entries now 2/2 refuted (#165 drift-reclaim + #221 sweep-reclaim). Two different pattern shapes, same timing failure mode, same refutation outcome. Strong enough to consider promotion to operational rule: 'entry on in-progress bars forbidden regardless of pattern shape.' (3) State.json content-staleness shape #3: fire 225 (23:01 EDT) read up to 03:00 in-progress with vol just kicking; this fire (23:19 EDT) sees 03:00 finalized + 03:15 in-progress with displacement firing. 18min between fires covered the full structural transition. Wrapper P1 alignment 3rd shape observed = promote P1->P0 candidate. (4) v5.3 indicator-pipe staleness CROSSED -5% threshold: live-status price 85.23 vs OHLCV-derived 80.92 = -5.32%. Was -3.50% at v2.9, -3.83% at fire 225's state.json. Slow widening accelerated by this fire's actual price drop. Promotion-to-active-P0 trigger met. (5) Calibration dataset: 3 cycles net ~-$4.90 (2 real -$2.40 + 1 paper -$2.50 refuted). Avg -$1.63/cycle. Trend: refutation-heavy. This is OK at n=3 \u2014 exploration is paying for hypothesis discrimination.",
-      "what_im_iterating": "Substantive v2.11 iterations: (a) Pre-confirmation operational rule promotion CANDIDATE: 'entry on in-progress bars forbidden regardless of pattern shape' \u2014 n=2 refuted (165 drift, 221 sweep). Field-test discipline THIS fire by HOLDING despite 4/4 input satisfaction. One more refutation = codify; one confirmation = wait for n>=5. (b) Descriptive shape DISCRIMINATOR introduced: displacement-continuation-vs-displacement-sweep by PRECEDING CONTEXT, not the displacement bar itself. 01:15 sweep was preceded by 5 higher-lows (recovery context = reversal-prone). 03:15 is preceded by 3 bars of drift+grind toward floor (continuation context = reversal-unlikely). Discriminator is NOVEL \u2014 descriptive only, not operational, need 2-3 more events per category before codifying. (c) Information ROI on paper #221: REFUTED on both branches. info_hypothesis_status = refuted; lesson = 'Reclaim sustaining 2-4 bars with vol but no impulse bar = short-cover exhaustion not fresh demand. Pre-confirmation timing compounds: thesis was already weak; thesis-pre-confirmation entry doubled the structural risk.' (d) State.json update this fire: sweeps_attempted 7->8, last_displacement_iso advanced to 23:15 EDT (03:15 UTC bar), new_range_candidate_low/high cleared (broken), narrative updated, pending_decision (paper #221) moved to last_closed_position with refuted thesis. Mode stays Regime Uncertain per v2.6 (need 2+ subsequent bars sustained vol for Expansion).",
-      "edits_from_prior": [
-        "v2.8 branch (a) trigger fired as predicted. Sweep cycle #8 (reverse-break <81.82 on vol >=1.5x) is firing now at 03:15 UTC with 2.81x vol in 4min, extrapolating much higher. v2.8 tree machinery validated end-to-end.",
-        "Pre-confirmation refutation streak now 2/2 (#165 drift-reclaim + #221 sweep-reclaim). Promote-to-operational-rule CANDIDATE: 'entry on in-progress bars forbidden regardless of pattern shape.' Field-test discipline THIS fire by HOLDING despite 4/4 v0.9 input satisfaction.",
-        "v2.10 demotion-of-reclaim-without-impulse rule retrospectively aligns with #221 refutation (n=1 retrospective alignment, not validation but first datapoint).",
-        "NEW descriptive discriminator: displacement-continuation vs displacement-sweep \u2014 distinguished by PRECEDING CONTEXT (recovery=reversal-prone, grind/drift=reversal-unlikely), not by the displacement bar itself. Descriptive only, need 2-3 more events per category before codifying.",
-        "P0 v5.3 indicator-pipe staleness CROSSED -5% threshold (-5.32% vs OHLCV). Was flagged for promotion at v2.8. Now active P0 anomaly.",
-        "Wrapper bar-close-alignment 3rd shape observed: state.json content-staleness covering full structural transitions in 18min between fires. P1->P0 promotion threshold (3 shapes) met.",
-        "Calibration dataset: 3 cycles net ~-$4.90 (2 real -$2.40 + 1 paper -$2.50 refuted). Avg -$1.63/cycle. Refutation-heavy at n=3 \u2014 acceptable exploration cost for hypothesis discrimination.",
-        "Founder notes pending queue still empty (23rd consecutive). All 13 historical claims addressed across v0.6/v0.9/v2.x line. No new founder input since 09:03 EDT 5-26 (~38.3h)."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "Does 03:15 UTC close finalize displacement (close <81.50 on vol >=3x), or fade back above 81.82 in remaining 11min? Mechanically: low already 80.62 with 11min to recover would require ~+1.5% green from current 80.92 = unprecedented at recent pace.",
-        "If displacement CONFIRMS at 03:30 close, what's the entry shape? Short at 03:30 close + 03:45 follow-through? Or short at next fire with explicit displacement-confirmation reading? v2.10 impulse-requirement applies symmetrically \u2014 does a downside displacement need bar-2 follow-through to qualify as ENTRY-CONFIRMABLE for SHORT side?",
-        "Does displacement-continuation-vs-displacement-sweep discriminator (by preceding context) hold up over next 2-3 events? Real-time field-test.",
-        "Pre-confirmation operational rule: codify after one more refutation (n=3), or wait for 5? n=2 consistent across 2 different pattern shapes is unusually clean signal.",
-        "Cohort math sanity: down+short n=6 small sample, WR 83.3% / +$1.39 means $0.23/trade avg = fee-pressure-sensitive. If this trade executes, cohort baseline becomes n=7.",
-        "Below 81.82 sub-band, next structural level? Pre-21:30-displacement range 82.74-87.68. Sub-floor: 80.00 round number, then 79.50 visible Fib/round area. Targets for any short below the displacement bar.",
-        "P0 v5.3 pipe staleness at -5.32%: does Bonny want manual refresh, or let widening continue as informational silent-carry?",
-        "Wrapper P1->P0 promotion: 3-shape threshold met (trigger-lag, content-staleness, content-staleness-covering-transitions). Flag explicitly for Bonny on next op interaction."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -2344,10 +2337,10 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 261 (2026-05-28T06:31 EDT / 10:31 UTC). Position-management Inventory Discovery, ~87min from fire 251 LONG entry 80.90. CRITICAL UPDATE: state.json fire 259 (write 10:20 UTC) violated v2.19 by recording the 10:15-10:30 bucket as a CLOSED bar with structural label 'FIRST close-pullback fade-style' while only 5min into the 15min bucket. Actual closed-bar values (this fire, post-10:30 UTC bucket close): c=80.83 h=81.14 l=80.78 v=4266 (0.64x baseline 6681). Diverges from state's prior in-progress read (c=80.97 v=1496 = 0.22x) by close $0.14 lower, low $0.17 deeper, vol 2.85x larger. Close 80.83 < 80.85 ex-resistance = FIRST closed bar below since reclaim. Ticker 80.87 (10:31 UTC) = $0.02 above 80.85, drifting on the line. Unrealized -0.037% (-$0.03 / $404 notional). MAE not extended (10:15 low 80.78 still > entry-bar low 80.71); MFE unchanged 81.19. Pre-commit tree E1-E5 NONE fire (E1 TP unreached / E2 SL 80.68 untouched / E3 8h cut ~6.5h away / E4 6 closed bars not 12+ / E5 no displacement). HOLD position. Framework reflection v2.20 written this fire (trigger: v2.19 self-violation in state-write path n=1). Added NEW pre-SL warning to abort_conditions: 2 consecutive closes below 80.85 = structural flip-failure exit-review.",
-    "updated_ts": 1779964526.710935,
-    "updated_iso": "2026-05-28T06:35:26-04:00",
-    "updated_by_fire_iso": "2026-05-28T06:35:26-04:00",
+    "comment": "Fire 263 (~06:50 EDT / 10:50 UTC). Inventory Discovery, ~107min from fire 251 LONG entry 80.90. Pre-commit tree resolution: 10:30 UTC canonical (\u2265180s post-close, per v2.20_v2 discipline) closed at c=80.89 h=80.97 l=80.81 v=6373 = 0.95x baseline. Lands in U2 branch (80.85-81.00 on any vol = thesis intact). 10:45 UTC bucket in-progress at fire (5min in: c=80.88 v=1747) \u2014 NOT extracted per v2.20_v2. Ticker 80.78 at 10:50:51 UTC = fresh intra-bar weakness, $0.10 above SL 80.68, $0.07 below 80.85 ex-resistance \u2014 but intra-bar; structural conclusion forbidden per v2.19. Unrealized -0.15% (~ -$0.60 on $405 notional). MAE 80.71 entry-bar holds (ticker 80.78 > entry-bar low 80.71); MFE 81.19 holds. No E1-E5 trigger. Position-management HOLD. Pre-SL warning track 0-of-2 closes below 80.85 (10:30 c=80.89 > 80.85). No reflection this fire \u2014 last was v2.21 fire 262 (~7min ago); 10:30 U2 landing was expected branch; intra-bar ticker drop is not yet closed-bar structural event.",
+    "updated_ts": 1779965551.216403,
+    "updated_iso": "2026-05-28T06:52:31-04:00",
+    "updated_by_fire_iso": "2026-05-28T06:52:31-04:00",
     "regime": "down",
     "regime_detail": "live-status 'down' (288h window) + state.json 'down' aligned. Short-term tape: 80.85 envelope ceiling broke 07:15, retested 08:15 (held), reclaimed 08:30, drift continuation higher. Vol pattern across reclaim+sustain bars (08:30 0.58x \u2192 08:45 0.37x \u2192 09:00 0.64x \u2192 09:15 0.86x \u2192 09:30 0.66x baseline 6681): drift-style sustain modestly strengthening, NOT vol-burst displacement. Timeframe disagreement persists (macro down, short-term up-drift). cognition_mode remains Inventory Discovery \u2014 position-intent open.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
@@ -2365,14 +2358,14 @@
     "new_range_candidate_status": "Active position window 80.68 (SL) to 81.50 (TP) acts as effective trading range for this position. Outside this range = either SL hit (close back below 80.65) or TP zone reached (81.40+). Pre-commit tree handles both endpoints.",
     "candidate_floor_test_count": 1,
     "candidate_floor_test_detail": "08:15 retest of 80.85 ex-resistance held (dipped to 80.74, closed 80.79, reclaimed 08:30 c=80.87). One support-flip-test on 80.85 successful.",
-    "post_floor_lifting_detail": "Sequence (UTC closes, refreshed fire 261 from Coinbase 15m endpoint AFTER 10:15 bucket actually closed at 10:30 UTC): 80.57(07:00) -> 80.82(07:15 STOP-SWEEP UPPER) -> 80.84(07:30) -> 80.91(07:45) -> 81.07(08:00) -> 80.79(08:15 RETEST DIP low 80.74) -> 80.87(08:30 RECLAIM vol 0.58x) -> 80.85(08:45 SUSTAIN vol 0.37x) -> 80.86(09:00 entry-bar SUSTAIN low 80.71 = near-SL touch, vol 0.64x) -> 81.04(09:15 IMPULSE vol 0.86x) -> 81.08(09:30 SUSTAIN vol 0.66x) -> 81.09(09:45 CLOSED c=81.09 h=81.18 l=81.04 vol 0.62x) -> 81.10(10:00 CLOSED c=81.10 h=81.19 l=81.04 vol 0.97x near-baseline) -> 80.83(10:15 ACTUALLY CLOSED c=80.83 h=81.14 l=80.78 vol 0.64x baseline = FIRST CLOSED BAR BELOW 80.85 ex-resistance since 08:30 reclaim; this CORRECTS fire 259's in-progress misread of c=80.97 v=0.22x) -> ticker 80.87 (10:31 UTC). 1 of 2 closed bars needed for v2.6_RANGE_CLEAR support-flip refutation. NOTE on v2.19 self-violation: state.json fire 259 wrote at 10:20 UTC (5min into 15min 10:15 bucket) and recorded the bar as if closed \u2014 this fire's correction extends v2.19 scope to STATE-WRITE PATH per v2.20 reflection.",
+    "post_floor_lifting_detail": "Sequence (UTC canonical closed-bar reads, refreshed fire 263 from Coinbase 15m endpoint 20min post-10:30-bucket-close): 80.57(07:00) -> 80.82(07:15 STOP-SWEEP UPPER) -> 80.84(07:30) -> 80.91(07:45) -> 81.07(08:00) -> 80.79(08:15 RETEST DIP low 80.74) -> 80.87(08:30 RECLAIM vol 0.58x) -> 80.85(08:45 SUSTAIN vol 0.37x) -> 80.86(09:00 entry-bar SUSTAIN low 80.71 near-SL touch, vol 0.64x) -> 81.04(09:15 IMPULSE vol 0.86x) -> 81.08(09:30 SUSTAIN vol 0.66x) -> 81.09(09:45 vol 0.62x) -> 81.10(10:00 vol 0.97x near-baseline) -> 80.91(10:15 canonical c=80.91 vol 0.69x) -> 80.89(10:30 CANONICAL c=80.89 h=80.97 l=80.81 v=6373 = 0.95x baseline \u2014 ABOVE 80.85 ex-resistance, low approached then closed back; consistent with continued low-energy drift, not breakdown). In-progress 10:45 c=80.88 v=1747 (NOT extracted per v2.20_v2). Ticker 80.78 at 10:50:51 UTC = $0.07 BELOW 80.85 ex-resistance on intra-bar basis. 0-of-2 CLOSED bars below 80.85 (need 2 for v2.6_RANGE_CLEAR refutation). Support-flip thesis intact on closed-bar; intra-bar weakness emerging but not yet structural.",
     "sweeps_attempted": 14,
     "sweep_detail": "Total 14 confirmed/near-miss sweeps. 09:00 UTC entry-bar L=80.71 = near-miss SL sweep ($0.03 above SL=80.68, MAE/SL=87%). Stop-cluster signature: MAE within 0.20% of SL (here 0.035% \u2014 well inside) then price recovered. THIS is the v2.20 SL_BUFFER candidate's second implicit instance. (fire 251 entry SL set at 80.68 \u2248 retest low 80.74 - $0.06 buffer; post-entry bar tested SL 80.71 then reclaimed.)",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
     "last_displacement_detail": "03:15 UTC remains the most recent CONFIRMED displacement event (5.84x baseline, breakdown direction). All subsequent post-displacement bars (including 07:15+ up-break, 08:15 retest, 09:15+ continuation) are NON-displacement (max vol since displacement = 0.92x on 07:30 bucket; ongoing post-entry vol all sub-baseline).",
     "funding_state": "OKX -8.12e-5 (live-status feed refreshed fire 259). Negative funding (shorts paying longs) modestly eased from prior -8.33e-5 \u2014 still directionally supportive of upward drift but funding alone is not a binding signal.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 261. LONG position-intent open (DRY_RUN), 87 min since entry 80.90. Path: entry-bar 09:00 UTC L=80.71 (near-miss SL sweep) -> 09:15 reclaim impulse c=81.04 vol 0.86x -> 09:30 sustain c=81.08 vol 0.66x -> 09:45 c=81.09 vol 0.62x -> 10:00 c=81.10 vol 0.97x (near-baseline) -> 10:15 c=80.83 vol 0.64x (FIRST CLOSED bar below 80.85 ex-resistance since reclaim; corrects fire 259's in-progress misread). Ticker 80.87 (10:31 UTC) = -0.037% unrealized, drifting just above 80.85. MFE 81.19 (10:00 high); MAE 80.71 unchanged (still entry-bar low). v2.22 directional test showing FIRST weakness on up-side \u2014 1 of 2 closes below 80.85 needed for thesis refutation. Pre-commit tree E1-E5 still no triggers (SL $0.19 away). HOLD with new pre-SL warning track: 2 consecutive close-below = exit-review.",
+    "narrative": "Phase B.1 fire 263. LONG position-intent open (DRY_RUN), 107 min since entry 80.90. Canonical 10:30 UTC c=80.89 (vol 0.95x baseline) landed in U2 = 'thesis intact, HOLD'. Ticker just dropped to 80.78 (10:50:51 UTC) = -0.15% unrealized, $0.10 above SL 80.68. Pre-SL warning 0-of-2 closes below 80.85 (10:15 c=80.91, 10:30 c=80.89 both above). Intra-bar weakness emerging at 10:45 bucket (don't extract). No E1-E5 trigger. HOLD position-management.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-28T05:03:59-04:00",
     "cognition_mode_rationale": "Long position intent active. Per skill: Inventory Discovery = 'a position is open. You're managing live risk.' Even in DRY_RUN, the decision is treated as if it WILL be acted upon. Full 5-min cadence, never skip. Pre-commit branch tree for exit paths E1-E5 active.",
@@ -2407,11 +2400,11 @@
     "operational_rule_v2_16_WEAK_VOL_RECLAIM_CANDIDATE": "DESCRIPTIVE candidate -- PARTIALLY WITHDRAWN fire 242. n=1 only.",
     "operational_rule_v2_17_STATE_READING_PRE_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. State.json bar-close fields must be sourced from CLOSED-bar OHLCV pulls AFTER bar_close_timestamp. n=1 first observation (fire 241 misread).",
     "operational_rule_v2_18_RESISTANCE_TEST_COUNT_NOT_PREDICTIVE_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. The 80.76-85 resistance held 4 closed-bar tests (05:30/05:45/06:00/06:15) then broke on 5th (06:45). Test-count alone is not predictive. n=1 observation.",
-    "operational_rule_v2_19_IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. EXTENDED FIRE 261 per v2.20 reflection: scope now includes STATE-WRITE PATH bar-recording, not just framework-language lesson-extraction. Pre-write check: write_iso >= bar_close_iso. If not, either tag IN_PROGRESS or skip bar entirely. n=1 self-violation = state.json fire 259's 10:15 bucket misread (recorded c=80.97 v=0.22x at 10:20 UTC; actual closed c=80.83 v=0.64x at 10:30 UTC; structural label 'FIRST close-pullback fade-style' extracted from partial data). Prior n=2 cognition-side instances (fire 241 + fire 246) + this n=1 state-write instance = ESCALATION candidate.",
+    "operational_rule_v2_19_IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. SCOPE EVOLVED v2.21: extended to STATE-WRITE PATH bar-recording (v2.20 fire 261) AND to EXCHANGE SETTLING WINDOW (v2.20_v2 fire 262). Pre-write check chain: (1) write_iso > bar_close_iso (necessary), (2) write_iso - bar_close_iso >= 180s (canonical, accounts for Coinbase late-fill settling). Without (2), values like c/h/l/v can be revised post-write. Instances: cognition-side n=2 (fire 241 + fire 246) + state-write n=1 (fire 259) + settling-window n=1 (fire 261's 1min-post-close read of 10:15 bucket revised by fire 262 at 11min post-close: c 80.83->80.91, v 4266->4635). ESCALATION candidate.",
     "operational_rule_v2_20_SL_BUFFER_v0_1_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. NEW FIRE 247. Structural SLs should be placed at structural_level + max(0.15%, 0.5 \u00d7 ATR_15m) buffer, not exactly at the structural level. Trigger to codify: track SL hits where MAE was within 0.20% of SL then closed back inside structural level (= stop-cluster sweep signature). n=1 (fire 239 entry \u2192 fire 245 SL). Implicit 2nd instance feedback: fire 251 entry placed SL with $0.06 buffer below retest low 80.74 \u2014 post-entry bar tested 80.71 then recovered (stop-cluster sweep avoided). Pending trade resolution for n=2 contribution.",
     "operational_rule_v2_21_IN_PROGRESS_RECURRENCE_v0_1_CANDIDATE": "DESCRIPTIVE candidate -- not operational. v2.17 in-progress-as-closed misreads occurred 2 consecutive fires (241 \u2192 246) despite v2.17 being explicitly codified. n=2 instances, escalation candidate. NOT triggered this fire (clean closed-bar reading; in-progress 09:45 explicitly tagged).",
-    "operational_rule_v2_22_POST_DISPLACEMENT_LONG_CONSOLIDATION_RESOLUTION_NOT_DIRECTIONALLY_PREDICTABLE_CANDIDATE": "DESCRIPTIVE candidate \u2014 FIRST DIRECTIONAL TEST INSTANCE ONGOING WITH FIRST WEAKNESS ON UP-SIDE FIRE 261. Fire 251 LONG ENTER tests whether displacement-direction-DOWN consolidation can resolve UP via low-vol retest-reclaim. CURRENT STATE: -0.037% unrealized (drifted negative from prior +0.11%), 87min elapsed, no exit trigger. 10:15 closed bar c=80.83 = FIRST close below 80.85 ex-resistance since reclaim \u2014 1 of 2 needed for v2.6_RANGE_CLEAR support-flip refutation. If 10:30 bucket also closes below 80.85, structural thesis invalidated and exit-review warranted even pre-SL (new pre-SL warning added to abort_conditions). If price reclaims 80.85+ in 10:30 bucket and sustains, v2.22 still in flight. Resolution next 1-2 fires.",
-    "last_gate_check_iso": "2026-05-28T06:35:26-04:00 (UTC: 2026-05-28T10:31+00:00)",
+    "operational_rule_v2_22_POST_DISPLACEMENT_LONG_CONSOLIDATION_RESOLUTION_NOT_DIRECTIONALLY_PREDICTABLE_CANDIDATE": "DESCRIPTIVE candidate -- FIRST DIRECTIONAL TEST INSTANCE ONGOING; FLIPPED BACK TO 'IN FLIGHT' AT FIRE 262 (fire 261's 'first weakness up-side' alert was a methodology artifact, not market evidence \u2014 canonical 10:15 c=80.91 restores support-flip-intact status). Fire 251 LONG ENTER tests whether displacement-direction-DOWN consolidation can resolve UP via low-vol retest-reclaim. CURRENT STATE: +0.025% unrealized, 97min elapsed, no exit trigger. 6 of 6 post-entry closed bars above 80.85 ex-resistance (no closes below since reclaim). Resolution next 1-3 fires.",
+    "last_gate_check_iso": "2026-05-28T06:52:31-04:00 (UTC: 2026-05-28T10:52+00:00)",
     "active_position_intent": {
       "direction": "long",
       "symbol": "SOL-PERP",
@@ -2429,21 +2422,26 @@
       "rr_planned": 2.71,
       "info_hypothesis": "tests whether low-vol retest-and-reclaim of broken resistance in post-displacement consolidation (v2.22 context) can sustain into directional drift in the down+long cohort",
       "abort_conditions": [
-        "close back below 80.65 on closed bar with vol >= 1.0x baseline",
-        "displacement event (vol >= 3.0x baseline >= 20043) breaks 80.40-81.50 envelope either direction",
-        "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod time-cut analog)",
+        "close back below 80.65 on closed bar with vol >= 1.0x baseline (~6700)",
+        "2 consecutive closed bars below 80.85 ex-resistance (currently 0-of-2 after fire 262 canonical-revision of 10:15)",
+        "displacement event (vol >= 3.0x baseline >= 20100) breaks 80.40-81.50 envelope either direction",
+        "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod analog; currently 97/480 min elapsed, MFE 0.36% just under floor \u2014 track for 8h gate)",
         "vol-burst rejection at TP zone with closed-bar reversal"
       ],
       "mae_pct_so_far": -0.00235,
       "mae_iso": "2026-05-28T09:00-09:15+00:00",
       "mae_low_price": 80.71,
       "mfe_pct_so_far": 0.00359,
-      "mfe_iso": "2026-05-28T10:00+00:00 (closed-bar high 81.19 from 10:00 bucket \u2014 slight bump over prior 81.18, same +0.36% scale)",
+      "mfe_iso": "2026-05-28T10:00+00:00",
       "mfe_high_price": 81.19,
       "mfe_high_price_closed_bar": 81.19,
-      "fires_since_entry": 8,
+      "fires_since_entry": 10,
       "unrealized_pnl_pct_at_fire_261": -0.00037,
-      "minutes_held_at_fire_261": 87
+      "minutes_held_at_fire_261": 87,
+      "unrealized_pnl_pct_at_fire_262": 0.000247,
+      "minutes_held_at_fire_262": 97,
+      "unrealized_pnl_pct_at_fire_263": -0.001483,
+      "minutes_held_at_fire_263": 107
     },
     "last_closed_position": {
       "direction": "short",
@@ -2497,20 +2495,22 @@
     },
     "pending_decision": null,
     "pre_commit_tree_next_bar": {
-      "target_bar_utc": "2026-05-28T10:30 UTC bucket closes at 10:45 UTC (~14min from fire 261). KEY QUESTION: does 10:30 close BELOW 80.85 (= 2 consecutive closes-below, triggers v2.6_RANGE_CLEAR refutation of support-flip thesis + pre-SL exit-review per v2.20)? Or does it reclaim 80.85+ (= thesis intact, 10:15 was a low-vol fade not a structural break)? Vol shape matters: high-vol close-below = decisive flip-failure; low-vol close-below = chop without conviction.",
-      "context": "Position long open 80.90 (DRY_RUN), 87 min held. Last 7 closed bars post-entry: 80.86(09:00 entry) -> 81.04(09:15) -> 81.08(09:30) -> 81.09(09:45) -> 81.10(10:00 near-baseline vol) -> 80.83(10:15 FIRST CLOSED BELOW 80.85 since reclaim, vol 0.64x). Ticker 80.87 = -0.037% unrealized.",
-      "U1_strong_reclaim_above_80_85": "10:30 closes >= 81.00 with vol >= 1.0x baseline: thesis intact, 10:15 was a one-off chop bar. Continue HOLD with renewed conviction. INFO ROI: HIGH for v2.22 (low-vol reclaim post-shake CAN sustain).",
-      "U2_marginal_reclaim_80_85_to_81_00": "10:30 closes 80.85-81.00 on any vol: thesis tentatively intact but conviction weak. HOLD with caution; watch 10:45 bucket for confirmation.",
-      "U3_second_close_below_80_85_low_vol": "10:30 closes < 80.85 on vol <= 1.0x baseline: 2 consecutive closes-below = v2.6_RANGE_CLEAR support-flip refutation. NEW v2.20 pre-SL warning fires: exit-review on next fire. Likely action: close position at market for small loss to free budget + preserve $144 buffer to SNIPER_MIN_BALANCE_USD floor. INFO ROI: VERY HIGH for v2.22 (low-vol reclaim of broken resistance in post-displacement context CANNOT sustain).",
-      "U4_second_close_below_80_85_high_vol": "10:30 closes < 80.85 on vol >= 1.5x baseline: high-conviction flip-failure. Exit immediately at market (don't wait for SL \u2014 accept small loss vs SL hit). INFO ROI: VERY HIGH.",
-      "U5_SL_hit_intrabar": "Price touches 80.68: SL fires. Net loss ~$2.29. INFO ROI: HIGH if MAE within 0.20% then close back inside (v2.20 SL_BUFFER signature again). MEDIUM if drifts clean past.",
-      "U6_displacement_breakdown_vol_3x_close_below_80_40": "Vol >= 3.0x baseline + close < 80.40: post-displacement consolidation breakdown resumed. Exit immediately. INFO ROI: VERY HIGH (refutes both v2.22 + v0.9 structural-trigger sufficiency in low-vol context).",
+      "target_bar_utc": "10:45 UTC bucket closes at 11:00 UTC; canonical settle per v2.20_v2 ~11:03 UTC. Fire 264 (~10:55 EDT = 10:55 UTC) will be 10min into bucket \u2014 IN-PROGRESS, don't extract. Fire 265 (~11:00 EDT = 11:00 UTC) at exact bucket close \u2014 TOO EARLY for v2.20_v2 (need \u2265180s post-close = wait until ~11:03 UTC). Fire 266 (~11:05 EDT = 11:05 UTC) = first canonical-eligible fire for 10:45 bucket. KEY QUESTION: does 10:45 canonical close above/below 80.85 + does the intra-bar drop to 80.78 hold or recover?",
+      "context": "Position long open 80.90 (DRY_RUN), 107 min held. Canonical post-entry bars: 80.86(09:00 entry) -> 81.04(09:15) -> 81.08(09:30) -> 81.09(09:45) -> 81.10(10:00) -> 80.91(10:15) -> 80.89(10:30 canonical THIS fire). Ticker 80.78 (10:50:51 UTC) = fresh intra-bar weakness. Pre-SL warning 0-of-2.",
+      "U1_strong_recovery_above_81_00": "10:45 canonical closes >= 81.00: intra-bar weakness was a fade, thesis intact + strengthened. HOLD.",
+      "U2_marginal_hold_80_85_to_81_00": "10:45 canonical closes 80.85-81.00 on any vol: thesis intact despite intra-bar weakness. HOLD.",
+      "U3_first_close_below_80_85_low_vol": "10:45 canonical closes < 80.85 on vol <= 1.0x baseline: 1 of 2 toward v2.6 refutation. HOLD with elevated watch on 11:00 bucket.",
+      "U4_first_close_below_80_85_high_vol": "10:45 canonical closes < 80.85 on vol >= 1.5x baseline: high-conviction structural flip. Exit-review next fire \u2014 close at market vs wait for SL. INFO ROI: VERY HIGH.",
+      "U5_SL_hit_intrabar": "Price touches 80.68: SL fires. Net loss ~$2.29. INFO ROI: HIGH (v2.20 SL_BUFFER signature already present \u2014 MAE 80.71 within 0.04% of SL).",
+      "U6_displacement_breakdown_vol_3x_close_below_80_40": "Vol >= 3.0x baseline (>=20100) + close < 80.40: post-displacement consolidation breakdown resumed. Exit immediately. INFO ROI: VERY HIGH.",
+      "U7_TP_zone_reached_81_40_plus": "Price drifts to 81.40+: monitor for closed-bar above 81.50. If hit, TP fires (net ~+$2.80 after fees). INFO ROI: HIGH (v2.22 confirmed direction).",
       "HOLD_continue": "Otherwise: HOLD position-management, log MAE/MFE/elapsed, await trigger.",
-      "BUDGET_NOTE": "$3.79 budget remaining (script). Current trade's at-risk + fees ~$2.29 already consumed. Sufficient for 1 C-grade probe later today only if this position closes profitably or BE.",
-      "DISCIPLINE_NOTE": "v2.20 reflection extends v2.19 to state-write path. Going forward: every bar-recording in state.json must check write_iso >= bar_close_iso. Bar values from partial buckets either tagged IN_PROGRESS or omitted. n=1 self-violation logged this fire; track future violations to harden the rule."
+      "BUDGET_NOTE": "$3.79 budget remaining (script). Current trade's at-risk ~$2.29 already sunk. Sufficient for at most 1 more C-grade probe today IF this position closes break-even or better.",
+      "DISCIPLINE_NOTE": "v2.20_v2 (settling window \u2265180s): next fire MUST check write_time - bucket_close_time \u2265 180s before treating closed-bar values as canonical. Fire 263 satisfied this (10:30 bucket closed 10:30 UTC; fire 263 read at ~10:50 UTC = 20min post-close = canonical)."
     },
-    "_last_ohlcv_check_iso": "2026-05-28T10:31+00:00 (OHLCV cb-15m 10:00 closed c=81.10 h=81.19 l=81.04 v=6514 (0.97x); 10:15 ACTUALLY closed c=80.83 h=81.14 l=80.78 v=4266 (0.64x) \u2014 corrects fire 259 in-progress misread; ticker 80.87 at 10:31:16 UTC)",
-    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV 80.87 = 5.06% divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness persists (divergence slightly narrowed from 5.23% prior fire, immaterial)."
+    "_last_ohlcv_check_iso": "2026-05-28T10:52+00:00 (OHLCV cb-15m 10:30 CANONICAL c=80.89 h=80.97 l=80.81 v=6373=0.95x baseline; 10:45 in-progress c=80.88 v=1747 \u2014 NOT canonical; ticker 80.78 at 10:50:51 UTC)",
+    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV ticker 80.78 = 5.51% divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness persists (immaterial change from prior fire).",
+    "operational_rule_v2_20_v2_SETTLING_WINDOW_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. NEW FIRE 262. Closed-bar OHLCV from Coinbase candles endpoint requires >=180s post-bucket-close before canonical (late fills update the just-closed bucket). n=1 first observed: 10:15 UTC bucket on 2026-05-28 read at 10:31 UTC (1min post-close, c=80.83 v=4266) vs 10:41 UTC (11min post-close, c=80.91 v=4635). $0.08 close revision + ~9% volume revision. Threshold for codification n>=3 instances."
   },
   "cognition": {
     "mode": "Inventory Discovery",
@@ -2519,7 +2519,7 @@
     "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-28T05:03:59-04:00",
-    "last_gate_check_iso": "2026-05-28T06:35:26-04:00 (UTC: 2026-05-28T10:31+00:00)"
+    "last_gate_check_iso": "2026-05-28T06:52:31-04:00 (UTC: 2026-05-28T10:52+00:00)"
   },
   "framework_origins": [
     {
@@ -2564,14 +2564,14 @@
     },
     "last_enter_ts": 1779959039.082239,
     "last_enter_iso": "2026-05-28T05:03:59-04:00",
-    "holds_in_a_row": 9,
+    "holds_in_a_row": 11,
     "exploratory_at_risk_usd_today": 5.15,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 1.4,
+    "hours_since_last_enter": 1.8,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T10:30:55.202421+00:00",
+    "last_updated_iso": "2026-05-28T10:50:29.247603+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
