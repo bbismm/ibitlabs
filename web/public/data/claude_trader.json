@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779934481,
-  "generated_iso": "2026-05-27T22:14:41-0400",
+  "generated_at": 1779935082,
+  "generated_iso": "2026-05-27T22:24:42-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 222,
+    "decisions_total": 223,
     "actions": {
-      "HOLD": 217,
+      "HOLD": 218,
       "ENTER": 3,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 61,
+      "HOLD_with_counterfactual": 62,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 152,
-      "medium": 53,
+      "medium": 54,
       "low": 17
     },
-    "reasoning_chars_avg_all": 955,
-    "reasoning_chars_avg_last10": 921,
+    "reasoning_chars_avg_all": 956,
+    "reasoning_chars_avg_last10": 943,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T22:04:20-04:00",
+    "last_fire_iso": "2026-05-27T22:24:33-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,18 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779933966.95717,
-    "fire_iso": "2026-05-27T22:04:20-04:00",
+    "fire_ts": 1779935073.530313,
+    "fire_iso": "2026-05-27T22:24:33-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.13,
+    "current_price": 82.01,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": 2.11,
-      "momentum_pct": -0.06,
-      "rsi": null
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.0005,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,19 +60,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Fire 221 paper ENTER long 82.25 in flight (DRY_RUN, live-status position=null). 16min elapsed: 01:30 UTC bar finalized c=82.18 vol 2.17x (reclaim CONFIRMED above 82.07 floor); 01:45 UTC in-progress c=82.13 vol 2.11x (hold continuing). Neither SL 81.75 (lows 81.98/81.99) nor TP 82.74 (highs 82.34/82.29) touched. Paper unrealized -0.146% gross. Thesis half-resolved: reclaim-component CONFIRMED, impulse-component LAGGING (4h cumulative -0.42%, no push toward TP). HOLD \u2014 no new ENTER warranted; doubling-on-same-hypothesis is over-trading. Live-status pipe stale=True 57h; OHLCV canonical per operational_hard_rule_v1.2 #1. Hours-since-last-ENTER 0.3 = no forced exploration. Brevity-on-stillness: state-delta is bar-finalization confirming reclaim, not a transition trigger.",
+    "reasoning": "Fire 223 HOLD. Same baseline as fire 222 with two material observations. (1) live-status pipe newly STALE this fire \u2014 reports price 85.23 BB 84.12/85.93 vs OHLCV true price 82.01 (02:20 UTC in-progress). Per state.json operational_hard_rule v1.2, ignore indicators_pro and use OHLCV. market_snapshot fields written as stale-pipe values + flagged here. (2) Paper position from fire 221 (long 82.25 SL 81.75 TP 82.74) is 31min in, unrealized -0.29% gross. Post-reclaim drift sequence 82.18->82.14->82.07->82.12->82.01: reclaim holding above 82.07 floor for 4 bars BUT vol decayed from 10-20k displacement bars to 1-2k normal \u2014 impulse component dead. 02:20 in-progress bar testing 82.00 (sweep low 81.82 still unbroken). Will not new-ENTER \u2014 would double-stack on same hypothesis with lower info-value than letting fire 221 resolve. Cohort down+long remains non-worst (n=4 +.74 WR 75%). Budget remaining .43, holds_in_a_row=1, no forced exploration due. Cognition mode stays Regime Uncertain \u2014 paper position is DRY_RUN, live-status position=null, no transition to Inventory Discovery.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "long",
-      "entry_price": 82.13,
-      "sl_pct": 0.005,
-      "tp_pct": 0.0074,
+      "entry_price": 82.01,
+      "sl_pct": 0.006,
+      "tp_pct": 0.009,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Post-sweep reclaim sustained 2 bars at 2x vol but no impulse toward 82.74; long lean still favored on cohort+structure but conviction degrading. Fresh entry would over-stack same thesis."
+      "reasoning_30_words": "If forced to lean: 4 bars post-reclaim hold above 82.07 floor, sweep low 81.82 unbroken, cohort down+long historically +EV. Vol-decay disqualifier prevents commit \u2014 paper thesis already in flight."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1541,11 +1541,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 776,
+    "holds_since_framework": 2,
+    "avg_chars": 929,
     "since_iso": "2026-05-27T21:45:57-04:00",
     "since_framework_version": "v2.9",
-    "latest_fire_iso": "2026-05-27T22:04:20-04:00"
+    "latest_fire_iso": "2026-05-27T22:24:33-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2283,7 +2283,7 @@
     "cognition_mode_since_iso": "2026-05-27T18:21:21-04:00",
     "cognition_mode_rationale": "Range broken DOWN twice with displacement (21:30 UTC + 01:15 UTC); current period is sweep-#7 reclaim sustaining on vol but without impulse. Paper long position from fire 221 tracking this resolution (DRY_RUN \u2014 not real). Mode stays Regime Uncertain until either (a) reclaim impulse materializes toward 82.74 (-> Expansion transition) OR (b) 82.07 reverse-break under vol (-> mode stays or down regime hardens). Live execution would trigger Inventory Discovery; paper does not.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 32,
+    "skipped_fires_in_mode": 33,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
@@ -2298,7 +2298,7 @@
     "operational_rule_v2_7_ROLLOVER_PROXIMITY": "When daily uncertainty budget remaining < smallest grade exposure floor AND UTC midnight within 30 minutes AND a structural setup is half-confirmed (>=1 of branch conditions met, with vol confirmation), HOLD with hypothetical-and-explicit-rollover-plan is correct shape -- not generic HOLD. Hypothetical names entry plan; execution capacity arrives at 00:00 UTC; next fire executes IF remaining structural conditions clear AND cohort still non-worst.",
     "operational_rule_v2_8_TENTATIVE_SUBBAND_CONSOLIDATION": "When post-displacement period extends ~16 bars (4h) without either continuation or reclaim branch resolving, treat as new sub-band envelope establishment; clear post-displacement hypothesis tree and re-derive compression-mode entry criteria from new envelope. TENTATIVE not yet operational; field-test on this resolution.",
     "operational_rule_v2_9_DESCRIPTIVE_DISPLACEMENT_SHAPE": "Displacement events have a SHAPE dimension distinct from timing: (i) trend-continuation displacement \u2014 3-5 consecutive bars sustain direction with vol decay (21:30-01:00 UTC 5-27 = canonical); (ii) liquidity-sweep displacement \u2014 1 bar sweeps with immediate reverse on next bar (01:15+01:30 UTC 5-28 = canonical); (iii) range-establish displacement \u2014 1 bar break followed by sub-band consolidation (rare standalone, often follows (i) or (ii)). v2.9 introduces descriptively; codification requires 2-3 more events per category.",
-    "last_gate_check_iso": "2026-05-28T02:12:26.878922+00:00",
+    "last_gate_check_iso": "2026-05-28T02:17:29.195178+00:00",
     "hypothetical_position": null,
     "last_closed_position": {
       "direction": "long",
@@ -2369,9 +2369,9 @@
     "since_iso": "2026-05-27T18:21:21-04:00",
     "rationale": "Range broken DOWN twice with displacement (21:30 UTC + 01:15 UTC); current period is sweep-#7 reclaim sustaining on vol but without impulse. Paper long position from fire 221 tracking this resolution (DRY_RUN \u2014 not real). Mode stays Regime Uncertain until either (a) reclaim impulse materializes toward 82.74 (-> Expansion transition) OR (b) 82.07 reverse-break under vol (-> mode stays or down regime hardens). Live execution would trigger Inventory Discovery; paper does not.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 32,
+    "skipped_fires_in_mode": 33,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
-    "last_gate_check_iso": "2026-05-28T02:12:26.878922+00:00"
+    "last_gate_check_iso": "2026-05-28T02:17:29.195178+00:00"
   },
   "framework_origins": [
     {
@@ -2416,14 +2416,14 @@
     },
     "last_enter_ts": 1779932850.040962,
     "last_enter_iso": "2026-05-27T21:47:30-04:00",
-    "holds_in_a_row": 0,
+    "holds_in_a_row": 1,
     "exploratory_at_risk_usd_today": 2.51,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 0.3,
+    "hours_since_last_enter": 0.6,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T02:03:08.741004+00:00",
+    "last_updated_iso": "2026-05-28T02:22:44.911226+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
