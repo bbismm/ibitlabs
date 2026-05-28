@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779927326,
-  "generated_iso": "2026-05-27T20:15:26-0400",
+  "generated_at": 1779928559,
+  "generated_iso": "2026-05-27T20:35:59-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 216,
+    "decisions_total": 217,
     "actions": {
-      "HOLD": 212,
+      "HOLD": 213,
       "ENTER": 2,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 56,
+      "HOLD_with_counterfactual": 57,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 152,
-      "medium": 47,
+      "medium": 48,
       "low": 17
     },
-    "reasoning_chars_avg_all": 955,
-    "reasoning_chars_avg_last10": 784,
+    "reasoning_chars_avg_all": 954,
+    "reasoning_chars_avg_last10": 787,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T20:14:20.228652-04:00",
+    "last_fire_iso": "2026-05-27T20:30:40-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779927260.228652,
-    "fire_iso": "2026-05-27T20:14:20.228652-04:00",
+    "fire_ts": 1779928240.0,
+    "fire_iso": "2026-05-27T20:30:40-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.38,
+    "current_price": 82.35,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": 0.82,
-      "momentum_pct": null,
-      "rsi": null,
-      "note": "live-status indicators_pro stale 54h+; values from OHLCV (00:00 UTC bar in-progress vol_ratio=0.82x vs median-96=4137). stoch_rsi/momentum/rsi not re-derived this fire (not load-bearing on the v2.7 plan)."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 1.62,
+      "momentum_pct": 0.085,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,19 +60,22 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "v2.7 plan binding (19:54 EDT prior fire). Material update: 23:45 UTC bar final = vol 2.70x (v2.7 saw in-progress 0.69x light vol) -- 3rd consecutive >=2.5x vol bar with lows LIFTING 82.07->82.08->82.17 ABOVE candidate floor 82.11. Buyers absorbing more aggressively than v2.7 modeled; failed-breakdown-reclaim long branch STRENGTHENING. 82.74 reclaim still pending (current 82.38, vol cooled to 0.82x on 00:00 UTC). Budget rolled over UTC midnight: .94 fresh, forced_exploration_due=True, threshold_state relaxed (49 holds). v2.3 carve-out applies: cohort down+long non-worst YES, structural HALF (floor holding + lifting, 82.74 reclaim NO), vol NO, asymmetry modest long bias. 1.5/4 v0.9 inputs. Pending-confirmation entry is the explicit anti-pattern (fire 165 -.30). Discipline: HOLD; wait for 82.74 reclaim with vol >=1.5x next 2-3 bars.",
+    "reasoning": "Same baseline as fire 216 (16min ago). 00:00 UTC bar final c=82.28 vol 1.56x; 00:15 in-progress c=82.35 h=82.53 vol 1.62x -- 4th consecutive higher low (82.07 -> 82.17 -> 82.23 -> 82.25), canonical V-bottom absorption pattern. Highest probe 82.53 still 0.21 below 82.74 reclaim threshold. Budget rolled over fresh $8.94, forced_exploration_due=True, relaxed (50 holds). v2.7 plan binding: long B-grade AFTER 82.74 reclaim with vol >=1.5x. Strict v0.9 count 2/4 (cohort down+long non-worst + vol >=1.5x); structural reclaim NOT YET. v2.3 carve-out applies: pending-confirmation chase = fire 165 anti-pattern (refuted n=1, -$3.30 entry at $84.44 before 84.18 reclaim). Entering now at 82.35 before 82.74 reclaim is structurally identical to fire 165 pattern. Discipline preservation: HOLD with hypothetical, forced-lean LONG.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "close below 82.07 with vol >=1.5x (continuation-short re-promotes from falsified, v2.6)",
+      "close above 82.74 with vol >=1.5x (per v2.7 reclaim trigger -- convert to LONG B-grade ENTER next fire)"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "long",
-      "entry_price": 82.38,
+      "entry_price": 82.35,
       "sl_pct": 0.012,
-      "tp_pct": 0.016,
+      "tp_pct": 0.02,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "Three vol-confirmed absorption bars; lows lifting above 82.11 floor. Cohort down+long non-worst. Forced lean long. Awaiting 82.74 reclaim with vol >=1.5x for structural completion."
+      "reasoning_30_words": "V-bottom absorption with 4 higher lows + vol decay normalizing. Long lean structurally favored. Entry now skips v2.7 reclaim gate = fire 165 anti-pattern shape."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1557,11 +1559,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 781,
+    "holds_since_framework": 3,
+    "avg_chars": 795,
     "since_iso": "2026-05-27T19:54:20.557955-04:00",
     "since_framework_version": "v2.7",
-    "latest_fire_iso": "2026-05-27T20:14:20.228652-04:00"
+    "latest_fire_iso": "2026-05-27T20:30:40-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2270,12 +2272,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 216 (2026-05-27T20:11 EDT / 2026-05-28T00:11 UTC). v2.7 plan from prior fire (215, 19:54 EDT) holds. Material updates: (a) 23:45 UTC bar resolved final = vol 2.70x (10507 -> 11188), NOT the light 0.69x in-progress data v2.7 saw -- 3rd consecutive high-vol bar absorbing, with lows LIFTING (82.07 -> 82.08 -> 82.17) ABOVE the candidate floor 82.11; (b) 00:00 UTC bar in-progress o=82.28 l=82.26 c=82.38 vol 0.82x; (c) budget rolled over -- fresh $8.94, forced_exploration_due=True (no ENTER today), threshold_state relaxed (49 holds). Failed-breakdown-reclaim long branch STRENGTHENING vs v2.7 (3rd absorption bar lifted lows ABOVE floor = stronger than another floor-rejection); 82.74 reclaim NOT YET. v2.7 plan still binding: long B-grade at ~82.38 after 82.74 reclaim with vol >=1.5x.",
-    "updated_ts": 1779927260,
-    "updated_iso": "2026-05-27T20:14:20-04:00",
-    "updated_by_fire_iso": "2026-05-27T20:14:20-04:00",
+    "comment": "Fire 217 (2026-05-27T20:30 EDT / 2026-05-28T00:30 UTC). v2.7 plan from fire 215 + fire 216 carry-update both hold. Material updates: (a) 00:00 UTC bar resolved final = o=82.28 h=82.48 l=82.23 c=82.28 vol 6681 = 1.56x (much heavier than the 0.82x in-progress data fire 216 saw) -- consolidation with moderate buyer absorption, NOT exhaustion; (b) 00:15 UTC bar in-progress o=82.28 h=82.53 l=82.25 c=82.35 vol 6961 = 1.62x -- highest probe so far 82.53 still 0.21 below 82.74 reclaim threshold; (c) 4 consecutive higher lows now (23:30: 82.07 -> 23:45: 82.17 -> 00:00: 82.23 -> 00:15: 82.25) = canonical V-bottom absorption pattern with vol 2.45x->2.61x->1.56x->1.62x decay; (d) budget rolled over fresh $8.94, forced_exploration_due=True (no ENTER today), threshold_state relaxed (50 holds). Failed-breakdown-reclaim long branch CONTINUES STRENGTHENING; 82.74 reclaim NOT YET. v2.7 plan still binding.",
+    "updated_ts": 1779928240,
+    "updated_iso": "2026-05-27T20:30:40-04:00",
+    "updated_by_fire_iso": "2026-05-27T20:30:40-04:00",
     "regime": "down",
-    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED (no cohort disambig needed this fire). OHLCV-derived current price 82.38 (00:00 UTC in-progress, vol 0.82x). Candidate floor 82.11 held against 2 consecutive sub-floor wicks (23:15 + 23:30 UTC) + 3rd vol bar (23:45) LIFTED lows to 82.17 = floor strengthening, NOT just defending. Sub-band envelope now: low 82.07 (23:30) - high 82.89 (22:00 wick) over 11 bars since 21:30 break.",
+    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED (no cohort disambig needed this fire). OHLCV-derived current price 82.35 (00:15 UTC in-progress, vol 1.62x). Candidate floor 82.11 held against 2 consecutive sub-floor wicks (23:15 + 23:30 UTC); subsequent 4 bars (23:45 / 00:00 / 00:15) all with lows ABOVE the floor and lifting (82.17 -> 82.23 -> 82.25). Sub-band envelope now: low 82.07 (23:30) - high 82.89 (22:00 wick) over 13 bars since 21:30 break.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2287,22 +2289,22 @@
     "range_pre_break_high": 84.18,
     "new_range_candidate_low": 82.07,
     "new_range_candidate_high": 82.89,
-    "new_range_candidate_bars": 11,
+    "new_range_candidate_bars": 13,
     "candidate_floor_test_count": 2,
     "candidate_floor_test_detail": "23:15 UTC: low 82.08 close 82.18 vol 2.65x (RECLAIMED). 23:30 UTC: low 82.07 close 82.22 vol 2.54x (RECLAIMED). Both >=2.5x median-96 baseline 4137. Floor 82.11 held against both.",
-    "post_floor_lifting_detail": "23:45 UTC bar final: o=82.22 h=82.41 l=82.17 c=82.30 vol 11188 = 2.70x. Low 82.17 is ABOVE the 82.11 floor -- NOT a floor-test bar; buyers absorbed so strongly the bar couldn't probe down. 3rd consecutive >=2.5x vol bar in absorption phase, with lows LIFTING (82.07 -> 82.08 -> 82.17). Stronger structural signal than another wick-and-reclaim. 00:00 UTC in-progress: o=82.28 l=82.26 c=82.38 vol 3379 = 0.82x -- normal vol after absorption cluster, drifting upward.",
+    "post_floor_lifting_detail": "23:45 UTC bar final: o=82.22 h=82.41 l=82.17 c=82.30 vol 11188 = 2.61x. Low 82.17 ABOVE 82.11 floor -- absorption bar. 00:00 UTC bar final: o=82.28 h=82.48 l=82.23 c=82.28 vol 6681 = 1.56x -- moderate-vol consolidation, low 82.23 (+0.06 above prior). 00:15 UTC in-progress: o=82.28 h=82.53 l=82.25 c=82.35 vol 6961 = 1.62x -- highest probe 82.53 still 0.21 below 82.74 reclaim threshold, low 82.25 (+0.02 above prior). Canonical V-bottom absorption: 4 consecutive higher lows (82.07 -> 82.17 -> 82.23 -> 82.25) with vol decay 2.45x -> 2.61x -> 1.56x -> 1.62x. Drift quality: gradual upward, NOT impulse.",
     "sweeps_attempted": 6,
-    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). 23:15 + 23:30 UTC are dual sub-band-floor tests, classified as floor-defending activity, not sweeps. 23:45 was absorption bar (no sub-floor test). 00:00 UTC is post-absorption drift.",
+    "sweep_detail": "Sweep cycle #6 closed at fire 161 (+$0.90 net). 23:15 + 23:30 UTC are dual sub-band-floor tests, classified as floor-defending activity, not sweeps. 23:45 / 00:00 / 00:15 UTC = post-floor-test absorption + drift, NOT sweeps (no sub-floor tests).",
     "last_displacement_iso": "2026-05-27T17:30-04:00",
-    "last_displacement_detail": "Initial displacement 21:30 UTC (vol 6.85x close 82.61). Vol decay 6.85x -> 4.90x -> 3.56x -> 3.22x -> 1.87x -> 1.32x -> 1.40x -> then re-tests 2.65x (23:15) + 2.54x (23:30) + 2.70x (23:45 absorption-lift) -> 0.82x (00:00 in-progress). No fresh displacement.",
-    "funding_state": "OKX -2.27e-5 per live-status indicators_pro stale; treat with caution (pipe 54h+ stale per v2.7).",
+    "last_displacement_detail": "Initial displacement 21:30 UTC (vol 6.85x close 82.61). Vol decay 6.85x -> 4.90x -> 3.56x -> 3.22x -> 1.87x -> 1.32x -> 1.40x -> floor-test cluster 2.55x (23:15) + 2.45x (23:30) -> absorption bar 2.61x (23:45) -> moderate-vol drift 1.56x (00:00) + 1.62x (00:15 in-progress). No fresh displacement. Total bars since break = 13.",
+    "funding_state": "OKX -2.42e-5 per live-status indicators_pro (pipe 54h+ stale, treat with caution; OHLCV-cross-checked for price + vol).",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 216. v2.7 reflection from 19:54 EDT remains operationally binding. 23:45 UTC bar resolution turned out stronger than v2.7's in-progress read (vol 2.70x vs 0.69x in-progress) -- absorption phase strengthening, lows lifting ABOVE the floor rather than just defending it. Budget rolled over at UTC midnight as predicted; $8.94 fresh, forced_exploration_due=True, threshold_state relaxed (49 holds). v2.7 plan still binding: long B-grade ~82.38 entry AFTER 82.74 reclaim with vol >=1.5x. Currently 1.5/4 v0.9 inputs (cohort down+long non-worst YES / structural half-confirmed / vol cooled to 0.82x NO / asymmetry modest long bias YES-ish). Pending-confirmation chase is the explicit anti-pattern (fire 165 -$3.30, n=1) -- discipline says wait for 82.74 reclaim. Forced-lean this fire: LONG. v2.3 carve-out cleanly applies: missing input is 82.74 reclaim with vol. HOLD with hypothetical naming the lean + the structural completion gate.",
+    "narrative": "Phase B.1 fire 217. v2.7 reflection from 19:54 EDT + fire 216 carry-update both binding. Two new bar resolutions since fire 216 (16min ago): 00:00 final c=82.28 vol 1.56x + 00:15 in-progress c=82.35 h=82.53 vol 1.62x. Highest probe so far 82.53 still 0.21 below 82.74 reclaim threshold. 4 consecutive higher lows now (82.07 -> 82.17 -> 82.23 -> 82.25) = canonical V-bottom absorption with vol decay 2.45x -> 2.61x -> 1.56x -> 1.62x. Drift gradual upward, NOT impulse. Budget rolled over fresh $8.94, forced_exploration_due=True, threshold_state relaxed (50 holds). v2.7 plan still binding: long B-grade AFTER 82.74 reclaim with vol >=1.5x. v0.9 inputs strict count: 2/4 (cohort down+long non-worst YES / vol >=1.5x YES / structural reclaim NOT YET / asymmetry modest-not-clear). Generous count 3/4 (adding asymmetry). Pending-confirmation chase = fire 165 anti-pattern (refuted n=1, -$3.30). Discipline preservation: HOLD with hypothetical, missing input is 82.74 reclaim with vol. Forced-lean LONG. v2.3 carve-out cleanly applies.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-27T18:21:21-04:00",
     "cognition_mode_rationale": "Range broken DOWN with displacement (21:30 UTC). Candidate floor 82.11 forming, held against 2 strong-vol wicks + 3rd vol bar lifted lows above floor (absorption strengthening). No clean directional commitment yet -- would need either 82.74 reclaim (long structural completion) OR sustained break below 82.07 with vol (continuation re-activate). Either resolution transitions mode. Current state remains canonical Regime Uncertain.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 15,
+    "skipped_fires_in_mode": 18,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
@@ -2315,7 +2317,7 @@
     "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope.",
     "operational_rule_v2_6_COHORT_DISAMBIG": "When live-status regime conflicts with state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). INACTIVE this fire -- regimes ALIGNED 'down'.",
     "operational_rule_v2_7_ROLLOVER_PROXIMITY": "When daily uncertainty budget remaining < smallest grade exposure floor AND UTC midnight within 30 minutes AND a structural setup is half-confirmed (>=1 of branch conditions met, with vol confirmation), HOLD with hypothetical-and-explicit-rollover-plan is correct shape -- not generic HOLD. Hypothetical names entry plan; execution capacity arrives at 00:00 UTC; next fire executes IF remaining structural conditions clear AND cohort still non-worst.",
-    "last_gate_check_iso": "2026-05-28T00:14:20+00:00",
+    "last_gate_check_iso": "2026-05-28T00:25:29.834014+00:00",
     "hypothetical_position": null,
     "last_closed_position": {
       "direction": "long",
@@ -2369,9 +2371,9 @@
     "since_iso": "2026-05-27T18:21:21-04:00",
     "rationale": "Range broken DOWN with displacement (21:30 UTC). Candidate floor 82.11 forming, held against 2 strong-vol wicks + 3rd vol bar lifted lows above floor (absorption strengthening). No clean directional commitment yet -- would need either 82.74 reclaim (long structural completion) OR sustained break below 82.07 with vol (continuation re-activate). Either resolution transitions mode. Current state remains canonical Regime Uncertain.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 15,
+    "skipped_fires_in_mode": 18,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
-    "last_gate_check_iso": "2026-05-28T00:14:20+00:00"
+    "last_gate_check_iso": "2026-05-28T00:25:29.834014+00:00"
   },
   "framework_origins": [
     {
@@ -2416,14 +2418,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 49,
+    "holds_in_a_row": 50,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-28T00:11:01.720614+00:00",
+    "last_updated_iso": "2026-05-28T00:30:46.670586+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
