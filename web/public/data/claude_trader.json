@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779960291,
-  "generated_iso": "2026-05-28T05:24:51-0400",
+  "generated_at": 1779961204,
+  "generated_iso": "2026-05-28T05:40:04-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 253,
+    "decisions_total": 255,
     "actions": {
-      "HOLD": 245,
+      "HOLD": 247,
       "ENTER": 5,
       "EXIT": 3
     },
@@ -15,19 +15,19 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 86,
       "ENTER_C": 1,
-      "HOLD_no_plausible": 8,
+      "HOLD_no_plausible": 10,
       "EXIT": 3,
       "ENTER_B": 4
     },
     "confidence": {
       "high": 155,
-      "medium": 77,
+      "medium": 79,
       "low": 21
     },
-    "reasoning_chars_avg_all": 965,
-    "reasoning_chars_avg_last10": 1130,
+    "reasoning_chars_avg_all": 962,
+    "reasoning_chars_avg_last10": 1035,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T05:24:24-04:00",
+    "last_fire_iso": "2026-05-28T05:39:31-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,23 +37,23 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779960264.720296,
-    "fire_iso": "2026-05-28T05:24:24-04:00",
+    "fire_ts": 1779961171.363631,
+    "fire_iso": "2026-05-28T05:39:31-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": {
       "direction": "long",
       "entry_price": 80.9,
       "qty": 1,
-      "unrealized_pnl_pct": 0.00087,
-      "minutes_held": 19
+      "unrealized_pnl_pct": 0.00173,
+      "minutes_held": 35
     },
-    "current_price": 80.97,
+    "current_price": 81.04,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": null,
-      "vol_ratio": 0.32,
-      "momentum_pct": 0.00087,
+      "vol_ratio": 0.86,
+      "momentum_pct": 0.0021,
       "rsi": null
     },
     "decision": "HOLD",
@@ -66,17 +66,17 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management fire (long 80.90 from fire 251, ~19min held). Live-status STILL stale (age_sec=233301 \u224864.8h, price=85.23 / BB-stack / StochRSI / vol_ratio all rejected per operational_hard_rules_v1_2). OHLCV-derived state from Coinbase 15m. PRE-COMMIT TREE TARGET BAR RESOLVED: 09:00 UTC bucket (closed 09:15 UTC) c=80.86 v=4299 (0.64x baseline 6681) low=80.71 high=80.96. Closed bar resolution: (a) MAE intra-bar 80.71 = $0.03 above 80.68 SL = NO stop-cluster sweep, v2.20 SL_BUFFER candidate gains FIRST POSITIVE n=1 instance (the $0.06 buffer below retest-low absorbed the bar's MAE). (b) Close 80.86 = $0.01 above 80.85 ex-resistance/support-flip line = MARGINAL hold within sub-baseline-vol noise, support-flip thesis NOT refuted but conviction-vol still absent. 09:15 UTC bucket IN-PROGRESS (closes 09:30 UTC) at 80.97 tick with partial vol 2120; v2.19 IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN holds, no thesis update from this bucket. Position now unrealized ~+0.087% (~$0.30 gross pre-fees). PRE-COMMIT BRANCHES E1-E5: none fired. E1 (TP via vol-burst to 81.40+) negative \u2014 price far from TP, vol weak. E2 (SL touch 80.68) not triggered \u2014 closest MAE was $0.03 buffer. E3 (8h time-cut) ~17:03 UTC, ~7.7h away. E4 (12+ bars sideways drift 80.75-81.10) counter at 2 bars. E5 (vol\u22653.0x + close<80.40 displacement-resume) negative \u2014 vol nowhere near 3.0x. HOLD_continue per committed logic. Cognition mode remains Inventory Discovery; full 5-min cadence. Information accumulated this fire: $0 cost, +1 v2.20 evidence point, +1 sub-baseline-vol support-flip-hold observation.",
+    "reasoning": "Position management fire. Long open from fire 251 (entry 80.90, SL 80.68, TP 81.50, 34min held). Pre-commit tree from state.json: no EXIT branch fires this fire. Last closed bar 09:15 UTC c=81.04 v=5730 (0.86x baseline); MFE updated 81.04 -> 81.06 closed-bar high (+0.198%); MAE still 80.71 (09:00 bar). 09:30 bar in-progress vol 1272 = sub-baseline drift \u2014 descriptive only per v2.17. Unrealized ~+0.185%. No vol-burst, no SL hit, no time-cut, no displacement. HOLD position. v2.19 honored: no in-progress lesson extraction.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "close back below 80.65 on closed bar with vol >= 1.0x baseline (= structural support-flip failure)",
-      "displacement event (vol >= 3.0x baseline \u224820043) breaks 80.40-81.50 envelope either direction",
-      "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod analog, target ~17:03 UTC)",
+      "close back below 80.65 on closed bar with vol >= 1.0x baseline",
+      "displacement event (vol >= 3.0x baseline >= 20043) breaks 80.40-81.50 envelope either direction",
+      "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod time-cut analog)",
       "vol-burst rejection at TP zone with closed-bar reversal"
     ],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": "Position already open from fire 251 \u2014 this fire is position management. Active counterfactual is the trade's own resolution against committed pre-commit exit branches E1-E5.",
+    "no_plausible_counterfactual": "Position open \u2014 HOLD is position-management under Inventory Discovery cognition_mode, not entry-decision. Counterfactual schema applies to flat-state directional commitment; no fresh entry decision pending this fire.",
     "exploration_attribution": null,
     "information_roi_record": null
   },
@@ -1616,11 +1616,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 1460,
+    "holds_since_framework": 4,
+    "avg_chars": 1016,
     "since_iso": "2026-05-28T05:03:59-04:00",
     "since_framework_version": "v2.19",
-    "latest_fire_iso": "2026-05-28T05:24:24-04:00"
+    "latest_fire_iso": "2026-05-28T05:39:31-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2375,10 +2375,10 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 251 (2026-05-28T05:03 EDT / 09:03 UTC). FIRST ENTER decision in claude-trader-skill since fire 239's short SL'd (fire 245). LONG B-grade ENTRY fired this fire. Honoring fire 249 state.json pre-commit tree BETTER_LONG_ENTRY_GEOMETRY trigger: 08:00 c=81.07 (E2 path low-vol up-cont per fire 249's pre-commit tree); 08:15 c=80.79 dipped to low 80.74 (retest of 80.85 ex-resistance ceiling); 08:30 c=80.87 reclaimed; 08:45 c=80.90 sustained. 5 of 6 last bars above 80.85 = support-flip pattern confirmed at closed-bar basis. Entry 80.90 / SL 80.68 / TP 81.50 / qty 1 contract floor / lev 1.0x / RR ~2.7:1. cognition_mode transitions Regime Uncertain \u2192 Inventory Discovery. Pre-commit branch tree for THIS position's exit paths now active (see active_position_intent + position_exit_branches).",
-    "updated_ts": 1779959039.082239,
-    "updated_iso": "2026-05-28T05:03:59-04:00",
-    "updated_by_fire_iso": "2026-05-28T05:03:59-04:00",
+    "comment": "Fire 253 (2026-05-28T05:39 EDT / 09:39 UTC). Position-management fire under Inventory Discovery. Long intent still open from fire 251 (entry 80.90, SL 80.68, TP 81.50, 35min held). Closed-bar refresh: 09:15 UTC c=81.04 (vs fire 252's 81.03, minor) h=81.06 vol=5730 (0.86x baseline). MFE updated 81.04 \u2192 81.06 closed-bar high (+0.198%). MAE stays 80.71 (09:00 bar). 09:30 bar in-progress at 09:38 UTC: o=81.03 h=81.07 l=80.96 c=81.05 v=1272 = sub-baseline drift (descriptive only per v2.17). No exit trigger fires (no SL, no TP, no 8h time-cut, no 3.0x displacement). HOLD position. Pre-commit tree from fire 252 remains active; no branches resolve this fire.",
+    "updated_ts": 1779961171.0,
+    "updated_iso": "2026-05-28T05:39:31-04:00",
+    "updated_by_fire_iso": "2026-05-28T05:39:31-04:00",
     "regime": "down",
     "regime_detail": "live-status 'down' (288h window) + state.json 'down' aligned. Short-term tape: 80.85 envelope ceiling broke 07:15, retested 08:15 (held), reclaimed 08:30. Drift continuation higher on decaying vol (08:45 v=1656 = 0.25x baseline 6681). Timeframe disagreement persists (macro down, short-term up-drift) but cognition_mode reframed to Inventory Discovery due to position-intent.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
@@ -2397,13 +2397,13 @@
     "candidate_floor_test_count": 1,
     "candidate_floor_test_detail": "08:15 retest of 80.85 ex-resistance held (dipped to 80.74, closed 80.79, reclaimed 08:30 c=80.87). One support-flip-test on 80.85 successful.",
     "post_floor_lifting_detail": "Sequence (UTC closes, refreshed fire 251 from Coinbase 15m): 80.57(07:00) \u2192 80.82(07:15 STOP-SWEEP UPPER) \u2192 80.84(07:30) \u2192 80.91(07:45) \u2192 81.12(08:00) \u2192 81.07(08:15 marginal-up-cont) \u2192 80.79(08:30 RETEST DIP low 80.74) \u2192 80.87(08:45 RECLAIM) \u2192 80.90(09:00 SUSTAIN low-vol). 5 of 6 last bars above 80.85 ex-resistance = support-flip pattern. NOTE: state.json bucket labels = bucket-START convention; OHLCV close times here use bucket-CLOSE convention. So 'OHLCV close 09:00' = 'state.json bucket 08:45'. Vol decay across reclaim+sustain bars (0.78x \u2192 0.58x \u2192 0.25x baseline 6681): drift-style continuation, NOT vol-burst displacement.",
-    "sweeps_attempted": 13,
-    "sweep_detail": "Total 13 confirmed sweeps. 08:30 bucket (OHLCV close 08:45) was a downside retest-and-recover sweep through 80.85: low 80.68 dipped below, closed 80.79 still inside, then 08:30 reclaim above. Counted as 1 new sweep this fire.",
+    "sweeps_attempted": 14,
+    "sweep_detail": "Total 14 confirmed/near-miss sweeps. 09:00 UTC entry-bar L=80.71 = near-miss SL sweep ($0.03 above SL=80.68, MAE/SL=87%). Stop-cluster signature: MAE within 0.20% of SL (here 0.035% \u2014 well inside) then price recovered. THIS is the v2.20 SL_BUFFER candidate's second implicit instance. (fire 251 entry SL set at 80.68 \u2248 retest low 80.74 - $0.06 buffer; post-entry bar tested SL 80.71 then reclaimed.)",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
     "last_displacement_detail": "03:15 UTC remains the most recent CONFIRMED displacement event (5.84x baseline, breakdown direction). All subsequent post-displacement bars (including 07:15+ up-break and 08:15 retest) are NON-displacement (max vol since displacement = 0.92x on 07:30 bucket).",
     "funding_state": "OKX ~-7.12e-5 (live-status feed). Negative funding (shorts paying longs) \u2014 slight supportive context for upward drift but funding alone is not a binding signal.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 251. POSITION INTENT NOW LONG (DRY_RUN executor \u2014 no actual exchange exposure). v0.9 cohort \u00d7 asymmetry \u00d7 structural framework triggered B-grade LONG entry: cohort=down+long favorable (n=4 +$12.74 WR75%); structural=up-break + retest-hold confirmed at closed-bar basis (08:15 retest dipped to 80.74 then 08:30 reclaim); asymmetry weak (5/8 both sides live-status); vol-conviction absent (drift not burst). Entry 80.90 / SL 80.68 / TP 81.50 / qty 1 contract / lev 1.0x / RR ~2.7:1. forced_exploration_due was True per budget script; budget remaining $4.88, this trade ~$2.29 at-risk+fees = 47% spend. Tests v2.22 candidate (post-displacement consolidation resolution not directionally predictable from displacement direction alone). First directional confirm/refute instance for v2.22. Also implicit first test of v2.20 SL_BUFFER ($0.06 buffer below retest low 80.74). Cognition mode transitions Regime Uncertain \u2192 Inventory Discovery for position-management until exit.",
+    "narrative": "Phase B.1 fire 252. LONG position-intent open (DRY_RUN). 26 min since entry. Path so far: entry-bar 09:00 UTC dipped to L=80.71 ($0.03 above SL=80.68) = stop-cluster near-miss; 09:15 UTC bar reclaimed to c=81.03 (+0.16% unrealized, +$0.65 gross MTM). Vol remains decaying (0.64x \u2192 0.54x baseline) = drift not burst. Pre-commit tree from fire 251 still active: no trigger fired. Continue HOLD position management. v2.20 SL_BUFFER candidate gains another implicit instance (near-miss sweep) \u2014 note for codification after trade resolution.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-28T05:03:59-04:00",
     "cognition_mode_rationale": "Long position intent now active. Per skill: Inventory Discovery = 'a position is open. You're managing live risk.' Even in DRY_RUN, the decision is treated as if it WILL be acted upon. Full 5-min cadence, never skip. Pre-commit branch tree for exit paths now active (E1-E5 below).",
@@ -2464,7 +2464,16 @@
         "displacement event (vol >= 3.0x baseline >= 20043) breaks 80.40-81.50 envelope either direction",
         "8h elapsed + pnl<0 + MFE<0.4% (Lever-5-mod time-cut analog)",
         "vol-burst rejection at TP zone with closed-bar reversal"
-      ]
+      ],
+      "mae_pct_so_far": -0.00235,
+      "mae_iso": "2026-05-28T09:00-09:15+00:00",
+      "mae_low_price": 80.71,
+      "mfe_pct_so_far": 0.00198,
+      "mfe_iso": "2026-05-28T09:15-09:30+00:00",
+      "mfe_high_price": 81.06,
+      "unrealized_pnl_pct_at_fire_253": 0.00185,
+      "minutes_held_at_fire_253": 35,
+      "fires_since_entry": 2
     },
     "last_closed_position": {
       "direction": "short",
@@ -2528,7 +2537,9 @@
       "HOLD_continue": "Otherwise: hold position, log MAE/MFE/elapsed each fire, await trigger.",
       "BUDGET_NOTE": "$4.88 \u2192 ~$2.59 remaining after this trade's at-risk+fees consume ~$2.29. Sufficient for 1 more C-grade probe if needed today.",
       "DISCIPLINE_NOTE": "v2.19 IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN: any lesson-extraction during in-progress bars must be tagged TENTATIVE. Trade resolution determined by closed-bar evidence (or SL trigger at price-touched per canonical SL semantics)."
-    }
+    },
+    "_last_ohlcv_check_iso": "2026-05-28T09:30+00:00 (OHLCV cb-15m 09:15 c=81.03, vol=3614)",
+    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV 81.03 \u2192 5.2% divergence \u2192 indicators_pro NOT TRUSTED this fire. Confirms ongoing P0 v5.3 indicator-pipe staleness issue."
   },
   "cognition": {
     "mode": "Inventory Discovery",
@@ -2582,14 +2593,14 @@
     },
     "last_enter_ts": 1779959039.082239,
     "last_enter_iso": "2026-05-28T05:03:59-04:00",
-    "holds_in_a_row": 1,
+    "holds_in_a_row": 3,
     "exploratory_at_risk_usd_today": 5.15,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 0.3,
+    "hours_since_last_enter": 0.6,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T09:21:32.531235+00:00",
+    "last_updated_iso": "2026-05-28T09:37:59.427129+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
