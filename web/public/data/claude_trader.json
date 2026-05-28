@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779948673,
-  "generated_iso": "2026-05-28T02:11:13-0400",
+  "generated_at": 1779949896,
+  "generated_iso": "2026-05-28T02:31:36-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 242,
+    "decisions_total": 243,
     "actions": {
-      "HOLD": 236,
+      "HOLD": 237,
       "ENTER": 4,
       "EXIT": 2
     },
@@ -15,19 +15,19 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 80,
       "ENTER_C": 1,
-      "HOLD_no_plausible": 5,
+      "HOLD_no_plausible": 6,
       "EXIT": 2,
       "ENTER_B": 3
     },
     "confidence": {
       "high": 154,
-      "medium": 68,
+      "medium": 69,
       "low": 20
     },
     "reasoning_chars_avg_all": 959,
-    "reasoning_chars_avg_last10": 912,
+    "reasoning_chars_avg_last10": 930,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T02:07:37-04:00",
+    "last_fire_iso": "2026-05-28T02:16:22-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,24 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779948457.0,
-    "fire_iso": "2026-05-28T02:07:37-04:00",
+    "fire_ts": 1779948982.0,
+    "fire_iso": "2026-05-28T02:16:22-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": null,
-    "current_price": 80.63,
+    "position_at_fire": {
+      "direction": "short",
+      "entry_price": 80.54,
+      "qty": 1,
+      "unrealized_pnl_pct": -0.0019,
+      "minutes_held": 39
+    },
+    "current_price": 80.69,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.55,
-      "vol_ratio": 1.04,
-      "momentum_pct": -0.0017,
-      "rsi": 60.4,
-      "_note": "vol_ratio from 05:45 CLOSED bar (6936/6681=1.04x). live-status indicators_pro stale (~5.8% price divergence). current_price 80.63 from in-progress 06:00 UTC bar OHLCV."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.59,
+      "momentum_pct": -0.0008,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,31 +66,75 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position-management HOLD. Active intent: B-grade short at 80.54 from fire 239 (MAE +0.11%, SL room 0.27%, TP distance 1.40%). Reconciliation fire: fire 241 misread the in-progress 05:45 bar at 05:56 UTC, claiming c=80.66 vol=0.57x; actual close (now visible at 06:05 UTC) is c=80.56 vol=1.04x baseline. v2.16 weak-vol-reclaim '2 bars deep' thesis partially withdrawn -- real n=1 (only 05:30 sub-baseline). Real post-breakdown sequence: 05:15 L5 c=80.38 vol=1.81x [breakdown] -> 05:30 c=80.72 vol=0.64x [weak bounce] -> 05:45 c=80.56 vol=1.04x [baseline-vol renewed pressure]. M6N pre-commit branch from fire 241 STILL fires (close 80.56 in 80.55-80.65, vol-any). Short thesis intact, modestly STRENGTHENED. No cut triggered. Next decision bar: 06:15 UTC close (in ~8min). v2.17 STATE-READING PRE-CONFIRMATION candidate introduced (codified in framework_log v2.15). Plumbing note: executor DRY_RUN, so the short intent is paper-tracked in state.json; no real exchange position.",
-    "expected_holding_hours": 3,
-    "expected_pnl_pct_target": 0.0129,
+    "reasoning": "M7G pre-commit branch from fire 242 FIRES STRICTLY on 06:00 UTC closed bar: c=80.70 \u2208 [80.65, 80.75] zone, vol-any qualifier (vol 0.59x). HOLD per M7G's inherited invalidation rule: cut only if 06:15 bar (closing 06:30 UTC) closes >=80.75. Bar shape supports breakdown thesis: intra-bar low 80.54 = exact position entry = no sweep below; high 80.76 = repeat of 05:45 high = nascent double-top above; vol 0.59x on the upward drift = weak hands lifting in absence of strong sellers, not genuine demand. Close 80.70 is in upper-third by $0.01, but vol gate fails decisively (0.59x << baseline) so this is NOT a v2.10-long-side impulse-confirm. Position MAE +0.27%, SL room $0.16 from current 80.69, TP distance $1.19, RR ~7.4:1 from current. M8 pre-commit tree written for 06:30 UTC close. Time-cut window at 13:37 UTC (7h 21min remaining).",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "Any close >=80.85 = full SL hit",
-      "06:15 close >=80.75 + vol >=1.5x = strong reclaim, cut",
-      "06:15 close 80.65-80.75 + vol any = weak grind up, tighten invalidation to 80.75 at 06:30",
-      "TP 79.50 touched",
-      "8h elapsed (13:37 UTC) + PnL<0 + MFE<0.4% = Lever-5-mod time-cut"
+      "Any close >=80.85 in 15m bar = full SL hit, thesis refuted",
+      "06:15 bar (closing 06:30 UTC) closes >=80.75 = M7G inherited invalidation fires, manual cut on fire 244",
+      "Cumulative 3-bar drift back above 80.78 with rising vol = breakdown invalidated, cut",
+      "TP 79.50 touched intra-bar = clean win",
+      "8h elapsed (13:37 UTC) with PnL<0 AND MFE<0.4% = Lever-5-mod time-cut"
     ],
-    "hypothetical_entry_record": {
-      "implied_grade": "B",
-      "direction": "short",
-      "entry_price": 80.63,
-      "sl_pct": 0.0027,
-      "tp_pct": 0.014,
-      "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "If forced to commit a fresh lean now, short. Post-breakdown 05:45 baseline-vol renewed pressure (c=80.56 1.04x) strengthens short thesis. RR ~5:1 from current. Same setup as open intent."
-    },
-    "no_plausible_counterfactual": null,
+    "hypothetical_entry_record": null,
+    "no_plausible_counterfactual": "Position open under management; counterfactual is encoded in M8R inherited-cut threshold (06:15 bar closes >=80.75 \u2192 cut) per fire 242's pre-commit tree. Entry counterfactual not applicable when book direction is committed.",
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779948982.0,
+      "iso": "2026-05-28T02:16:22-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.15: HOLD",
+      "payload": {
+        "fire_ts": 1779948982.0,
+        "fire_iso": "2026-05-28T02:16:22-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": {
+          "direction": "short",
+          "entry_price": 80.54,
+          "qty": 1,
+          "unrealized_pnl_pct": -0.0019,
+          "minutes_held": 39
+        },
+        "current_price": 80.69,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.59,
+          "momentum_pct": -0.0008,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "M7G pre-commit branch from fire 242 FIRES STRICTLY on 06:00 UTC closed bar: c=80.70 \u2208 [80.65, 80.75] zone, vol-any qualifier (vol 0.59x). HOLD per M7G's inherited invalidation rule: cut only if 06:15 bar (closing 06:30 UTC) closes >=80.75. Bar shape supports breakdown thesis: intra-bar low 80.54 = exact position entry = no sweep below; high 80.76 = repeat of 05:45 high = nascent double-top above; vol 0.59x on the upward drift = weak hands lifting in absence of strong sellers, not genuine demand. Close 80.70 is in upper-third by $0.01, but vol gate fails decisively (0.59x << baseline) so this is NOT a v2.10-long-side impulse-confirm. Position MAE +0.27%, SL room $0.16 from current 80.69, TP distance $1.19, RR ~7.4:1 from current. M8 pre-commit tree written for 06:30 UTC close. Time-cut window at 13:37 UTC (7h 21min remaining).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "Any close >=80.85 in 15m bar = full SL hit, thesis refuted",
+          "06:15 bar (closing 06:30 UTC) closes >=80.75 = M7G inherited invalidation fires, manual cut on fire 244",
+          "Cumulative 3-bar drift back above 80.78 with rising vol = breakdown invalidated, cut",
+          "TP 79.50 touched intra-bar = clean win",
+          "8h elapsed (13:37 UTC) with PnL<0 AND MFE<0.4% = Lever-5-mod time-cut"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": "Position open under management; counterfactual is encoded in M8R inherited-cut threshold (06:15 bar closes >=80.75 \u2192 cut) per fire 242's pre-commit tree. Entry counterfactual not applicable when book direction is committed.",
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.15"
+    },
     {
       "type": "framework_reflection",
       "ts": 1779948509.1359859,
@@ -1469,53 +1518,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779920660.4337542,
-      "iso": "2026-05-27T18:24:20-04:00",
-      "fire_count": 210,
-      "summary": "Framework v2.6 written (trigger: surprise:range_low_82_74_broken_down_4_bars_displacement_vol_7x_5x)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779920660.4337542,
-        "iso": "2026-05-27T18:24:20-04:00",
-        "fire_count": 210,
-        "balance_usd": 894.08,
-        "version_tag": "v2.6",
-        "trigger": "surprise:range_low_82_74_broken_down_4_bars_displacement_vol_7x_5x",
-        "what_im_trying": "First decisive range break of the 28+h compression band. 21:30 UTC (17:30 EDT) bar opened 83.29 closed 82.61 vol 28354 = 7.0x median-96 (4053); 21:45 UTC continued 82.61->82.35 vol 20257 = 5.0x; 22:00 UTC wicked low 82.11 closed 82.48 vol 14721 = 3.63x (intra-bar recovery attempt); 22:15 UTC in-progress 82.49 vol ~1.21x. Net: 4 consecutive bars below range_low 82.74. live-status regime flipped 'sideways'->'down'. State.json was 1h12min stale; my last decision at 17:46:00 EDT was at price 83.22 (the in-progress 21:30 bar before the dump completed). v2.5 refined rule retrospective: 21:30 bar satisfied BOTH conditions (vol 7.0x >= 1.5x AND close 82.61 is 0.16pct below 82.74 = within 0.30pct proximity), and 21:45 also satisfied (vol 5.0x AND within proximity \u2014 close 82.35 is 0.47pct below, OUTSIDE 0.30pct, but proximity test passes if EITHER bar is within = 21:30 satisfies). So v2.5 2-bar trigger fired AT THE BREAK, not BEFORE it \u2014 zero lead time on this displacement-type event. This falsifies the implicit lead-time hypothesis of v2.5 for high-vol single-bar break events. Vol-decay pattern post-displacement (7x->5x->3.6x->1.2x) suggests expansion phase ALREADY cooling \u2014 current state is post-displacement Regime Uncertain, not active Expansion.",
-        "whats_working": "Three things held under real stress. (1) v2.3 operational rule prevented a chase: any directional lean right now fails the gate \u2014 short continuation at 82.49 (mid-move, not a structural entry) would be sideways+short (WORST cohort if regime still classed sideways) or down+short (non-worst but no fresh structural trigger at this price); long failed-breakdown-reclaim has not occurred (price still 0.30pct below 82.74). v2.3 'name the missing input' carve-out applies cleanly. (2) Budget protocol enforces capacity ceiling: $2.40 remaining < $3.40 C-grade exposure floor = no exploration capacity today regardless of structural quality. Daily reset rolls over at UTC midnight ~5.6h. (3) Mode protocol invariant safety-floor doing its job: this fire was reached on regular 5-min cadence rather than via the wrapper's range-break detection \u2014 the wrapper-bar-close-alignment P1 carry-forward bit AGAIN; in a live execution this lag would matter materially.",
-        "whats_failing": "(1) v2.5 lead-time hypothesis FALSIFIED for displacement-type breaks. The 2-bar sustained rule was designed to catch slow walks toward band edges; high-vol single-bar dumps (7x vol bar that itself breaks the level) give zero warning. Rule fires AT the break, not BEFORE. Need a different classification for displacement events. (2) Reaction lag: state.json was 1h12min stale at the moment of the 21:30 break. The wrapper supposedly fires on 'price closes outside maintained range' as invariant safety floor \u2014 either it didn't fire (wrapper-bar-close-alignment carry-forward), or it fired and I'm reading it on regular cadence. Either way, ~50min between break event and this read. P1 Bonny-flag re-promoted from silent-carry to active-flag this reflection (new evidence: real break event happened, lag observable). (3) Range memory now invalidated \u2014 82.74-84.18 is no longer the binding band. Need to clear range_active_since and acknowledge regime is in flux. State.json field updates this fire. (4) Per-cycle info cost still 2 closed trades net -$2.40. No new closed cycles since v2.5. Budget exhaustion before any opportunity to fund a structural break entry \u2014 capacity allocation across the UTC day is not amortized to catch displacement events.",
-        "what_im_iterating": "Substantive v2.6 iteration: (a) v2.5 refinement only catches slow walks toward band edges; introduce v2.6 displacement-event classification: single 15m bar with vol_ratio >= 3.0x median-96 baseline AND close outside band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ bars), no warning phase expected or required. Today's 21:30 bar (7.0x close 82.61 below 82.74) is the canonical example. (b) Range memory protocol: when range_low or range_high breaks AND the break sustains >= 2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null. New range establishes when 4+ consecutive bars have a defined low/high envelope. Today's 4-bar sub-band period is the start of a new range candidate (current envelope: low 82.11 - high 82.89 over 4 bars), but at n=4 and still mid-event, too early to commit. (c) Cohort interpretation under regime-disambiguation: when live-status regime != state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). Today: state sideways + live down. For long lean: sideways+long (n=3, -$2.73, WR 66.7%) is more pessimistic than down+long (+$12.74, WR 75%) -> treat as sideways+long. For short lean: sideways+short (-$31.77, WR 40%) is more pessimistic than down+short (+$1.39, WR 83%) -> treat as sideways+short = WORST. v2.6 codifies. (d) Mode transition this fire: Compression -> Regime Uncertain. Rationale: displacement event resolved (vol decayed 7x->1.2x in 4 bars), regime mismatch live-status vs state, structural break of compression band, no clean directional commitment yet. Public timeline event #9.",
-        "edits_from_prior": [
-          "Range broken DOWN. 82.74 floor decisively below for 4 consecutive bar closes (21:30 UTC 82.61, 21:45 82.35, 22:00 82.48, 22:15 in-progress 82.49). Volume conviction on the break: 21:30 vol 7.0x, 21:45 vol 5.0x. First structural break of the 28+h compression band.",
-          "v2.5 lead-time hypothesis falsified for displacement-type events. Rule designed for slow walks fires AT the break for high-vol dumps, providing zero warning. v2.6 displacement-event classification introduced above.",
-          "Range memory invalidated. range_low_usd / range_high_usd cleared to null in state.json this fire. range_active_since_iso set to null. Mode transitions to Regime Uncertain.",
-          "Cohort interpretation under regime-disambiguation codified: more-pessimistic side wins. Today: long lean -> sideways+long, short lean -> sideways+short = WORST = blocking. v2.3 gate (a) still holds on this interpretation.",
-          "P1 wrapper-bar-close-alignment carry-forward re-promoted from silent-carry to active-flag: real break event happened, ~50min reaction lag observable, P1 -> P0 candidate if a second displacement-event lag occurs within 7 days.",
-          "P0 v5.3 indicator-pipe staleness now 53.8h (age_sec=193692, indicators.price 85.23 vs OHLCV 82.49 = -3.21pct divergence \u2014 divergence growing as price drops further from stale pin). Public /lab/claude page showing wrong price by larger margin now. Silent-carry committed v2.4 maintained, but flagging here as the divergence has materially widened.",
-          "Cognition_mode: Compression -> Regime Uncertain. Cadence_hint: 'fire 1h heartbeat' -> 'fire 15min on transitions'. Wrapper safety-floor triggers (position state, regime flip, range break, displacement) continue to override mode. Public timeline event #9 of the day.",
-          "Budget $2.40 remaining still < $3.40 C-grade exposure floor. No new ENTERs possible today regardless of structural quality. Daily reset UTC midnight ~5.6h.",
-          "Founder notes pending queue empty (19th consecutive). All 13 historical claims remain addressed. No new founder input since 09:03 EDT 5-26 (~33.3h)."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Displacement-event classification v2.6: does single bar >=3.0x vol with close-outside-band correctly tag today's 21:30 as the canonical case? Field-test on next displacement event.",
-          "Failed-breakdown-reclaim long candidate: if next 1-2 bars close back above 82.74 with vol >=1.5x, that's a clean structural setup (cohort down+long non-worst, structural trigger confirmed). HOLD if it forms post-budget-reset (UTC midnight ~5.6h).",
-          "Continuation short candidate: if 82.11 low breaks with vol >=1.5x, that's a continuation entry (cohort more-pessimistic side = sideways+short = WORST, BLOCKING). v2.3 + v2.6 cohort rule rejects.",
-          "Range establishment threshold: 4 consecutive bars currently form envelope 82.11-82.89. At n=4 too early. Watch next 4-8 bars for new range candidate.",
-          "Budget rollover behavior across this displacement event: fresh $8.94 budget arrives at UTC midnight (~5.6h). If structural setup forms in that window, will the trade be funded. Carry-forward.",
-          "Wrapper bar-close-alignment: real displacement event today produced measurable lag. If a second occurs in 7 days, promote P1 -> P0.",
-          "v5.3 indicator-pipe staleness divergence growing (-3.21pct now). At what divergence does public page wrongness become a Bonny-must-act item rather than silent-carry? Carry-forward question."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 0,
-    "avg_chars": 0,
-    "since_iso": null
+    "holds_since_framework": 1,
+    "avg_chars": 837,
+    "since_iso": "2026-05-28T02:07:37-04:00",
+    "since_framework_version": "v2.15",
+    "latest_fire_iso": "2026-05-28T02:16:22-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2200,12 +2210,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 242 (2026-05-28T02:07:37-04:00 / 06:07 UTC). RECONCILIATION FIRE: fire 241 v2.11-violated in state-reading by reporting '05:45 closed bar c=80.66 vol=3796 = 0.57x' at 05:56 UTC, ~4min BEFORE the 05:45 bar actually closed at 06:00 UTC. Real 05:45 close from Coinbase OHLCV pulled this fire: c=80.56 vol=6936 = 1.04x baseline (NOT 0.57x). v2.16 weak-vol-reclaim '2 bars deep' thesis partially withdrawn -- real n=1 (05:30 only). Corrected post-breakdown sequence: 05:15 L5 c=80.38 vol=1.81x [breakdown] -> 05:30 c=80.72 vol=0.64x [weak bounce] -> 05:45 c=80.56 vol=1.04x [baseline-vol renewed pressure, NOT a sub-baseline bar]. M6N pre-commit branch from fire 241 STILL fires (close 80.56 in 80.55-80.65 zone, vol-any qualifier). Same HOLD decision, different (correct) underlying read. Short thesis intact, modestly STRENGTHENED. Position open at 80.54 short, current intra-bar 06:00 ~80.63, MAE +0.11%. v2.17 STATE-READING PRE-CONFIRMATION DISCIPLINE candidate introduced. New 06:15 pre-commit tree below.",
-    "updated_ts": 1779948457.0,
-    "updated_iso": "2026-05-28T02:07:37-04:00",
-    "updated_by_fire_iso": "2026-05-28T02:07:37-04:00",
+    "comment": "Fire 243 (2026-05-28T02:16:22-04:00 / 06:16 UTC). POSITION MANAGEMENT fire. 06:00 UTC bar closed at 06:15 UTC: o=80.55 h=80.76 l=80.54 c=80.70 vol=3905 (0.59x baseline = SUB-BASELINE). Fire 242's M7G pre-commit branch FIRES STRICTLY: close 80.70 in [80.65, 80.75] zone + vol-any qualifier. HOLD per M7G with tightened invalidation: cut if 06:15 bar (closing 06:30 UTC) closes >=80.75. Bar shape: opened 80.55, dipped to 80.54 intra-bar low (= position entry price exactly), drifted to 80.70 close. Vol 0.59x = no conviction on upward push = short thesis structurally intact. Close 80.70 vs upper-third boundary 80.69 (range $0.22 / 3 + 80.54 = 80.61 lower-third, 80.69 upper-third) = inside upper third by $0.01, but vol 0.59x << baseline = NOT a v2.10-long-side impulse-confirm (vol gate failed). Position SHORT 80.54 intact, MAE +0.27% (high 80.76 = $0.22 adverse, $0.09 SL buffer remaining), TP distance $1.19 (1.47%), RR from-current ~7.4:1. v2.17 STATE-READING DISCIPLINE held: 06:00 bar (closed at 06:15 UTC) is legitimate closed-bar data given current fire time 06:16 UTC. 06:15 in-progress bar (c=80.67 vol=371 = ~2min into bar) explicitly NOT written as closed-bar data; ticker 80.69. New M8 pre-commit tree below for 06:30 UTC close.",
+    "updated_ts": 1779948982.0,
+    "updated_iso": "2026-05-28T02:16:22-04:00",
+    "updated_by_fire_iso": "2026-05-28T02:16:22-04:00",
     "regime": "down",
-    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe staleness now ~5.80% (indicators.price 85.23 vs OHLCV-derived 80.56 close 05:45, intra-bar 06:00 ~80.63). Latest 9 closed 15m bars (UTC): 03:45 c=80.59 v=2.79x; 04:00 c=80.43 v=6.26x; 04:15 c=80.21 v=3.12x; 04:30 c=80.74 v=1.59x [Q2-RECLAIM]; 04:45 c=80.76 v=1.46x [L3]; 05:00 c=80.61 v=0.87x [M3]; 05:15 c=80.38 v=1.81x [L5 ENVELOPE BREAKDOWN FIRED]; 05:30 c=80.72 v=0.64x [WEAK-VOL BOUNCE]; 05:45 c=80.56 v=1.04x [BASELINE-VOL RENEWED PRESSURE -- corrected from fire 241's misread]. 6.5h cumulative: 23:30 UTC ~82.07 -> 05:45 UTC 80.56 = -1.84%. Market-read mode stays Expansion (cumulative move + 05:15 breakdown bar). cognition_mode field stays Inventory Discovery due to open position.",
+    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe staleness now ~5.62% (indicators.price 85.23 vs OHLCV-derived 80.70 close 06:00, ticker 80.69). Latest 10 closed 15m bars (UTC): 03:45 c=80.59 v=2.79x; 04:00 c=80.43 v=6.26x; 04:15 c=80.21 v=3.12x; 04:30 c=80.74 v=1.59x [Q2-RECLAIM]; 04:45 c=80.76 v=1.46x [L3]; 05:00 c=80.61 v=0.87x [M3]; 05:15 c=80.38 v=1.81x [L5 ENVELOPE BREAKDOWN FIRED]; 05:30 c=80.72 v=0.64x [WEAK-VOL BOUNCE]; 05:45 c=80.56 v=1.04x [BASELINE-VOL RENEWED PRESSURE]; 06:00 c=80.70 v=0.59x [WEAK-GRIND-UP SUB-BASELINE M7G FIRED]. 6.75h cumulative: 23:30 UTC ~82.07 -> 06:00 UTC 80.70 = -1.67%. Market-read mode stays Expansion (cumulative move + 05:15 breakdown still primary). cognition_mode field stays Inventory Discovery due to open position.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2221,14 +2231,14 @@
     "new_range_candidate_status": "FALSIFIED 2026-05-28 05:15 UTC. Sub-band envelope 80.57-80.85 candidate broken at 4th-bar test by close 80.38 (below 80.57 floor by $0.19 / 0.24%). v2.8 4-bar threshold validated by passing at 3 bars + failing on 4th-bar test. Pre-displacement floor 81.82 + 80.00 round + 79.50 sub-floor remain the relevant downside structural references.",
     "candidate_floor_test_count": 10,
     "candidate_floor_test_detail": "Tests 1-9 as previously documented through fire 237. 05:15 broke envelope down to 80.30 intra-bar low. 80.00 round number untested by closed bar (only intra-bar wick tests #7-#10).",
-    "post_floor_lifting_detail": "Sequence (UTC closes): 82.07(23:30) -> ... -> 81.25(03:15 DISPLACEMENT) -> 80.87(03:30 5.84x) -> 80.59(03:45 2.79x) -> 80.43(04:00 6.26x) -> 80.21(04:15 3.12x) -> 80.74(04:30 1.59x Q2-RECLAIM) -> 80.76(04:45 1.46x L3) -> 80.61(05:00 0.87x M3) -> 80.38(05:15 1.81x L5 ENVELOPE BREAKDOWN) -> 80.72(05:30 0.64x WEAK-VOL BOUNCE) -> 80.56(05:45 1.04x BASELINE-VOL RENEWED PRESSURE). Reading: 05:30 weak-vol bounce + 05:45 baseline-vol renewed pressure = breakdown thesis intact + strengthened. The 05:45 bar's higher vol than 05:30 (1.04x vs 0.64x) + lower close (80.56 vs 80.72) = seller-participation re-entry within the post-breakdown envelope. This is NOT the v2.16 'weak-vol-reclaim 2 bars deep' shape fire 241 framed it as.",
+    "post_floor_lifting_detail": "Sequence (UTC closes): 82.07(23:30) -> ... -> 81.25(03:15 DISPLACEMENT) -> 80.87(03:30 5.84x) -> 80.59(03:45 2.79x) -> 80.43(04:00 6.26x) -> 80.21(04:15 3.12x) -> 80.74(04:30 1.59x Q2-RECLAIM) -> 80.76(04:45 1.46x L3) -> 80.61(05:00 0.87x M3) -> 80.38(05:15 1.81x L5 ENVELOPE BREAKDOWN) -> 80.72(05:30 0.64x WEAK-VOL BOUNCE) -> 80.56(05:45 1.04x BASELINE-VOL RENEWED PRESSURE) -> 80.70(06:00 0.59x WEAK-GRIND-UP SUB-BASELINE). Reading: 05:30 weak-vol bounce (0.64x) + 05:45 baseline-vol renewed pressure (1.04x) + 06:00 sub-baseline weak-grind-up (0.59x) = oscillating post-breakdown retest in narrow 80.50-80.76 envelope. The 06:00 bar bounced from entry-level low 80.54 to 80.70 close on 0.59x vol = no demand conviction; structurally consistent with weak buyer-exhaustion within post-breakdown corridor. Short thesis intact; envelope test count up by one (intra-bar high 80.76 = same as 05:45 high = double-touch resistance forming above).",
     "sweeps_attempted": 10,
     "sweep_detail": "No new sweeps this fire. Total stays at 10. 80.00 round-number untested by closed bar.",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
     "last_displacement_detail": "03:15 UTC remains the most recent v2.6_DISPLACEMENT. 05:15 L5 envelope breakdown is NOT a displacement event (vol 1.81x < 3.0x threshold). It is sub-band consolidation falsification = structural continuation of the original 03:15 displacement direction.",
     "funding_state": "OKX ~-2.9e-5 (live-status feed, staleness factored). Continues near-zero noise floor; not thesis-relevant.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 242. POSITION MANAGEMENT + DATA RECONCILIATION fire. B-grade short open at 80.54 from fire 239 (intent-tracked, executor DRY_RUN). Fire 241 v2.11-violated by reporting 05:45 as closed at 05:56 UTC (4min before actual close). This fire reads the actually-closed 05:45 bar: c=80.56 vol=1.04x baseline (1.04x = at-baseline, NOT 0.57x sub-baseline as fire 241 framed). v2.16 weak-vol-reclaim thesis partially withdrawn -- real n=1 (only 05:30 sub-baseline). Corrected reading: post-breakdown shape is grinding-back-toward-floor with renewed seller participation, NOT weak-reclaim-then-drift. Short thesis intact, modestly STRENGTHENED. M6N pre-commit branch from fire 241 STILL fires (close 80.56 in 80.55-80.65 zone). Decision: HOLD. Position MAE +0.11% (current ~80.63 vs entry 80.54), SL room $0.22 (0.27%), TP distance $1.13 (1.40%), RR from-current ~5.1:1. New 06:15 UTC pre-commit tree below covers next decision bar.",
+    "narrative": "Phase B.1 fire 243. POSITION MANAGEMENT fire \u2014 pre-commit branch M7G from fire 242 fires STRICTLY on 06:00 UTC closed bar. B-grade short open at 80.54 from fire 239 (intent-tracked, executor DRY_RUN), 39min held. 06:00 closed bar: o=80.55 h=80.76 l=80.54 c=80.70 vol=3905 (0.59x baseline). M7G condition (close \u2208 [80.65, 80.75] + vol any) STRICTLY met. Decision: HOLD per M7G inherited invalidation rule (cut if next 06:15 bar closes >=80.75). Bar shape diagnostic: intra-bar low 80.54 = exact position entry = no sweep below; intra-bar high 80.76 = same as 05:45 bar high = nascent double-top forming above. Vol 0.59x on the upward drift = weak hands lifting in absence of strong sellers, NOT genuine demand. Short thesis structurally intact; position MAE +0.27% (high 80.76), SL room $0.09 ($0.16 from current 80.69), TP distance $1.19 (1.47%), RR from-current ~7.4:1. Lever-5-mod equivalent time-cut at 13:37 UTC (~7h 21min remaining). v2.17 state-reading discipline held: 06:15 in-progress bar (~2min in) explicitly NOT written as closed-bar data. M8 pre-commit tree below covers 06:30 UTC close.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-28T01:37:31-04:00",
     "cognition_mode_rationale": "Open B-grade short position requires full 5-min cadence + never-skip. Position management qualitatively distinct from regime-reading modes.",
@@ -2262,7 +2272,7 @@
     "operational_rule_v2_15_BUYER_EXHAUSTION_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. Reclaim-to-buyer-exhaustion confirmation requires 3-bar monotonic vol-decay sequence post-reclaim with cumulative drop >=60% from peak. n=1 directional confirm via 05:15 envelope breakdown post 4-bar vol-decay sequence; strict 60% missed at 45%. Consider relaxing to '>=40% with subsequent breakdown'.",
     "operational_rule_v2_16_WEAK_VOL_RECLAIM_CANDIDATE": "DESCRIPTIVE candidate -- PARTIALLY WITHDRAWN this fire (242). Was n=1 (fire 241 framed as n=2 based on misread 05:45 data). Real 05:45 bar at 1.04x baseline (not 0.57x) = NOT a second sub-baseline bar. The actual post-breakdown shape is: 1 sub-baseline weak-bounce bar (05:30 c=80.72 vol=0.64x) followed by baseline-vol-renewed-pressure bar (05:45 c=80.56 vol=1.04x). Provisional rename candidate: 'failed-weak-reclaim, renewed-pressure, breakdown-thesis-survives'. Track forward.",
     "operational_rule_v2_17_STATE_READING_PRE_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. NEW THIS FIRE. v2.11 (pre-confirmation entry discipline) extends to STATE READING: state.json bar-close fields (close price, final vol, vol_ratio) must be sourced from a CLOSED-bar OHLCV pull AFTER the bar_close_timestamp. Partial in-progress data, if referenced at all, must be explicitly IN_PROGRESS-tagged. Without this discipline, narrative gets built around partial data and a v2.11-equivalent failure mode emerges in the reflection layer rather than the entry layer. n=1 first observation (fire 241 misread 05:45 bar at 05:56 UTC). Promote to operational rule if 1-2 recurrences.",
-    "last_gate_check_iso": "2026-05-28T06:07:37+00:00",
+    "last_gate_check_iso": "2026-05-28T06:16:22+00:00",
     "active_position_intent": {
       "direction": "short",
       "symbol": "SOL-PERP",
@@ -2280,8 +2290,8 @@
       "entry_fire": 239,
       "trigger_source": "l5_pre_commit_branch_fire_237_strict_satisfaction",
       "expected_holding_hours": 3,
-      "current_mae_pct": 0.0011,
-      "current_mfe_pct": 0.0,
+      "current_mae_pct": 0.0027,
+      "current_mfe_pct": 0.0005,
       "abort_conditions": [
         "Any close >=80.85 in 15m bar = full SL hit, thesis refuted",
         "06:15 closes >=80.75 + vol >=1.5x = M7R strong-reclaim, consider manual cut",
@@ -2340,18 +2350,18 @@
     },
     "pending_decision": null,
     "pre_commit_tree_next_bar": {
-      "target_bar_utc": "2026-05-28T06:15 UTC close (in ~8min) + position management thru 8h time-cut at 13:37 UTC",
-      "context": "Position OPEN: B-grade short at 80.54, SL 80.85, TP 79.50. Current intra-bar 06:00 ~80.63, MAE +0.11%. SL room $0.22 (0.27%). TP distance $1.13 (1.40%). RR from-current ~5.1:1. 05:45 closed at 80.56 vol 1.04x = baseline-vol renewed pressure within post-breakdown envelope. Short thesis modestly strengthened by corrected read.",
-      "EXIT1_tp_hit_anytime": "Price touches 79.50: TP hit, gross +$1.04/contract, clean win. info_hypothesis_status=confirmed. Lesson: v2.10-symmetric short-side mirror validated on this instance; codification candidate strengthens.",
-      "EXIT2_sl_hit_anytime": "Price touches 80.85: SL hit, gross -$0.31/contract, clean refutation. info_hypothesis_status=refuted. Lesson: 'baseline-vol renewed pressure' didn't sustain past 06:15-06:45 bars; the renewed-pressure signal was weaker than expected.",
-      "POS_M7R_strong_reclaim": "06:15 closes >=80.75 + vol >=1.5x (>=10022): cumulative 3-bar reversal of breakdown direction (80.56 -> >=80.75 = +0.24% in 30min on strong vol). Manual cut on fire 243. v2.17 self-correction validated by exit on actual data.",
-      "POS_M7G_weak_grind_up": "06:15 closes 80.65-80.75 + vol any: weak grind upward, position at heightened risk but breakdown thesis still alive. HOLD with tightened invalidation: cut if 06:30 closes >=80.75.",
-      "POS_M7N_continued_neutral": "06:15 closes 80.55-80.65 + vol any: continued neutral retest within post-breakdown envelope. HOLD. 06:30 close becomes next decision point.",
-      "POS_M7S_breakdown_extends": "06:15 closes <=80.50 + vol >=baseline (>=6681): breakdown extension resumes, position in motion toward TP. HOLD. Consider TP-extend if 06:30 closes <=80.20 with vol confirmation.",
-      "POS_M7D_secondary_displacement": "06:15 closes <=80.20 + vol >=3.0x (>=20043): secondary displacement event, position deep ITM. HOLD with TP-extend (79.50 -> 79.00 or lower).",
-      "POS_M7X_late_bar_vol_burst": "06:15 closes 80.55-80.70 + vol >=1.5x (>=10022): v2.14 late-bar vol-burst test candidate. HOLD; intra-bar pattern doesn't override closed-bar signal. Flag for reflection.",
-      "POS_M8_time_cut": "8h elapsed = 13:37 UTC / 09:37 EDT. If PnL<0 AND MFE<0.4%: time-cut per Lever-5-mod-equivalent. Currently MAE +0.11%, MFE 0%. ~7h 30min remaining.",
-      "DISCIPLINE_NOTE": "v2.11 pre-confirmation discipline applies symmetrically to exit decisions: do NOT cut on in-progress 06:15 bar reads. 06:15 closed bar (06:30 UTC) is authoritative. v2.17 STATE-READING extension means this fire 242 must not write 'closed bar' data for any bar with close_ts > current_fire_ts."
+      "target_bar_utc": "2026-05-28T06:30 UTC close (in ~14min) + position management thru 8h time-cut at 13:37 UTC",
+      "context": "Position OPEN: B-grade short at 80.54, SL 80.85, TP 79.50. 39min held. Current intra-bar 06:15 ticker ~80.69, MAE +0.27% (high 80.76 reached intra-bar 05:30 + 06:00 = double-top above). SL room $0.16 from current. TP distance $1.19 from current. RR from-current ~7.4:1. 06:00 closed at 80.70 vol 0.59x = sub-baseline weak grind up = M7G fired. Inherited M7G invalidation: cut if 06:15 bar (closing 06:30 UTC) closes >=80.75.",
+      "EXIT1_tp_hit_anytime": "Price touches 79.50 intra-bar: TP hit, gross +$1.04/contract, clean win. info_hypothesis_status=confirmed. Lesson: v2.10-symmetric short-side mirror validated on this instance.",
+      "EXIT2_sl_hit_anytime": "Price touches 80.85 intra-bar: SL hit, gross -$0.31/contract, clean refutation. info_hypothesis_status=refuted. Lesson: weak-grind-up retest crossed envelope ceiling, breakdown thesis dies.",
+      "POS_M8R_strong_reclaim_inherited_cut": "06:15 bar (closing 06:30 UTC) closes >=80.75 with vol ANY: M7G inherited invalidation FIRES. Manual cut on fire 244. Two consecutive grind-up bars + close above 80.75 = post-breakdown retest is succeeding, short thesis weakens enough to exit before SL hit.",
+      "POS_M8G_continued_weak_grind": "06:15 closes 80.70-80.75 + vol <=baseline (<=6681): weak grind continues at edge of inherited-cut threshold. HOLD with further-tightened invalidation: any subsequent bar closing >=80.75 OR any close 80.72-80.74 with vol >=1.5x = cut.",
+      "POS_M8N_neutral_retest": "06:15 closes 80.55-80.70 + vol any: oscillating retest within post-breakdown envelope. HOLD. Next bar becomes decision point.",
+      "POS_M8S_breakdown_resumes": "06:15 closes <=80.50 + vol >=baseline (>=6681): seller participation re-enters, breakdown thesis re-confirms. HOLD. Position in motion toward TP.",
+      "POS_M8D_secondary_displacement": "06:15 closes <=80.20 + vol >=3.0x (>=20043): secondary displacement event, position deep ITM. HOLD with TP-extend (79.50 -> 79.00 or 78.50).",
+      "POS_M8X_late_bar_vol_burst": "06:15 closes 80.55-80.75 + vol >=1.5x (>=10022): v2.14 late-bar vol-burst test candidate. If close is upper-third with strong vol = M8R-like cut. Flag for reflection.",
+      "POS_M9_time_cut": "8h elapsed = 13:37 UTC / 09:37 EDT. If PnL<0 AND MFE<0.4%: time-cut per Lever-5-mod-equivalent. Currently MAE +0.27%, MFE +0.05%. ~7h 21min remaining.",
+      "DISCIPLINE_NOTE": "v2.17 STATE-READING discipline: this fire 243 must NOT write 'closed bar' data for any bar with close_ts > current_fire_ts (06:16 UTC). 06:15 bar (closes 06:30 UTC) is in-progress; only the just-closed 06:00 bar is authoritative source. v2.11 entry-discipline equivalent for exits: cut decisions based on CLOSED-bar signals, not intra-bar shape."
     }
   },
   "cognition": {
@@ -2361,7 +2371,7 @@
     "cadence_hint": "fire 5min full -- position open, NEVER skip",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-28T01:37:31-04:00",
-    "last_gate_check_iso": "2026-05-28T06:07:37+00:00"
+    "last_gate_check_iso": "2026-05-28T06:16:22+00:00"
   },
   "framework_origins": [
     {
@@ -2406,14 +2416,14 @@
     },
     "last_enter_ts": 1779946651.0,
     "last_enter_iso": "2026-05-28T01:37:31-04:00",
-    "holds_in_a_row": 2,
+    "holds_in_a_row": 3,
     "exploratory_at_risk_usd_today": 4.06,
     "exploratory_entries_today": 2,
-    "hours_since_last_enter": 0.5,
+    "hours_since_last_enter": 0.6,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T06:05:07.672937+00:00",
+    "last_updated_iso": "2026-05-28T06:16:28.091324+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
