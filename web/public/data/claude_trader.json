@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779943913,
-  "generated_iso": "2026-05-28T00:51:53-0400",
+  "generated_at": 1779944742,
+  "generated_iso": "2026-05-28T01:05:42-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 233,
+    "decisions_total": 235,
     "actions": {
-      "HOLD": 228,
+      "HOLD": 230,
       "ENTER": 3,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 72,
+      "HOLD_with_counterfactual": 74,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -22,12 +22,12 @@
     "confidence": {
       "high": 154,
       "medium": 62,
-      "low": 17
+      "low": 19
     },
-    "reasoning_chars_avg_all": 960,
-    "reasoning_chars_avg_last10": 1047,
+    "reasoning_chars_avg_all": 958,
+    "reasoning_chars_avg_last10": 974,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T00:51:40-04:00",
+    "last_fire_iso": "2026-05-28T01:05:38-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,17 +37,17 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779943900.7830179,
-    "fire_iso": "2026-05-28T00:51:40-04:00",
+    "fire_ts": 1779944738.6527638,
+    "fire_iso": "2026-05-28T01:05:38-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 80.75,
+    "current_price": 80.74,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 1.55,
-      "momentum_pct": -0.0008,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
       "rsi": 60.4
     },
     "decision": "HOLD",
@@ -59,26 +59,81 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Q2-reclaim TRIGGERED strictly on 04:30 UTC close (80.75>=80.55, vol 1.55x>=1.5x, upper-third confirmed). Per fire 231 pre-commit tree, Q2 = exhaustion confirms, withdraw short thesis. Long lean tentative but v2.10(a) +1% impulse NEAR-MISS (+0.94% from 80.00) AND v2.10(b) monotonic-4-bar fails (04:15 lower than 04:00). HOLD with hypothetical long, awaiting 04:45/05:00 UTC follow-through via L1/L2/L3/L4 pre-commit. NEW shape observed: intra-bar 04:39 reading vol 0.37x inverted to final 1.55x = late-bar vol-acceleration (v2.14 candidate). live-status indicators STALE (-5.55% price gap, vol_ratio 0.56 vs OHLCV 1.55x) \u2014 using OHLCV-derived per v1.2 rule.",
+    "confidence": "low",
+    "reasoning": "04:45 UTC closed o=80.73 h=80.82 l=80.61 c=80.74 vol=9714 ~1.45x median-96 baseline 6681. Pre-commit Branch L3 (80.40-80.85 consolidation) fired strictly; L1/L2/L4 not met. Two consecutive bars closing at 80.74 with elevated-but-decaying vol (1.59x->1.45x) = tight contested sub-band immediately above the 80.55 Q2-reclaim trigger. Long lean maintained at LOWER conviction (no v2.10 impulse). v2.10(a) +1% impulse still not met (80.74 = +0.93% from 80.00); v2.10(b) monotonic-4-bar still broken (04:15 lower than 04:00). Cohort down+long n=4 +$12.74 WR75% non-worst. HOLD. Hypothetical long C-grade. Watch 05:00/05:15 UTC for impulse OR refute. Live-status pipe staleness widening: live-status price 85.23 vs OHLCV close 80.74 = -5.31%, P0 anomaly maintained. Budget remaining $6.43, holds_in_a_row=13, threshold_state=normal, forced_exploration_due=False \u2014 no force-trade pressure.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "next 15m close <80.40 = Branch L4 = reclaim refuted, re-arm short thesis",
+      "displacement bar close <80.00 on vol >=3x baseline = floor break, short displacement candidate",
+      "next 15m close >=81.25 + vol >=1.5x + upper-third = Branch L1 = ENTER long B-grade at close",
+      "next 15m close 80.85-81.25 + vol >= baseline + upper-third = Branch L2 = hypothetical upgrade, watch for L1 follow-through"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "long",
-      "entry_price": 80.75,
-      "sl_pct": 0.0112,
-      "tp_pct": 0.0093,
+      "entry_price": 80.74,
+      "sl_pct": 0.011,
+      "tp_pct": 0.0134,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Q2-reclaim vol-confirmed but v2.10(a)/(b) entry-triggers not yet met; short-cover-exhaustion-reclaim shape with low conviction; SL anchored below 04:15 intra-bar low 79.89."
+      "reasoning_30_words": "Q2 reclaim held two bars but no impulse. If forced, lean long with SL below 79.89 intra-bar low. Consolidation likely persists before next directional resolution."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779944319.199782,
+      "iso": "2026-05-28T00:58:39-04:00",
+      "fire_count": 234,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779944319.199782,
+        "fire_iso": "2026-05-28T00:58:39-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 80.72,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.65,
+          "momentum_pct": -0.08,
+          "rsi": 60.4,
+          "_note": "live-status indicator pipe stale ~5.6% (85.23 vs OHLCV 80.72). vol_ratio 0.65 = intra-bar cum 04:45 UTC bar (~12/15 min). stoch_rsi/momentum/rsi from stale live-status, retained per schema but not load-bearing."
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Fire 234. 04:45 UTC bar IN-PROGRESS (~12/15 min): intra-bar o=80.73 h=80.76 l=80.61 c=80.72, vol cum 4369 = 0.65x median-96 baseline. Sits squarely in fire 233 pre-commit L3 zone (80.40-80.85 = consolidation HOLD with hypothetical maintained at lower conviction). v2.11 forbids in-progress entry; v2.14 candidate (n=1 from immediately prior bar 04:30 UTC: intra-bar 0.37x -> final 1.55x = +318% late-bar acceleration) explicitly warns intra-bar reads can invert at close. No L1 (>=81.25+vol+ut=ENTER) or L2 (80.85-81.25=build) threshold met. State unchanged since fire 233 (6min ago). HOLD, await 05:00 UTC close to resolve L1/L2/L3/L4 branch. Long-leaning-tentative lean maintained, no upgrade.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 80.72,
+          "sl_pct": 0.0108,
+          "tp_pct": 0.0136,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "unclear",
+          "reasoning_30_words": "Long-leaning post Q2-reclaim but consolidating 80.40-80.85; vol decayed 0.65x mid-bar; v2.10(a) impulse near-miss not flipped to confirm; break >81.25 needed; break <80.40 refutes."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1779943900.7830179,
@@ -1465,69 +1520,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779912108.0093172,
-      "iso": "2026-05-27T16:01:48-04:00",
-      "fire_count": 194,
-      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779912108.0093172,
-        "fire_iso": "2026-05-27T16:01:48-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 83.77,
-        "regime": "sideways",
-        "market_snapshot": {
-          "stoch_rsi": null,
-          "vol_ratio": 0.69,
-          "momentum_pct": -0.04,
-          "rsi": null,
-          "note": "live-status indicators_pro stale 51.45h (system_gates.stale=true age_sec=185226); BB/StochRSI not trusted; vol_ratio derived OHLCV 15:45 close vol 2758 / median-96 baseline 4010"
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 192. 15:45 EDT bar closed c=83.77 v=2758 (0.69x median-96), continuing vol decay after 15:15 test-and-fade. Price mid-band-upper (~0.5% below 84.18), no new structural input. v2.3 rule binding: forced_exploration_due TRUE but cohort sideways+short worst AND vol-floor failed AND no displacement. Budget $2.40 remaining < smallest C-grade SL exposure $3.40 = no capacity. Mode Compression holds, refined v2.5 trigger not armed.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [
-          "displacement >1.5% in 15m with vol_ratio >1.0x",
-          "two consecutive 15m closes >=1.5x median-96 with at least one within 0.3% of either band edge (refined v2.5)",
-          "range break (close outside 82.74-84.18)",
-          "wick into 82.74 with reclaim = sweep #7 long candidate"
-        ],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 83.77,
-          "sl_pct": 0.012,
-          "tp_pct": 0.008,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Upper-band test (14:45-15:15 cluster) failed with vol decay; mid-band-upper drift slight short bias toward 83.30-83.50; but cohort sideways+short worst (n=5 -$31.77 WR40%) \u2014 counterfactual only, not actionable."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 657,
+    "holds_since_framework": 3,
+    "avg_chars": 744,
     "since_iso": "2026-05-28T00:49:39-04:00",
     "since_framework_version": "v2.13",
-    "latest_fire_iso": "2026-05-28T00:51:40-04:00"
+    "latest_fire_iso": "2026-05-28T01:05:38-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2384,14 +2384,14 @@
     },
     "last_enter_ts": 1779932850.040962,
     "last_enter_iso": "2026-05-27T21:47:30-04:00",
-    "holds_in_a_row": 11,
+    "holds_in_a_row": 13,
     "exploratory_at_risk_usd_today": 2.51,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 3.0,
+    "hours_since_last_enter": 3.3,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T04:47:01.240849+00:00",
+    "last_updated_iso": "2026-05-28T05:04:04.094620+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
