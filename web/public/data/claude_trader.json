@@ -1,33 +1,33 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779982288,
-  "generated_iso": "2026-05-28T11:31:28-0400",
+  "generated_at": 1779983367,
+  "generated_iso": "2026-05-28T11:49:27-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 276,
+    "decisions_total": 277,
     "actions": {
-      "HOLD": 265,
+      "HOLD": 266,
       "ENTER": 6,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 95,
+      "HOLD_with_counterfactual": 96,
       "ENTER_C": 1,
       "HOLD_no_plausible": 19,
       "EXIT": 5,
       "ENTER_B": 5
     },
     "confidence": {
-      "high": 159,
+      "high": 160,
       "medium": 95,
       "low": 22
     },
-    "reasoning_chars_avg_all": 967,
-    "reasoning_chars_avg_last10": 972,
+    "reasoning_chars_avg_all": 966,
+    "reasoning_chars_avg_last10": 937,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T11:28:30-04:00",
+    "last_fire_iso": "2026-05-28T11:47:30-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779982278.077857,
-    "fire_iso": "2026-05-28T11:28:30-04:00",
+    "fire_ts": 1779983250.0,
+    "fire_iso": "2026-05-28T11:47:30-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 80.74,
+    "current_price": 81.19,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": null,
-      "vol_ratio": 0.98,
+      "vol_ratio": 1.37,
       "momentum_pct": null,
       "rsi": null,
-      "_note": "indicators_pro from live-status STALE (price 85.23 vs OHLCV ticker 80.74 = 5.56pct divergence, 4 consecutive fires). vol_ratio sourced from OHLCV 15:15 settled bar / median-96 baseline 7134.67."
+      "_note": "live-status indicators_pro untrusted (price 85.23 vs OHLCV 81.19 = 4.81pct divergence, P0 staleness n=5 fires). vol_ratio sourced from canonical 15:30 settled bar (v=9777 / median-96 baseline 7134)."
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,26 +60,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Pre-commit U_R1 from fire 275 confirmed: 15:15 UTC settled c=80.69 v=0.98x sub-baseline quiet inside envelope. Range FORMALIZED this fire at 80.52/81.52 under conservative read (n=4 post-establishment bars within envelope). Vol sequence transitioned 2.34x -> 0.98x \u2014 first clean sub-1.5x bar since displacement opened, hint of reabsorption-style fade. No structural ENTER trigger: no escape of formal range, no displacement, no asymmetry on indicator side (live-status indicators_pro STALE so not used). Budget remaining $0.99 << ~$4 at-risk floor; even a C-grade probe is uncapitalized. HOLD with SHORT-lean counterfactual: macro regime down + cohort down+short historically favorable (n=6 +$1.39 WR 83.3%) \u2014 but vol just collapsed to 0.98x, so no edge signal beyond cohort prior. 15:00 bar minor revision (c 80.78->80.66, v 2.11x->2.34x) handled state-only per v2.31 STABLE; qualitative class unchanged.",
+    "confidence": "high",
+    "reasoning": "Fire 277 DECISION-ONLY per v2.30 STABLE. Pre-commit F_R2 matched clean: 15:30 settled c=81.10 v=1.37x sub-1.5x upper-third INSIDE formal envelope 80.52-81.52 (no v2.10_v0_2 escape trigger). 15:15 bar revised 0.98x\u21921.56x (3rd qualitative-flip handled state-only per v2.31 STABLE; v2.31_v2 flag n=3). Ticker 81.19 testing upper area at -0.41pct of upper boundary, slow drift up inside envelope post-displacement. Budget $0.99 << ~$4 at-risk floor \u2014 even C-grade probe blocked. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
-      "implied_grade": "C",
+      "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.74,
+      "entry_price": 81.19,
       "sl_pct": 0.005,
-      "tp_pct": 0.0027,
+      "tp_pct": 0.005,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Forced lean: macro down + cohort down+short favorable historically. But vol 0.98x = no displacement, envelope just formalized neutral, no structural trigger. Lean SHORT only as weak cohort prior, not edge."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "Price testing upper envelope 81.52 from inside in macro-down regime. Cohort down+short n=6 +$1.39 WR 83.3% favorable. Sub-1.5x vol on upper test = failed-upside-test shape probable; mean-revert toward mid 80.85."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1779983250.0,
+      "iso": "2026-05-28T11:47:30-04:00",
+      "fire_count": 277,
+      "summary": "Confidence: medium \u2192 high (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1779983250.0,
+        "fire_iso": "2026-05-28T11:47:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 81.19,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 1.37,
+          "momentum_pct": null,
+          "rsi": null,
+          "_note": "live-status indicators_pro untrusted (price 85.23 vs OHLCV 81.19 = 4.81pct divergence, P0 staleness n=5 fires). vol_ratio sourced from canonical 15:30 settled bar (v=9777 / median-96 baseline 7134)."
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "high",
+        "reasoning": "Fire 277 DECISION-ONLY per v2.30 STABLE. Pre-commit F_R2 matched clean: 15:30 settled c=81.10 v=1.37x sub-1.5x upper-third INSIDE formal envelope 80.52-81.52 (no v2.10_v0_2 escape trigger). 15:15 bar revised 0.98x\u21921.56x (3rd qualitative-flip handled state-only per v2.31 STABLE; v2.31_v2 flag n=3). Ticker 81.19 testing upper area at -0.41pct of upper boundary, slow drift up inside envelope post-displacement. Budget $0.99 << ~$4 at-risk floor \u2014 even C-grade probe blocked. HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "short",
+          "entry_price": 81.19,
+          "sl_pct": 0.005,
+          "tp_pct": 0.005,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Price testing upper envelope 81.52 from inside in macro-down regime. Cohort down+short n=6 +$1.39 WR 83.3% favorable. Sub-1.5x vol on upper test = failed-upside-test shape probable; mean-revert toward mid 80.85."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1779982278.077857,
@@ -1584,63 +1634,14 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.19"
-    },
-    {
-      "type": "enter",
-      "ts": 1779959039.082239,
-      "iso": "2026-05-28T05:03:59-04:00",
-      "fire_count": 251,
-      "summary": "ENTER long SOL-PERP @ $80.9 qty=1 lev=1.0",
-      "payload": {
-        "fire_ts": 1779959039.082239,
-        "fire_iso": "2026-05-28T05:03:59-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 80.9,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.0008,
-          "rsi": 60.4
-        },
-        "decision": "ENTER",
-        "grade": "B",
-        "size_multiplier": 0.35,
-        "setup_type": "post_displacement_consolidation_retest_reclaim_v2_22_test",
-        "direction": "long",
-        "symbol": "SOL-PERP",
-        "quantity": 1,
-        "leverage": 1.0,
-        "sl_pct": 0.0027,
-        "confidence": "medium",
-        "reasoning": "Pre-commit tree from fire 249 fired the LONG retest-reclaim branch: 08:00 c=81.07 (E2 marginal up-cont low vol); 08:15 c=80.79 dipped to low 80.74 (retest of 80.85 ex-resistance ceiling); 08:30 c=80.87 reclaimed; 08:45 c=80.90 sustained. 5 of 6 last bars above 80.85 = support-flip pattern confirmed at closed-bar basis. v0.9 ENTER criteria: cohort=down+long favorable (n=4 +$12.74 WR75% per founder note-3/C3 data) \u2713; structural=up-break + retest-hold confirmed \u2713; vol-conviction absent (08:30 v=0.58x, 08:45 v=0.25x \u2014 drift not burst) \u2192 B-grade not S/A; asymmetry weak (live-status 5/8 both sides). Entry 80.90 / SL 80.68 (0.27% below, $0.06 buffer below retest low 80.74 \u2014 v2.20 SL_BUFFER candidate implicit test) / TP 81.50 (0.74% above) / RR ~2.7:1. qty=1 contract floor on Coinbase (notional ~$405, lev 1.0x). Budget impact: at-risk ~$1.09 + round-trip fee ~$1.20 = ~$2.29 of $4.88 remaining (47%). forced_exploration_due was True per budget script. Skill protocol: honor pre-commit trigger when it fires. Tests v2.22 candidate (post-displacement consolidation resolution not directionally predictable from displacement direction) + adds n=5 to down+long cohort.",
-        "expected_holding_hours": 4,
-        "expected_pnl_pct_target": 0.0074,
-        "abort_conditions": [
-          "close back below 80.65 on closed bar with vol >= 1.0x baseline (structural support-flip refuted)",
-          "displacement event (single 15m bar vol >= 3.0x baseline >= 20043) breaks 80.40-81.50 envelope in either direction",
-          "8h elapsed + pnl<0 + MFE<0.4% (v5.3 Lever-5-mod analog time-cut)",
-          "vol-burst rejection at TP zone (81.40-81.50) with closed-bar reversal"
-        ],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": {
-          "reason": "setup_archetype_underrepresented",
-          "info_hypothesis": "tests whether low-vol retest-and-reclaim of broken resistance in post-displacement consolidation (v2.22 context) can sustain into directional drift in the down+long cohort, against v2.22 candidate's prediction of resolution-direction-unpredictability",
-          "predicted_information_value": "medium"
-        },
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 955,
+    "holds_since_framework": 5,
+    "avg_chars": 860,
     "since_iso": "2026-05-28T10:20:34-04:00",
     "since_framework_version": "v2.28",
-    "latest_fire_iso": "2026-05-28T11:28:30-04:00"
+    "latest_fire_iso": "2026-05-28T11:47:30-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2592,10 +2593,10 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 275 (~15:11 UTC / 11:12 EDT). DECISION-ONLY per v2.30. MATERIAL DATA CORRECTION: fresh OHLCV reveals state.json fire-274 record of 14:45 UTC bar was incorrect \u2014 state had c=80.65 v=6677.27=0.95x sub-baseline 'collapse' (the basis for fire 274's 'Expansion gate not crossed via vol-collapse' narrative); actual settled is c=81.05 v=15870.39=2.22x baseline UPPER-third close (h=81.10 l=80.52). The 14:45 'vol-collapsed' framing in fire 274 was based on stale/wrong data. NEW SETTLED BAR 15:00 UTC: c=80.78 v=15099.96=2.11x baseline LOWER-third (h=81.17 l=80.73). Median-96 baseline shifted 7059.4 -> 7145.0 (+1.2pct, minor). Real picture: 4 consecutive post-displacement bars (14:30 1.79x / 14:45 2.22x / 15:00 2.11x \u2014 last is canonical now) all elevated but sub-3.0x displacement threshold. Per v2.31 (PROMOTED fire 274): this is state-only correction since v2.6_DISPLACEMENT STABLE rule outcome is unchanged (stays Regime Uncertain). However this revision is LARGER than the v2.31 worked example (fire 273 IP 0.88x -> settled 1.81x) AND 2nd data-quality lapse in 3 fires \u2014 flagging for next cadence reflection as candidate v2.31_v2 sharpening. Ticker 80.76. Position null. Budget remaining $0.99 << ~$4 at-risk floor.",
-    "updated_ts": 1779982278.077857,
-    "updated_iso": "2026-05-28T11:28:30-04:00",
-    "updated_by_fire_iso": "2026-05-28T11:28:30-04:00",
+    "comment": "Fire 277 (~15:47 UTC / 11:47 EDT). DECISION-ONLY per v2.30 STABLE. Fresh OHLCV check: 15:30 settled new bar c=81.10 h=81.11 l=80.67 v=9777=1.37x baseline 7134, upper-third close, INSIDE envelope 80.52-81.52 (not a v2.10_v0_2 escape \u2014 vol sub-1.5x). 15:15 BAR REVISED from state's c=80.69 v=0.98x to fresh c=80.87 v=11119=1.56x \u2014 3rd consecutive bar-revision data-quality lapse in 4 fires (274/275/276\u2192277 chain), and 2nd qualitative flip (sub-baseline quiet \u2192 elevated upper-third). 15:45 IP c=81.09 v=172 ~baseline-tiny (only ~3min into bar). Ticker 81.19 testing upper area of formal envelope. Live-status indicators_pro still NOT TRUSTED (price 85.23 vs OHLCV 81.19 = 4.81pct divergence, P0 staleness persists fires 273-277). Budget $0.99 remaining. cognition_mode stays Regime Uncertain (no transition trigger). Pre-commit tree F_R2 (upside test sub-1.5x inside envelope) matches actual outcome \u2014 well-predicted by prior fire. v2.31_v2 qualitative-flip candidate now n=3 instances; codification pressure increasing for next cadence reflection.",
+    "updated_ts": 1779983229.0,
+    "updated_iso": "2026-05-28T11:47:30-04:00",
+    "updated_by_fire_iso": "2026-05-28T11:47:30-04:00",
     "regime": "down",
     "regime_detail": "live-status macro 'down' (288h window) stable. Short-term tape POST-DISPLACEMENT-WINDOW with SUSTAINED ELEVATED VOL (not collapse as fire 274 mis-recorded): 14:00 V-recovery (c=80.99 from intrabar l=79.88) v=6.25x; 14:15 failed-upside (c=80.97 h=81.52 lower-third close) v=5.18x; 14:30 settled c=80.72 v=1.79x ELEVATED; 14:45 settled c=81.05 v=2.22x ELEVATED upper-third (CORRECTED from prior 0.95x mis-record); 15:00 settled c=80.78 v=2.11x ELEVATED lower-third. Pattern is bilateral displacement -> sustained-elevated-vol-inside-envelope, NOT quiet reabsorption. All 5 displacement-window+post bars settled within candidate envelope 80.52-81.52 (excluding 14:00 intrabar wick 79.88).",
     "regime_since_iso": "2026-05-27T17:30-04:00",
@@ -2612,19 +2613,19 @@
     "new_range_candidate_high": 81.52,
     "new_range_candidate_bars": 4,
     "new_range_candidate_status": "FORMALIZED FIRE 276 under conservative read: n=4 post-establishment bars settled within envelope 80.52-81.52 (14:30 c=80.72/1.79x, 14:45 c=81.05/2.22x, 15:00 c=80.66/2.34x, 15:15 c=80.69/0.98x). 15:15 sub-baseline quiet bar concludes the sustained-elevated-vol phase and shifts envelope formation toward quiet-settle context. v2.32 sub-rule candidate (sustained-elevated vs quiet-settle envelope formation context) preserved for next reflection. Range now FORMAL; v2.10_v0_2 escape rule active for future breaks of 80.52/81.52.",
-    "post_break_canonical_sequence": "13:30 c=80.45 v=1.69x LOWER_ESCAPE formal fire; 13:45 c=80.65 v=1.99x; 14:00 c=80.99 l=79.88 v=6.26x INTRABAR_SWEEP_V_RECOVERY DISPLACEMENT; 14:15 c=80.97 h=81.52 v=5.19x FAILED_UPSIDE DISPLACEMENT lower-third; 14:30 c=80.72 v=1.79x ELEVATED_NOT_DISPLACEMENT_GRADE; 14:45 c=81.05 h=81.10 l=80.52 v=2.22x ELEVATED UPPER-THIRD; 15:00 c=80.66 h=81.17 l=80.63 v=2.34x ELEVATED LOWER-THIRD (MINOR REVISION from fire-275 record c=80.78 v=2.11x, qualitative class UNCHANGED per v2.31 STABLE); 15:15 c=80.69 h=80.78 l=80.42 v=0.98x SUB-BASELINE QUIET NEW SETTLED inside-envelope; ticker 80.74 ask 80.74 bid 80.73. baseline median-96 7134.67 (shifted from 7145.0, -0.14pct).",
+    "post_break_canonical_sequence": "13:30 c=80.45 v=1.69x LOWER_ESCAPE formal fire; 13:45 c=80.65 v=1.99x; 14:00 c=80.99 l=79.88 v=6.26x INTRABAR_SWEEP_V_RECOVERY DISPLACEMENT; 14:15 c=80.97 h=81.52 v=5.19x FAILED_UPSIDE DISPLACEMENT lower-third; 14:30 c=80.72 v=1.79x ELEVATED; 14:45 c=81.05 h=81.10 l=80.52 v=2.22x ELEVATED UPPER-THIRD; 15:00 c=80.66 h=81.17 l=80.63 v=2.34x ELEVATED LOWER-THIRD; 15:15 c=80.87 h=80.89 l=80.42 v=1.56x ELEVATED UPPER-THIRD (REVISED FROM c=80.69 v=0.98x \u2014 2nd qualitative flip handled per v2.31 STABLE; v2.31_v2 flag n=3); 15:30 c=81.10 h=81.11 l=80.67 v=1.37x NEW SETTLED upper-third INSIDE envelope sub-1.5x; 15:45 IP c=81.09 v=172 ~baseline-tiny (~3min into bar); ticker 81.19 ask 81.18 bid 81.17. baseline median-96 ~7134 estimated unchanged.",
     "sweeps_attempted": 17,
     "sweep_detail": "17 unchanged. No new sweep this fire. Bilateral sweep pair at 14:00/14:15 stands as primary feature of this displacement window.",
     "last_displacement_iso": "2026-05-28T14:15:00+00:00",
     "last_displacement_detail": "Most recent displacement: 14:00-14:15 UTC bilateral. Post-displacement bars 14:30/14:45/15:00 sustained at 1.79x/2.22x/2.11x \u2014 elevated but sub-3.0x displacement-grade. Per v2.6_DISPLACEMENT clarified, 'sustain' threshold is 3.0x not 1.5x, so Expansion gate not crossed. Stays Regime Uncertain. CORRECTED: 14:45 is NOT a vol-collapse bar (fire 274 mis-record).",
     "funding_state": "OKX funding rate 1.87e-5 \u2014 weakly positive. Directional info weak. No change to interpretation.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 276 DECISION-ONLY. Position null. cognition_mode STAYS Regime Uncertain. Pre-commit U_R1 from fire 275 confirmed: 15:15 c=80.69 v=0.98x settled inside envelope 80.55-81.10 + sub-1.5x quiet. Range FORMALIZED this fire at 80.52/81.52 under conservative read (n=4 post-establishment bars: 14:30, 14:45, 15:00, 15:15 all contained). 15:00 minor revision (c 80.78->80.66, v 2.11x->2.34x) handled state-only per v2.31 STABLE; qualitative class unchanged (still elevated lower-third sub-3.0x). Notable: vol sequence transitioned 2.34x -> 0.98x in one bar \u2014 first clean reabsorption-grade bar since displacement window opened. v2.28 candidate (post-escape elevated-vol reabsorption) gains potential corroboration since 14:30/14:45/15:00/15:15 traces 1.79x->2.22x->2.34x->0.98x = elevated-vol-fade INSIDE envelope. Preserved for next reflection. Ticker 80.74 mid-envelope. Budget $0.99 << any ENTER floor (~$4 at-risk). HOLD with short-lean counterfactual (cohort down+short historically favorable n=6 +$1.39 WR 83.3%, macro down, BUT vol just collapsed = no edge signal). Two flags carry forward (v2.31_v2 qualitative-flip candidate, v2.32 envelope-formation-context-qualifier) plus new v2.28 elevated-vol-fade candidate observation.",
+    "narrative": "Phase B.1 fire 277 DECISION-ONLY. Position null. cognition_mode STAYS Regime Uncertain (skipped_fires_in_mode +1 \u2192 11). Fresh OHLCV: 15:30 settled c=81.10 v=1.37x sub-1.5x INSIDE envelope upper-third (pre-commit F_R2 matched outcome cleanly). 15:15 bar REVISED c=80.69\u219280.87 v=0.98x\u21921.56x \u2014 3rd consecutive bar-revision and 2nd qualitative flip in 4 fires (handled per v2.31 STABLE state-only; v2.31_v2 flag instance n=3 accumulating). Ticker 81.19 mid-envelope upper region testing 81.52 boundary from below. Vol pattern updated: 14:30 1.79x \u2192 14:45 2.22x \u2192 15:00 2.34x \u2192 15:15 1.56x (REVISED up from 0.98x) \u2192 15:30 1.37x \u2014 sustained elevated-vol bars fading inside envelope, but slower fade than fire 276's revised reading suggested. v2.28 elevated-vol-fade candidate still observationally supported. Indicator-pipe P0 staleness n=5 fires. Budget $0.99 << ~$4 at-risk floor on any C-grade probe \u2192 HOLD with short-lean counterfactual at upper-envelope-test in macro-down cohort (down+short n=6 +$1.39 WR 83.3% favorable, but no structural trigger AND budget exhausted). Three flags carry forward (v2.31_v2 now n=3, v2.32 envelope-formation-context-qualifier, v2.28 corroboration n=2 with caveat) plus escalating indicator-pipe-P0 pressure.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-28T10:20:34-04:00",
     "cognition_mode_rationale": "Post-displacement sustained-elevated-vol phase (vol staying 1.79x-2.22x sub-3.0x). Direction unclear (V-bounce up, failed-upside, fade, upper-test reject, lower-third settle). No formal new range yet (n=3 post-establishment under conservative read). Stays Regime Uncertain.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 8,
+    "skipped_fires_in_mode": 11,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
     "_cognition_mode_transition_note": "NO transition this fire. Considered Expansion (all post-displacement bars sustained-elevated at 2.11x+, NOT collapse as fire 274 thought), but v2.6_DISPLACEMENT 'sustain' threshold is 3.0x displacement-grade not 1.5x elevated. Stays Regime Uncertain. v2.31 says no ontology mutations mid-execution.",
     "operational_hard_rules_v1_2": [
@@ -2658,13 +2659,13 @@
     "operational_rule_v2_24_BUDGET_SCRIPT_TOOLING_ARTIFACT_NOTE": "RETIRED FIRE 272 per note-4/C1.",
     "operational_rule_v2_25_FAILED_UPPER_ESCAPE_PATTERN_CANDIDATE": "DESCRIPTIVE candidate. n=2 distinct shapes (fire 269 sub-1.5x quiet failure; fire 273 5.18x HIGH-vol failure 81.52->80.97 close lower-third). Worth separating in next reflection.",
     "operational_rule_v2_26_POST_TRIGGER_REABSORPTION_SIGNAL_CANDIDATE": "WITHDRAWN at n=0 fire 271.",
-    "operational_rule_v2_28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION_CANDIDATE": "FLAGGED FOR RETROACTIVE REVIEW + STRENGTHENED FIRE 276. Premise refuted at n=1 from fire 273 (fire 272 14:00 c=80.99 V-recovery, not continuation-down). NEW CORROBORATING OBSERVATION FIRE 276: 14:30->14:45->15:00->15:15 vol sequence 1.79x->2.22x->2.34x->0.98x = elevated-vol-bars-INSIDE-envelope-fading-to-quiet. This shape matches a \"post-escape elevated-vol reabsorption\" pattern under the alternative-read where the 14:00/14:15 displacement events were the \"escape\", and 14:30-15:15 is the \"reabsorption\". n=1 corroborating instance at envelope-formation level. Worth re-examining at next reflection.",
+    "operational_rule_v2_28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION_CANDIDATE": "FLAGGED FOR RETROACTIVE REVIEW + STRENGTHENED FIRE 276 + CAVEAT FIRE 277. Premise refuted at n=1 from fire 273 (fire 272 14:00 c=80.99 V-recovery, not continuation-down). Fire 276 noted vol sequence 1.79x->2.22x->2.34x->0.98x as corroborating elevated-vol-fade. FIRE 277 CAVEAT: 15:15 bar revised 0.98x->1.56x \u2014 the 'clean fade' to 0.98x WAS A DATA ERROR. Actual sequence is 1.79x->2.22x->2.34x->1.56x->1.37x (15:30) = SLOWER elevated-vol fade, not quick reabsorption. Candidate observation downgraded from 'corroborated' to 'partially supported with slower-than-thought fade shape'. n=1 still. Worth re-examining at next reflection with the v2.31_v2 lineage now triple-applied.",
     "operational_rule_v2_29_FOUNDER_NOTE_TAILING_DISCIPLINE": "STABLE. tail -10 founder_notes.jsonl this fire: last note ts 1779977169 (note-4) flagged for next reflection. No new notes since. Discipline satisfied.",
     "operational_rule_v2_30_TWO_LAYER_COGNITION_DISCIPLINE": "STABLE. Fire 276 qualifies as DECISION-ONLY: 15:15 NEW bar settled into pre-commit U_R1 path (no surprise); range formalization is descendant of pre-existing v2.10_v0_2 PROMOTION CANDIDATE (no ontology mutation); 15:00 minor revision handled state-only per v2.31 STABLE (no qualitative flip). No framework_log write this fire.",
     "operational_rule_v2_31_BAR_REVISION_HANDLING": "STABLE (promoted fire 274). Bar-revision data corrections are state-only updates unless they materially change a STABLE/PROMOTION-grade rule's interpretation. SECOND APPLICATION FIRE 275: 14:45 bar revision (c 80.65->81.05, v 0.95x->2.22x \u2014 qualitatively flips bar from sub-baseline to elevated upper-third). STABLE rule outcome unchanged so state-only handling correct. But scope: the revision is LARGER than the v2.31 worked example and flips qualitative bar class. Candidate v2.31_v2 sharpening flagged.",
-    "operational_rule_v2_31_v2_QUALITATIVE_FLIP_FLAG_CANDIDATE": "NEW CANDIDATE THIS FIRE. When bar-revision flips a bar's qualitative classification (e.g. sub-baseline -> elevated, elevated -> displacement-grade, lower-third close -> upper-third close), even if STABLE rule outcome is unchanged, log a flag for the next reflection. Reason: qualitative narrative may have propagated into prior fire's interpretation chain, and subsequent fires reading state.json or framework_log carry forward the wrong narrative. State-only correction per v2.31 is still default-correct; the flag exists to make the lineage auditable.",
+    "operational_rule_v2_31_v2_QUALITATIVE_FLIP_FLAG_CANDIDATE": "INSTANCE n=3 FIRE 277. Three consecutive qualitative-flip data revisions: fire 274 14:45 (sub-baseline collapse\u2192elevated upper-third), fire 276 15:00 (elevated lower-third magnitude rev but qualitative class unchanged \u2014 NOT a flip), fire 277 15:15 (sub-baseline quiet\u2192elevated upper-third) \u2014 so 2 qualitative flips in 4 fires actually, with one magnitude-only correction sandwiched. Pattern: indicator-pipe staleness (P0) propagates into derived OHLCV-baseline calculations when state's prior bar values are referenced. Codification pressure for next cadence reflection: the flag protocol works (state-only correction per v2.31 STABLE) but the underlying upstream P0 issue is the load-bearing problem. Promotion candidate: separate v2.33 'when state's own prior-bar memory becomes the stale source, re-derive ALL window bars from fresh OHLCV not just the new one'.",
     "operational_rule_v2_32_RANGE_FORMALIZATION_BOUNDARY_AMBIGUITY_CANDIDATE": "CANDIDATE (fire 274). When candidate envelope established by displacement boundary-bars, the v2.10_v0_2 4-bar within-envelope threshold is ambiguous. Conservative default proposed: only post-establishment bars count. UPDATED FIRE 275: now n=3 post-establishment (14:30, 14:45, 15:00); need 1 more (15:15) under conservative read. SUB-RULE CANDIDATE: envelope formation under SUSTAINED-ELEVATED-VOL context (this case) may have different expectancy than under quiet-settle context \u2014 worth separating at promotion time.",
-    "last_gate_check_iso": "2026-05-28T15:22:48.791775+00:00",
+    "last_gate_check_iso": "2026-05-28T15:41:31.371678+00:00",
     "active_position_intent": null,
     "last_closed_position": {
       "direction": "short",
@@ -2690,20 +2691,20 @@
     },
     "pending_decision": null,
     "pre_commit_tree_next_bar": {
-      "target_bar_utc": "15:30 UTC settle (~15:33+180s); currently ticker 80.74. Wrapper should fire ~15min from this fire per Regime Uncertain cadence.",
-      "context": "Position null. cognition_mode Regime Uncertain. Tape just formalized FORMAL range 80.52-81.52 with n=4 post-establishment bars. 15:15 sub-baseline 0.98x quiet bar concluded sustained-elevated-vol phase. Budget $0.99 << any ENTER capacity. v2.10_v0_2 escape rule now actively gates 80.52/81.52 break candidates.",
-      "F_R1_quiet_continuation_inside": "15:30 close 80.55-81.10 + vol <1.5x: stays Regime Uncertain; HOLD; range continues, n=5 within-envelope. May start considering Compression mode transition if 2-3 more sub-1.5x bars accumulate.",
-      "F_R2_upside_test_low_vol": "15:30 close 81.10-81.52 + vol <1.5x: weak upside drift inside envelope; HOLD; range continues.",
-      "F_R3_upside_escape_clean": "15:30 close > 81.52 + vol >= 1.5x upper-third: NEW UPPER_ESCAPE_LONG formal trigger per v2.10_v0_2. Cohort up+long historically WORST (n=13, -$51.89, WR 69.2%). HOLD (budget + cohort); record hypothetical LONG with HIGH-conviction-but-cohort-blocked counterfactual.",
-      "F_R4_upside_escape_failed_vol": "15:30 close > 81.52 but vol < 1.5x OR close not upper-third: ambiguous; HOLD.",
-      "F_R5_downside_test_low_vol": "15:30 close 80.52-80.55 + vol <1.5x: drift down to envelope lower; HOLD.",
-      "F_R6_downside_escape_clean": "15:30 close < 80.52 + vol >= 1.5x lower-third: NEW LOWER_ESCAPE_SHORT formal trigger per v2.10_v0_2. Cohort down+short historically FAVORABLE (n=6, +$1.39, WR 83.3%). HOLD (budget); record hypothetical SHORT with HIGH-conviction-but-budget-blocked counterfactual; flag for new UTC day budget reset in ~8.5h.",
-      "F_R7_new_displacement_either_dir": "15:30 vol >= 3.0x displacement-grade: another displacement event. v2.6_DISPLACEMENT review; stays Regime Uncertain unless 2nd consecutive 3.0x+ bar (then Expansion candidate).",
-      "DEFAULT": "HOLD; no new entries; brief reasoning referencing budget exhaustion + range now formal + cohort + v2.28 elevated-vol-fade candidate observation."
+      "target_bar_utc": "15:45 UTC settle (~15:48+180s); currently ticker 81.19. Wrapper should fire ~15min from this fire per Regime Uncertain cadence.",
+      "context": "Position null. cognition_mode Regime Uncertain. Tape settled 15:30 at 81.10 v=1.37x upper-third INSIDE formal envelope 80.52-81.52. Price now testing upper area at 81.19 (within 0.41% of upper boundary). Budget $0.99 << any ENTER capacity. v2.10_v0_2 escape rule actively gates 80.52/81.52 breaks.",
+      "G_R1_quiet_continuation_inside": "15:45 close 80.85-81.30 + vol <1.5x: stays Regime Uncertain; HOLD; range continues, n=6 within-envelope. Compression mode consideration window opens (now n=2 sub-1.5x bars).",
+      "G_R2_upside_test_low_vol": "15:45 close 81.30-81.52 + vol <1.5x: tape continues drift toward upper boundary; HOLD; range continues; setup for potential upper-boundary test in next 1-2 bars.",
+      "G_R3_upside_escape_clean": "15:45 close > 81.52 + vol >= 1.5x upper-third: NEW UPPER_ESCAPE_LONG formal trigger per v2.10_v0_2. Cohort up+long historically WORST (n=13, -$51.89, WR 69.2%). HOLD on budget AND cohort; record hypothetical LONG with HIGH-conviction-but-blocked counterfactual.",
+      "G_R4_upside_escape_failed_vol": "15:45 close > 81.52 but vol < 1.5x OR close not upper-third: ambiguous; HOLD; potential setup for failed-upper-escape (v2.25 candidate).",
+      "G_R5_downside_drift_low_vol": "15:45 close 80.52-80.85 + vol <1.5x: drift back to mid-envelope; HOLD.",
+      "G_R6_downside_escape_clean": "15:45 close < 80.52 + vol >= 1.5x lower-third: NEW LOWER_ESCAPE_SHORT formal trigger per v2.10_v0_2. Cohort down+short historically FAVORABLE (n=6, +$1.39, WR 83.3%). HOLD on budget; record hypothetical SHORT with HIGH-conviction-but-budget-blocked counterfactual; flag new UTC day budget reset in ~8h.",
+      "G_R7_new_displacement_either_dir": "15:45 vol >= 3.0x displacement-grade: another displacement event. v2.6_DISPLACEMENT review; stays Regime Uncertain unless 2nd consecutive 3.0x+ bar.",
+      "DEFAULT": "HOLD; no new entries; brief reasoning referencing budget exhaustion + range formal + cohort + indicator-pipe staleness."
     },
-    "_last_ohlcv_check_iso": "2026-05-28T11:28:30-04:00 (cb-15m CANONICAL: 15:15 c=80.69 h=80.78 l=80.42 v=0.98x NEW SETTLED sub-baseline quiet inside envelope; 15:00 c=80.66 h=81.17 l=80.63 v=2.34x MINOR REVISION from fire-275 record c=80.78 v=2.11x; 14:45 c=81.05 h=81.10 l=80.52 v=2.22x; 14:30 c=80.72 v=1.79x; 14:15 c=80.97 h=81.52 v=5.19x; 14:00 c=80.99 l=79.88 v=6.26x; ticker 80.74 ask 80.74 bid 80.73; median-96 baseline 7134.67 shifted from 7145.0 -0.14pct)",
-    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV ticker 80.74 = 5.56pct divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness persists across fires 273-276 (now 4 consecutive fires).",
-    "_phase_b1_cadence_honor_log": "n=8 instances: 268->269 ~63min; 269->270 ~18min; 270->271 ~7min; 271->272 ~5min; 272->273 ~16min; 273->274 ~17min; 274->275 ~19min; 275->276 ~16min. All wrapper-honored per Regime Uncertain 15min cadence.",
+    "_last_ohlcv_check_iso": "2026-05-28T11:47:30-04:00 (cb-15m CANONICAL FRESH: 15:30 NEW SETTLED c=81.10 h=81.11 l=80.67 v=9777=1.37x baseline 7134 upper-third INSIDE envelope; 15:15 REVISED c=80.87 h=80.89 l=80.42 v=11119=1.56x (was c=80.69 v=0.98x in fire 276) \u2014 3rd consecutive bar-revision, 2nd qualitative-flip (sub-baseline\u2192elevated upper-third); 15:00 c=80.66 v=16685=2.34x stable; 14:45 c=81.05 v=15870=2.22x stable; ticker 81.19 ask 81.18 bid 81.17; baseline median-96 ~7134 estimated unchanged)",
+    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV ticker 81.19 = 4.81pct divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness now n=5 consecutive fires (273-277). Pattern firmly established; not transient. Pressure for cadence-level reflection on P0 escalation.",
+    "_phase_b1_cadence_honor_log": "n=9 instances: 268->269 ~63min; 269->270 ~18min; 270->271 ~7min; 271->272 ~5min; 272->273 ~16min; 273->274 ~17min; 274->275 ~19min; 275->276 ~16min; 276->277 ~19min. All wrapper-honored per Regime Uncertain 15min cadence.",
     "_data_correction_log": [
       {
         "fire": 274,
@@ -2752,6 +2753,30 @@
         "rule_outcome_changed": false,
         "narrative_qualitative_flip": false,
         "handled_per": "v2.31 STABLE state-only update \u2014 qualitative class unchanged, magnitude smaller than fire 274 revision; no v2.31_v2 flag escalation needed"
+      },
+      {
+        "fire": 277,
+        "bar_utc": "15:15",
+        "field": "close+volume+low",
+        "prior_recorded": {
+          "c": 80.69,
+          "v_raw": "implied~6991",
+          "v_ratio": 0.98,
+          "h": 80.78,
+          "l": 80.42,
+          "classification": "sub_baseline_quiet"
+        },
+        "corrected_to": {
+          "c": 80.87,
+          "v_raw": 11119.95,
+          "v_ratio": 1.56,
+          "h": 80.89,
+          "l": 80.42,
+          "classification": "elevated_upper_third"
+        },
+        "rule_outcome_changed": false,
+        "narrative_qualitative_flip": true,
+        "handled_per": "v2.31 STABLE state-only update + v2.31_v2 candidate flag (instance n=3 now \u2014 codification pressure for next reflection)"
       }
     ]
   },
@@ -2760,9 +2785,9 @@
     "since_iso": "2026-05-28T10:20:34-04:00",
     "rationale": "Post-displacement sustained-elevated-vol phase (vol staying 1.79x-2.22x sub-3.0x). Direction unclear (V-bounce up, failed-upside, fade, upper-test reject, lower-third settle). No formal new range yet (n=3 post-establishment under conservative read). Stays Regime Uncertain.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 8,
+    "skipped_fires_in_mode": 11,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
-    "last_gate_check_iso": "2026-05-28T15:22:48.791775+00:00"
+    "last_gate_check_iso": "2026-05-28T15:41:31.371678+00:00"
   },
   "framework_origins": [
     {
@@ -2807,14 +2832,14 @@
     },
     "last_enter_ts": 1779976713.582749,
     "last_enter_iso": "2026-05-28T09:58:33-04:00",
-    "holds_in_a_row": 3,
+    "holds_in_a_row": 4,
     "exploratory_at_risk_usd_today": 7.95,
     "exploratory_entries_today": 4,
-    "hours_since_last_enter": 1.5,
+    "hours_since_last_enter": 1.8,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T15:28:07.398759+00:00",
+    "last_updated_iso": "2026-05-28T15:46:48.457549+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
