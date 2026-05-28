@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779986717,
-  "generated_iso": "2026-05-28T12:45:17-0400",
+  "generated_at": 1779987806,
+  "generated_iso": "2026-05-28T13:03:26-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 280,
+    "decisions_total": 281,
     "actions": {
-      "HOLD": 269,
+      "HOLD": 270,
       "ENTER": 6,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 99,
+      "HOLD_with_counterfactual": 100,
       "ENTER_C": 1,
       "HOLD_no_plausible": 19,
       "EXIT": 5,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 98,
+      "medium": 99,
       "low": 22
     },
-    "reasoning_chars_avg_all": 967,
-    "reasoning_chars_avg_last10": 933,
+    "reasoning_chars_avg_all": 968,
+    "reasoning_chars_avg_last10": 976,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T12:45:06-04:00",
+    "last_fire_iso": "2026-05-28T13:03:16-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779986706.727058,
-    "fire_iso": "2026-05-28T12:45:06-04:00",
+    "fire_ts": 1779987796.8175209,
+    "fire_iso": "2026-05-28T13:03:16-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 81.54,
+    "current_price": 81.96,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": 1.05,
-      "momentum_pct": null,
-      "rsi": null,
-      "note": "live-status indicators_pro NOT TRUSTED -- P0 indicator-pipe staleness n=7 (price=85.23 vs OHLCV 81.54 = 4.53% divergence). vol_ratio derived from fresh Coinbase OHLCV at baseline 7628."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,19 +60,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Tape materially evolved since fire 278. 16:15 UTC closed at displacement-grade vol (28799 = 3.77x baseline 7628), intrabar high 81.63 broke upper envelope 81.52 then close 81.39 reabsorbed mid-third. 16:30 UTC closed sub-baseline (1.05x) at 81.54 -- marginally +0.02 above envelope upper boundary, upper-third. v2.6_DISPLACEMENT fired but did NOT sustain (16:30 vol 1.05x < 3.0x consecutive requirement); stays Regime Uncertain. v2.10_v0_2 has no formal trigger either side: 16:15 close inside envelope (no upper-escape close); 16:30 close marginal-above but vol 1.05x < 1.5x threshold. v2.6_RANGE_CLEAR not triggered: n=1 close-above (81.54), needs n=2 consecutive. v2.25 failed-upper-escape candidate strengthened (n=3 with new displacement-grade shape). v2.20_v3 IP-defense field-confirmed: fire 278's IP read at v=2126 sub-baseline pace was direction-flipped at close (3.77x). Budget $0.99 << ~$3 C-grade at-risk floor -- HARD blocked from any ENTER regardless of conviction. Counterfactual lean: C-grade SHORT (failed-upper-escape fade hypothesis -- sub-baseline vol on marginal boundary close = no buy-side conviction at 81.52; down+short cohort favorable +$1.39 WR 83.3% n=6). HOLD.",
+    "reasoning": "Tape materially evolved since fire 279 (c=81.54 -> c=81.96 = +0.52%). 15m grain: 16:30 c=81.76 v=18140=2.38x baseline 7628, 16:45 c=82.00 v=15160=1.99x = n=2 consecutive 15m closes above formal upper envelope 81.52 on elevated vol = v2.6_RANGE_CLEAR_LONG trigger candidate fires. BUT 5m grain post-15m-close shows vol decay: 16:35 v=6466, 16:40 v=7396, 16:45 v=8876, 16:50 v=4508, 16:55 v=2717 = buying pressure exhausted, no fresh thrust above 82.05. Setup is ambiguous: 15m envelope-clear says LONG continuation; 5m vol decay says failed-impulse SHORT fade. Live-status price=85.23 / BB 84-86 confirmed STALE vs canonical OHLCV (16:55 c=81.96) \u2014 handled per v2.20_v3, decision uses canonical 5m/15m. Budget $0.99 << $3 C-grade at-risk floor: HARD-blocked from any ENTER regardless of conviction. cognition_mode stays Regime Uncertain (15m envelope-clear candidate + 5m exhaustion = conflicting timeframes per Regime Uncertain definition). Founder note-4/C1 truth-source hierarchy honored: live-status `price` artifact does not drive cognition. HOLD with C-grade SHORT counterfactual (fade failed-impulse-up; vol decay + still-down regime + positive funding tilt long-trapped).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 81.54,
-      "sl_pct": 0.01,
+      "entry_price": 81.96,
+      "sl_pct": 0.007,
       "tp_pct": 0.012,
       "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "Failed-upper-escape after displacement-grade probe + sub-baseline vol on marginal boundary close = no buy conviction. Fade-to-mid-envelope target 80.85, SL 82.36. Down+short cohort favorable."
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "Post-15m-envelope-clear 5m vol decay 8876->2717 = failed sustain. Still down regime, positive funding traps longs. Fade 81.96 toward 80.96 envelope mid; abort on n=2 5m close >82.10."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1637,11 +1636,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 8,
-    "avg_chars": 948,
+    "holds_since_framework": 9,
+    "avg_chars": 974,
     "since_iso": "2026-05-28T10:20:34-04:00",
     "since_framework_version": "v2.28",
-    "latest_fire_iso": "2026-05-28T12:45:06-04:00"
+    "latest_fire_iso": "2026-05-28T13:03:16-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2625,7 +2624,7 @@
     "cognition_mode_since_iso": "2026-05-28T10:20:34-04:00",
     "cognition_mode_rationale": "Post-displacement upward-consolidation phase with new displacement-grade probe (16:15) and sub-baseline weak continuation (16:30). Direction lean ambiguous: failed-upper-escape shape says SHORT; marginal close above + upper-third says weak LONG continuation. Envelope still formally holding (n=1 close-above < n=2 clear threshold). Stays Regime Uncertain pending (a) v2.10_v0_2 formal trigger either side, (b) n=2 consecutive close above 81.52 (envelope clear), or (c) reversal to lower envelope (failed-upper-escape confirm).",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 17,
+    "skipped_fires_in_mode": 19,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
     "_cognition_mode_transition_note": "NO transition this fire. Considered Expansion (16:15 3.77x displacement-grade is the strongest single-bar vol of the consolidation window), but v2.6_DISPLACEMENT 'sustain' requires 2+ consecutive 3.0x+ bars; 16:30 vol 1.05x sub-baseline did NOT sustain. Stays Regime Uncertain. v2.31 says no ontology mutations mid-execution; v2.30 says decision-only this fire (cadence 2.7h < 4h, no surprise grade event).",
     "operational_hard_rules_v1_2": [
@@ -2665,7 +2664,7 @@
     "operational_rule_v2_31_BAR_REVISION_HANDLING": "STABLE (promoted fire 274). Bar-revision data corrections are state-only updates unless they materially change a STABLE/PROMOTION-grade rule's interpretation. FIRE 278: no new revisions; v2.31_v2 instance count unchanged at n=3.",
     "operational_rule_v2_31_v2_QUALITATIVE_FLIP_FLAG_CANDIDATE": "INSTANCE n=3 (fires 274, 277). No new instance fire 279. Codification pressure preserved for next cadence reflection. Promotion candidate v2.33: when state's own prior-bar memory becomes stale source, re-derive ALL window bars from fresh OHLCV not just the new one.",
     "operational_rule_v2_32_RANGE_FORMALIZATION_BOUNDARY_AMBIGUITY_CANDIDATE": "CANDIDATE (fire 274). When candidate envelope established by displacement boundary-bars, the v2.10_v0_2 4-bar within-envelope threshold is ambiguous. Conservative default: only post-establishment bars count. UPDATED FIRE 278: n=7 post-establishment bars now, envelope solidly formal. SUB-RULE CANDIDATE: envelope formation under SUSTAINED-ELEVATED-VOL (this case) may have different expectancy than under quiet-settle -- worth separating at promotion time.",
-    "last_gate_check_iso": "2026-05-28T16:44:37.421014+00:00",
+    "last_gate_check_iso": "2026-05-28T16:55:20.162715+00:00",
     "active_position_intent": null,
     "last_closed_position": {
       "direction": "short",
@@ -2785,9 +2784,9 @@
     "since_iso": "2026-05-28T10:20:34-04:00",
     "rationale": "Post-displacement upward-consolidation phase with new displacement-grade probe (16:15) and sub-baseline weak continuation (16:30). Direction lean ambiguous: failed-upper-escape shape says SHORT; marginal close above + upper-third says weak LONG continuation. Envelope still formally holding (n=1 close-above < n=2 clear threshold). Stays Regime Uncertain pending (a) v2.10_v0_2 formal trigger either side, (b) n=2 consecutive close above 81.52 (envelope clear), or (c) reversal to lower envelope (failed-upper-escape confirm).",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 17,
+    "skipped_fires_in_mode": 19,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
-    "last_gate_check_iso": "2026-05-28T16:44:37.421014+00:00"
+    "last_gate_check_iso": "2026-05-28T16:55:20.162715+00:00"
   },
   "framework_origins": [
     {
@@ -2832,14 +2831,14 @@
     },
     "last_enter_ts": 1779976713.582749,
     "last_enter_iso": "2026-05-28T09:58:33-04:00",
-    "holds_in_a_row": 7,
+    "holds_in_a_row": 8,
     "exploratory_at_risk_usd_today": 7.95,
     "exploratory_entries_today": 4,
-    "hours_since_last_enter": 2.7,
+    "hours_since_last_enter": 3.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T16:40:33.808854+00:00",
+    "last_updated_iso": "2026-05-28T17:00:36.008935+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
