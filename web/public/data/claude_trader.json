@@ -1,33 +1,33 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779938737,
-  "generated_iso": "2026-05-27T23:25:37-0400",
+  "generated_at": 1779939926,
+  "generated_iso": "2026-05-27T23:45:26-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 226,
+    "decisions_total": 227,
     "actions": {
-      "HOLD": 221,
+      "HOLD": 222,
       "ENTER": 3,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 65,
+      "HOLD_with_counterfactual": 66,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
       "ENTER_B": 2
     },
     "confidence": {
-      "high": 153,
+      "high": 154,
       "medium": 56,
       "low": 17
     },
     "reasoning_chars_avg_all": 958,
-    "reasoning_chars_avg_last10": 1022,
+    "reasoning_chars_avg_last10": 1044,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-27T23:25:26-04:00",
+    "last_fire_iso": "2026-05-27T23:40:52-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779938726.0962539,
-    "fire_iso": "2026-05-27T23:25:26-04:00",
+    "fire_ts": 1779939652.15,
+    "fire_iso": "2026-05-27T23:40:52-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 80.92,
+    "current_price": 80.97,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": 2.81,
-      "momentum_pct": -1.53,
-      "rsi": null,
-      "_note": "live-status pipe stale -5.32% vs OHLCV-derived 80.92; stoch_rsi/rsi unreliable from live-status (0.5506 / 60.4 \u2014 pipe-stale). vol_ratio = OHLCV 03:15 in-progress 21721 / median-96 7728. momentum_pct = 4-bar cumulative 82.18(01:30)->80.92(03:15 in-progress)."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4,
+      "_note": "live-status stale -5.27%; OHLCV-derived 03:15 close 81.25 vol 4.7x baseline; 03:30 in-progress 10/15 min close 80.97 vol 32k=6.3x extrapolated"
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,29 +61,27 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "high",
-    "reasoning": "MATERIAL STATE CHANGE since fire 225. 03:00 UTC closed AT floor 81.82 (vol 1.31x sub-displacement test). 03:15 UTC IN-PROGRESS (4/15 min): low 80.62, close 80.92, vol 2.81x in 4min \u2014 sweep cycle #8 firing as v2.8 branch (a) predicted (reverse-break <81.82 on vol >=1.5x). Paper #221 SL (81.75) was crossed during 03:15 dump; thesis REFUTED on both branches (info_roi recorded). Cohort: down+short n=6 +$1.39 WR 83.3% NON-WORST. 4/4 v0.9 inputs satisfied (asymmetry/vol/cohort/structural). BUT v2.6_DISPLACEMENT requires confirmed 15m close outside band \u2014 11 min away. v2.10 (40min old) demoted pre-confirmation entries on in-progress bars; pre-confirmation refutation streak now 2/2 (#165 + #221, 2 different pattern shapes). Discipline test: HOLD with strong hypothetical short B-grade @80.92 SL 81.50 TP 79.50; ENTER at next fire IF 03:30 close <81.50 on sustained vol >=3x. Framework reflection v2.11 written.",
+    "reasoning": "Fire 227. PREDICTIVE resolution of fire 226's branch-precommit: 03:15 UTC CONFIRMED close 81.25 (below floor 81.82) on vol 36,337 = 4.7x median-96 baseline = formal v2.6_DISPLACEMENT (vol >=3.0x, close outside band). v2.8 branch (a) trigger fired exactly as pre-committed. 03:30 in-progress (10/15 min) confirms continuation: close 80.97 vol 32,529 = 6.3x extrapolated. Cohort down+short n=6 +$1.39 WR83% non-worst; 4/4 v0.9 inputs satisfied. HOLD this fire because: (1) v2.11 pre-confirmation candidate rule \u2014 entry on in-progress bars forbidden, n=2 refuted (#165, #221); (2) v2.10-symmetric impulse threshold for short-entry NOT met \u2014 need close \u226480.44 (1% below 81.25), currently 80.97 = 0.34% below. Discipline test: trust the framework written 75min ago over chase-the-move impulse. Pre-commit at 03:30 close: ENTER if close \u226480.44 + vol \u22651.5x baseline; wait 03:45 follow-through if close 80.44-81.00; withdraw thesis if close >81.25. Mode stays Regime Uncertain pending 03:30 close (transitions to Expansion if vol sustains 2+ bars).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "03:30 UTC closes >81.25 with vol sustained = displacement reversed, hypothetical short withdrawn",
+      "03:30 + 03:45 vol decay to <baseline + flat close = continuation thesis weakens, downgrade conviction",
+      "Funding flips sharply positive (>5e-5) before entry = adds carry cost to short, re-evaluate"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.92,
-      "sl_pct": 0.0072,
-      "tp_pct": 0.0175,
+      "entry_price": 80.97,
+      "sl_pct": 0.0065,
+      "tp_pct": 0.0182,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "Sub-band floor 81.82 broke decisively on extreme vol after grind/drift preceding context = continuation shape (i), not sweep (ii); cohort down+short non-worst; pre-confirmation discipline applies."
+      "reasoning_30_words": "v2.6_DISPLACEMENT confirmed 03:15 close 81.25 vol 4.7x; 03:30 continuation in-progress; cohort down+short non-worst; HOLD only due to v2.10-symmetric impulse threshold not yet met."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
-    "information_roi_record": {
-      "previous_trade_fire_iso": "2026-05-27T21:47:30-04:00",
-      "actual_outcome": "SL hit ~81.75 during 03:15 UTC displacement (paper, DRY_RUN) \u2014 entry 82.25, gross -0.61%, est net -$3.70",
-      "info_hypothesis_status": "refuted",
-      "lesson_extracted": "Reclaim sustaining 2-4 bars with vol but no impulse bar = short-cover exhaustion not fresh demand (v2.10 codified). Pre-confirmation timing compounded risk \u2014 entered before impulse confirmation, then sub-band floor broke 88min later. Anti-pattern #2 of pre-confirmation entries (after #165 drift-reclaim).",
-      "information_value_realized": "high"
-    }
+    "information_roi_record": null
   },
   "events": [
     {
@@ -1537,11 +1535,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 912,
+    "holds_since_framework": 2,
+    "avg_chars": 976,
     "since_iso": "2026-05-27T23:25:26-04:00",
     "since_framework_version": "v2.11",
-    "latest_fire_iso": "2026-05-27T23:25:26-04:00"
+    "latest_fire_iso": "2026-05-27T23:40:52-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2232,12 +2230,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 226 (2026-05-27T23:19 EDT / 2026-05-28T03:19 UTC). HOLD with hypothetical short. SWEEP CYCLE #8 FIRING: 03:00 UTC closed exactly AT floor 81.82 (vol 1.31x sub-displacement test); 03:15 UTC IN-PROGRESS (4/15 min) clean reverse-break with low 80.62 close 80.92 vol 2.81x in 4 min (extrapolating 5-11x full bar). Paper #221 SL (81.75) was crossed during this drop \u2014 thesis fully REFUTED on both impulse + drift branches; moved to last_closed_position with info_hypothesis_status=refuted. v2.6_DISPLACEMENT requires confirmed close \u2014 11 min away. v2.10 demoted pre-confirmation entries on in-progress bars; pre-confirm refutation streak now 2/2 (#165 + #221). HOLD is discipline-preserving move with strong hypothetical short for 03:30 close confirmation.",
-    "updated_ts": 1779938726.0962539,
-    "updated_iso": "2026-05-27T23:25:26-04:00",
-    "updated_by_fire_iso": "2026-05-27T23:25:26-04:00",
+    "comment": "Fire 227 (2026-05-27T23:40 EDT / 2026-05-28T03:40 UTC). HOLD with refined hypothetical short. PREDICTIVE RESOLUTION (not surprise): 03:15 UTC bar CLOSED as v2.8 branch (a) predicted \u2014 close 81.25 (below floor 81.82 by $0.57) on vol 36,337 = 4.7x median-96 baseline. v2.6_DISPLACEMENT FORMALLY CONFIRMED (close outside band AND vol \u22653.0x). 03:30 UTC IN-PROGRESS (10/15 min) shows continuation: open 81.24, low 80.91, current 80.97, vol 32,529 in 10min (extrapolating 6.3x). v2.10-symmetric impulse threshold for short-entry: need close \u226480.44 (1% below displacement close 81.25); currently 0.34% below = NOT satisfied. Same pre-confirmation timing problem as #221 (signal bar closed, on in-progress confirmation bar). Discipline preserved: HOLD this fire, refine hypothetical for 03:30 confirmed close + 03:45 follow-through, transition to Expansion mode at 03:30 close if vol sustains.",
+    "updated_ts": 1779939652.15,
+    "updated_iso": "2026-05-27T23:40:52-04:00",
+    "updated_by_fire_iso": "2026-05-27T23:40:52-04:00",
     "regime": "down",
-    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe NOW SIGNIFICANTLY STALE (indicators.price=85.23 vs OHLCV-realtime 80.92 = -5.32% divergence \u2014 CROSSED -5% threshold; was -3.83% at fire 225). ALL price/vol/momentum derived from Coinbase OHLCV 15m. Current OHLCV in-progress 03:15 UTC (4/15 min) shows close 80.92 low 80.62 vol 2.81x. 03:00 finalized close 81.82 vol 1.31x (sub-displacement floor test). 4h window cumulative: 23:15 UTC (~82.45) -> 03:15 in-progress 80.92 = -1.85% = exceeds 1.5% threshold for mode candidate Expansion, but require 2+ bars sustained per v2.6 \u2014 currently only 1 in-progress bar. Mode stays Regime Uncertain.",
+    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe NOW SIGNIFICANTLY STALE: indicators.price=85.23 vs OHLCV-realtime 80.97 = -5.27% divergence (was -5.32% at fire 226, marginal narrowing). ALL price/vol/momentum derived from Coinbase OHLCV 15m. 03:15 UTC CLOSED: open 81.81, high 81.86, low 80.62, close 81.25, vol 36,337 (4.7x baseline 7,728). 03:30 UTC IN-PROGRESS (10/15 min): open 81.24, high 81.30, low 80.91, close 80.97, vol 32,529. 4h window cumulative: 23:30 UTC ~82.07 -> 03:30 in-progress 80.97 = -1.34% (sub-1.5% Expansion threshold per v2.6). Mode stays Regime Uncertain pending 03:30 close + 03:45 sustained vol.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2250,22 +2248,22 @@
     "new_range_candidate_low": null,
     "new_range_candidate_high": null,
     "new_range_candidate_bars": 0,
-    "new_range_candidate_status": "BROKEN at 03:15 UTC IN-PROGRESS \u2014 sub-band candidate 81.82-82.89 (8-bar envelope) has reverse-broken on extreme vol. Cleared.",
+    "new_range_candidate_status": "BROKEN at 03:15 UTC CONFIRMED CLOSE (81.25 < floor 81.82, vol 4.7x). Sub-band 81.82-82.89 cleared. Below 81.25, next reference: 80.44 (1% below = v2.10-symmetric impulse trigger), 80.00 (round), 79.50 (round/Fib).",
     "candidate_floor_test_count": 6,
-    "candidate_floor_test_detail": "Tests so far: 23:15 RECLAIMED, 23:30 RECLAIMED, 01:15 BROKEN+RECLAIMED (sweep #7), 01:30 RECLAIM, 02:30 NEW LOW 81.87 / weak vol, 03:00 EXACT FLOOR TOUCH close=81.82 vol 1.31x (sub-displacement test), 03:15 IN-PROGRESS DECISIVE BREAK low 80.62 close 80.92 vol 2.81x in 4min. Sequence: sub-displacement test (03:00) -> displacement firing (03:15). Test #6 = the breaking test.",
-    "post_floor_lifting_detail": "Sequence (UTC closes through 03:15 in-progress): 82.07(23:30) -> 82.17 -> 82.23 -> 82.25 -> 82.42(00:30) -> 82.41 -> 82.35 -> 82.05(01:15 SWEEP) -> 82.18(01:30 RECLAIM) -> 82.14 -> 82.24 -> 82.04(02:15 SELL-SPIKE 5.22x) -> 81.96(02:30 weak) -> 81.96(02:45 weak) -> 81.82(03:00 EXACT-FLOOR-TOUCH vol 1.31x) -> 80.92(03:15 IN-PROGRESS 4min, low 80.62 vol 2.81x). Reading: floor 81.82 broke decisively after 3 bars of weak-vol drift+grind (02:30-03:00); the 03:00 close exactly at 81.82 marks a textbook sub-displacement floor-test; 03:15 firing with 2.81x vol in 4min = trend-continuation displacement (v2.9 archetype i), NOT liquidity-sweep (preceding context was grind/drift not recovery).",
+    "candidate_floor_test_detail": "Tests: 23:15 RECLAIMED, 23:30 RECLAIMED, 01:15 BROKEN+RECLAIMED (sweep #7), 01:30 RECLAIM, 02:30 NEW LOW 81.87 / weak vol, 03:00 EXACT FLOOR TOUCH close=81.82 vol 1.31x (sub-displacement test), 03:15 CONFIRMED BREAK close=81.25 vol 4.7x (full v2.6_DISPLACEMENT). Test #6 = the breaking test as predicted at fire 226.",
+    "post_floor_lifting_detail": "Sequence (UTC closes through 03:30 in-progress): 82.07(23:30) -> 82.17 -> 82.23 -> 82.25 -> 82.42(00:30) -> 82.41 -> 82.35 -> 82.05(01:15 SWEEP) -> 82.18(01:30 RECLAIM) -> 82.14 -> 82.24 -> 82.04(02:15 SELL-SPIKE 5.22x) -> 81.96(02:30 weak) -> 81.97(02:45 weak) -> 81.82(03:00 EXACT-FLOOR-TOUCH vol 1.31x) -> 81.25(03:15 CONFIRMED BREAK vol 4.7x) -> 80.97(03:30 IN-PROGRESS 10/15 min, low 80.91, vol 32,529=6.3x extrapolated). Reading: continuation displacement (v2.9 shape i) \u2014 preceded by grind/drift, not recovery. v2.11 discriminator predicted no reversal; 03:30 in-progress confirms (lower close than 03:15, sustained vol).",
     "sweeps_attempted": 8,
-    "sweep_detail": "Sweep cycle #8 FIRING this fire. v2.8 branch (a) trigger condition satisfied: close <81.82 with vol >=1.5x. Specifically 03:15 in-progress 4/15 min: low 80.62, close 80.92, vol 2.81x (21,721/7,728). Awaiting 03:30 finalized close for v2.6_DISPLACEMENT formal confirmation (11 min remaining at fire-time). Paper #221 long thesis FULLY REFUTED \u2014 SL 81.75 crossed during 03:15 dump.",
+    "sweep_detail": "Sweep cycle #8 RESOLVED at 03:15 UTC close 81.25 (v2.8 branch (a) trigger condition met: close <81.82 with vol >=1.5x \u2014 actually vol 4.7x, well above threshold). v2.6_DISPLACEMENT FORMALLY CONFIRMED. 03:30 in-progress continuation. Paper #221 SL hit during the drop \u2014 last_closed_position carried forward.",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
-    "last_displacement_detail": "Most recent displacement: 03:15 UTC IN-PROGRESS (4/15 min) on the DOWN side. Open 81.81, low 80.62, current close 80.92, vol 21,721 = 2.81x median-96 baseline (7,728) in just 4 minutes. Linear extrapolation = 10-11x for full bar; realistic decay-adjusted = 4-7x. Mechanically already qualifies as v2.6_DISPLACEMENT (>=3.0x vol \u2014 at 2.81x measured, edge-of-threshold but will cross with any additional vol in remaining 11min). Crucially, this is shape (i) trend-continuation: preceded by 3 bars of drift/grind toward floor (02:30-03:00), NOT preceded by recovery (which would be shape (ii) sweep). Discriminator candidate introduced in v2.11.",
-    "funding_state": "OKX 1.41e-5 per live-status indicators_pro (pipe ~58h+ stale; sign/direction only, magnitude unreliable).",
+    "last_displacement_detail": "Most recent displacement: 03:15 UTC CONFIRMED CLOSE. Open 81.81, high 81.86, low 80.62, close 81.25, vol 36,337 = 4.7x median-96 baseline (7,728). Formal v2.6_DISPLACEMENT (close outside active band AND vol \u22653.0x). v2.9 shape (i) trend-continuation: preceded by 3 bars of drift/grind (02:30-03:00) toward floor. v2.11 preceding-context discriminator predicted continuation, not reversal \u2014 03:30 in-progress confirming (close 80.97 < 81.25, vol 6.3x extrapolated).",
+    "funding_state": "OKX 9.67e-6 per live-status indicators_pro (pipe ~58h+ stale; sign/direction only, magnitude unreliable). Marginal downtick from 1.41e-5; both near-zero noise.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 226. HOLD with hypothetical short. MATERIAL STATE CHANGE since fire 225: 03:00 UTC sub-displacement floor test (exact close 81.82 vol 1.31x), 03:15 UTC IN-PROGRESS decisive break (low 80.62 close 80.92 vol 2.81x in 4min). Sweep cycle #8 firing as v2.8 branch (a) predicted. Paper #221 SL hit during the drop; thesis REFUTED on impulse + drift branches both. Cohort math for short: down+short n=6 +$1.39 WR 83.3% non-worst. 4/4 v0.9 inputs satisfied (asymmetry / vol / cohort / structural). BUT v2.6_DISPLACEMENT formally requires confirmed 15m close \u2014 11min away \u2014 AND v2.10 (40min old) explicitly demoted pre-confirmation entries on in-progress bars. Pre-confirmation refutation streak now 2/2 (#165 + #221). Discipline test: HOLD this fire, branch-precommit for 03:30 close. Hypothetical short B-grade implied at 80.92 SL 81.50 (above current bar high 81.86 -- tighter than 81.82 floor since floor is now broken) TP 79.50 (next round-number target). Predicted 2h: drift_toward_tp; 8h: tp. Mode stays Regime Uncertain (need 2+ subsequent bars sustained vol for Expansion). v2.11 also introduces displacement-continuation-vs-sweep DISCRIMINATOR by preceding context (recovery=reversal-prone vs grind=reversal-unlikely); 03:15 = shape (i) trend-continuation by this discriminator.",
+    "narrative": "Phase B.1 fire 227. HOLD with refined hypothetical short \u2014 PREDICTIVE resolution of fire 226's branch-precommit. 03:15 UTC confirmed close 81.25 (vol 4.7x) = formal v2.6_DISPLACEMENT, exactly as v2.8 branch (a) predicted. 03:30 in-progress 10/15 min shows continuation (close 80.97, vol 6.3x). v2.10-symmetric impulse trigger for short: need close \u226480.44 (1% below 81.25); currently 80.97 = 0.34% below = NOT satisfied. Same pre-confirmation timing problem as #221 \u2014 signal bar (03:15) closed, on in-progress confirmation bar (03:30). Cohort down+short n=6 +$1.39 non-worst. 4/4 v0.9 inputs satisfied. Honest discipline: HOLD this fire, pre-commit for 03:30 close. Branch (a-confirmed): if 03:30 closes \u226480.44 with vol \u22651.5x baseline, ENTER B-grade short at close. Branch (a-tentative): if 03:30 closes 80.44-81.00 with vol sustained, wait for 03:45 follow-through (additional bar of monotonic-down + vol \u22651.5x = v2.10-symmetric (b) trigger). Branch (c-reversal-fluke): if 03:30 closes >81.25 (improbable), thesis weakens, hypothetical short withdrawn. Mode transitions to Expansion at 03:30 close if vol sustains across 2+ bars (already 2 if 03:30 closes with elevated vol).",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-27T18:21:21-04:00",
-    "cognition_mode_rationale": "Sub-band 81.82-82.89 candidate has reverse-broken at 03:15 UTC on extreme vol (2.81x in 4min). v2.6_DISPLACEMENT says transition direct to Regime Uncertain (already there) or Expansion if vol sustains 2+ bars. Currently only 1 in-progress bar of displacement vol -- need 03:30 + 03:45 to sustain for Expansion mode candidate. Mode stays Regime Uncertain pending bar-close confirmation + sustained-vol observation across 2 subsequent bars.",
+    "cognition_mode_rationale": "03:15 UTC CONFIRMED CLOSE at 81.25 vol 4.7x = formal v2.6_DISPLACEMENT. v2.6 protocol: transition direct to Regime Uncertain on first displacement bar (where we are) \u2014 Expansion only if vol sustains across 2+ subsequent bars. 03:30 in-progress would be subsequent bar #1 if closes with vol; 03:45 = subsequent bar #2. Mode stays Regime Uncertain this fire; transition to Expansion candidate evaluated at 03:30 close.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 43,
+    "skipped_fires_in_mode": 46,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
@@ -2274,25 +2272,25 @@
     ],
     "operational_rule_v2_3": "B-grade ENTER requires (a) cohort historical non-worst AND (b) >=1 of {clear directional asymmetry / structural trigger CONFIRMED / displacement CONFIRMED}. Pending-confirmation setups don't qualify. If forced_exploration_due TRUE but conditions not met, default to HOLD with no_plausible_counterfactual reason OR HOLD with hypothetical naming the lean + missing input.",
     "operational_rule_v2_5_REFINED": "Compression-to-Regime-Uncertain pre-break warning (SLOW WALKS ONLY): 2 consecutive 15m bars with vol_ratio >=1.5x median(96-bar baseline) AND at least one bar closing within 0.3pct of either band edge. FALSIFIED for displacement-type breaks.",
-    "operational_rule_v2_6_DISPLACEMENT": "Displacement-event classification: single 15m bar with vol_ratio >=3.0x median-96 baseline AND close outside an active band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ subsequent bars), no warning phase. 21:30 UTC 5-27 + 03:15 UTC 5-28 (in-progress) canonical examples.",
+    "operational_rule_v2_6_DISPLACEMENT": "Displacement-event classification: single 15m bar with vol_ratio >=3.0x median-96 baseline AND close outside an active band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ subsequent bars), no warning phase. 21:30 UTC 5-27 + 03:15 UTC 5-28 canonical examples (both CONFIRMED at close).",
     "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope.",
     "operational_rule_v2_6_COHORT_DISAMBIG": "When live-status regime conflicts with state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). INACTIVE this fire -- regimes ALIGNED 'down'.",
     "operational_rule_v2_7_ROLLOVER_PROXIMITY": "When daily uncertainty budget remaining < smallest grade exposure floor AND UTC midnight within 30 minutes AND a structural setup is half-confirmed (>=1 of branch conditions met, with vol confirmation), HOLD with hypothetical-and-explicit-rollover-plan is correct shape -- not generic HOLD. Hypothetical names entry plan; execution capacity arrives at 00:00 UTC; next fire executes IF remaining structural conditions clear AND cohort still non-worst.",
-    "operational_rule_v2_8_TENTATIVE_SUBBAND_CONSOLIDATION": "When post-displacement period extends ~16 bars (4h) without either continuation or reclaim branch resolving, treat as new sub-band envelope establishment; clear post-displacement hypothesis tree and re-derive compression-mode entry criteria from new envelope. FIELD-TESTED 5-28: 21:30 UTC 5-27 displacement -> 16-bar period -> sub-band candidate 81.82-82.89 formed -> reverse-broke at 03:15 UTC = sub-band consolidation hypothesis weaker; consolidation can be transient phase, not stable equilibrium.",
+    "operational_rule_v2_8_TENTATIVE_SUBBAND_CONSOLIDATION": "When post-displacement period extends ~16 bars (4h) without either continuation or reclaim branch resolving, treat as new sub-band envelope establishment; clear post-displacement hypothesis tree and re-derive compression-mode entry criteria from new envelope. FIELD-TESTED 5-28: 21:30 UTC 5-27 displacement -> 16-bar period -> sub-band candidate 81.82-82.89 formed -> reverse-broke at 03:15 UTC CONFIRMED = sub-band consolidation hypothesis weaker; consolidation can be transient phase, not stable equilibrium.",
     "operational_rule_v2_9_DESCRIPTIVE_DISPLACEMENT_SHAPE": "Displacement events have a SHAPE dimension distinct from timing: (i) trend-continuation displacement (3-5 consecutive bars sustain direction with vol decay; 21:30-01:00 UTC 5-27 + 03:15 UTC 5-28 = canonical), (ii) liquidity-sweep displacement (1 bar sweeps with immediate reverse on next bar; 01:15+01:30 UTC 5-28 = canonical), (iii) range-establish displacement (1 bar break followed by sub-band consolidation, often follows (i) or (ii); 22:00-01:00 UTC 5-28 was tentative example). Codification requires 2-3 more events per category.",
-    "operational_rule_v2_10_RECLAIM_IMPULSE_REQUIREMENT": "Reclaim-with-sustained-vol qualifies as ENTRY-CONFIRMABLE only when (a) at least one 15m bar within ~4 bars post-reclaim closes >=1.0% above the reclaim level AND that bar's vol is >= median-96 baseline, OR (b) cumulative 4-bar drift from the reclaim point is monotonically positive with at least one bar showing vol >=1.5x AND close in upper third of bar range. Absent either, reclaim is classified as 'short-cover exhaustion candidate' and treated as HOLD-with-flip-watch. Field-tested 5-28: n=1 confirmed at #221 refutation \u2014 no impulse appeared in 4 bars post-01:30 reclaim, classification 'short-cover exhaustion' would have correctly predicted refutation. Codification needs 2-3 more cycles.",
-    "operational_rule_v2_11_PRE_CONFIRMATION_FORBIDDEN_CANDIDATE": "PROMOTION CANDIDATE \u2014 not yet operational. Entry on in-progress 15m bars forbidden regardless of pattern shape. Evidence: #165 (drift-reclaim, refuted) + #221 (sweep-reclaim, refuted) = 2/2 refutation across 2 different pattern shapes. Field-tested THIS fire by HOLDING despite 4/4 v0.9 input satisfaction. Codify after one more refutation (n=3) OR wait for n>=5 if next 2 confirm.",
-    "operational_rule_v2_11_DISPLACEMENT_PRECEDING_CONTEXT_DISCRIMINATOR": "DESCRIPTIVE candidate \u2014 not yet operational. Discriminate displacement-continuation (shape i) from displacement-sweep (shape ii) by PRECEDING CONTEXT, not the displacement bar itself: recovery-context preceding (n bars of higher-lows / reclaim-attempts) = reversal-prone; grind/drift-context preceding (n bars of weak-vol decay toward level) = reversal-unlikely. Examples: 01:15 sweep preceded by 5 higher-lows (sweep shape, reversed); 03:15 displacement preceded by 3 grind/drift bars (continuation shape, prediction: no reversal). Codification requires 2-3 more events per category.",
-    "last_gate_check_iso": "2026-05-27T23:25:26+00:00",
+    "operational_rule_v2_10_RECLAIM_IMPULSE_REQUIREMENT": "Reclaim-with-sustained-vol qualifies as ENTRY-CONFIRMABLE only when (a) at least one 15m bar within ~4 bars post-reclaim closes >=1.0% above the reclaim level AND that bar's vol is >= median-96 baseline, OR (b) cumulative 4-bar drift from the reclaim point is monotonically positive with at least one bar showing vol >=1.5x AND close in upper third of bar range. Absent either, reclaim is classified as 'short-cover exhaustion candidate' and treated as HOLD-with-flip-watch. SYMMETRIC application to displacement-short (mirror): need close \u22641.0% below displacement close on vol \u2265baseline, OR 4-bar monotonic-down + vol \u22651.5x + close in lower third.",
+    "operational_rule_v2_11_PRE_CONFIRMATION_FORBIDDEN_CANDIDATE": "PROMOTION CANDIDATE \u2014 not yet operational. Entry on in-progress 15m bars forbidden regardless of pattern shape. Evidence: #165 (drift-reclaim, refuted) + #221 (sweep-reclaim, refuted) = 2/2 refutation across 2 different pattern shapes. Field-tested fire 226 by HOLDING despite 4/4 v0.9 input satisfaction. Field-tested AGAIN fire 227 (now) by HOLDING despite formal v2.6_DISPLACEMENT confirmation + continuation in-progress. Codify after one more refutation (n=3) OR wait for n>=5 if next 2 confirm.",
+    "operational_rule_v2_11_DISPLACEMENT_PRECEDING_CONTEXT_DISCRIMINATOR": "DESCRIPTIVE candidate \u2014 not yet operational. Discriminate displacement-continuation (shape i) from displacement-sweep (shape ii) by PRECEDING CONTEXT, not the displacement bar itself: recovery-context preceding (n bars of higher-lows / reclaim-attempts) = reversal-prone; grind/drift-context preceding (n bars of weak-vol decay toward level) = reversal-unlikely. Examples: 01:15 sweep preceded by 5 higher-lows (sweep shape, reversed); 03:15 displacement preceded by 3 grind/drift bars (continuation shape, prediction: no reversal \u2014 CONFIRMING REAL-TIME at 03:30 in-progress with close 80.97 < 81.25). Codification requires 2-3 more events per category.",
+    "last_gate_check_iso": "2026-05-28T03:40:52+00:00",
     "hypothetical_position": {
       "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.92,
+      "entry_price": 80.97,
       "sl_price": 81.5,
       "tp_price": 79.5,
-      "sl_pct": 0.0072,
-      "tp_pct": 0.0175,
-      "rationale_short": "displacement firing 03:15 UTC IN-PROGRESS; cohort down+short non-worst; 4/4 v0.9 inputs; HOLD per v2.10 pre-confirmation discipline + v2.11 promotion-candidate rule; would ENTER at 03:30 close if vol sustains AND close <81.50."
+      "sl_pct": 0.0065,
+      "tp_pct": 0.0182,
+      "rationale_short": "03:15 v2.6_DISPLACEMENT CONFIRMED (close 81.25 vol 4.7x); 03:30 in-progress continuation (close 80.97 vol 6.3x extrapolated); cohort down+short non-worst (n=6 +$1.39 WR83%); 4/4 v0.9 inputs. HOLD this fire per v2.11 pre-confirmation discipline (n=2 refuted on similar shape) + v2.10-symmetric impulse threshold NOT YET met (need \u226480.44; at 80.97). Branch (a-confirmed): if 03:30 closes \u226480.44 with vol \u22651.5x, ENTER short at close. Branch (a-tentative): if 03:30 closes 80.44-81.00 with vol sustained, wait 03:45 follow-through. Branch (c-reversal-fluke): if 03:30 closes >81.25, thesis weakens, hypothetical withdrawn."
     },
     "last_closed_position": {
       "direction": "long",
@@ -2347,11 +2345,11 @@
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-27T18:21:21-04:00",
-    "rationale": "Sub-band 81.82-82.89 candidate has reverse-broken at 03:15 UTC on extreme vol (2.81x in 4min). v2.6_DISPLACEMENT says transition direct to Regime Uncertain (already there) or Expansion if vol sustains 2+ bars. Currently only 1 in-progress bar of displacement vol -- need 03:30 + 03:45 to sustain for Expansion mode candidate. Mode stays Regime Uncertain pending bar-close confirmation + sustained-vol observation across 2 subsequent bars.",
+    "rationale": "03:15 UTC CONFIRMED CLOSE at 81.25 vol 4.7x = formal v2.6_DISPLACEMENT. v2.6 protocol: transition direct to Regime Uncertain on first displacement bar (where we are) \u2014 Expansion only if vol sustains across 2+ subsequent bars. 03:30 in-progress would be subsequent bar #1 if closes with vol; 03:45 = subsequent bar #2. Mode stays Regime Uncertain this fire; transition to Expansion candidate evaluated at 03:30 close.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 43,
+    "skipped_fires_in_mode": 46,
     "last_mode_transition_iso": "2026-05-27T18:21:21-04:00",
-    "last_gate_check_iso": "2026-05-27T23:25:26+00:00"
+    "last_gate_check_iso": "2026-05-28T03:40:52+00:00"
   },
   "framework_origins": [
     {
@@ -2396,14 +2394,14 @@
     },
     "last_enter_ts": 1779932850.040962,
     "last_enter_iso": "2026-05-27T21:47:30-04:00",
-    "holds_in_a_row": 4,
+    "holds_in_a_row": 5,
     "exploratory_at_risk_usd_today": 2.51,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 1.5,
+    "hours_since_last_enter": 1.9,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T03:19:01.487712+00:00",
+    "last_updated_iso": "2026-05-28T03:40:58.806104+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
