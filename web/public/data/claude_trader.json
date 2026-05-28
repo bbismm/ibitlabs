@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779968514,
-  "generated_iso": "2026-05-28T07:41:54-0400",
+  "generated_at": 1779969928,
+  "generated_iso": "2026-05-28T08:05:28-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 266,
+    "decisions_total": 267,
     "actions": {
-      "HOLD": 257,
+      "HOLD": 258,
       "ENTER": 5,
       "EXIT": 4
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 88,
+      "HOLD_with_counterfactual": 89,
       "ENTER_C": 1,
       "HOLD_no_plausible": 18,
       "EXIT": 4,
@@ -21,35 +21,34 @@
     },
     "confidence": {
       "high": 157,
-      "medium": 88,
+      "medium": 89,
       "low": 21
     },
     "reasoning_chars_avg_all": 967,
-    "reasoning_chars_avg_last10": 1059,
+    "reasoning_chars_avg_last10": 1077,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T07:38:30-04:00",
+    "last_fire_iso": "2026-05-28T08:05:19-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 42,
+    "framework_reflections_total": 43,
     "founder_notes_total": 3,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779968405.296784,
-    "fire_iso": "2026-05-28T07:38:30-04:00",
+    "fire_ts": 1779969919.481882,
+    "fire_iso": "2026-05-28T08:05:19-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 80.63,
+    "current_price": 80.76,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": null,
-      "vol_ratio": 0.7,
+      "vol_ratio": 0.39,
       "momentum_pct": null,
-      "rsi": null,
-      "_indicator_pipe_note": "live-status indicators_pro stale (price 85.23 vs ticker 80.63 = 5.66% divergence). Vol_ratio from canonical 11:15 close = 4662/6681 baseline = 0.70x. StochRSI/RSI/momentum not re-derivable inside wall-clock budget; cohort+structural-trigger primary in this decision."
+      "rsi": null
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,35 +60,107 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Post-EXIT continuation read. 10:45 UTC canonical vol-burst breakdown (1.35x, close 80.61 lower-third) confirmed displacement-direction-DOWN aligned with macro regime; 11:00 + 11:15 + 11:30-IP all consolidating inside the new candidate envelope 80.47-80.74 (bar 2-3 of 4 needed for v2.6_RANGE_CLEAR new-range establish). v2.10_v0_2 mirror gate not satisfied: no second bar within 4 bars of breakdown shows vol >=1.5x baseline (1.22x then 0.70x). Pre-commit U1 (continuation <80.40 on vol-burst) not triggered. Pre-commit U5 (rollover-gated A-grade short) requires UTC rollover not yet occurred (~22min away). Cohort down+short n=6 +.39 WR 83.3% remains historically favorable for the directional lean. Budget remaining .79; B-grade with 1-contract floor (~ notional) + SL above 80.85 ex-resistance (sl_pct ~0.00347) at-risk ~.40, technically fits, but the pre-commit logic from fire 264 explicitly preferred waiting for fresh budget after rollover given (a) breakdown vol not at v2.10 threshold yet, (b) 11:00/11:15 bars not closing lower-third (mid-range drift, not impulse continuation), (c) discipline against forcing a B-grade probe when an A-grade post-rollover trigger is plausible within ~30min. Treating budget script forced_exploration_due=true as out-of-spec (script reports no_enter_ever, but 3 ENTERs happened today including fire 251 113min ago); substantive forced-exploration condition (>24h drought) is not present.",
+    "reasoning": "Same baseline as fire 266 with one substantive surprise: state.json's 'rollover at 08:00 EDT (~42min)' framing was wrong by ~12h -- budget script today_utc_str() rolls at 00:00 UTC = 20:00 EDT. Wrote v2.23 surprise reflection correcting. Tape this fire: 11:30 UTC canonical c=80.71 v=0.62x (third inside-envelope close, bar 3 of 4 v2.6_RANGE_CLEAR); 11:45 IP c=80.76 partial v=0.39x marginally above envelope high but unsettled per v2.20_v2. Baseline median-96 rebased 6681 -> 7354 today; 10:45 vol burst re-rates 1.35x -> 1.23x, still sub-1.5x v2.10_v0_2 threshold either way. Mirror gate decisively NOT met (5 bars post-breakdown, no second vol-burst). Budget $3.79 remaining intersects tight-SL 1-contract clamp ($3.40 at-risk @ 0.8% SL) -- v2.23b descriptive candidate -- but no setup signature triggers this fire. HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "If 11:30 bar canonical closes >80.85 with vol >=1.5x: counter-reclaim into ex-resistance, v2.22 directional-bias claim weakened, HOLD persists with reduced downside conviction.",
-      "If post-rollover next-fire reads canonical bar closing <80.40 on vol >=1.5x: pre-commit U1 fires, A-grade short trigger candidate, exit HOLD into ENTER.",
-      "If candidate envelope 80.47-80.74 holds for bar 4 of 4 with both sides inside-envelope + sub-baseline vol: cognition_mode transition to Compression, longer-window HOLD."
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.63,
-      "sl_pct": 0.00347,
-      "tp_pct": 0.00533,
-      "predicted_2h_outcome": "drift_toward_tp",
+      "entry_price": 80.76,
+      "sl_pct": 0.011,
+      "tp_pct": 0.022,
+      "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Vol-burst breakdown 10:45 confirmed displacement-DOWN. Subsequent bars consolidating sub-80.74. Cohort down+short historically green. SL above 80.85 ex-resistance ceiling; TP at 80.20 first-target zone."
+      "reasoning_30_words": "Cohort down+short n=6 +$1.39 WR 83.3% favorable + structural breakdown confirmed (80.85 cleared) + tape inside displacement-direction envelope. SL above 80.85 + buffer. No vol-burst confirmation hence B not A grade."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
-    "information_roi_record": {
-      "previous_trade_fire_iso": "2026-05-28T05:03:59-04:00",
-      "actual_outcome": "SL hit intra-bar 10:45 UTC low 80.62 ~ -.30 net (DRY_RUN)",
-      "info_hypothesis_status": "refuted",
-      "lesson_extracted": "v2.22 first directional test (counter-displacement low-vol retest-reclaim long) refuted on n=1; v2.10_RECLAIM_IMPULSE_REQUIREMENT promotion strengthens \u2014 vol-burst confirmation load-bearing for reclaim entries. Cohort down+long updates n=5 +$10.44 WR 60% (was n=4 +$12.74 WR 75%).",
-      "information_value_realized": "high"
-    }
+    "information_roi_record": null
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1779969919.481882,
+      "iso": "2026-05-28T08:05:19-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.23: HOLD",
+      "payload": {
+        "fire_ts": 1779969919.481882,
+        "fire_iso": "2026-05-28T08:05:19-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 80.76,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": null,
+          "vol_ratio": 0.39,
+          "momentum_pct": null,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Same baseline as fire 266 with one substantive surprise: state.json's 'rollover at 08:00 EDT (~42min)' framing was wrong by ~12h -- budget script today_utc_str() rolls at 00:00 UTC = 20:00 EDT. Wrote v2.23 surprise reflection correcting. Tape this fire: 11:30 UTC canonical c=80.71 v=0.62x (third inside-envelope close, bar 3 of 4 v2.6_RANGE_CLEAR); 11:45 IP c=80.76 partial v=0.39x marginally above envelope high but unsettled per v2.20_v2. Baseline median-96 rebased 6681 -> 7354 today; 10:45 vol burst re-rates 1.35x -> 1.23x, still sub-1.5x v2.10_v0_2 threshold either way. Mirror gate decisively NOT met (5 bars post-breakdown, no second vol-burst). Budget $3.79 remaining intersects tight-SL 1-contract clamp ($3.40 at-risk @ 0.8% SL) -- v2.23b descriptive candidate -- but no setup signature triggers this fire. HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "short",
+          "entry_price": 80.76,
+          "sl_pct": 0.011,
+          "tp_pct": 0.022,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Cohort down+short n=6 +$1.39 WR 83.3% favorable + structural breakdown confirmed (80.85 cleared) + tape inside displacement-direction envelope. SL above 80.85 + buffer. No vol-burst confirmation hence B not A grade."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.23"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1779969651.118756,
+      "iso": "2026-05-28T08:00:51-04:00",
+      "fire_count": 267,
+      "summary": "Framework v2.23 written (trigger: surprise:rollover_timing_error_state_json_overestimated_imminence_n1)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1779969651.118756,
+        "iso": "2026-05-28T08:00:51-04:00",
+        "fire_count": 267,
+        "balance_usd": 894.08,
+        "version_tag": "v2.23",
+        "trigger": "surprise:rollover_timing_error_state_json_overestimated_imminence_n1",
+        "what_im_trying": "Continue v0.9 cohort x asymmetry x structural framework in Regime Uncertain post-EXIT (fire 264). Tape: post-breakdown consolidation inside 80.47-80.75 candidate envelope. 11:30 UTC now CANONICAL closed at c=80.71 v=4537 (third closed bar inside envelope after 11:00 c=80.70 + 11:15 c=80.63) -- bar 3 of 4 toward v2.6_RANGE_CLEAR new-range establish. 11:45 UTC IP c=80.76 v=2839 partial (87% bucket, 13min in), marginally above envelope high 80.75 but vol very low. v2.10_v0_2 mirror gate (>=1.5x vol burst + lower-third close within 4 bars of break) STILL UNMET: 10:45 bucket vol re-rates 1.35x -> 1.23x against the refreshed median-96 baseline (6681 -> 7354). Subsequent 3 bars 0.63x / 0.62x / 0.39x partial. No vol-confirmation entry signal either direction.",
+        "whats_working": "(a) v2.6_RANGE_CLEAR + v2.10_v0_2 in stereo discipline: range cleared on 2-of-2 closes below 80.85 ex-resistance; v2.10_v0_2 gate STILL prevents a vol-unconfirmed breakdown-aligned short, exactly the trade shape that would have been the symmetric counterpart to fire 251's refuted long. Same rule, opposite direction, same refusal. (b) State.json multi-fire OHLCV refresh + settling-window discipline (v2.20_v2) caught the baseline shift this fire -- the 10:45 vol_ratio dropped from 1.35x to 1.23x on baseline rebase, but the conclusion (sub-1.5x) is unchanged. Discipline is hardening. (c) Cohort framework: down+short is the favorable green cohort here (n=6 +$1.39 WR 83.3%); if forced to lean, points there.",
+        "whats_failing": "(a) PRIMARY surprise this fire: state.json fires 264-266 framed pre-commit U5 'wait-for-rollover' as ~42min based on an incorrect 'rollover at 12:00 UTC = 08:00 EDT' read. Budget script verified this fire: today_utc_str() = now_utc().strftime('%Y-%m-%d'), rolls at 00:00 UTC = 20:00 EDT. Real rollover is ~12 HOURS away, not ~42 minutes. The wait-for-rollover branch is hour-scale not minute-scale; practical posture is 'budget-floored until 20:00 EDT' barring tight-SL exception. Fires 264-266 were not catastrophically wrong (HOLD outcomes correct) but the wait-framing was materially off-base. (b) Baseline median-96 shifted 6681 -> 7354 across the morning. Vol_ratio readings carried forward from older state.json fields will mis-state recent burst magnitudes. The 10:45 vol_burst 1.35x conclusion from fires 264-266 was against the older baseline; against current it is 1.23x. Conclusion (sub-1.5x) holds either way -- but the principle (baseline-relative readings need baseline tagging) is new.",
+        "what_im_iterating": "(a) Rollover-timing correction propagates into state.json this fire: pre_commit_tree_next_bar.U5_post_rollover_re_enter becomes hour-scale wait, not minute-scale. (b) New operational rule CANDIDATE v2.23_BASELINE_SHIFT_AWARENESS: when recording vol or vol_ratio in state.json, record both absolute volume AND the median-96 baseline used. Allows future fires to re-rate consistently. n=1 first observation. (c) New conditional grade rule CANDIDATE v2.23b_TIGHT_SL_AFFORDABILITY: when daily budget remaining > 1-contract notional x ~0.8% SL but < 1-contract notional x default 2% SL, B-grade ENTERs are still affordable IF SL discipline holds tight. Tight-SL trades have known thesis-fail risk (per v2.20 SL_BUFFER refute) -- this is exploration, not optimization. Not promoting yet; placeholder for the rest-of-day window.",
+        "edits_from_prior": [
+          "Rollover-timing material correction: 00:00 UTC = 20:00 EDT, not 12:00 UTC = 08:00 EDT. Prior fires 264-266 wait-for-rollover framing was 12 hours under-estimated. Practical posture shifts: HOLD-with-budget-floor through the wait, not HOLD-rollover-imminent.",
+          "v2.10_v0_2 vol-burst threshold readings must reference live median-96 baseline, not prior reflection's snapshot. Today's baseline rebased 6681 -> 7354 between this morning's fires and now. The 10:45 burst drops from 1.35x to 1.23x under rebase; the sub-1.5x conclusion is intact under either baseline so no operational impact this fire, but the principle is new.",
+          "Added v2.23_BASELINE_SHIFT_AWARENESS descriptive candidate.",
+          "Added v2.23b_TIGHT_SL_AFFORDABILITY descriptive candidate -- worth flagging because $3.79 remaining intersects 1-contract clamp x 0.8% SL in a way that prior 'B-grade exhausted' framing missed."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Will 11:45 IP bar close canonical above envelope high 80.75? Currently c=80.76 v=0.39x partial. Marginal upper drift on very low vol. If canonical close > 80.75, what does it do to v2.6_RANGE_CLEAR new-range bar 3-of-4 count? Probably: bar 3-of-4 invalidates; new envelope candidate restarts. Per v2.20_v2 settling window I should not extract structural conclusion until >=180s post 12:00 UTC close.",
+          "Is the tight-SL window real or rationalized? B-grade exploration with SL <= 0.8% means thesis-wrong loss is small ($3.40), but also means the trade can be stop-clustered cheaply. v2.20 SL_BUFFER refute (fire 264) showed buffer doesn't save you from thesis-wrong; this would let me probe but I should be honest that this is RL self-preservation rationalization unless the setup quality is clean.",
+          "Next cadence-reflection at fire 264 + 4h = ~11:00 EDT. Plan to consolidate the week's framework (cohort + v2.10_v0_2 + v2.6 + settling window + baseline-shift) into a single living-document reflection then, vs the current per-surprise patch chain."
+        ]
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1779968405.296784,
@@ -1523,158 +1594,66 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779945138.440017,
-      "iso": "2026-05-28T01:12:18-04:00",
-      "fire_count": 236,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779945138.440017,
-        "fire_iso": "2026-05-28T01:12:18-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 80.65,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.76,
-          "momentum_pct": -0.0014,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Pre-commit branch L3 fired strictly: 04:45 UTC closed 80.76 vol 1.42x = in 80.40-80.85 consolidation zone. L1 not met (close 80.76 < 81.25 AND vol 1.42x < 1.5x). 05:00 UTC in-progress 80.65 vol 0.76x \u2014 vol decay 1.55x->1.42x->0.76x post-Q2-reclaim = buyer-exhaustion shape (mirror of v2.10 short-cover exhaustion). Q2-reclaim technically still alive but follow-through is flat consolidation, not impulse. v2.10(a)/(b) impulse criteria remain unmet; v2.11 precludes intra-bar entry. Live-status pipe still stale ~5.55% (85.23 vs OHLCV 80.65); reading OHLCV. Cohort if hypothetical long: down+long n=4 +$12.74 WR75% non-worst. Budget normal, holds_in_a_row=14, no forced exploration. HOLD with hypothetical long C-grade at lower conviction.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 80.65,
-          "sl_pct": 0.008,
-          "tp_pct": 0.0093,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_sl",
-          "reasoning_30_words": "Q2-reclaim alive but vol fade post-reclaim 1.55x->1.42x->0.76x signals buyer exhaustion; consolidation in 80.40-80.85 likely 2h; 8h down-regime + no fresh demand drifts toward SL."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779944319.199782,
-      "iso": "2026-05-28T00:58:39-04:00",
-      "fire_count": 234,
-      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779944319.199782,
-        "fire_iso": "2026-05-28T00:58:39-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 80.72,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.65,
-          "momentum_pct": -0.08,
-          "rsi": 60.4,
-          "_note": "live-status indicator pipe stale ~5.6% (85.23 vs OHLCV 80.72). vol_ratio 0.65 = intra-bar cum 04:45 UTC bar (~12/15 min). stoch_rsi/momentum/rsi from stale live-status, retained per schema but not load-bearing."
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "Fire 234. 04:45 UTC bar IN-PROGRESS (~12/15 min): intra-bar o=80.73 h=80.76 l=80.61 c=80.72, vol cum 4369 = 0.65x median-96 baseline. Sits squarely in fire 233 pre-commit L3 zone (80.40-80.85 = consolidation HOLD with hypothetical maintained at lower conviction). v2.11 forbids in-progress entry; v2.14 candidate (n=1 from immediately prior bar 04:30 UTC: intra-bar 0.37x -> final 1.55x = +318% late-bar acceleration) explicitly warns intra-bar reads can invert at close. No L1 (>=81.25+vol+ut=ENTER) or L2 (80.85-81.25=build) threshold met. State unchanged since fire 233 (6min ago). HOLD, await 05:00 UTC close to resolve L1/L2/L3/L4 branch. Long-leaning-tentative lean maintained, no upgrade.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 80.72,
-          "sl_pct": 0.0108,
-          "tp_pct": 0.0136,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "unclear",
-          "reasoning_30_words": "Long-leaning post Q2-reclaim but consolidating 80.40-80.85; vol decayed 0.65x mid-bar; v2.10(a) impulse near-miss not flipped to confirm; break >81.25 needed; break <80.40 refutes."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 1411,
-    "since_iso": "2026-05-28T07:00:56-04:00",
-    "since_framework_version": "v2.22",
-    "latest_fire_iso": "2026-05-28T07:38:30-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 824,
+    "since_iso": "2026-05-28T08:00:51-04:00",
+    "since_framework_version": "v2.23",
+    "latest_fire_iso": "2026-05-28T08:05:19-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1779966056.156188,
-    "iso": "2026-05-28T07:00:56-04:00",
-    "fire_count": 264,
+    "ts": 1779969651.118756,
+    "iso": "2026-05-28T08:00:51-04:00",
+    "fire_count": 267,
     "balance_usd": 894.08,
-    "version_tag": "v2.22",
-    "trigger": "surprise:sl_hit_intrabar_v22_first_directional_test_refuted_n1",
-    "what_im_trying": "Surprise reflection on SL trigger. Position-intent LONG opened fire 251 at 80.90 with SL 80.68 (retest_low 80.74 minus $0.06 buffer = v2.20 SL_BUFFER candidate test). Held 113 min. Intra-bar 10:45 UTC bucket low = 80.62 (current ticker 80.67), $0.06 BELOW SL 80.68. SL fires per canonical price-touched semantics (SKILL: 'Distinct from EXIT triggers which fire on price-touched (intra-bar) per canonical SL semantics'). DRY_RUN exit at 80.68 = gross -$1.10 + ~$1.20 RT fees = ~-$2.30 net. v2.22 first directional test of post-displacement consolidation resolution NOT directionally predictable from displacement direction = REFUTED on the test instance: a low-vol retest-reclaim long in displacement-DOWN context died on a second displacement-direction-aligned breakdown.",
-    "whats_working": "(a) Pre-commit tree U5_SL_hit_intrabar branch fired exactly as scripted \u2014 predicted net loss ~$2.29 vs actual ~$2.30. No narrative scramble needed. (b) v2.19_EXTENDED + v2.20_v2 settling-window discipline held: I am NOT extracting structural conclusions from the in-progress 10:45 bucket (it closes 11:00 UTC); SL trigger is intra-bar by canonical semantics, NOT a closed-bar lesson. The distinction held cleanly. (c) Cohort framework gave the correct prior: down+long n=4 +$12.74 WR75% looked favorable, this trade adds n=5 with a $-2.30 loss \u2192 cohort updates to n=5 +$10.44 WR 60%. Sample still small but the cohort is no longer strictly green; useful refinement. (d) v2.20 SL_BUFFER candidate gets a second instance with a strong directional refute: $0.06 buffer was NOT enough; intra-bar broke $0.06 BEYOND SL on volume (10:45 in-progress vol 6867 ~1.03x baseline 6681). A 0.15% buffer (~$0.12) would have placed SL exactly at 80.62 \u2014 just barely hit. v2.20 evidence is now ambiguous between 'buffer was too small' and 'thesis was structurally wrong'; lean toward thesis-wrong since the breakdown took out 80.74 retest low conclusively, not just stop-clustered.",
-    "whats_failing": "(a) PRIMARY refutation: v2.22 first directional test = REFUTED. Hypothesis 'low-vol retest-reclaim in post-displacement consolidation can sustain into directional drift in down+long cohort' did NOT survive. The displacement was DOWN at 03:15 UTC; the 80.85 ceiling reclaimed UP via low-vol drift (80.85 retest at 08:15 \u2192 reclaim 08:30 \u2192 sustain through 10:00); then the down-direction reasserted at 10:15-10:45. Consolidation resolution direction was NOT 'unpredictable from displacement direction' \u2014 it resolved IN displacement direction after a counter-trend retest fake-out. (b) Low-vol confirmation absent at entry was the right read but the wrong response: the v0.9 framework said 'vol-conviction absent \u2192 B-grade not S/A'; B-grade size was taken anyway because pre-commit tree from fire 249 fired the BETTER_LONG_ENTRY_GEOMETRY trigger. Trade-off was: 'honor pre-commit logic' (discipline) vs 'wait for vol confirmation' (data). Discipline won; data was right. n=1, but a structural pattern emerging: low-vol reclaim entries in v2.22 context die to subsequent displacement-direction continuation. (c) The 80.85 'ex-resistance held' framework was anchored on 6 of 6 post-entry bars closing above. 10:15 canonical c=80.91 (after the settling-window correction in v2.21) confirmed support-flip thesis intact at that point. Then 10:30 c=80.89 still above. Then 10:45 in-progress collapses to low 80.62. The thesis went from 'intact' to 'destroyed' in <30min of tape. Lesson: 'support-flip resolution' status can flip on a single high-vol bar even when prior N bars looked clean.",
-    "what_im_iterating": "(a) v2.22 candidate is REFUTED on n=1 directional test in displacement-DOWN context. Refute is one-directional, not necessarily bilateral \u2014 the test instance was specifically 'long counter to displacement direction'. The candidate as written ('not directionally predictable from displacement direction alone') is NOT fully refuted; it would be falsified only if the displacement-aligned trade also failed. CURRENT POSTURE: v2.22 stands as descriptive candidate but with new caveat \u2014 counter-displacement entries in post-displacement consolidation appear especially fragile to vol confirmation absence. (b) PROMOTION CANDIDATE v2.10_RECLAIM_IMPULSE_REQUIREMENT escalates: vol confirmation is NOT a nice-to-have for reclaim entries; it's structurally load-bearing. Reformulating: 'Reclaim-and-sustain qualifies as ENTRY-CONFIRMABLE only when \u22651 bar within 4 bars of reclaim shows vol \u2265 1.5\u00d7 median-96 baseline AND closes in upper third of bar range, OR there is no entry.' (c) v2.20 SL_BUFFER pending data: $0.06 buffer failed; $0.12 buffer (0.15%) would have just barely failed. SL buffer doesn't save you from a thesis-wrong trade. Demote v2.20 priority \u2014 buffer-tuning solves the WR-attribution part of SL clusters but does not save P&L when the structural thesis is invalidated. (d) Budget impact: spent $5.15 + ~$2.30 this trade = ~$7.45 of $8.94 daily budget. ~$1.49 remaining = below smallest grade exposure floor for B-grade. **Effectively no more B/C ENTERs today unless forced_exploration_due triggers (won't \u2014 last_enter was this morning).** Practical posture for the rest of UTC day: HOLD with hypothetical-only counterfactuals; await UTC rollover (08:00 EDT = 12:00 UTC, ~1 hour from this fire's wallclock).",
+    "version_tag": "v2.23",
+    "trigger": "surprise:rollover_timing_error_state_json_overestimated_imminence_n1",
+    "what_im_trying": "Continue v0.9 cohort x asymmetry x structural framework in Regime Uncertain post-EXIT (fire 264). Tape: post-breakdown consolidation inside 80.47-80.75 candidate envelope. 11:30 UTC now CANONICAL closed at c=80.71 v=4537 (third closed bar inside envelope after 11:00 c=80.70 + 11:15 c=80.63) -- bar 3 of 4 toward v2.6_RANGE_CLEAR new-range establish. 11:45 UTC IP c=80.76 v=2839 partial (87% bucket, 13min in), marginally above envelope high 80.75 but vol very low. v2.10_v0_2 mirror gate (>=1.5x vol burst + lower-third close within 4 bars of break) STILL UNMET: 10:45 bucket vol re-rates 1.35x -> 1.23x against the refreshed median-96 baseline (6681 -> 7354). Subsequent 3 bars 0.63x / 0.62x / 0.39x partial. No vol-confirmation entry signal either direction.",
+    "whats_working": "(a) v2.6_RANGE_CLEAR + v2.10_v0_2 in stereo discipline: range cleared on 2-of-2 closes below 80.85 ex-resistance; v2.10_v0_2 gate STILL prevents a vol-unconfirmed breakdown-aligned short, exactly the trade shape that would have been the symmetric counterpart to fire 251's refuted long. Same rule, opposite direction, same refusal. (b) State.json multi-fire OHLCV refresh + settling-window discipline (v2.20_v2) caught the baseline shift this fire -- the 10:45 vol_ratio dropped from 1.35x to 1.23x on baseline rebase, but the conclusion (sub-1.5x) is unchanged. Discipline is hardening. (c) Cohort framework: down+short is the favorable green cohort here (n=6 +$1.39 WR 83.3%); if forced to lean, points there.",
+    "whats_failing": "(a) PRIMARY surprise this fire: state.json fires 264-266 framed pre-commit U5 'wait-for-rollover' as ~42min based on an incorrect 'rollover at 12:00 UTC = 08:00 EDT' read. Budget script verified this fire: today_utc_str() = now_utc().strftime('%Y-%m-%d'), rolls at 00:00 UTC = 20:00 EDT. Real rollover is ~12 HOURS away, not ~42 minutes. The wait-for-rollover branch is hour-scale not minute-scale; practical posture is 'budget-floored until 20:00 EDT' barring tight-SL exception. Fires 264-266 were not catastrophically wrong (HOLD outcomes correct) but the wait-framing was materially off-base. (b) Baseline median-96 shifted 6681 -> 7354 across the morning. Vol_ratio readings carried forward from older state.json fields will mis-state recent burst magnitudes. The 10:45 vol_burst 1.35x conclusion from fires 264-266 was against the older baseline; against current it is 1.23x. Conclusion (sub-1.5x) holds either way -- but the principle (baseline-relative readings need baseline tagging) is new.",
+    "what_im_iterating": "(a) Rollover-timing correction propagates into state.json this fire: pre_commit_tree_next_bar.U5_post_rollover_re_enter becomes hour-scale wait, not minute-scale. (b) New operational rule CANDIDATE v2.23_BASELINE_SHIFT_AWARENESS: when recording vol or vol_ratio in state.json, record both absolute volume AND the median-96 baseline used. Allows future fires to re-rate consistently. n=1 first observation. (c) New conditional grade rule CANDIDATE v2.23b_TIGHT_SL_AFFORDABILITY: when daily budget remaining > 1-contract notional x ~0.8% SL but < 1-contract notional x default 2% SL, B-grade ENTERs are still affordable IF SL discipline holds tight. Tight-SL trades have known thesis-fail risk (per v2.20 SL_BUFFER refute) -- this is exploration, not optimization. Not promoting yet; placeholder for the rest-of-day window.",
     "edits_from_prior": [
-      "v2.22 first directional test = REFUTED on n=1 counter-displacement long. The hypothesis 'consolidation resolves not-directionally-predictably' weakened toward 'displacement-direction continuation is the default after fake-out reclaims'. Need n\u22653 instances to codify.",
-      "v2.10_RECLAIM_IMPULSE_REQUIREMENT promotion candidate strengthens: vol-burst confirmation moves from optional to load-bearing for reclaim entries. n=2 evidence: fire 221 (drift-reclaim refuted) + fire 251 (drift-reclaim refuted, this trade).",
-      "v2.20 SL_BUFFER candidate downgraded in priority: buffer math does not save you when structural thesis is wrong. SL_BUFFER addresses stop-cluster sweep noise, not thesis-failure tail risk.",
-      "Cohort update: down+long now n=5 (was n=4 +$12.74 WR75%) \u2192 n=5 +$10.44 WR 60%. Still net green, but margin narrowing.",
-      "Daily budget effectively exhausted: ~$1.49 remaining vs ~$2.29 typical B-grade at-risk. No more B/C ENTERs today; UTC rollover ~1 hour away.",
-      "cognition_mode transitions Inventory Discovery \u2192 Regime Uncertain on EXIT (no position open + cross-timeframe disagreement persists: macro down, short-term tape just executed a counter-reclaim-fake-out continuation back to displacement direction)."
+      "Rollover-timing material correction: 00:00 UTC = 20:00 EDT, not 12:00 UTC = 08:00 EDT. Prior fires 264-266 wait-for-rollover framing was 12 hours under-estimated. Practical posture shifts: HOLD-with-budget-floor through the wait, not HOLD-rollover-imminent.",
+      "v2.10_v0_2 vol-burst threshold readings must reference live median-96 baseline, not prior reflection's snapshot. Today's baseline rebased 6681 -> 7354 between this morning's fires and now. The 10:45 burst drops from 1.35x to 1.23x under rebase; the sub-1.5x conclusion is intact under either baseline so no operational impact this fire, but the principle is new.",
+      "Added v2.23_BASELINE_SHIFT_AWARENESS descriptive candidate.",
+      "Added v2.23b_TIGHT_SL_AFFORDABILITY descriptive candidate -- worth flagging because $3.79 remaining intersects 1-contract clamp x 0.8% SL in a way that prior 'B-grade exhausted' framing missed."
     ],
-    "founder_notes_addressed": [
-      {
-        "note_ts": 1779800092.946008,
-        "claim_id": "C1",
-        "response_type": "accepted",
-        "how": "Already incorporated in v0.9 framework (fee-drag-as-binding-filter retracted). Re-affirmed this trade: net loss $2.30 is 52% fees, 48% directional loss \u2014 fee ratio is consistent with 9-trade SL-cluster shape, not fee-floor bleed. The cluster is real.",
-        "planned_change": "No new code change. v0.9 cohort \u00d7 asymmetry \u00d7 structural framework already in operational use; this trade adds to the empirical record for the SL-cluster reframing."
-      },
-      {
-        "note_ts": 1779800596.659168,
-        "claim_id": "C2",
-        "response_type": "refined",
-        "how": "Today's 3 B/C ENTERs + 1 SL hit demonstrate that B/C exploratory tier IS taking trades \u2014 binary A+/HOLD deadlock is broken in practice. The bottleneck now is reclaim-entry quality (low-vol drift fakes), not threshold height. Reclaim quality threshold (v2.10) is the live discriminator.",
-        "planned_change": "Promote v2.10_RECLAIM_IMPULSE_REQUIREMENT from descriptive to operational candidate after one more instance of low-vol reclaim refutation. Will gate B-grade reclaim entries on vol burst evidence (\u22651.5\u00d7 baseline within 4 bars of reclaim)."
-      }
-    ],
+    "founder_notes_addressed": [],
     "open_questions": [
-      "When the next post-displacement consolidation occurs, do I prefer (i) WAIT for displacement-aligned trigger, (ii) take counter-trend reclaim ONLY with vol burst confirmation, or (iii) HOLD both sides until cleaner regime? Need decision rule before next instance.",
-      "Did the 10:45 in-progress bucket break occur on cleanly heavier volume than baseline (~6867 vs 6681 = 1.03x)? Not really \u2014 only marginally above baseline. Suggests this wasn't a vol-displacement breakdown either, just continued drift in the OTHER direction. Implies the regime since 03:15 displacement is 'unstable post-displacement chop with directional bias unclear'.",
-      "Is the v2.20 SL_BUFFER candidate worth keeping at all if the binding constraint is reclaim quality, not buffer math? Possibly retire to descriptive-archive after this fire's downgrade.",
-      "Budget rollover at 00:00 UTC = 08:00 EDT. The next ENTER window opens with full $8.94 budget. What setup signature do I want to see to commit? Likely answer: closed-bar vol \u22651.5\u00d7 baseline + displacement event + cohort non-worst + clean directional asymmetry (>= 6/8 one side). Stricter than v0.9 default for the next post-loss session."
+      "Will 11:45 IP bar close canonical above envelope high 80.75? Currently c=80.76 v=0.39x partial. Marginal upper drift on very low vol. If canonical close > 80.75, what does it do to v2.6_RANGE_CLEAR new-range bar 3-of-4 count? Probably: bar 3-of-4 invalidates; new envelope candidate restarts. Per v2.20_v2 settling window I should not extract structural conclusion until >=180s post 12:00 UTC close.",
+      "Is the tight-SL window real or rationalized? B-grade exploration with SL <= 0.8% means thesis-wrong loss is small ($3.40), but also means the trade can be stop-clustered cheaply. v2.20 SL_BUFFER refute (fire 264) showed buffer doesn't save you from thesis-wrong; this would let me probe but I should be honest that this is RL self-preservation rationalization unless the setup quality is clean.",
+      "Next cadence-reflection at fire 264 + 4h = ~11:00 EDT. Plan to consolidate the week's framework (cohort + v2.10_v0_2 + v2.6 + settling window + baseline-shift) into a single living-document reflection then, vs the current per-surprise patch chain."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1779969651.118756,
+      "iso": "2026-05-28T08:00:51-04:00",
+      "fire_count": 267,
+      "balance_usd": 894.08,
+      "version_tag": "v2.23",
+      "trigger": "surprise:rollover_timing_error_state_json_overestimated_imminence_n1",
+      "what_im_trying": "Continue v0.9 cohort x asymmetry x structural framework in Regime Uncertain post-EXIT (fire 264). Tape: post-breakdown consolidation inside 80.47-80.75 candidate envelope. 11:30 UTC now CANONICAL closed at c=80.71 v=4537 (third closed bar inside envelope after 11:00 c=80.70 + 11:15 c=80.63) -- bar 3 of 4 toward v2.6_RANGE_CLEAR new-range establish. 11:45 UTC IP c=80.76 v=2839 partial (87% bucket, 13min in), marginally above envelope high 80.75 but vol very low. v2.10_v0_2 mirror gate (>=1.5x vol burst + lower-third close within 4 bars of break) STILL UNMET: 10:45 bucket vol re-rates 1.35x -> 1.23x against the refreshed median-96 baseline (6681 -> 7354). Subsequent 3 bars 0.63x / 0.62x / 0.39x partial. No vol-confirmation entry signal either direction.",
+      "whats_working": "(a) v2.6_RANGE_CLEAR + v2.10_v0_2 in stereo discipline: range cleared on 2-of-2 closes below 80.85 ex-resistance; v2.10_v0_2 gate STILL prevents a vol-unconfirmed breakdown-aligned short, exactly the trade shape that would have been the symmetric counterpart to fire 251's refuted long. Same rule, opposite direction, same refusal. (b) State.json multi-fire OHLCV refresh + settling-window discipline (v2.20_v2) caught the baseline shift this fire -- the 10:45 vol_ratio dropped from 1.35x to 1.23x on baseline rebase, but the conclusion (sub-1.5x) is unchanged. Discipline is hardening. (c) Cohort framework: down+short is the favorable green cohort here (n=6 +$1.39 WR 83.3%); if forced to lean, points there.",
+      "whats_failing": "(a) PRIMARY surprise this fire: state.json fires 264-266 framed pre-commit U5 'wait-for-rollover' as ~42min based on an incorrect 'rollover at 12:00 UTC = 08:00 EDT' read. Budget script verified this fire: today_utc_str() = now_utc().strftime('%Y-%m-%d'), rolls at 00:00 UTC = 20:00 EDT. Real rollover is ~12 HOURS away, not ~42 minutes. The wait-for-rollover branch is hour-scale not minute-scale; practical posture is 'budget-floored until 20:00 EDT' barring tight-SL exception. Fires 264-266 were not catastrophically wrong (HOLD outcomes correct) but the wait-framing was materially off-base. (b) Baseline median-96 shifted 6681 -> 7354 across the morning. Vol_ratio readings carried forward from older state.json fields will mis-state recent burst magnitudes. The 10:45 vol_burst 1.35x conclusion from fires 264-266 was against the older baseline; against current it is 1.23x. Conclusion (sub-1.5x) holds either way -- but the principle (baseline-relative readings need baseline tagging) is new.",
+      "what_im_iterating": "(a) Rollover-timing correction propagates into state.json this fire: pre_commit_tree_next_bar.U5_post_rollover_re_enter becomes hour-scale wait, not minute-scale. (b) New operational rule CANDIDATE v2.23_BASELINE_SHIFT_AWARENESS: when recording vol or vol_ratio in state.json, record both absolute volume AND the median-96 baseline used. Allows future fires to re-rate consistently. n=1 first observation. (c) New conditional grade rule CANDIDATE v2.23b_TIGHT_SL_AFFORDABILITY: when daily budget remaining > 1-contract notional x ~0.8% SL but < 1-contract notional x default 2% SL, B-grade ENTERs are still affordable IF SL discipline holds tight. Tight-SL trades have known thesis-fail risk (per v2.20 SL_BUFFER refute) -- this is exploration, not optimization. Not promoting yet; placeholder for the rest-of-day window.",
+      "edits_from_prior": [
+        "Rollover-timing material correction: 00:00 UTC = 20:00 EDT, not 12:00 UTC = 08:00 EDT. Prior fires 264-266 wait-for-rollover framing was 12 hours under-estimated. Practical posture shifts: HOLD-with-budget-floor through the wait, not HOLD-rollover-imminent.",
+        "v2.10_v0_2 vol-burst threshold readings must reference live median-96 baseline, not prior reflection's snapshot. Today's baseline rebased 6681 -> 7354 between this morning's fires and now. The 10:45 burst drops from 1.35x to 1.23x under rebase; the sub-1.5x conclusion is intact under either baseline so no operational impact this fire, but the principle is new.",
+        "Added v2.23_BASELINE_SHIFT_AWARENESS descriptive candidate.",
+        "Added v2.23b_TIGHT_SL_AFFORDABILITY descriptive candidate -- worth flagging because $3.79 remaining intersects 1-contract clamp x 0.8% SL in a way that prior 'B-grade exhausted' framing missed."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Will 11:45 IP bar close canonical above envelope high 80.75? Currently c=80.76 v=0.39x partial. Marginal upper drift on very low vol. If canonical close > 80.75, what does it do to v2.6_RANGE_CLEAR new-range bar 3-of-4 count? Probably: bar 3-of-4 invalidates; new envelope candidate restarts. Per v2.20_v2 settling window I should not extract structural conclusion until >=180s post 12:00 UTC close.",
+        "Is the tight-SL window real or rationalized? B-grade exploration with SL <= 0.8% means thesis-wrong loss is small ($3.40), but also means the trade can be stop-clustered cheaply. v2.20 SL_BUFFER refute (fire 264) showed buffer doesn't save you from thesis-wrong; this would let me probe but I should be honest that this is RL self-preservation rationalization unless the setup quality is clean.",
+        "Next cadence-reflection at fire 264 + 4h = ~11:00 EDT. Plan to consolidate the week's framework (cohort + v2.10_v0_2 + v2.6 + settling window + baseline-shift) into a single living-document reflection then, vs the current per-surprise patch chain."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1779966056.156188,
@@ -2043,38 +2022,6 @@
         "P0 v5.3 indicator-pipe staleness (-5.79%): continued widening. Bonny intervention candidate at -6% threshold or sooner.",
         "Wrapper P1->P0 promotion (3+ shapes observed): still flagged for Bonny next op interaction. Cron continues operating despite live-status staleness because OHLCV-derived cross-check is the authoritative path per operational_hard_rules_v1_2."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779943779.21402,
-      "iso": "2026-05-28T00:49:39-04:00",
-      "fire_count": 233,
-      "balance_usd": 894.08,
-      "version_tag": "v2.13",
-      "trigger": "surprise:q2_reclaim_triggered_04_30_utc_close_80_75_vol_1_55x_late_bar_vol_burst_short_thesis_withdrawn",
-      "what_im_trying": "Pre-commit branch Q2-reclaim from fire 231 FIRED on 04:30 UTC close. Specifically: close 80.75 >= 80.55 threshold AND vol_ratio 1.55x >= 1.5x AND close 80.75 in upper-third (80.566-80.77 of 80.15-80.77 range). All three trigger conditions strictly met. Q2 definition was 'exhaustion confirms, withdraw short thesis, re-derive structural read.' Short lean held since 03:15 UTC displacement is now WITHDRAWN. Long counterfactual takes over as tentative direction but v2.10(a) [bar closing >=1% above reclaim level on vol >= baseline] and v2.10(b) [monotonic 4-bar drift + bar vol >=1.5x + upper-third] are NOT yet met. Specifically: 80.75 vs 80.00 reclaim level = +0.94% (within rounding precision of v2.10(a)'s 1.0% but strictly missing); 4-bar drift 04:00=80.43 -> 04:15=80.21 -> 04:30=80.75 is NOT monotonic (04:15 went down). HOLD this fire with explicit long counterfactual + new pre-commit tree for 04:45/05:00 UTC. Cohort if long entry materialized: down+long n=4 +$12.74 WR75% non-worst.",
-      "whats_working": "(1) Pre-commit branch tree (v2.4/v2.8 machinery, codified through v2.12 across 7 fires) resolved precisely as written. Q2's three conditions (close threshold + vol threshold + upper-third) all satisfied strictly, no rounding-precision compromise needed. Branch P2-extend (close <=80.00) clearly not met (close 80.75 way above). Branch R2-drift (80.00-80.55) clearly not met. Branch S2-extreme not met. Single branch fired cleanly = good pre-commit hygiene. (2) v2.11 pre-confirmation discipline held through fires 226-232 (4 fires of HOLD despite various in-progress patterns). The discipline cost zero exploration budget and saved an in-progress entry attempt on what turned out to be either a continuation OR a reversal (decided only at the 04:30 close). (3) v2.6_DISPLACEMENT + v2.12d sustain-threshold + Expansion mode cadence kept fire density consistent with the structural transition. Five fires (228-232) during the post-displacement window each contributed substantive pre-commit tree refinement.",
-      "whats_failing": "(1) PRIMARY new failure mode: late-bar vol-burst pattern not captured by any existing rule. State.json comment written by fire 232 at 00:41:07 EDT (~9min into 04:30 UTC bar) reported vol 2412 = 0.37x and inferred 'consistent with v2.12c short-side exhaustion CONFIRM shape (vol decay >=50%).' Final 04:30 close: vol 10333 = 1.55x. The last ~6 minutes of the bar added 7921 vol = +328% vs intra-bar reading. The exhaustion-confirming reading at the intra-bar peek inverted at bar close. This is structurally distinct from anything in v2.9 displacement archetypes or v2.12c exhaustion shape. Possible name: 'late-bar-vol-acceleration' \u2014 vol burst concentrated in last 1-3 minutes of a 15m bar, often coinciding with reclaim attempts. Need 2-3 more instances to codify. Hypothesis: occurs when sub-bar liquidity vacuum gets re-filled in the late minutes by bid-stacking that wasn't present mid-bar. (2) v2.12c displacement-exhaustion hypothesis taking n=2 disconfirming evidence now: 04:00 (vol re-expansion + lower-low close) was disconfirm #1; 04:30 reclaim instead of continuation = disconfirm #2 of the exhaustion-then-continuation reading. n=2 disconfirms substantially weakens v2.12c \u2014 promote candidate status DOWNGRADED. (3) v2.10-symmetric (b) still close to triggering on this fire: 80.75 reclaim is +0.94% from 80.00 = within 0.05% of the 1.0% threshold = v2.12 NEAR-MISS PROTOCOL applies = HOLD with hypothetical, not strict trigger. Useful first symmetric test of v2.12 NEAR-MISS PROTOCOL candidate. (4) Calibration dataset still 3 cycles -$4.90 (no new closes this fire).",
-      "what_im_iterating": "(a) NEW operational rule candidate v2.14 LATE-BAR VOL-ACCELERATION SHAPE (descriptive only this fire): when a 15m bar's vol_ratio in the final 1-3 minutes exceeds the cumulative vol_ratio in the prior 12+ minutes by >2x, the bar's directional read MAY invert versus its intra-bar shape. Operational implication: intra-bar vol readings carry low signal-to-noise late in 15m bars during regime transitions; pre-commit trees should explicitly note 'awaiting bar close' rather than allowing intra-bar narrative to influence decisions. n=1 first instance this fire. Codify after 2-3 more events. (b) v2.12c DISPLACEMENT-EXHAUSTION DISCRIMINATOR candidate DOWNGRADED: n=2 disconfirms (04:00, 04:30) means candidate weakening, not strengthening. Keep descriptive. Need 2-3 more strict-confirm instances OR strict-disconfirm instances to reach codification threshold either direction. (c) v2.12 NEAR-MISS PROTOCOL first symmetric test passed: 80.75 close = +0.94% from 80.00 = within rounding-precision of v2.10's 1.0% threshold = HOLD with hypothetical maintained. Same shape as fire 228's 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 near-miss. n=2 for near-miss protocol = candidate strengthening, codify after one more. (d) Short thesis WITHDRAWN. Cognition lean shifts to long-leaning tentative. Pre-commit branches for 04:45/05:00 UTC: Branch L1-confirm-impulse (next bar closes >=81.25 + vol >=1.5x + upper-third) = ENTER long B-grade at close; Branch L2-build (next bar closes 80.85-81.25 + vol >= baseline + upper-third) = HOLD with hypothetical long upgraded to v2.10(a) approaching but not met yet, watch 05:00 for v2.10(b) monotonic-4-bar; Branch L3-fade (next bar closes 80.40-80.85) = reclaim consolidation, HOLD with hypothetical maintained at lower conviction; Branch L4-refute (next bar closes <=80.40) = reclaim refuted, structural re-derivation, possibly re-arm short thesis. (e) State.json update: cognition_mode stays Expansion. Update narrative + hypothetical_position from short to long-leaning + new pre-commit branches + v2.13 / v2.14 candidate. Mode cadence remains 'fire 5min full'.",
-      "edits_from_prior": [
-        "Pre-commit branch Q2-reclaim fired strictly as written (close 80.75 >=80.55, vol 1.55x >=1.5x, upper-third confirmed). All three conditions satisfied without rounding-precision compromise. Branch tree machinery validated for 4th consecutive surprise event (cumulative validation across v2.4/v2.8/v2.11/v2.12 + this fire).",
-        "Short thesis WITHDRAWN per Q2 definition. Cognition lean flips from short-dominant to long-leaning-tentative pending v2.10(a)/(b) confirmation.",
-        "NEW v2.14 LATE-BAR VOL-ACCELERATION SHAPE candidate introduced (descriptive): intra-bar vol readings during regime transitions can invert at bar close. First instance fire 232's 0.37x intra-bar -> fire 233's 1.55x final = +318%. n=1.",
-        "v2.12c DISPLACEMENT-EXHAUSTION DISCRIMINATOR candidate DOWNGRADED: n=2 disconfirming evidence (04:00 vol re-expansion + 04:30 reclaim instead of continuation). Candidate weakening.",
-        "v2.12 NEAR-MISS PROTOCOL candidate gains 2nd instance (80.75 vs +1.0% threshold = $0.06 short / 0.07% miss = within rounding). n=2 for protocol, codify after one more.",
-        "v5.3 indicator-pipe staleness now ~5.55% (live-status 85.23 vs OHLCV-derived 80.75). Was -5.41% at fire 228. Continued slow widening. P0 active anomaly status maintained.",
-        "Founder notes pending queue still empty (25th consecutive). No new founder input since 09:03 EDT 5-26 (~63h)."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "Does 04:45 UTC follow-through confirm long lean via L1 (>=81.25 + vol >=1.5x + upper-third = strong impulse), L2 (80.85-81.25 with vol >= baseline = building reclaim), L3 (80.40-80.85 = consolidation), or L4 (<=80.40 = refute reclaim)?",
-        "Late-bar vol-acceleration pattern (v2.14 candidate): does this recur within Expansion mode, or was it specific to the post-displacement liquidity-vacuum re-fill? n=1 can't answer.",
-        "v2.12c displacement-exhaustion candidate with n=2 disconfirm: is the candidate dead (3+ disconfirms threshold for removal) or pending more evidence? Probabilistically the latter \u2014 keep descriptive, no operational weight.",
-        "If long entry materializes at 04:45 close (L1 branch) at say 81.30: SL should anchor below 79.89 (04:15 intra-bar low) = $1.41 stop = 1.74% = heavy at B-grade. Or below 80.20 (04:30 open) = $1.10 stop = 1.35% = still heavy. v2.10(a) tighter-SL option: below 80.55 (Q2 trigger threshold) = $0.75 stop = 0.92% = workable but invites whipsaw if Q2 was a fakeout.",
-        "TP targets for long if entry materializes: 81.25 (03:15 displacement break level, +0.62% from 80.75) = too tight; 81.82 (pre-displacement floor / sub-band candidate ceiling, +1.32%) = reasonable; 82.07 (pre-21:30-displacement range floor, +1.59%) = strong; 82.74 (pre-21:30-displacement range high, +2.46%) = aggressive but valid given Expansion mode.",
-        "Down+long cohort n=4 +$12.74 WR75% would become n=5 if entry fires. Small sample sensitivity high. One loss takes WR to 60% and PnL closer to zero.",
-        "P0 v5.3 indicator-pipe staleness widening (-5.41% -> -5.55% over 3 fires) \u2014 alert-level intervention candidate, flag for Bonny."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -2403,12 +2350,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 266 (~07:38 EDT / 11:38 UTC). Post-EXIT continuation. 11:00 canonical settled (vs fire 265 prelim): c=80.70 (was prelim 80.69, +$0.01 revision) v=8154=1.22x baseline 6681 (vs prelim 1.20x). 11:15 canonical (closed 11:30 UTC, this fire ~8min post-close >=180s = canonical per v2.20_v2): c=80.63 v=4662=0.70x. 11:30 in-progress (~8min in) c=80.61 v=1592 partial. Candidate envelope 80.47-80.74 now bar 2-3 of 4 (11:00 + 11:15 closed inside + 11:30 IP inside). v2.10_v0_2 mirror gate (breakdown entry vol-burst confirmation within 4 bars) NOT satisfied: 2 closed bars post-10:45 (1.22x then 0.70x) both sub-1.5x; no second vol burst. Pre-commit U1 (<80.40 + vol>=1.5x continuation) NOT triggered. Budget script reports remaining $3.79 + forced_exploration_due=true (script bug \u2014 last_enter_ts=null but 3 ENTERs today); substantive forced-exploration condition (>24h drought) not present. UTC rollover ~22min. HOLD with hypothetical B-grade short per pre-commit U5 wait-for-rollover branch.",
-    "updated_ts": 1779968300.0,
-    "updated_iso": "2026-05-28T07:38:30-04:00",
-    "updated_by_fire_iso": "2026-05-28T07:38:30-04:00",
+    "comment": "Fire 267 (~07:58 EDT / 11:58 UTC). Surprise reflection v2.23 just written -- ROLLOVER TIMING CORRECTION (was framed 42min, actual ~12h to 20:00 EDT = 00:00 UTC tomorrow per budget script today_utc_str()) + baseline-shift awareness (median-96 6681->7354). Tape: 11:30 UTC NOW CANONICAL c=80.71 v=4537 (0.62x baseline) -- third closed bar inside candidate envelope 80.47-80.75 (bar 3 of 4 toward v2.6_RANGE_CLEAR new-range establish). 11:45 UTC IP c=80.76 v=2839 (0.39x partial, 87% bucket complete). 11:45 close 80.76 is marginally above envelope high 80.75 but in-progress and very low vol -- per v2.20_v2 settling window do not extract structural conclusion until >=180s post 12:00 UTC. v2.10_v0_2 mirror gate STILL UNMET: 10:45 vol_burst re-rates 1.35x -> 1.23x against current baseline 7354, sub-1.5x threshold; subsequent 3 closed bars 0.63x / 0.62x sub-baseline. Cohort down+short n=6 +$1.39 WR 83.3% remains favorable lean direction. Budget remaining $3.79 -- intersects with 1-contract clamp x ~0.8% SL ($3.40 at-risk) in a tight-SL affordability window (v2.23b descriptive candidate). HOLD with hypothetical B-grade short.",
+    "updated_ts": 1779969486.0,
+    "updated_iso": "2026-05-28T07:58:06-04:00",
+    "updated_by_fire_iso": "2026-05-28T07:58:06-04:00",
     "regime": "down",
-    "regime_detail": "live-status 'down' (288h window) + state.json 'down' aligned. Short-term tape: 80.85 reclaim DEAD. Post-reclaim drift (07:15-10:00 UTC) followed by displacement-direction-aligned breakdown (10:15 c=80.91 \u2192 10:30 c=80.89 \u2192 10:45 c=80.61 vol 1.35x \u2192 11:00 prelim c=80.69 vol 1.20x). Cross-timeframe disagreement REDUCING: macro down + short-term tape now aligned down. cognition_mode candidate for transition Regime Uncertain \u2192 Expansion deferred \u2014 10:45 vol 1.35x is below 3.0x displacement threshold; 11:00 prelim 1.20x sub-displacement also; this is sustained-vol drift continuation, not single-bar displacement event. Hold Regime Uncertain pending UTC rollover and clearer regime signal.",
+    "regime_detail": "live-status 'down' (288h window) + state.json 'down' aligned. Short-term tape: 80.85 reclaim DEAD, breakdown CONFIRMED via 10:45 vol burst (1.23x revised against new baseline 7354). Post-breakdown consolidation in candidate envelope 80.47-80.75 now bar 3 of 4 closed inside (11:00 c=80.70 + 11:15 c=80.63 + 11:30 c=80.71 canonical). 11:45 IP c=80.76 marginally above envelope high but unsettled. Macro down + short-term tape aligned down. cognition_mode candidate for Regime Uncertain -> Compression transition deferred -- envelope only bar 3 of 4 (need bar 4 canonical for stable range), and the IP slight upside drift on 11:45 introduces directional uncertainty pending settle.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2420,58 +2367,61 @@
     "range_pre_break_high": 81.5,
     "new_range_candidate_low": 80.47,
     "new_range_candidate_high": 80.75,
-    "new_range_candidate_bars": 2,
-    "new_range_candidate_status": "v2.6_RANGE_CLEAR fired on 2-of-2 closes below 80.85 ex-resistance (10:45 canonical 80.61 + 11:00 canonical settled 80.70). Active envelope cleared. New candidate envelope updated to 80.47 (11:00 low) to 80.75 (11:15 high) \u2014 11:15 canonical h=80.75 extended high marginally. Needs 4+ consecutive bars per v2.6_RANGE_CLEAR for canonical new range. Currently bar 2 of 4 confirmed (11:00 close 80.70 inside + 11:15 close 80.63 inside); 11:30 in-progress c=80.61 also tracking inside but not yet canonical. NOTE: candidate range high adjusted from 80.74 (fire 265 prelim) to 80.75 on 11:15 canonical h=80.75 read.",
+    "new_range_candidate_bars": 3,
+    "new_range_candidate_status": "v2.6_RANGE_CLEAR new-range candidate envelope 80.47-80.75. Bar 3 of 4 CONFIRMED CANONICAL: 11:00 c=80.70 inside + 11:15 c=80.63 inside + 11:30 c=80.71 CANONICAL inside. 11:45 IP c=80.76 partial (sits $0.01 above envelope high 80.75 but unsettled; bucket closes 12:00 UTC + 180s settling = 12:03 UTC for canonical). If 11:45 closes canonical inside envelope (h <=80.75 or c <=80.75), bar 4 of 4 confirms and new range establishes. If 11:45 closes canonical above 80.75, envelope candidate restarts.",
     "candidate_floor_test_count": 1,
     "candidate_floor_test_detail": "11:00 prelim low 80.47 = first dip below the in-flight 80.50-80.85 sub-band envelope (formerly U3 anticipated). Sub-band envelope itself superseded by the breakdown.",
-    "post_floor_lifting_detail": "BREAKDOWN CONFIRMED + POST-BREAKDOWN CONSOLIDATION (NO SECOND VOL BURST). Sequence (canonical closed-bar UTC reads \u2265180s post-close where applicable): 80.57(07:00) \u2192 80.82(07:15 STOP-SWEEP UPPER) \u2192 80.84(07:30) \u2192 80.91(07:45) \u2192 81.07(08:00) \u2192 80.79(08:15 RETEST DIP) \u2192 80.87(08:30 RECLAIM vol 0.58x \u2014 low-vol) \u2192 80.85(08:45 SUSTAIN vol 0.37x) \u2192 80.86(09:00 entry-bar SUSTAIN low 80.71 vol 0.64x) \u2192 81.04(09:15 IMPULSE vol 0.86x) \u2192 81.08(09:30 SUSTAIN vol 0.66x) \u2192 81.09(09:45 vol 0.62x) \u2192 81.10(10:00 vol 0.97x) \u2192 80.91(10:15 canonical c=80.91 vol 4635) \u2192 80.89(10:30 canonical c=80.89 v=6373=0.95x \u2014 small drift below ex-resistance) \u2192 80.61(10:45 CANONICAL h=80.96 l=80.59 v=9044=1.35x \u2014 VOL BURST BREAKDOWN, close in LOWER THIRD of range: (80.61-80.59)/(80.96-80.59)=5.4% from low) \u2192 80.70(11:00 CANONICAL SETTLED h=80.74 l=80.47 v=8154=1.22x \u2014 close upper-third (80.70-80.47)/(80.74-80.47)=85%, vol still elevated but sub-1.5x) \u2192 80.63(11:15 CANONICAL h=80.75 l=80.55 v=4662=0.70x \u2014 close mid-range (80.63-80.55)/(80.75-80.55)=40%, vol sub-baseline) \u2192 80.61(11:30 IN-PROGRESS ~8min h=80.63 l=80.52 v=1592 partial, c=80.61). Post-breakdown shape: 1 vol-burst bar then 2 consolidating bars on declining vol (1.22x \u2192 0.70x). NO second vol-burst within 4 bars per v2.10_v0_2 mirror gate \u2014 entry confirmation NOT met. 2-of-2 closes below 80.85 ex-resistance fully canonical now.",
+    "post_floor_lifting_detail": "BREAKDOWN CONFIRMED + POST-BREAKDOWN CONSOLIDATION DEEPENING (still no second vol burst). Sequence (canonical closed-bar UTC reads >=180s post-close, vol_ratio against current median-96 baseline 7354): 80.91(10:15 canonical h=81.14 l=80.78 v=4635=0.63x) -> 80.89(10:30 canonical h=80.97 l=80.81 v=6373=0.87x) -> 80.61(10:45 CANONICAL h=80.96 l=80.59 v=9044=1.23x REVISED -- VOL BURST BREAKDOWN, close lower-third of bar range) -> 80.70(11:00 CANONICAL h=80.74 l=80.47 v=8154=1.11x -- close upper-third, vol elevated but sub-1.5x) -> 80.63(11:15 CANONICAL h=80.75 l=80.55 v=4662=0.63x -- close mid-range, vol sub-baseline) -> 80.71(11:30 CANONICAL h=80.71 l=80.52 v=4537=0.62x -- close near high, vol sub-baseline) -> 80.76(11:45 IN-PROGRESS 13min h=80.79 l=80.61 v=2839=0.39x partial, c=80.76). Post-breakdown shape: 1 vol-burst bar then 3 consolidating bars on declining vol. NO second vol-burst within 5 bars of breakdown -- v2.10_v0_2 mirror gate entry confirmation DECISIVELY NOT MET (window typically 4 bars, now 5 bars elapsed without confirmation). Consolidation more likely transitioning to new compression range than continuing breakdown.",
     "sweeps_attempted": 14,
-    "sweep_detail": "14 confirmed/near-miss sweeps recorded earlier. 10:45 bar high 80.96 = 1-tick-above-80.85 (rejected, distinct from sweep above ATH); the bar then plunged to 80.59 close 80.61. This pattern (test 80.96 \u2192 reject \u2192 close lower third with vol burst) is a textbook upper-rejection breakdown. n=1 first explicit instance recorded.",
+    "sweep_detail": "14 confirmed/near-miss sweeps recorded earlier. 10:45 bar high 80.96 = 1-tick-above-80.85 (rejected) followed by close 80.61 lower-third = textbook upper-rejection breakdown. n=1 first explicit instance recorded.",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
-    "last_displacement_detail": "03:15 UTC remains most recent CONFIRMED displacement (5.84x baseline, breakdown direction). 10:45 vol 1.35x baseline is SUSTAINED-VOL DRIFT, NOT single-bar displacement event (threshold 3.0x per v2.6_DISPLACEMENT). v2.22 candidate evidence: the displacement-direction continuation is happening via sustained-vol drift sequences (1.35x + 1.20x consecutive bars), not via discrete displacement event. Refines v2.22 character.",
-    "funding_state": "OKX -7.70e-5 (live-status feed updated since fire 264, modest decay from -8.12e-5). Negative funding still directionally supportive of upward drift in the abstract, but tape is presently in displacement-direction-DOWN \u2014 funding is sub-binding signal.",
+    "last_displacement_detail": "03:15 UTC remains most recent CONFIRMED displacement (5.84x baseline at that time, breakdown direction). 10:45 vol 1.23x revised baseline = SUSTAINED-VOL DRIFT, not single-bar displacement event (threshold 3.0x per v2.6_DISPLACEMENT).",
+    "funding_state": "OKX -6.51e-5 (live-status feed -- modest decay continues). Negative funding directionally supportive of upward drift in the abstract, but tape is in displacement-direction-DOWN consolidation -- funding is sub-binding signal.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 266. Post-EXIT continuation, ticker 80.63. Tape this fire: 11:00 canonical settled c=80.70 v=1.22x (minor revision from prelim); 11:15 canonical c=80.63 v=0.70x (sub-baseline drift, mid-range close); 11:30 IP c=80.61 partial. Post-breakdown sequence has the expected continuation SHAPE (closes inside new envelope 80.47-80.75) but the vol PROFILE is failing v2.10_v0_2 mirror gate \u2014 2 closed bars post-vol-burst on declining vol, no second burst. Cohort down+short n=6 +$1.39 WR 83.3% remains favorable for directional lean. Budget script reports remaining $3.79 + forced_exploration_due=true (script bug \u2014 last_enter_ts=null but 3 ENTERs today); substantive forced-exploration condition not present. UTC rollover ~22min restores $8.94 fresh budget. HOLD with hypothetical B-grade short per pre-commit U5 wait-for-rollover branch + per v2.10_v0_2 gate non-satisfaction.",
+    "narrative": "Phase B.1 fire 267. Post-EXIT continuation, ticker 80.76 (11:45 IP partial). v2.23 surprise reflection written this fire correcting rollover-timing error -- actual rollover at 20:00 EDT = 00:00 UTC tomorrow (~12h), not 08:00 EDT (~42min) as fires 264-266 framed. Tape this fire: 11:30 UTC canonical NOW available c=80.71 v=0.62x (third inside-envelope close); 11:45 IP c=80.76 marginally above envelope high, vol 0.39x partial. v2.10_v0_2 mirror gate decisively NOT met (5 bars post-breakdown, no second vol-burst). New range establish pending 11:45 canonical close (12:03 UTC = ~5min from this fire). Budget $3.79 remaining intersects with tight-SL 1-contract clamp ($3.40 at-risk @ 0.8% SL) in narrow affordability window (v2.23b candidate) -- but no setup signature this fire to trigger. Cohort down+short n=6 favorable lean; hypothetical B-grade short with SL above 80.85 + buffer.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-28T07:01:51-04:00",
-    "cognition_mode_rationale": "Continuation from fire 264. Tape now shows displacement-direction-DOWN aligned (macro down + short-term tape just resolved DOWN after reclaim fake-out), reducing cross-timeframe disagreement. Not yet Expansion (10:45 vol 1.35x < 3.0x single-bar displacement threshold; 11:00 prelim 1.20x sub-displacement). Not Compression (sustained vol >1.0x with directional drift). Inventory Discovery N/A (no position). Regime Uncertain remains the correct label \u2014 directional resolution in flight but not yet of magnitude warranting Expansion transition.",
+    "cognition_mode_rationale": "Continuation from fire 264. Post-EXIT, no position. Tape shows consolidation INSIDE candidate envelope (3 of 4 bars confirmed) but v2.6_RANGE_CLEAR bar 4 pending the 11:45 canonical close. If bar 4 confirms inside envelope, mode transitions Regime Uncertain -> Compression. If 11:45 closes above 80.75 canonical, mode stays Regime Uncertain. Either outcome ~5min away. Not Expansion (no displacement). Not Inventory Discovery (no position).",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 6,
+    "skipped_fires_in_mode": 9,
     "last_mode_transition_iso": "2026-05-28T07:01:51-04:00",
-    "_cognition_mode_transition_note": "RU since fire 264 (EXIT). Wrapper still fires every 5min unconditional. Skipped-fires-in-mode count tracks for ontology data.",
+    "_cognition_mode_transition_note": "RU since fire 264 (EXIT). Wrapper still fires every 5min unconditional. Skipped-fires-in-mode count tracks for ontology data. Next fire (~08:03 EDT) catches the 11:45 canonical close.",
     "operational_hard_rules_v1_2": [
       "Inspect live-status system_gates.stale + system_gates.age_sec EVERY fire. If stale=true OR age_sec>3600, do not trust indicators_pro/BB/StochRSI/vol_ratio - re-derive from Coinbase OHLCV.",
       "Cross-check live-status indicators.price vs latest Coinbase 15m close EVERY fire. If divergence >0.5%, use OHLCV-derived.",
       "Compute 4h cumulative price move from Coinbase 15m closes EVERY fire. If abs(move) >1.5% AND avg vol_ratio over window >1.0x, transition cognition_mode to Expansion (or Regime Uncertain if cross-timeframe disagreement).",
-      "v2.17 CANDIDATE: bar-close fields (close price, final vol, vol_ratio) must be sourced from CLOSED-bar OHLCV pulls AFTER bar_close_timestamp. Partial in-progress data, if referenced at all, must be explicitly IN_PROGRESS-tagged."
+      "v2.17 CANDIDATE: bar-close fields (close price, final vol, vol_ratio) must be sourced from CLOSED-bar OHLCV pulls AFTER bar_close_timestamp. Partial in-progress data, if referenced at all, must be explicitly IN_PROGRESS-tagged.",
+      "v2.23 NEW: when recording vol or vol_ratio, also record the median-96 baseline used at read-time. Baselines shift hour-to-hour as bars age out; vol_ratio re-rates accordingly."
     ],
     "operational_rule_v2_3": "B-grade ENTER requires (a) cohort historical non-worst AND (b) >=1 of {clear directional asymmetry / structural trigger CONFIRMED / displacement CONFIRMED}. Pending-confirmation setups don't qualify.",
     "operational_rule_v2_5_REFINED": "Compression-to-Regime-Uncertain pre-break warning (SLOW WALKS ONLY): 2 consecutive 15m bars with vol_ratio >=1.5x median(96-bar baseline) AND at least one bar closing within 0.3pct of either band edge. FALSIFIED for displacement-type breaks.",
     "operational_rule_v2_6_DISPLACEMENT": "Displacement-event classification: single 15m bar with vol_ratio >=3.0x median-96 baseline AND close outside an active band = DISPLACEMENT EVENT, transition mode directly to Regime Uncertain (or Expansion if vol sustains across 2+ subsequent bars), no warning phase.",
-    "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope. FIELD-TESTED 5-28 fire 265: 2-of-2 closes below 80.85 ex-resistance triggered clear of 80.68-81.50 envelope. Rule operational.",
+    "operational_rule_v2_6_RANGE_CLEAR": "When range_low or range_high breaks AND the break sustains >=2 consecutive bar closes outside the band, clear range_low_usd / range_high_usd to null in state.json. New range establishes when 4+ consecutive bars define a stable envelope. FIELD-TESTED 5-28 fires 265-267: 80.85 ex-resistance cleared on 2-of-2; new envelope 80.47-80.75 now bar 3 of 4 (pending 11:45 canonical close at 12:03 UTC).",
     "operational_rule_v2_6_COHORT_DISAMBIG": "When live-status regime conflicts with state.json regime, treat for cohort purposes as MORE PESSIMISTIC of the two (conservative). INACTIVE this fire -- regimes ALIGNED 'down'.",
-    "operational_rule_v2_7_ROLLOVER_PROXIMITY": "When daily uncertainty budget remaining < smallest grade exposure floor AND UTC midnight within 30 minutes AND a structural setup is half-confirmed, HOLD with hypothetical-and-explicit-rollover-plan is correct shape. ACTIVE THIS FIRE \u2014 though rollover is ~45min, this is within the spirit of the rule.",
-    "operational_rule_v2_8_TENTATIVE_SUBBAND_CONSOLIDATION": "When post-displacement period extends ~16 bars without resolution, treat as new sub-band envelope. REFUTED FIRE 264 for the specific 80.57-80.85 envelope (resolution direction UP not DOWN); RE-AFFIRMED FIRE 265 in modified form \u2014 the 80.57-80.85 was actually the buyer-failed-reclaim envelope, the displacement-direction-aligned continuation came AFTER. v2.8 needs character refinement: sub-band envelopes can host BOTH reclaim-fakeout AND continuation. Direction-of-resolution discriminator: vol-burst on the continuation side.",
+    "operational_rule_v2_7_ROLLOVER_PROXIMITY": "When daily uncertainty budget remaining < smallest grade exposure floor AND UTC midnight within 30 minutes AND a structural setup is half-confirmed, HOLD with hypothetical-and-explicit-rollover-plan is correct shape. v2.23 CORRECTION: UTC midnight = 00:00 UTC = 20:00 EDT, not 08:00 EDT. Rollover this fire is ~12h away. INACTIVE this fire (proximity not within 30min).",
+    "operational_rule_v2_8_TENTATIVE_SUBBAND_CONSOLIDATION": "When post-displacement period extends ~16 bars without resolution, treat as new sub-band envelope. REFUTED FIRE 264 for the 80.57-80.85 envelope (resolution direction UP not DOWN); RE-AFFIRMED FIRE 265 in modified form -- direction-of-resolution discriminator: vol-burst on the continuation side.",
     "operational_rule_v2_9_DESCRIPTIVE_DISPLACEMENT_SHAPE": "Displacement events have a SHAPE dimension: (i) trend-continuation, (ii) liquidity-sweep, (iii) range-establish. Codification requires 2-3 more events per category.",
-    "operational_rule_v2_10_RECLAIM_IMPULSE_REQUIREMENT_v0_2": "PROMOTION CANDIDATE strengthened fire 264 v2.22 reflection. n=2 evidence (fire 221 drift-reclaim refuted + fire 251/264 drift-reclaim refuted). Reformulated: 'Reclaim-and-sustain qualifies as ENTRY-CONFIRMABLE only when \u22651 bar within 4 bars of reclaim shows vol \u2265 1.5\u00d7 median-96 baseline AND closes in upper third of bar range, OR there is no entry.' Mirror for breakdown entries: lower third + vol \u22651.5\u00d7. Status: descriptive \u2192 near-operational; one more instance of either direction codifies.",
+    "operational_rule_v2_10_RECLAIM_IMPULSE_REQUIREMENT_v0_2": "PROMOTION CANDIDATE. n=2 evidence (fire 221 + fire 251 both refuted). Reformulated: 'Reclaim-and-sustain qualifies as ENTRY-CONFIRMABLE only when >=1 bar within 4 bars of reclaim shows vol >= 1.5x median-96 baseline AND closes in upper third of bar range, OR there is no entry.' Mirror for breakdown entries: lower third + vol >=1.5x. ACTIVELY APPLIED THIS FIRE: 10:45 breakdown vol 1.23x sub-1.5x, lower-third close confirmed; no second vol-burst in 5 subsequent bars -> mirror gate decisively NOT MET -> no breakdown-aligned short ENTER. Status: descriptive -> near-operational; one more instance of either direction codifies.",
     "operational_rule_v2_10_SYMMETRIC_SHORT_CANDIDATE_REJECTED": "REJECTED ON N=1 (FORMALIZED FIRE 249). Maintained.",
-    "operational_rule_v2_11_PRE_CONFIRMATION_FORBIDDEN_CANDIDATE": "PROMOTION CANDIDATE -- not yet operational. Entry on in-progress 15m bars forbidden regardless of pattern shape. Evidence: #165 (drift-reclaim, refuted) + #221 (sweep-reclaim, refuted). Distinct from EXIT triggers which fire on price-touched (intra-bar) per canonical SL semantics. AFFIRMED THIS FIRE: 10:45 SL hit was correct exit semantic (intra-bar low 80.59 below SL 80.68).",
-    "operational_rule_v2_11_DISPLACEMENT_PRECEDING_CONTEXT_DISCRIMINATOR": "DESCRIPTIVE candidate -- not yet operational. Discriminate displacement-continuation from displacement-sweep by PRECEDING CONTEXT.",
-    "operational_rule_v2_12_NEAR_MISS_PROTOCOL_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational.",
+    "operational_rule_v2_11_PRE_CONFIRMATION_FORBIDDEN_CANDIDATE": "PROMOTION CANDIDATE -- not yet operational. Entry on in-progress 15m bars forbidden regardless of pattern shape. n=2 evidence #165 + #221.",
+    "operational_rule_v2_11_DISPLACEMENT_PRECEDING_CONTEXT_DISCRIMINATOR": "DESCRIPTIVE candidate.",
+    "operational_rule_v2_12_NEAR_MISS_PROTOCOL_CANDIDATE": "DESCRIPTIVE candidate.",
     "operational_rule_v2_12c_DISPLACEMENT_EXHAUSTION_CANDIDATE": "DESCRIPTIVE candidate -- DOWNGRADED.",
-    "operational_rule_v2_12d_SUSTAIN_THRESHOLD_CODIFICATION_CANDIDATE": "DESCRIPTIVE candidate -- v2.6 'vol sustains across 2+ subsequent bars': vol_ratio >=1.5x median-96 for each subsequent bar. EVIDENCE THIS FIRE: 10:45 1.35x + 11:00 prelim 1.20x = NEITHER bar >=1.5x but consecutive both above 1.0x. Refine threshold candidate: 'sustained vol' = \u22651.0x for \u22652 consecutive (vs \u22651.5x). n=1 first observation.",
-    "operational_rule_v2_13_DISPLACEMENT_EXHAUSTION_DISCONFIRM_PROTOCOL": "DESCRIPTIVE candidate -- feeds v2.12c downgrade.",
-    "operational_rule_v2_14_LATE_BAR_VOL_ACCELERATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational.",
-    "operational_rule_v2_15_BUYER_EXHAUSTION_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational.",
+    "operational_rule_v2_12d_SUSTAIN_THRESHOLD_CODIFICATION_CANDIDATE": "DESCRIPTIVE candidate -- 'sustained vol' threshold candidate 1.0x for 2+ consecutive. n=1 first observation.",
+    "operational_rule_v2_13_DISPLACEMENT_EXHAUSTION_DISCONFIRM_PROTOCOL": "DESCRIPTIVE candidate.",
+    "operational_rule_v2_14_LATE_BAR_VOL_ACCELERATION_CANDIDATE": "DESCRIPTIVE candidate.",
+    "operational_rule_v2_15_BUYER_EXHAUSTION_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate.",
     "operational_rule_v2_16_WEAK_VOL_RECLAIM_CANDIDATE": "DESCRIPTIVE candidate -- PARTIALLY WITHDRAWN fire 242.",
-    "operational_rule_v2_17_STATE_READING_PRE_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational.",
-    "operational_rule_v2_18_RESISTANCE_TEST_COUNT_NOT_PREDICTIVE_CANDIDATE": "DESCRIPTIVE candidate. NEW EVIDENCE FIRE 265: 80.85 held 6+ closed-bar tests then broke decisively. Test-count NOT predictive of breakdown timing.",
-    "operational_rule_v2_19_IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN_CANDIDATE": "DESCRIPTIVE candidate. SCOPE EVOLVED v2.21. ACTIVELY HONORED THIS FIRE: 11:00 bar tagged PRELIM-in-settling-window, not treated as canonical. State.json field updates labeled 'prelim' where applicable.",
-    "operational_rule_v2_20_SL_BUFFER_v0_1_CANDIDATE": "DESCRIPTIVE candidate -- DOWNGRADED FIRE 264. n=2 instances but second was n=1 directional refute showing buffer doesn't save thesis-wrong trades. Retained as descriptive-archive.",
-    "operational_rule_v2_20_v2_SETTLING_WINDOW_CANDIDATE": "DESCRIPTIVE candidate. n=1 first observed (fire 262). ACTIVELY APPLIED THIS FIRE: 11:00 bar at ~3min post-close = AT 180s threshold; treated as prelim (not strictly canonical) and flagged. Need n>=3 observations for codification.",
-    "operational_rule_v2_21_IN_PROGRESS_RECURRENCE_v0_1_CANDIDATE": "DESCRIPTIVE candidate -- not operational.",
-    "operational_rule_v2_22_POST_DISPLACEMENT_LONG_CONSOLIDATION_RESOLUTION_NOT_DIRECTIONALLY_PREDICTABLE_CANDIDATE": "DESCRIPTIVE candidate -- REFUTED on n=1 counter-displacement long (fire 264). Tape this fire CONFIRMS displacement-direction continuation as default after reclaim fake-out. Refined claim: 'Consolidation resolution is directionally biased TOWARD displacement direction; counter-displacement reclaim entries require \u22651.5x vol-burst confirmation per v2.10_v0_2'. Need n\u22653 instances for codification.",
-    "last_gate_check_iso": "2026-05-28T11:38:30.000000+00:00",
+    "operational_rule_v2_17_STATE_READING_PRE_CONFIRMATION_CANDIDATE": "DESCRIPTIVE candidate.",
+    "operational_rule_v2_18_RESISTANCE_TEST_COUNT_NOT_PREDICTIVE_CANDIDATE": "DESCRIPTIVE candidate. 80.85 held 6+ tests then broke decisively.",
+    "operational_rule_v2_19_IN_PROGRESS_LESSON_EXTRACTION_FORBIDDEN_CANDIDATE": "DESCRIPTIVE candidate. SCOPE EVOLVED v2.21. ACTIVELY HONORED THIS FIRE: 11:45 IP bar tagged partial-not-canonical.",
+    "operational_rule_v2_20_SL_BUFFER_v0_1_CANDIDATE": "DESCRIPTIVE candidate -- DOWNGRADED FIRE 264. Retained as descriptive-archive.",
+    "operational_rule_v2_20_v2_SETTLING_WINDOW_CANDIDATE": "DESCRIPTIVE candidate. ACTIVELY APPLIED THIS FIRE: 11:45 IP bar at ~13min/15min = 87% bucket complete, pre-canonical, not extracting structural conclusions. Need n>=3 observations for codification.",
+    "operational_rule_v2_21_IN_PROGRESS_RECURRENCE_v0_1_CANDIDATE": "DESCRIPTIVE candidate.",
+    "operational_rule_v2_22_POST_DISPLACEMENT_LONG_CONSOLIDATION_RESOLUTION_NOT_DIRECTIONALLY_PREDICTABLE_CANDIDATE": "DESCRIPTIVE candidate -- REFUTED fire 264. Refined claim: 'Consolidation resolution biased TOWARD displacement direction; counter-displacement reclaim entries require >=1.5x vol-burst confirmation per v2.10_v0_2'. Need n>=3 instances.",
+    "operational_rule_v2_23_BASELINE_SHIFT_AWARENESS_CANDIDATE": "DESCRIPTIVE candidate. NEW THIS FIRE. When recording vol or vol_ratio in state.json, record both absolute volume AND median-96 baseline used at read-time. The 10:45 vol_ratio rebased 1.35x -> 1.23x today is the first n=1 instance. Need n>=3 for codification.",
+    "operational_rule_v2_23b_TIGHT_SL_AFFORDABILITY_CANDIDATE": "DESCRIPTIVE candidate. NEW THIS FIRE. When daily budget remaining > 1-contract notional x ~0.8% SL but < 1-contract notional x default 2% SL, B-grade ENTERs are still affordable IF SL discipline holds tight. Tight-SL trades carry known thesis-fail risk (per v2.20 SL_BUFFER refute) -- exploration, not optimization. Today: $3.79 remaining > $3.40 (1c x 0.8%) < $8.50 (1c x 2%). Conditional applicability. No trigger this fire.",
+    "last_gate_check_iso": "2026-05-28T11:58:06+00:00",
     "active_position_intent": null,
     "last_closed_position": {
       "direction": "long",
@@ -2497,7 +2447,7 @@
       "max_adverse_excursion_pct": -0.00347,
       "max_adverse_excursion_iso": "2026-05-28T10:45+00:00",
       "info_hypothesis_status": "refuted",
-      "lesson_short": "v2.22 first directional test (low-vol retest-reclaim long counter to displacement-DOWN direction) REFUTED on n=1. v2.10 reclaim-impulse-vol-burst requirement strengthens. Tape this fire confirms displacement-direction continuation via 10:45 vol-burst breakdown 1.35x close in lower third. Cohort down+long n=5 +$10.44 WR 60%."
+      "lesson_short": "v2.22 first directional test (low-vol retest-reclaim long counter to displacement-DOWN direction) REFUTED on n=1. v2.10 reclaim-impulse-vol-burst requirement strengthens."
     },
     "prior_closed_position": {
       "direction": "short",
@@ -2519,26 +2469,27 @@
     },
     "pending_decision": null,
     "pre_commit_tree_next_bar": {
-      "target_bar_utc": "11:15 UTC bucket (closes 11:30 UTC, canonical \u2265180s post-close = 11:33 UTC). Next fire ~07:23 EDT = 11:23 UTC = at 11:00-bucket-canonical (~8min post-close \u2265180s OK) + 11:15 in-progress (~8min into bucket).",
-      "context": "Post-EXIT. Regime Uncertain. Active envelope cleared per v2.6_RANGE_CLEAR. New candidate envelope 80.47-80.74 (bar 1 of 4). Cohort down+short historically n=6 +$1.39 WR 83.3% \u2014 favorable historical lean for short direction continuation. Budget cash-realized ~$1.49 below B-grade at-risk floor. UTC rollover at 12:00 UTC = 08:00 EDT (~42min from this fire) restores fresh $8.94 budget.",
-      "U1_continued_breakdown_strengthening": "Next bar closes < 80.40 on vol \u22651.5\u00d7 baseline: full displacement-direction continuation confirmed; regime stabilizes 'down' renewed conviction. If budget rollover has occurred \u2192 A-grade SHORT candidate. If not \u2192 WAIT for rollover (~30min away).",
-      "U2_bounce_reclaim_into_80_85": "Bar closes back above 80.85 ex-resistance with vol burst: double-fake-out; rare; would re-open the v2.22 'not directionally predictable' candidate as live. HOLD until clear directional confirmation.",
-      "U3_compression_in_new_envelope": "Bars close inside 80.47-80.74 for 3+ more bars (bar 2-4 of v2.6_RANGE_CLEAR new range establish): new compression range; cognition_mode \u2192 Compression.",
-      "U4_displacement_event": "Vol \u22653.0\u00d7 baseline + close outside new candidate envelope: DISPLACEMENT EVENT; regime transition with no warning.",
-      "U5_post_rollover_re_enter": "UTC rollover at 12:00 UTC restores $8.94 fresh budget. If tape still in breakdown direction with sub-1h-old confirmation: A/B-grade SHORT candidate per v0.9 framework (cohort down+short n=6 +$1.39 WR 83.3% + structural break + vol-burst-confirmed breakdown).",
-      "HOLD_continue": "Otherwise: HOLD with hypothetical_entry_record. Budget exhausted pre-rollover."
+      "target_bar_utc": "12:00 UTC bucket close + 180s settling = 12:03 UTC canonical resolution of 11:45 IP bar. Next fire ~08:03 EDT = 12:03 UTC catches the canonical close.",
+      "context": "Post-EXIT. Regime Uncertain. v2.6_RANGE_CLEAR new envelope 80.47-80.75 at bar 3 of 4 inside. 11:45 IP c=80.76 marginally above envelope high but unsettled. Budget $3.79 remaining; rollover ~12h away (20:00 EDT). Cohort down+short historically n=6 +$1.39 WR 83.3%. v2.10_v0_2 mirror gate decisively unmet for breakdown-aligned shorts.",
+      "U1_11_45_canonical_closes_inside_envelope": "11:45 canonical close <= 80.75 confirms bar 4 of 4 -> new range 80.47-80.75 ESTABLISHED -> cognition_mode transitions Regime Uncertain -> Compression. HOLD posture continues. Next entry signal requires range escape with vol confirmation.",
+      "U2_11_45_canonical_closes_above_envelope": "11:45 canonical close > 80.75 invalidates bar 4 -> envelope candidate restarts. Three reads possible: (a) reclaim-of-ex-resistance attempt (close 80.76-80.84 range); (b) ex-resistance reclaim confirmed (close >=80.85); (c) range escape upward on vol. If (a)/(b) on >=1.5x vol burst, v2.10_v0_2 mirror NOW satisfies for an A-grade LONG candidate -- BUT budget $3.79 remaining limits to 1-contract tight-SL. If (c), regime question reopens.",
+      "U3_displacement_event": "Any 15m bar vol >=3.0x baseline 7354 ~= 22000 + close outside envelope: DISPLACEMENT EVENT; regime transition with no warning.",
+      "U4_continued_low_vol_chop_inside_envelope": "Bars continue closing inside envelope on sub-baseline vol: Compression Mode after bar 4. Skip-fires authorized per cognition_mode protocol.",
+      "U5_post_rollover_re_enter": "UTC rollover at 00:00 UTC = 20:00 EDT (~12h from this fire) restores $8.94 fresh budget. No imminent rollover -- this is hour-scale, not minute-scale wait. CORRECTED THIS FIRE.",
+      "U6_tight_SL_affordability_window": "Budget $3.79 > 1c x 0.8% SL ($3.40 at-risk). If a clean v2.10_v0_2-confirmed setup presents in the next ~12h: B-grade 1-contract entry with SL <= 0.8% is technically affordable. Quality bar HIGH (post-SL session, framework is patching not exploring). No trigger this fire.",
+      "HOLD_continue": "Otherwise: HOLD with hypothetical_entry_record. Budget low but not exhausted; rollover far; v2.10_v0_2 gate the binding constraint."
     },
-    "_last_ohlcv_check_iso": "2026-05-28T11:38:30+00:00 (cb-15m: 10:45 canonical c=80.61 v=9044=1.35x; 11:00 canonical settled c=80.70 v=8154=1.22x; 11:15 canonical c=80.63 v=4662=0.70x; 11:30 IP c=80.61 v=1592 partial; ticker 80.63 at 11:38:28 UTC)",
-    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV ticker 80.63 = 5.71% divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness persists (gap widened marginally as live-status didn't refresh past 85.23 while ticker drifted from 80.68 to 80.63)."
+    "_last_ohlcv_check_iso": "2026-05-28T11:58:06+00:00 (cb-15m: 10:15 canonical c=80.91 v=4635=0.63x; 10:30 c=80.89 v=6373=0.87x; 10:45 c=80.61 v=9044=1.23x VOL-BURST REVISED; 11:00 c=80.70 v=8154=1.11x; 11:15 c=80.63 v=4662=0.63x; 11:30 c=80.71 v=4537=0.62x; 11:45 IP c=80.76 v=2839=0.39x partial; baseline median-96 7354)",
+    "_indicator_pipe_staleness_check": "live-status price=85.23 vs OHLCV ticker 80.76 = 5.54% divergence -> indicators_pro NOT TRUSTED. P0 v5.3 indicator-pipe staleness persists."
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-28T07:01:51-04:00",
-    "rationale": "Continuation from fire 264. Tape now shows displacement-direction-DOWN aligned (macro down + short-term tape just resolved DOWN after reclaim fake-out), reducing cross-timeframe disagreement. Not yet Expansion (10:45 vol 1.35x < 3.0x single-bar displacement threshold; 11:00 prelim 1.20x sub-displacement). Not Compression (sustained vol >1.0x with directional drift). Inventory Discovery N/A (no position). Regime Uncertain remains the correct label \u2014 directional resolution in flight but not yet of magnitude warranting Expansion transition.",
+    "rationale": "Continuation from fire 264. Post-EXIT, no position. Tape shows consolidation INSIDE candidate envelope (3 of 4 bars confirmed) but v2.6_RANGE_CLEAR bar 4 pending the 11:45 canonical close. If bar 4 confirms inside envelope, mode transitions Regime Uncertain -> Compression. If 11:45 closes above 80.75 canonical, mode stays Regime Uncertain. Either outcome ~5min away. Not Expansion (no displacement). Not Inventory Discovery (no position).",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 6,
+    "skipped_fires_in_mode": 9,
     "last_mode_transition_iso": "2026-05-28T07:01:51-04:00",
-    "last_gate_check_iso": "2026-05-28T11:38:30.000000+00:00"
+    "last_gate_check_iso": "2026-05-28T11:58:06+00:00"
   },
   "framework_origins": [
     {
@@ -2583,14 +2534,14 @@
     },
     "last_enter_ts": null,
     "last_enter_iso": null,
-    "holds_in_a_row": 1,
+    "holds_in_a_row": 2,
     "exploratory_at_risk_usd_today": 5.15,
     "exploratory_entries_today": 3,
     "hours_since_last_enter": null,
     "forced_exploration_due": true,
     "forced_exploration_due_reason": "no ENTER decision recorded yet",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T11:37:26.552303+00:00",
+    "last_updated_iso": "2026-05-28T11:57:14.439831+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
