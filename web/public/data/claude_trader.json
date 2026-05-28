@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1779941227,
-  "generated_iso": "2026-05-28T00:07:07-0400",
+  "generated_at": 1779941901,
+  "generated_iso": "2026-05-28T00:18:21-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 228,
+    "decisions_total": 229,
     "actions": {
-      "HOLD": 223,
+      "HOLD": 224,
       "ENTER": 3,
       "EXIT": 2
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 67,
+      "HOLD_with_counterfactual": 68,
       "ENTER_C": 1,
       "HOLD_no_plausible": 5,
       "EXIT": 2,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 154,
-      "medium": 57,
+      "medium": 58,
       "low": 17
     },
     "reasoning_chars_avg_all": 960,
-    "reasoning_chars_avg_last10": 1095,
+    "reasoning_chars_avg_last10": 1086,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T00:00:39-04:00",
+    "last_fire_iso": "2026-05-28T00:16:23-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,18 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1779940839.605713,
-    "fire_iso": "2026-05-28T00:00:39-04:00",
+    "fire_ts": 1779941783.5601459,
+    "fire_iso": "2026-05-28T00:16:23-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 80.62,
+    "current_price": 80.43,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 2.75,
-      "momentum_pct": -0.0177,
-      "rsi": null
+      "vol_ratio": 5.95,
+      "momentum_pct": -0.2,
+      "rsi": 60.4,
+      "note": "vol_ratio + momentum_pct derived from Coinbase OHLCV 04:00 UTC in-progress; live-status pipe stale at 85.23 vs OHLCV-current 80.43 (-5.41%). stoch_rsi/rsi from stale live-status, used as last-known-good."
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,23 +61,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "MODE TRANSITION Regime Uncertain -> Expansion this fire (first since Phase B.1 shipped 5-25): 2 subsequent bars sustained vol >=1.5x baseline post 03:15 v2.6_DISPLACEMENT (03:30=6.08x, 03:45=2.75x). Fire 227 branch (a-tentative) STRICTLY NEAR-MISS: 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 gap (0.012% of close, within rounding precision). v2.10-symmetric (b) strict-letter NOT triggered. Compounding nuance: 03:45 intra-bar reclaim low 80.37 -> close 80.62 ($0.25 = 0.31%) on decaying vol (6.08x->2.75x = -55%) = v2.12c displacement-exhaustion candidate (short-side mirror of v2.10 short-cover exhaustion). Two readings exist: strict letter (HOLD) vs substance (3-bar monotonic-down 81.25->80.87->80.62 + sustained vol = trigger). Discipline call: strict letter wins -- v2.10's whole point was demoting 'close enough' triggers after #221 refuted. HOLD with refined hypothetical short + new pre-commit branches for 04:00 UTC. Branch (X-resume): 04:00 close <=80.30 + vol >=1.5x = displacement resumes + exhaustion candidate falsified = ENTER B-grade short. Branch (Y-exhaustion): 04:00 close >=80.85 + vol <=2x = exhaustion confirms = withdraw short thesis. Branch (Z-ambiguous): 04:00 closes 80.30-80.85 = wait 04:15 follow-through. Cohort down+short n=6 +$1.39 WR83% non-worst, baseline good. Budget: $6.43 remaining, holds_in_a_row=6 (normal), forced_exploration_due=False (last ENTER 2.2h ago). v5.3 pipe staleness widened to -5.41%.",
+    "reasoning": "04:00 UTC bar IN-PROGRESS, ~30sec to close. Coinbase OHLCV: o=80.59 l=79.95 h=80.70 cur=80.43 vol=5.95x. Intra-bar: 4-bar monotonic-down extended to capitulation low 79.95 (BELOW fire 228 X-resume trigger 80.30 intra-bar!), reclaimed to 80.70, faded back to 80.43. Critical: vol RE-EXPANDED 5.95x vs 03:45's 2.75x decay = CONTRADICTS v2.12c displacement-exhaustion candidate. Close projection 80.43 lands in Z-ambiguous (80.30-80.85). Cohort down+short n=6 +$1.39 WR83% non-worst supports short structurally. BUT (1) v2.11 pre-confirmation candidate forbids in-progress entry (n=2 prior refutations #165 + #221), (2) v2.10-symmetric (b) lower-third close at 80.20 NOT met by projected 80.43 (middle-third), (3) pre-commit Z-ambiguous explicitly says wait 04:15. Fire 230 after clean close resolves. Mode stays Expansion (sustained vol >=1.5x both 03:30+03:45 + 04:00 in-progress).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "If 04:00 UTC closes >=80.85 with vol_ratio <=2x = exhaustion shape confirms, withdraw short thesis entirely",
-      "If 04:00 UTC closes >=81.25 (above displacement close) = thesis weakens/breaks, full re-derivation",
-      "If by 04:30 UTC neither X nor Y triggers in 2 bars = ambiguous protracted, treat as new compression candidate per v2.8"
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.62,
-      "sl_pct": 0.0097,
-      "tp_pct": 0.0139,
+      "entry_price": 80.43,
+      "sl_pct": 0.0121,
+      "tp_pct": 0.0116,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Branch (a-tentative) near-miss at 80.62 close (lower-third 80.61, $0.01 gap). Monotonic-down 3-bar + sustained vol. Intra-bar reclaim + vol decay = exhaustion fork. HOLD pending 04:00 close."
+      "reasoning_30_words": "4-bar monotonic-down 81.25 to 80.43 + sustained vol 5.95x + failed mid-bar reclaim 80.69 to 80.43 = displacement-continuation reads stronger than v2.12c exhaustion candidate."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1538,11 +1535,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 1452,
+    "holds_since_framework": 2,
+    "avg_chars": 1166,
     "since_iso": "2026-05-28T00:00:39-04:00",
     "since_framework_version": "v2.12",
-    "latest_fire_iso": "2026-05-28T00:00:39-04:00"
+    "latest_fire_iso": "2026-05-28T00:16:23-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2227,12 +2224,12 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "comment": "Fire 228 (2026-05-28T00:00:39 EDT / 04:00:39 UTC). MODE TRANSITION: Regime Uncertain -> Expansion. 2 subsequent bars sustained vol >=1.5x baseline post 03:15 v2.6_DISPLACEMENT (03:30=6.08x, 03:45=2.75x). First operational Expansion transition since Phase B.1 shipped 2026-05-25. Cadence shifts to 'fire 5min full'. Fire 227 branch (a-tentative) STRICTLY NOT triggered: 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 NEAR-MISS. Intra-bar reclaim low 80.37 -> close 80.62 ($0.25 = 0.31%) on decaying vol (6.08x->2.75x) = v2.12c displacement-exhaustion candidate. HOLD with refined hypothetical short + new pre-commit for 04:00/04:15 UTC.",
-    "updated_ts": 1779940839.605713,
-    "updated_iso": "2026-05-28T00:00:39-04:00",
-    "updated_by_fire_iso": "2026-05-28T00:00:39-04:00",
+    "comment": "Fire 229 (2026-05-28T00:16:23 EDT / 04:16:23 UTC). 04:00 UTC bar CLOSED: o=80.59 h=80.77 l=79.95 c=80.43 v=41585 (6.58x vs median-96 6320). Fire 228 pre-commit resolution: Branch (X-resume) NOT triggered (close 80.43 > 80.30). Branch (Y-exhaustion) NOT triggered (close 80.43 < 80.85, vol 6.58x > 2x). Branch (Z-ambiguous) ACTIVE \u2014 wait 04:15 follow-through. v2.12c displacement-exhaustion candidate (named fire 228 on 03:45) took n=1 DISCONFIRMING evidence: post-exhaustion bar 04:00 RE-EXPANDED vol (41585 vs 18650 = +123%) and EXTENDED lower (intra-bar 79.95) instead of drifting up. v2.12c weakened; promotion path now requires accumulating CONFIRMING n=2-3 events. v2.10-symmetric strict-letter (close in lower-third) NOT met by 04:00 (close 80.43 in middle-third 80.22-80.50). Discipline held: HOLD this fire.",
+    "updated_ts": 1779941882.005766,
+    "updated_iso": "2026-05-28T00:18:02-04:00",
+    "updated_by_fire_iso": "2026-05-28T00:18:02-04:00",
     "regime": "down",
-    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe NOW WIDENING: indicators.price=85.23 vs OHLCV-realtime 80.62 = -5.41% divergence (was -5.32% at fire 227 state.json). ALL price/vol/momentum derived from Coinbase OHLCV 15m. Latest 4 bars (UTC): 03:00 close=81.82 vol=10,091 (1.57x); 03:15 close=81.25 vol=36,337 (5.67x) [DISPLACEMENT]; 03:30 close=80.87 vol=38,987 (6.08x); 03:45 close=80.62 vol=17,596 (2.75x). 4h cumulative window: 23:30 UTC ~82.07 -> 03:45 UTC 80.62 = -1.77% (exceeds 1.5% Expansion threshold from v2.6). Mode transitions to Expansion this fire.",
+    "regime_detail": "live-status 'down' + state.json 'down' = ALIGNED. live-status pipe staleness now -5.55% (indicators.price 85.23 vs OHLCV 04:00 close 80.43); was -5.41% at fire 228. Latest 5 closed 15m bars (UTC): 03:00 c=81.82 v=10091 (1.60x); 03:15 c=81.25 v=36337 (5.75x) [v2.6_DISPLACEMENT]; 03:30 c=80.87 v=38987 (6.17x); 03:45 c=80.59 v=18650 (2.95x) [v2.12c candidate]; 04:00 c=80.43 v=41585 (6.58x) [v2.12c DISCONFIRM]. 5h cumulative window: 23:30 UTC ~82.07 -> 04:00 UTC 80.43 = -2.00% (exceeds 1.5% Expansion threshold). Mode stays Expansion.",
     "regime_since_iso": "2026-05-27T17:30-04:00",
     "compression_hours": 0,
     "range_low_usd": null,
@@ -2246,16 +2243,16 @@
     "new_range_candidate_high": null,
     "new_range_candidate_bars": 0,
     "new_range_candidate_status": "POST-DISPLACEMENT confirmed. Sub-band 81.82-82.89 broken at 03:15 UTC. Below 81.25, next reference levels: 80.30 (Branch X displacement-resumes trigger), 80.00 (round), 79.50 (round/Fib). Current low watermark: 80.37 (03:45 intra-bar).",
-    "candidate_floor_test_count": 6,
-    "candidate_floor_test_detail": "Tests: 23:15 RECLAIMED, 23:30 RECLAIMED, 01:15 BROKEN+RECLAIMED (sweep #7), 01:30 RECLAIM, 02:30 NEW LOW 81.87 / weak vol, 03:00 EXACT FLOOR TOUCH close=81.82 vol 1.57x (sub-displacement test), 03:15 CONFIRMED BREAK close=81.25 vol 5.67x (full v2.6_DISPLACEMENT). Test #6 = the breaking test as predicted at fire 226.",
-    "post_floor_lifting_detail": "Sequence (UTC closes): 82.07(23:30) -> 82.17 -> 82.23 -> 82.25 -> 82.42(00:30) -> 82.41 -> 82.35 -> 82.05(01:15 SWEEP) -> 82.18(01:30 RECLAIM) -> 82.14 -> 82.24 -> 82.04(02:15 SELL-SPIKE 5.22x) -> 81.96(02:30 weak) -> 81.97(02:45 weak) -> 81.82(03:00 EXACT-FLOOR-TOUCH vol 1.57x) -> 81.25(03:15 CONFIRMED BREAK vol 5.67x) -> 80.87(03:30 vol 6.08x) -> 80.62(03:45 vol 2.75x = vol decay -55%, intra-bar low 80.37 -> close 80.62 = $0.25 reclaim 0.31%). Reading: continuation displacement at 03:15-03:30 (v2.9 shape i), then 03:45 = displacement-exhaustion candidate (v2.12c) \u2014 vol decay + intra-bar reclaim. Fork at 04:00.",
-    "sweeps_attempted": 8,
-    "sweep_detail": "Sweep cycle #8 RESOLVED. 03:15 UTC CONFIRMED CLOSE 81.25 vol 5.67x (v2.6_DISPLACEMENT). 03:30 UTC follow-through close 80.87 vol 6.08x. 03:45 UTC near-miss bar close 80.62 vol 2.75x (lower-third boundary 80.61 = $0.01 above). Paper #221 SL hit during 03:15 drop.",
+    "candidate_floor_test_count": 7,
+    "candidate_floor_test_detail": "Tests: 23:15/23:30 RECLAIMED, 01:15 BROKEN+RECLAIMED (#7 sweep), 01:30 RECLAIM, 02:30 NEW LOW 81.87 weak vol, 03:00 EXACT FLOOR TOUCH (sub-displacement test) c=81.82 v=1.60x, 03:15 CONFIRMED BREAK c=81.25 v=5.75x (full v2.6_DISPLACEMENT), 04:00 INTRA-BAR test of 80.30 sub-floor: l=79.95 (BELOW), c=80.43 (ABOVE) = failed-extension-with-reclaim, NOT a closed break. Test #7.",
+    "post_floor_lifting_detail": "Sequence (UTC closes): 82.07(23:30) -> 82.17 -> 82.23 -> 82.25 -> 82.42(00:30) -> 82.41 -> 82.35 -> 82.05(01:15 SWEEP) -> 82.18(01:30 RECLAIM) -> 82.14 -> 82.24 -> 82.04(02:15 SELL-SPIKE 5.22x) -> 81.96(02:30 weak) -> 81.97(02:45 weak) -> 81.82(03:00 EXACT-FLOOR-TOUCH 1.60x) -> 81.25(03:15 CONFIRMED BREAK 5.75x) -> 80.87(03:30 6.17x) -> 80.59(03:45 2.95x [v2.12c exhaustion candidate]) -> 80.43(04:00 6.58x [v2.12c DISCONFIRM via vol re-expansion + monotonic-down close]). 5-bar monotonic-down 81.25 -> 80.43 = -1.01% on 4 bars, sustained vol throughout. Reading: continuation-dominant; exhaustion-candidate refuted.",
+    "sweeps_attempted": 9,
+    "sweep_detail": "Sweep cycle #9 INTRA-BAR resolved within Branch-Z. 04:00 UTC bar swept low 79.95 (below fire-228 X-resume trigger 80.30) intra-bar, reclaimed to high 80.77, faded close to 80.43 = swept-and-reclaimed shape WITHIN the in-progress 15m bar. Strict letter: this was NOT a closed sweep (intra-bar only), so v2.6_DISPLACEMENT criteria not re-fired. Counts as sub-band stress test #9 of 80.30 floor.",
     "last_displacement_iso": "2026-05-27T23:15-04:00",
     "last_displacement_detail": "Most recent displacement: 03:15 UTC CONFIRMED. Open 81.81, high 81.86, low 80.62, close 81.25, vol 36,337 = 5.67x median-96 baseline (6,410). Formal v2.6_DISPLACEMENT. Subsequent: 03:30 sustained 6.08x; 03:45 decayed to 2.75x + intra-bar reclaim. v2.6 Expansion criterion (2 subsequent bars sustain vol) met this fire.",
     "funding_state": "OKX 9.67e-6 (pipe stale ~58h+; sign/direction only, magnitude unreliable). Marginal downtick; near-zero noise.",
     "oi_state": "unknown - not in live-status feed.",
-    "narrative": "Phase B.1 fire 228. MODE TRANSITION Regime Uncertain -> Expansion: 2 subsequent bars (03:30=6.08x, 03:45=2.75x) sustained vol >=1.5x baseline post 03:15 v2.6_DISPLACEMENT. First operational Expansion transition since Phase B.1 shipped. Cadence -> 'fire 5min full'. Branch (a-tentative) from fire 227 STRICTLY NEAR-MISS: 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 above ($0.012% of close, within rounding). v2.10-symmetric (b) discipline maintained. Compounding nuance: intra-bar reclaim 80.37 -> 80.62 ($0.25 = 0.31%) on decaying vol (6.08x->2.75x = -55%) = v2.12c displacement-exhaustion candidate (short-side mirror of v2.10 short-cover exhaustion). HOLD with refined hypothetical short anchored at 80.62. New pre-commit for 04:00/04:15 UTC: Branch (X-resume) if 04:00 close <=80.30 vol >=1.5x = ENTER B-grade short at close. Branch (Y-exhaustion) if 04:00 close >=80.85 vol <=2x = withdraw thesis. Branch (Z-ambiguous) if 04:00 closes 80.30-80.85 = wait 04:15 follow-through.",
+    "narrative": "Phase B.1 fire 229. 04:00 UTC bar CLOSED at 80.43 (o=80.59 l=79.95 h=80.77 v=6.58x). Fire 228 pre-commit Branch Z (ambiguous) ACTIVATED \u2014 close in 80.30-80.85 zone. Branch X (close <=80.30) and Branch Y (close >=80.85 + vol <=2x) BOTH NOT triggered. v2.12c displacement-exhaustion candidate (n=1 at 03:45) took n=1 DISCONFIRMING evidence: 04:00 RE-EXPANDED vol and EXTENDED lower instead of drift up. v2.10-symmetric (b) strict letter NOT met: monotonic-down 4-bar OK + sustained vol OK + close in lower-third FAIL (80.43 in middle-third 80.22-80.50). Cohort down+short n=6 +$1.39 WR83.3% remains non-worst structurally. Pre-commit for 04:15 UTC follow-through: Branch (P-extend) if 04:15 closes <=80.10 with vol >=1.5x AND in lower third of its bar = ENTER B-grade short at close. Branch (Q-reclaim) if 04:15 closes >=81.00 with vol >=1.5x AND in upper third = withdraw short thesis, re-derive structural read with reclaim hypothesis. Branch (R-drift) if 04:15 closes 80.10-81.00 with vol <2x = continued ambiguity, escalate to 04:30 close as final resolution; if 04:30 still ambiguous re-classify post-displacement period as new sub-band 80.10-81.00.",
     "cognition_mode": "Expansion",
     "cognition_mode_since_iso": "2026-05-28T00:00:39-04:00",
     "cognition_mode_rationale": "v2.6 criterion: 'transition direct to Regime Uncertain on displacement, Expansion if vol sustains across 2+ subsequent bars'. 03:15 displacement bar (vol 5.67x). 03:30 subsequent bar #1 vol 6.08x. 03:45 subsequent bar #2 vol 2.75x. Both subsequent bars sustain vol >=1.5x baseline (v2.12d sustain threshold candidate). First operational Expansion transition since Phase B.1 shipped 5-25.",
@@ -2281,16 +2278,16 @@
     "operational_rule_v2_12_NEAR_MISS_PROTOCOL_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. Quantitative threshold miss within 0.05% of boundary OR within 2% of bar range = 'thesis-alive but trigger-not-fired' = HOLD with hypothetical maintained, distinct from large misses where thesis weakens. First instance fire 228: 03:45 close 80.62 vs lower-third boundary 80.61 = $0.01 = 0.012% of close = within rounding precision. Codify after 2-3 more instances.",
     "operational_rule_v2_12c_DISPLACEMENT_EXHAUSTION_CANDIDATE": "DESCRIPTIVE candidate -- not yet operational. Post-displacement 15m bar where (i) vol decays >=50% relative to prior bar AND (ii) intra-bar excursion >0.3% of close AND (iii) close reclaims toward middle of bar range = 'displacement-exhaustion' shape. Short-side mirror of v2.10 reclaim-side pattern. n=1 fire 228 (03:45 vol 6.08x->2.75x = -55%, low 80.37 close 80.62 = $0.25 reclaim 0.31%). Codify after 2-3 events.",
     "operational_rule_v2_12d_SUSTAIN_THRESHOLD_CODIFICATION_CANDIDATE": "DESCRIPTIVE -- v2.6 'vol sustains across 2+ subsequent bars' threshold codification: vol_ratio >=1.5x median-96 baseline for each subsequent bar (consistent with v2.5 elevated-vol definition). Applied fire 228 to validate Expansion transition (03:30=6.08x, 03:45=2.75x both >=1.5x).",
-    "last_gate_check_iso": "2026-05-28T04:00:39+00:00",
+    "last_gate_check_iso": "2026-05-28T04:18:02+00:00",
     "hypothetical_position": {
       "implied_grade": "B",
       "direction": "short",
-      "entry_price": 80.62,
+      "entry_price": 80.43,
       "sl_price": 81.4,
       "tp_price": 79.5,
-      "sl_pct": 0.0097,
-      "tp_pct": 0.0139,
-      "rationale_short": "03:15 v2.6_DISPLACEMENT CONFIRMED + 03:30 follow-through close 80.87 vol 6.08x + 03:45 NEAR-MISS at 80.62 (lower-third 80.61, $0.01 gap). Monotonic-down 3-bar (81.25->80.87->80.62). Cohort down+short n=6 +$1.39 WR83% non-worst. HOLD this fire per v2.10-symmetric (b) strict letter (lower-third NOT met) + v2.12c displacement-exhaustion candidate (vol decay 6.08x->2.75x + intra-bar reclaim 80.37->80.62). Branch (X-resume): if 04:00 closes <=80.30 with vol >=1.5x, ENTER B-grade short at close. Branch (Y-exhaustion): if 04:00 closes >=80.85 with vol <=2x, withdraw thesis. Branch (Z-ambiguous): if 04:00 closes 80.30-80.85, wait 04:15."
+      "sl_pct": 0.0121,
+      "tp_pct": 0.0116,
+      "rationale_short": "Closed 04:00 UTC 80.43 (Z-ambiguous resolution). 5-bar monotonic-down 81.25 -> 80.87 -> 80.59 -> 80.43 (one bar shifted from prior reading: 03:45 closed 80.59 in updated candles, not 80.62 as fire 228 read). Sustained vol 5.75x/6.17x/2.95x/6.58x. v2.12c displacement-exhaustion DISCONFIRMED (n=1 against). BUT v2.10-symmetric (b) strict close-in-lower-third NOT met by 04:00 (middle-third). v2.11 pre-confirmation discipline held. Hypothetical short maintained pending 04:15 follow-through. Cohort down+short non-worst (+$1.39 WR83% n=6). Branch (P-extend) at 04:15 close <=80.10 + vol >=1.5x + lower-third = ENTER. Branch (Q-reclaim) at 04:15 >=81.00 + vol >=1.5x + upper-third = withdraw."
     },
     "last_closed_position": {
       "direction": "long",
@@ -2340,7 +2337,8 @@
       "info_hypothesis_status": "refuted",
       "lesson_short": "Pending-confirmation setups are guesses dressed as setups. Anti-pattern #1 of pre-confirmation entries."
     },
-    "pending_decision": null
+    "pending_decision": null,
+    "operational_rule_v2_13_DISPLACEMENT_EXHAUSTION_DISCONFIRM_PROTOCOL": "DESCRIPTIVE candidate -- following v2.12c (named fire 228 on 03:45 bar): when post-exhaustion candidate bar's NEXT bar shows (i) vol RE-EXPANSION >=2x relative to exhaustion candidate AND (ii) directional EXTENSION beyond exhaustion-candidate's extreme (low for short-side, high for long-side), the exhaustion thesis takes n=1 DISCONFIRMING evidence. n=2 disconfirming would weaken v2.12c materially; n=2-3 confirming (post-exhaustion bar drifts back toward middle with vol decay) would promote. First disconfirming instance: 04:00 UTC 5-28 (prior 03:45 exhaustion candidate refuted by 04:00 vol 41585 vs 18650 = +123% + low 79.95 < 03:45 low 80.37 by $0.42)."
   },
   "cognition": {
     "mode": "Expansion",
@@ -2349,7 +2347,7 @@
     "cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-28T00:00:39-04:00",
-    "last_gate_check_iso": "2026-05-28T04:00:39+00:00"
+    "last_gate_check_iso": "2026-05-28T04:18:02+00:00"
   },
   "framework_origins": [
     {
@@ -2394,14 +2392,14 @@
     },
     "last_enter_ts": 1779932850.040962,
     "last_enter_iso": "2026-05-27T21:47:30-04:00",
-    "holds_in_a_row": 6,
+    "holds_in_a_row": 7,
     "exploratory_at_risk_usd_today": 2.51,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 2.2,
+    "hours_since_last_enter": 2.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-28T04:00:45.702902+00:00",
+    "last_updated_iso": "2026-05-28T04:12:23.924318+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
