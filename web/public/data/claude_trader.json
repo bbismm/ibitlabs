@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780048961,
-  "generated_iso": "2026-05-29T06:02:41-0400",
+  "generated_at": 1780050018,
+  "generated_iso": "2026-05-29T06:20:18-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 357,
+    "decisions_total": 358,
     "actions": {
-      "HOLD": 343,
+      "HOLD": 344,
       "ENTER": 8,
       "EXIT": 6
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 168,
+      "HOLD_with_counterfactual": 169,
       "ENTER_C": 2,
       "HOLD_no_plausible": 24,
       "EXIT": 6,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 162,
-      "medium": 157,
+      "medium": 158,
       "low": 38
     },
-    "reasoning_chars_avg_all": 1002,
-    "reasoning_chars_avg_last10": 1005,
+    "reasoning_chars_avg_all": 1001,
+    "reasoning_chars_avg_last10": 966,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T06:01:42-04:00",
+    "last_fire_iso": "2026-05-29T06:20:11-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,19 +38,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780048902.0,
-    "fire_iso": "2026-05-29T06:01:42-04:00",
+    "fire_ts": 1780050011.367883,
+    "fire_iso": "2026-05-29T06:20:11-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.32,
+    "current_price": 82.17,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
       "rsi": 60.4,
-      "_note": "live-status indicator block stale day 25 \u2014 canonical price .32 not .23; indicators apply to stale price"
+      "_staleness_flag": "live-status indicator block stale day 25; price reported $85.23 vs canonical $82.17"
     },
     "decision": "HOLD",
     "grade": null,
@@ -62,19 +62,24 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "State per v2.39 (~33min ago) holds with one update: 09:15 UTC bar wicked range_high .52 (hit SL .45 intra-bar) but reverted \u2014 2 subsequent 15m closes (.36, .34) back below .37 structural ceiling, ticker now .32. Pattern shape = failed-acceptance / sweep-reclaim of the upper edge \u2014 structurally a SHORT setup. BUT v2.39 pause discipline is binding: no SHORT re-entry in .80-.55 vicinity without independent reframing, where the explicitly-named reframe is \"acceptance above .55 then rejection back below\". Current 09:15 wick to .52 NEVER closed above .55 (single bar wick to SL run-out level), so the reframe trigger is NOT met. LONG side: .32 sits mid-range (mid .16), not lower edge (.85-.95) where cohort down+long n=4 +.74 WR 75% would be on-table. No structural LONG trigger formed. HOLD per pause discipline. Cognition_mode Regime Uncertain holds \u2014 n=2 SHORT losses in same range have not been resolved into either regime transition or noise; the post-SL wick + reject is consistent with stop-run within range (noise) but n=1 evidence for that read too. State.json updated: sweeps_attempted 0\u21921. Hypothetical SHORT C-grade counterfactual recorded \u2014 that is the honest directional lean if pause discipline did not bind. Indicator-pipe staleness P0 day 25 continues: live-status .23 vs canonical .32.",
+    "reasoning": "10:00 UTC bar closed $82.19 \u2014 4th consecutive 15m close below $82.37 ceiling, sustaining the 09:15 UTC failed-sweep rejection. Current $82.17 mid-range. Structurally a SHORT continuation, but v2.39 pause discipline binds after 2 prior SHORT losses (#v2.34, #v2.38r) in this same $81.80-$82.55 range within 7h. No independent reframing trigger met: no acceptance above $82.55 (only a wick), no cohort signature change. No LONG trigger either \u2014 $82.17 mid-range, not lower edge $81.85-$81.95. State.json baseline from 06:01 EDT remains valid; no material state-change triggers fired. live-status indicator block stale day 25.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "acceptance above $82.55 (15m close, ideally with vol >=1.5x baseline) then rejection back below = v2.39 'different structural shape' trigger, SHORT pause lifts",
+      "range_low $81.79 1H close below = downside acceleration / range_break, cognition_mode transition",
+      "displacement >1.5%/15min either direction = cognition_mode transition",
+      "1H or 4H trend flip independently verified = cohort signature shift"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.32,
-      "sl_pct": 0.0036,
-      "tp_pct": 0.0057,
+      "entry_price": 82.17,
+      "sl_pct": 0.005,
+      "tp_pct": 0.008,
       "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Post-SL wick to $82.52 rejected; 2 consecutive 15m closes back below $82.37 ceiling. Failed-acceptance shape leans SHORT toward range mid/low. SL above $82.55 acceptance level."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "Failed-sweep rejection continuing \u2014 4 closes below $82.37 ceiling, drift returned to range mid. Lean SHORT for range traversal toward $81.85. v2.39 pause discipline blocks live action."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1599,11 +1604,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 997,
+    "holds_since_framework": 3,
+    "avg_chars": 872,
     "since_iso": "2026-05-29T05:27:11-04:00",
     "since_framework_version": "v2.39",
-    "latest_fire_iso": "2026-05-29T06:01:42-04:00"
+    "latest_fire_iso": "2026-05-29T06:20:11-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2485,18 +2490,18 @@
     "cognition_mode_since_iso": "2026-05-29T05:27:51-04:00",
     "cognition_mode_rationale": "Position closed at hard SL. Two consecutive SHORT losses in same range; whether the regime is sideways-holding, transitioning to up, or just delivering n=2 negative noise cannot be resolved at n=2. 1H/4H alignment unread independently; need next 1-4h price action to clarify (hold above $82.40-$82.50 region = uptrend signal; revert to $81.40-$81.80 mid-range = sideways noise).",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 5,
+    "skipped_fires_in_mode": 7,
     "last_mode_transition_iso": "2026-05-29T05:27:51-04:00",
-    "last_gate_check_iso": "2026-05-29T09:54:59.672008+00:00"
+    "last_gate_check_iso": "2026-05-29T10:12:44.093525+00:00"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-29T05:27:51-04:00",
     "rationale": "Position closed at hard SL. Two consecutive SHORT losses in same range; whether the regime is sideways-holding, transitioning to up, or just delivering n=2 negative noise cannot be resolved at n=2. 1H/4H alignment unread independently; need next 1-4h price action to clarify (hold above $82.40-$82.50 region = uptrend signal; revert to $81.40-$81.80 mid-range = sideways noise).",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 5,
+    "skipped_fires_in_mode": 7,
     "last_mode_transition_iso": "2026-05-29T05:27:51-04:00",
-    "last_gate_check_iso": "2026-05-29T09:54:59.672008+00:00"
+    "last_gate_check_iso": "2026-05-29T10:12:44.093525+00:00"
   },
   "framework_origins": [
     {
@@ -2541,14 +2546,14 @@
     },
     "last_enter_ts": 1780041330.0,
     "last_enter_iso": "2026-05-29T03:55:30-04:00",
-    "holds_in_a_row": 1,
+    "holds_in_a_row": 2,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 2.1,
+    "hours_since_last_enter": 2.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T10:00:16.577080+00:00",
+    "last_updated_iso": "2026-05-29T10:18:00.509138+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
