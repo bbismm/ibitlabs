@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780029178,
-  "generated_iso": "2026-05-29T00:32:58-0400",
+  "generated_at": 1780030075,
+  "generated_iso": "2026-05-29T00:47:55-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 325,
+    "decisions_total": 327,
     "actions": {
-      "HOLD": 313,
+      "HOLD": 315,
       "ENTER": 7,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 142,
+      "HOLD_with_counterfactual": 144,
       "ENTER_C": 2,
       "HOLD_no_plausible": 20,
       "EXIT": 5,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 130,
+      "medium": 132,
       "low": 35
     },
-    "reasoning_chars_avg_all": 992,
-    "reasoning_chars_avg_last10": 1150,
+    "reasoning_chars_avg_all": 995,
+    "reasoning_chars_avg_last10": 1275,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T00:28:44-04:00",
+    "last_fire_iso": "2026-05-29T00:47:52-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,24 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780029684.0,
-    "fire_iso": "2026-05-29T00:28:44-04:00",
+    "fire_ts": 1780030072.1490948,
+    "fire_iso": "2026-05-29T00:47:52-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": {
-      "direction": "short",
-      "entry_price": 81.81,
-      "qty": 2,
-      "unrealized_pnl_pct": 0.0033,
-      "minutes_held": 105
-    },
-    "current_price": 81.54,
+    "position_at_fire": null,
+    "current_price": 81.69,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
-      "rsi": 50.0
+      "stoch_rsi": null,
+      "vol_ratio": null,
+      "momentum_pct": null,
+      "rsi": null,
+      "_pipe_staleness_note": "live-status indicators_pro stale (price $85.23 vs canonical $81.69 = 4.3% gap, P0 persists ~18+ fires); raw values omitted to avoid recording stale numbers as if current. Canonical OHLCV used in reasoning."
     },
     "decision": "HOLD",
     "grade": null,
@@ -66,24 +61,24 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "In-position HOLD on simulated SHORT @ $81.81 qty=2 (DRY_RUN \u2014 executor reports position=null, framework tracks hypothetically for outcome-learning per v2.34 lineage). Canonical $81.54 (Coinbase ticker 04:28 UTC) \u2192 unrealized +0.33%/+$0.27 nominal. Down from +0.59% peak at 00:15 EDT (13min slow-grinder retracement on sub-baseline vol). 105min held. All v2.34 abort conditions clear: no 4h close > $82.40 (max bar high $82.21 since entry), 1h45m elapsed (under 6h cutoff), no envelope reclaim > $81.94 on >=1.5x vol since entry. v2.35 tighter abort REGISTERED this fire: 2 consecutive 15m closes > $81.94 on cumulative vol >=1.5x \u2192 cut immediately (symmetric v2.10_RECLAIM_IMPULSE_REQUIREMENT as EXIT, n=1 promotion-candidate). Range_low $80.52 still untested; closest approach $81.26 at 03:45 UTC = $0.74 above. Recent 8 15m bars all closed below $81.83, sub-baseline vol (0.4-0.8x) on the down-impulse. If next 2 bars (04:30-05:00 UTC) fail to make new low below $81.26, v2.38 INFORMAL_BREAK_SUBVOL candidate trends toward soft-refuted in post-close audit (slow-drift TP hits would be direction-right / mechanism-wrong vs hypothesis). live-status pipe STILL STALE at $85.23 vs canonical $81.54 = 4.5% / $3.69 gap, 18+ consecutive fires unchanged \u2014 P0 op-issue carried in reasoning for founder visibility. NOTE: market_snapshot fields are live-status raw (stoch_rsi 0.55, vol_ratio 0.56, momentum -0.08%) and read at the STALE $85.23 reference \u2014 they are NOT canonical at $81.54 and should be treated as schema-fill, not signal. v2.35 cadence reflection written this fire (5h10m since v2.33-redux); first cadence-only reflection in lineage with no substantive new delta beyond the abort-tightening \u2014 explicitly named to avoid pretend-iteration.",
+    "reasoning": "Position-management read for simulated SHORT @ $81.81 (DRY_RUN, executor did not open, framework-tracked since 22:43 EDT, 2h elapsed, unrealized +0.15% at canonical $81.69). 04:00Z 15m bar made new low $81.26 = closest approach to range_low $80.52 (gap narrowed $0.84 -> $0.74) then bounced. Bounce sequence: 04:00Z C $81.36 vol 4699 -> 04:15Z C $81.59 vol 5218 -> 04:30Z C $81.64 vol 3733. Down-impulse 03:45->04:00 broke prior $81.36 floor; bounce vol declining (5218 -> 3733) = soft-reclaim-without-impulse. None of v2.34/v2.35 abort conditions tripped: (i) close $81.64 < envelope-reclaim $81.94 (v2.35 tighter abort dormant), (ii) elapsed 2h < 6h time-cut, (iii) no 1.5x vol close > $82.40. Cohort still down+short (n=6 +$1.39 WR 83.3%, second-best). v0.9 score 1.5/4 unchanged. position_at_fire=null per live-status authoritative => SKILL forbids EXIT (no real position to close). HOLD the simulated thesis; tape directionally consistent with v2.34 SHORT entry, just slow. forced_exploration_due=false / threshold_state=normal / hours_since_last_enter=2.0. Indicator-pipe staleness P0 still unresolved.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "v2.35 PRIMARY: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x baseline \u2192 cut immediately (replaces v2.34 'next 4h close > $82.40')",
-      "v2.34 (ii) TIME CUT: 6h elapsed without -0.5% progress from entry $81.81 (currently 1h45m in at +0.33%)",
-      "ENVELOPE BLOWOUT: single 15m close > $82.40 on any vol \u2192 cut",
-      "FLOOR HIT: single 15m close < $80.61 \u2192 take TP (target met), do not chase further"
+      "next 15m close > $81.94 + vol >= 1.5x baseline (~5000+) = v2.10_v0_2 envelope reclaim, cut simulated SHORT",
+      "2 consecutive 15m closes > $81.94 cumulative vol >= 1.5x (v2.35 tighter abort)",
+      "4h elapsed without canonical price < $81.30 = soft time-cut, mark v2.38 INFORMAL_BREAK_SUBVOL candidate soft-refuted in post-close audit",
+      "sustained close above $82.40 on any vol = full envelope reclaim, abort"
     ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 81.54,
-      "sl_pct": 0.008,
-      "tp_pct": 0.012,
+      "entry_price": 81.69,
+      "sl_pct": 0.0044,
+      "tp_pct": 0.0133,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Forced-lean at $81.54: SHORT continues open thesis. Sub-vol grinder direction down 8 bars, range_low $80.52 untested. C-grade conviction (not B) since main entry already carries the trade."
+      "reasoning_30_words": "If forced to fresh-ENTER now without 22:43 carry, would lean C-grade SHORT: bounce vol declining vs down-impulse vol, range_low untested, cohort down+short second-best. Same direction as simulated, lower conviction at $0.12 worse entry."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1585,11 +1580,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 1745,
+    "holds_since_framework": 2,
+    "avg_chars": 1426,
     "since_iso": "2026-05-29T00:28:44-04:00",
     "since_framework_version": "v2.35",
-    "latest_fire_iso": "2026-05-29T00:28:44-04:00"
+    "latest_fire_iso": "2026-05-29T00:47:52-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2564,14 +2559,14 @@
     },
     "last_enter_ts": 1780022939.228757,
     "last_enter_iso": "2026-05-28T22:43:30-04:00",
-    "holds_in_a_row": 10,
+    "holds_in_a_row": 12,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 1.7,
+    "hours_since_last_enter": 2.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T04:28:16.596877+00:00",
+    "last_updated_iso": "2026-05-29T04:46:01.946519+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
