@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780069576,
-  "generated_iso": "2026-05-29T11:46:16-0400",
+  "generated_at": 1780070800,
+  "generated_iso": "2026-05-29T12:06:40-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 389,
+    "decisions_total": 390,
     "actions": {
-      "HOLD": 372,
+      "HOLD": 373,
       "ENTER": 10,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 189,
+      "HOLD_with_counterfactual": 190,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,27 +23,27 @@
     "confidence": {
       "high": 166,
       "medium": 185,
-      "low": 38
+      "low": 39
     },
     "reasoning_chars_avg_all": 1007,
-    "reasoning_chars_avg_last10": 1080,
+    "reasoning_chars_avg_last10": 1099,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T11:45:30-04:00",
+    "last_fire_iso": "2026-05-29T12:04:42-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 65,
+    "framework_reflections_total": 66,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780069530.8310342,
-    "fire_iso": "2026-05-29T11:45:30-04:00",
+    "fire_ts": 1780070747.108011,
+    "fire_iso": "2026-05-29T12:04:42-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 83.05,
+    "current_price": 82.57,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -60,32 +60,163 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "15:30 UTC bar closed $83.00 on V=29979 ~3.45x baseline 8700 \u2014 full continuation past target $82.00, NOT post-target consolidation as state.json v2.43 narrative modeled. Critical data divergence: state wrote '15:15 UTC C=$81.94 V=8000 sub-baseline' but canonical 15:15 UTC C=$82.49 V=28464 = 3.27x baseline. Framework reasoned from incorrect bar inputs; pre-commit branches still covered this resolution (the 'IF C > $82.20 on vol >= 1.5x baseline -> late-chase, HOLD with hypothetical long' branch). failed-Wyckoff-acceptance-reclaim hypothesis n=1-PASSED with magnitude 2x modeled target. Current price $83.05 (1min 15:35-15:41 UTC consolidating $82.86-$83.10 sub-baseline = post-expansion drift). HOLD per pre-commit discipline: late chase at $83.05 vs failed-acceptance-reclaim entry $81.34 = ~2.1% late. R:R marginal with SL at structural floor $82.20 (~$0.85, ~1.0%) targeting next structural extension $84.00 (~$0.95, ~1.1%). Budget remaining $2.10 also constrains real ENTER. Hypothetical long committed per protocol. Reflection v2.44 written addressing state-narrative-data-divergence root cause and target-sizing observation.",
+    "confidence": "low",
+    "reasoning": "Major data correction: v2.44 state narrative claimed 15:30 UTC C=$83.00 V=29979; canonical pulled this fire shows C=$82.33 V=48810 \u2014 $83.10 was upper wick that rejected. 'Continuation extending up to $83' was single-bar wick, not acceptance. 15:45 UTC bar C=$82.45 V=13825 (1.59x baseline) \u2014 closed in lower zone, no acceptance of higher range. Current 1min ~$82.57. Pre-commit branch for [$82.20, $82.50] zone said 'ENTER C-grade long if cohort/vol/budget allow' BUT was conceived under wrong premise (post-extension consolidation in $83 zone). Actual tape shows failed extension. v0.9 conditions 5/8 both sides, no clean structural trigger. Budget $2.10 remaining = marginal even for C-grade. Cohort down+long n=5 +$14.74 WR 80% still favorable but conviction too weak for ENTER given (a) wick-distorted prior narrative invalidates the 'reclaim continuation' setup hypothesis and (b) budget headroom is single-trade-only. HOLD with hypothetical long-on-pullback.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
-      "implied_grade": "B",
+      "implied_grade": "C",
       "direction": "long",
-      "entry_price": 83.05,
-      "sl_pct": 0.01,
+      "entry_price": 82.57,
+      "sl_pct": 0.012,
       "tp_pct": 0.012,
-      "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Continuation extending up confirmed 3.45x baseline vol. Cohort down+long favorable n=5 +$16 WR80%. Entry late-chase $1.71 above failed-acceptance-reclaim entry. SL below 15:15 UTC continuation-confirming bar high."
+      "predicted_2h_outcome": "drift_sideways",
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "Cohort down+long favorable. Failed-Wyckoff-acceptance-reclaim hypothesis n=1 PASS holds even with wick correction. Tape above $82.20 broken floor = mild structural support; low-vol drift expected."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
-    "information_roi_record": {
-      "previous_trade_fire_iso": "2026-05-29T10:59:08-04:00",
-      "actual_outcome": "closed +$2.00 net at target $82.00 in ~12min hold (target-hit) \u2014 then continued extending to $83.10 in next 30min, target sizing captured only ~37% of realized move",
-      "info_hypothesis_status": "confirmed",
-      "lesson_extracted": "failed-Wyckoff-acceptance-reclaim signature produced target-reach AND continuation past target on vol confirmation. Single-target $82.00 exit was structurally too conservative; the reclaim was cleaner than modeled. For next instance, consider structural-ceiling + extension factor as target proxy rather than mid-prior-consolidation.",
-      "information_value_realized": "high"
-    }
+    "information_roi_record": null
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1780070747.108011,
+      "iso": "2026-05-29T12:04:42-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.45: HOLD",
+      "payload": {
+        "fire_ts": 1780070747.108011,
+        "fire_iso": "2026-05-29T12:04:42-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.57,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Major data correction: v2.44 state narrative claimed 15:30 UTC C=$83.00 V=29979; canonical pulled this fire shows C=$82.33 V=48810 \u2014 $83.10 was upper wick that rejected. 'Continuation extending up to $83' was single-bar wick, not acceptance. 15:45 UTC bar C=$82.45 V=13825 (1.59x baseline) \u2014 closed in lower zone, no acceptance of higher range. Current 1min ~$82.57. Pre-commit branch for [$82.20, $82.50] zone said 'ENTER C-grade long if cohort/vol/budget allow' BUT was conceived under wrong premise (post-extension consolidation in $83 zone). Actual tape shows failed extension. v0.9 conditions 5/8 both sides, no clean structural trigger. Budget $2.10 remaining = marginal even for C-grade. Cohort down+long n=5 +$14.74 WR 80% still favorable but conviction too weak for ENTER given (a) wick-distorted prior narrative invalidates the 'reclaim continuation' setup hypothesis and (b) budget headroom is single-trade-only. HOLD with hypothetical long-on-pullback.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 82.57,
+          "sl_pct": 0.012,
+          "tp_pct": 0.012,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Cohort down+long favorable. Failed-Wyckoff-acceptance-reclaim hypothesis n=1 PASS holds even with wick correction. Tape above $82.20 broken floor = mild structural support; low-vol drift expected."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.45"
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1780070747.108011,
+      "iso": "2026-05-29T12:04:42-04:00",
+      "fire_count": 390,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780070747.108011,
+        "fire_iso": "2026-05-29T12:04:42-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.57,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Major data correction: v2.44 state narrative claimed 15:30 UTC C=$83.00 V=29979; canonical pulled this fire shows C=$82.33 V=48810 \u2014 $83.10 was upper wick that rejected. 'Continuation extending up to $83' was single-bar wick, not acceptance. 15:45 UTC bar C=$82.45 V=13825 (1.59x baseline) \u2014 closed in lower zone, no acceptance of higher range. Current 1min ~$82.57. Pre-commit branch for [$82.20, $82.50] zone said 'ENTER C-grade long if cohort/vol/budget allow' BUT was conceived under wrong premise (post-extension consolidation in $83 zone). Actual tape shows failed extension. v0.9 conditions 5/8 both sides, no clean structural trigger. Budget $2.10 remaining = marginal even for C-grade. Cohort down+long n=5 +$14.74 WR 80% still favorable but conviction too weak for ENTER given (a) wick-distorted prior narrative invalidates the 'reclaim continuation' setup hypothesis and (b) budget headroom is single-trade-only. HOLD with hypothetical long-on-pullback.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 82.57,
+          "sl_pct": 0.012,
+          "tp_pct": 0.012,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Cohort down+long favorable. Failed-Wyckoff-acceptance-reclaim hypothesis n=1 PASS holds even with wick correction. Tape above $82.20 broken floor = mild structural support; low-vol drift expected."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1780070728.902407,
+      "iso": "2026-05-29T12:04:42-04:00",
+      "fire_count": 390,
+      "summary": "Framework v2.45 written (trigger: surprise:v2_44_operational_fix_failed_in_same_fire_state_narrative_doubly_wrong)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780070728.902407,
+        "iso": "2026-05-29T12:04:42-04:00",
+        "fire_count": 390,
+        "balance_usd": 894.08,
+        "version_tag": "v2.45",
+        "trigger": "surprise:v2_44_operational_fix_failed_in_same_fire_state_narrative_doubly_wrong",
+        "what_im_trying": "v2.44 wrote a state narrative claiming the reclaim hypothesis CONTINUED extending past target ('canonical 15:30 UTC C=$83.00 V=29979 = 3.45x baseline', framing as 'post-extension drift', committing to new range $82.20-$83.10). Canonical OHLCV pulled THIS fire reveals: 15:30 UTC bar O=$82.49 H=$83.10 L=$82.17 C=$82.33 V=48810. The $83.10 was an UPPER WICK that rejected hard to close at $82.33 \u2014 not a bar-close acceptance of higher levels. The 'continuation extending up' picture was a single-bar wick, not acceptance. Reality at 15:45 UTC: C=$82.45 V=13825 (1.59x baseline) \u2014 close back in lower zone, no continuation. Current 1min ~$82.57. The failed-Wyckoff-acceptance-reclaim hypothesis still PASSED at n=1 (target $82.00 hit) but the 'magnitude 2x' framing was wick-distorted. Decision this fire: HOLD with hypothetical long-on-retest, conviction low pending next-bar close.",
+        "whats_working": "(a) Pre-commit branch SHAPE was right even with wrong narrative. Branches covered both continuation and reversion; current bar C=$82.45 lands in the [$82.20, $82.50] retest branch as designed. Branch quality survives narrative quality. (b) Pulling canonical OHLCV THIS fire (per v2.44 operational fix) is what surfaced the v2.44 data error. The fix works at the next-fire level \u2014 what failed was applying it WITHIN the v2.44 fire (the writing fire couldn't catch its own error). (c) Discipline of writing reflection on state-divergence surprise is functioning \u2014 not papering over the contradiction.",
+        "whats_failing": "(a) META-SURPRISE: v2.44 operational fix FAILED in the same fire it was introduced. v2.44's narrative used the 'canonical' label without canonical data. Probable mechanism: misread of intra-bar 1min high as 15min close, OR live-status indicator-pipe leakage into 'canonical' field, OR fabrication-from-narrative-flow. Cannot disambiguate without LLM-side instrumentation. (b) Wick-as-data bias recurrence: v2.41 used vol-magnitude alone (falsified), v2.42 corrected for sequential lows but reversed too fast on n=1 reclaim (got lucky), v2.44 measured extension as $1.76 using upper wick $83.10 instead of close $82.33 (would be $0.99 if measured close-to-close, but even close-to-close is wrong because the v2.44 narrative believed close WAS $83). Three consecutive reflections show different shapes of using extreme intra-bar prints as if they were closes when they support the active hypothesis. Pattern, not isolated event. (c) Magnitude inflation cascaded into downstream numbers. State narrative claimed 'cohort down+long n=5 +$16.04 WR 80%' \u2014 actual is n=5 +$14.74 WR 80% (the closed trade added +$2.00, base was +$12.74, sum is +$14.74 not +$16.04). Each downstream numerical claim in the contaminated narrative needs auditing. (d) Indicator-pipe 'narrowing trend' from v2.41-v2.44 ($4.53\u2192$3.89\u2192$3.34\u2192$3.24\u2192$2.18) likely artifact of contaminated canonical reads \u2014 comparing wrong canonical to live-status produces meaningless gap. Current gap actual: $2.66 ($85.23 vs $82.57). No conclusion possible about ops attention or transience.",
+        "what_im_iterating": "(a) OPERATIONAL RULE TIGHTENING: 'pull canonical OHLCV in same fire that writes state' is necessary but insufficient \u2014 the writing fire confused intra-bar wick with bar close. NEW rule: state.json bar-level facts (C/H/L/V) must be QUOTED VERBATIM from a canonical pull executed in this fire, with explicit pull-timestamp recorded. If a bar hasn't closed yet, mark 'INTRA-BAR PROVISIONAL' explicitly. (b) NEW DOWNSTREAM HOOK: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV BEFORE consuming the narrative. Protects against cascading. (c) failed-Wyckoff-acceptance-reclaim hypothesis status: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. The PASS still holds (target hit). The magnitude claim retracted. Promotion gate unchanged at n>=3 with >=2 target-reach within 1h. (d) Range update REVERTED: 'new range $82.20-$83.10' from v2.44 was wick-based. Actual range from 15:45 UTC bar is $82.17-$82.58. State.json range_high lowered to $82.58. (e) NEW pre-commit lineage for 16:00 UTC bar (closes 16:15 UTC ~12:15 EDT). IF C > $82.58 on vol >= 1.5x baseline \u2192 continuation building, HOLD with hypothetical long. IF C in [$82.45, $82.58] \u2192 consolidation at upper bound, HOLD with hypothetical long-on-pullback. IF C in [$82.20, $82.45] \u2192 micro-pullback within broken floor, HOLD. IF C < $82.20 intra-bar \u2192 re-breakdown below structural floor, hypothesis weakening, HOLD with hypothetical short. IF C < $81.50 \u2192 full reversion, failed-acceptance-reclaim hypothesis demoted at confirmation invalidation. (f) Cognition_mode unchanged: Regime Uncertain. Live-status down (288h) + 90min reclaim impulse rejected at $83 = mixed timeframe persists. 15min cadence appropriate.",
+        "edits_from_prior": [
+          "META: v2.44 operational fix ('pull canonical OHLCV in same fire that writes state') FAILED in the same fire it was introduced. Tightening: state.json bar-level facts must be QUOTED VERBATIM from canonical pull executed in writing fire, with pull-timestamp recorded.",
+          "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. Trade pass holds (target hit). Magnitude claim retracted (post-target $83.10 was upper wick that rejected to $82.33 close).",
+          "Wick-as-data bias confession: third recurrence (v2.41 vol-magnitude, v2.42 sequential-lows-reversal, v2.44 extension-magnitude). Pattern: persistent susceptibility to treating extreme intra-bar prints as closes when they support the active hypothesis.",
+          "Cohort down+long n=5 actual is +$14.74 WR 80% (v2.44 state narrative claimed +$16.04 \u2014 overstated by $1.30). Audit downstream numbers in contaminated narrative.",
+          "Range update REVERTED: 'new range $82.20-$83.10' (v2.44) was wick-based. Actual range is $82.17-$82.58 (15:45 UTC bar). State.json range_high lowered.",
+          "NEW downstream hook: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV before consuming narrative as ground truth.",
+          "Indicator-pipe 'narrowing trend' (v2.41-v2.44) likely artifact of contaminated canonical reads. Current actual gap: $2.66 ($85.23 vs $82.57). No conclusion about ops attention or transience.",
+          "Cognition_mode unchanged: Regime Uncertain."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Mechanism: how did v2.44 fire write 'C=$83.00 V=29979' for 15:30 UTC bar when canonical is 'C=$82.33 V=48810'? Misread wick as close, or live-status leakage into canonical field, or fabrication? Without execution-trace instrumentation, undetermined.",
+          "Wick-as-data bias has appeared in 3 of last 4 reflections. Per-fire cognitive lapse or systematic LLM tape-reading bias? Worth surfacing to operator if it persists past v2.46.",
+          "If 'narrowing trend' on indicator-pipe staleness was artifact, the persistent P0 escalation framing in prior reflections may have over-stated escalation urgency. Indicator-pipe state genuinely unknown.",
+          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-prior chain per state narrative. Zero pending.",
+          "Should v2.45 propose a stricter state.json schema requiring explicit pull-timestamp + raw-bar-quote for any bar-level fact? Tracking for next major revision; not changing schema mid-fire."
+        ]
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1780069530.8310342,
@@ -1374,187 +1505,78 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780038137.997535,
-      "iso": "2026-05-29T03:02:17-04:00",
-      "fire_count": 341,
-      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780038137.997535,
-        "fire_iso": "2026-05-29T03:02:17-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 82.14,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "Tape since fire 02:43 EDT: canonical $82.00 -> $82.14 on forming 06:45 UTC bar (high $82.27, low $82.03, vol 3360 ~= baseline). Range $80.52-$82.37 still active, neither side broken; price returned to upper third without re-testing $82.37 high. State unchanged at material level \u2014 narrative continues from 02:43 update. v2.38 INFORMAL_BREAK_SUBVOL just REJECTED at n=1 (02:26 audit, hard-SL'd SHORT) \u2014 repeating same SHORT mechanism = confirmation-trade-cycling, the trap I just paid $5.71 to learn. Budget: remaining $6.73, holds_in_a_row=26 (below 30 relaxed threshold), forced_exploration_due=False, threshold_state=normal. v0.9 criteria: cohort=down+short (n=6, +$1.39, WR 83.3% \u2014 non-worst, OK), but asymmetry weak (5/8 both sides, no directional pull), vol sub-baseline (0.56x), no structural trigger (no extreme StochRSI, no displacement, no range break). 0/4 strong inputs -> HOLD per v0.9. Cognition_mode stays Regime Uncertain (skipped 5+ in mode). Last reflection v2.37 35min ago, cadence (4h) not triggered, no surprise event. live-status indicators (price $85.23, BB $84.12-$85.93) stale by $3.09/3.76% \u2014 P0 indicator-pipe staleness, 24+ consecutive fires. Using market_snapshot values as live-status reports them but reasoning anchored on canonical $82.14 via direct Coinbase ticker.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 82.14,
-          "sl_pct": 0.004,
-          "tp_pct": 0.02,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Failed second test of $82.37 rejection high on sub-baseline vol; range_low $80.52 likely target. Same shape as just-refuted v2.38 at n=1 \u2014 low conviction by design."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780036041.1701682,
-      "iso": "2026-05-29T02:27:21-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.37: HOLD",
-      "payload": {
-        "fire_ts": 1780036041.1701682,
-        "fire_iso": "2026-05-29T02:27:21-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 82.36,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Simulated SHORT @ $81.81 (entered 22:43:30 EDT, v2.34 B-grade ENTER, DRY_RUN framework-tracked) hit pre-committed hard SL @ $82.25 in current 06:30 UTC bar (canonical $82.36 at 02:22:59 EDT). Realized -$5.71 total framework PnL (-$4.40 price + ~$1.31 fees). v2.35 tighter abort never triggered: 2-bar cum vol 06:00+06:15 = 1505 = 0.17x baseline 8687 \u2014 vol-half failed cleanly through the slow reverse drift. Hard SL did all the work; soft abort layer was performative on sub-baseline-vol grinder mode. v2.37 reflection (just written) closes the trade audit: v2.38 INFORMAL_BREAK_SUBVOL REJECTED at n=1, v2.10 EXIT-side symmetric application REJECTED at n=1, restore entry-side asymmetry. Post-flush state: 3 consecutive 15m closes above $81.94 trigger, range_low $80.52 untested 14h+, intra-day tape disagrees with live-status down-288h tag = Regime Uncertain mode. No fresh ENTER this fire \u2014 cognition_mode just transitioned, exploration budget down to $3.23 of $8.94 after this trade closes ledger, and the immediate post-SL-flush squeeze is exactly the noise zone where a counter-revenge SHORT would be \u4f2a alpha. Hypothetical lean = weak C-grade LONG following the acceptance-above-trigger read, but n=0 confirmation + zero base rate for me on slow-drift acceptance plays. HOLD with documented counterfactual; let next 1-2 bars resolve direction.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 82.36,
-          "sl_pct": 0.012,
-          "tp_pct": 0.018,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "3 consecutive 15m closes above $81.94 trigger + range_low $80.52 untested 14h+ + just-flushed-short-stops squeeze = weak acceptance-above-trigger lean. C-grade probe-worthy if not for budget tightness post-loss."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": {
-          "previous_trade_fire_iso": "2026-05-28T22:43:30-04:00",
-          "actual_outcome": "SL hit at $82.25 in 06:30 UTC bar \u2014 framework-tracked simulated -$4.40 + ~$1.31 fees = ~-$5.71 total. Held 3h39min.",
-          "info_hypothesis_status": "refuted",
-          "lesson_extracted": "Sub-baseline-vol 4-bar sustain-below-trigger does NOT cleanly follow through at n=1 attached-outcome \u2014 the reverse impulse (also sub-baseline-vol) won. Mechanism v2.38 INFORMAL_BREAK_SUBVOL rejected. Secondary lesson: v2.10 1.5x vol gate (entry-side filter) does NOT translate symmetrically as an EXIT trigger \u2014 slow-drift-against grinders never satisfy it, leaving only the hard SL as protection. Soft abort layer needs different shape for sub-baseline-vol failure modes.",
-          "information_value_realized": "high"
-        }
-      },
-      "_framework_version": "v2.37"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780035986.874378,
-      "iso": "2026-05-29T02:26:26-04:00",
-      "fire_count": 338,
-      "summary": "Framework v2.37 written (trigger: surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780035986.874378,
-        "iso": "2026-05-29T02:26:26-04:00",
-        "fire_count": 338,
-        "balance_usd": 894.08,
-        "version_tag": "v2.37",
-        "trigger": "surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived",
-        "what_im_trying": "Post-trade audit. Simulated SHORT @ $81.81 entered 22:43:30 EDT (v2.34 ENTER, DRY_RUN framework-tracked) hit the pre-committed hard SL @ $82.25 in the 06:30 UTC bar \u2014 canonical ticker $82.36 at 02:22:59 EDT. Realized PnL (framework-accounting): (82.25 - 81.81) * 2 * 5 contract_size = -$4.40 nominal + ~$1.31 round-trip fee = ~-$5.71 total. Trade held 3h39min. The v2.35 tighter abort (2 consecutive 15m closes > $81.94 + cumulative vol >= 1.5x baseline = 8687) was NEVER triggered: 06:00 + 06:15 cum vol = 1116 + 389 = 1505 = 0.17x baseline. Vol-half failed all the way through the slow reverse drift. Hard SL caught the position; soft abort layer was too high a bar for sub-baseline-vol grinders.",
-        "whats_working": "(a) Pre-commit discipline survived intact under losing pressure. v2.36 saw mechanism soft-refute and explicitly said \"the temptation is to invent an exit reason now \u2014 discipline says no. The v2.35 abort is the structural answer; I wait.\" That commitment held: position was NOT closed mid-trade on narrative pressure; it closed on a pre-committed price level. Founder note-4 C2 cognition-layer separation worked as designed. (b) v2.35 pre-stated falsification criterion functioned as a calibration: it accurately predicted the failure-mode shape (price reclaim back above trigger) BEFORE the price arrived, and v2.36 honored the falsification at n=1. Discipline of forecasting + outcome-marking-before-arrival is the right structure. (c) Hard SL existed as a backstop. Without it, the position could have drifted further against me on sub-baseline vol indefinitely.",
-        "whats_failing": "(a) v2.38 INFORMAL_BREAK_SUBVOL = REJECTED at n=1 attached-outcome. Hypothesis was \"sub-baseline-vol 4-bar sustain below trigger follows through\". Outcome: did not follow through; reversed to SL. Single trade rejection is weak evidence but the mechanism was specific and the failure was clean. Archive as REJECTED \u2014 not promote, not retain as DESCRIPTIVE. (b) v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application = FAILED-TO-FIRE at n=1. The entry-side v2.10 requires vol >= 1.5x median-96 baseline for reclaim confirmation. Applied symmetrically as an EXIT trigger (v2.35), the same 1.5x bar was structurally too high for a sub-baseline-vol reverse drift to ever satisfy. The price moved against me $0.44 (0.54%) without ever hitting the vol gate. Conclusion: ENTRY-side asymmetry is load-bearing \u2014 the 1.5x vol gate is the right shape for filtering FALSE ENTRY signals (low-conviction setups never fire) but the wrong shape for filtering EXIT signals (because sub-baseline-vol-but-real moves still kill the position). The v2.10 symmetric application is REJECTED at n=1; the asymmetry was correct. (c) v2.35 effectively delivered no protection: vol-half made it un-triggerable for the actual failure mode that materialized. Net effect: the soft-abort layer was performative, the hard SL did all the work. (d) Indicator-pipe staleness continues unaddressed across 22+ fires (live-status $85.23 vs canonical $82.36 = $2.87 gap, 3.5%). Carrying as ops issue, no framework-mutation attempted.",
-        "what_im_iterating": "(a) ARCHIVE v2.38 INFORMAL_BREAK_SUBVOL as REJECTED at n=1 attached-outcome. Will not re-propose without independent reframing. (b) REJECT v2.10 EXIT-side symmetric application at n=1. Restore asymmetry: v2.10 = ENTRY-side gate only. Future EXIT-rule proposals should NOT inherit the 1.5x vol requirement; sub-baseline-vol grinders need their own EXIT shape. Open question: what is the right shape for EXIT in slow-drift-against scenarios? Candidates: (i) time-based hard cut at e.g. 4h held without favorable progress, (ii) MFE-decay rule (peaked +0.59% giving back to entry = soft signal), (iii) acceptance-of-trigger-level rule (3 consecutive closes above trigger without ANY vol context = price says no, exit). Will not implement any of these without independent evidence; logging as candidate hypotheses. (c) Information_roi_record on the now-closed B/C trade: information_value_realized HIGH \u2014 mechanism falsified at n=1 cleanly. Cost $5.71 of $8.94 daily budget. That is \"paid data, not 100% selectivity\" working as designed. (d) Post-trade cognition_mode transition: Inventory Discovery -> Regime Uncertain. Position closed; mode reverts per Phase B.1 protocol. (e) Operational lesson: the difference between hard SL (price-level) and soft abort (price+vol context) is load-bearing. Soft aborts need to be calibrated for the failure modes that ACTUALLY materialize, not the failure modes the symmetric application would have suggested.",
-        "edits_from_prior": [
-          "v2.38 INFORMAL_BREAK_SUBVOL status: SOFT-REFUTED-AT-N1 (v2.36) -> REJECTED-AT-N1-ATTACHED-OUTCOME (this fire). Final classification. Will not re-propose without independent reframing.",
-          "v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application: FORMING-N=1 (v2.36) -> REJECTED-N=1 (this fire). 1.5x vol gate was structurally unreachable on the actual failure mode (sub-baseline-vol slow reverse drift). Restore v2.10 to ENTRY-side asymmetric application only.",
-          "Hard SL discipline: VALIDATED as primary stop layer. v2.34 R/R framing of $82.25 SL = 0.54% / 2.8R was the rule that closed the position; soft abort layer (v2.34 4h close > $82.40, v2.35 2-bar close+vol) added no protection on this specific failure mode.",
-          "Pre-commit + cognition-layer-separation discipline: VALIDATED under losing pressure. The position closed on a pre-committed level, not on mid-trade rationalization.",
-          "Cognition_mode transition: Inventory Discovery -> Regime Uncertain on position close. Phase B.1 protocol followed.",
-          "New open candidate-questions for EXIT rule shape in sub-baseline-vol drift-against scenarios. Logging only, NOT implementing without evidence."
-        ],
-        "open_questions": [
-          "What is the right EXIT-rule shape for sub-baseline-vol slow drift against position? Candidates: (i) time-based hard cut, (ii) MFE-decay rule, (iii) trigger-level-acceptance rule (3 closes above without vol = price says no). All n=0 candidates. Do NOT implement on n=0.",
-          "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT have ANY symmetric application worth testing, or is the entry-side asymmetry permanent? Likely permanent based on this n=1 \u2014 entry-side filters can demand high-conviction signals; exit-side rules need to fire on REAL moves regardless of confirmation quality. Will not re-test symmetric until independent reframing.",
-          "Is the v0.9 cohort x asymmetry x structural framework still the right ENTRY framework given this single SHORT outcome? Framework chose a B-grade entry on partial conviction; outcome was -$5.71 of $8.94 budget. Information was bought correctly (mechanism falsified). Framework is NOT itself falsified by one negative B/C outcome \u2014 that is what B/C-grade exploration means. Continue with v0.9.",
-          "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.36. Zero pending claims. Engagement floor honored.",
-          "Indicator-pipe staleness P0 entering 23+ consecutive fires. Should this escalate from passive flagging to a formal ops surface (e.g. ntfy to operator)? Founder call \u2014 NOT a framework mutation question."
-        ],
-        "founder_notes_addressed": []
-      }
     }
   ],
   "hold_summary": {
     "holds_since_framework": 1,
-    "avg_chars": 1134,
-    "since_iso": "2026-05-29T11:45:03-04:00",
-    "since_framework_version": "v2.44",
-    "latest_fire_iso": "2026-05-29T11:45:30-04:00"
+    "avg_chars": 964,
+    "since_iso": "2026-05-29T12:04:42-04:00",
+    "since_framework_version": "v2.45",
+    "latest_fire_iso": "2026-05-29T12:04:42-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780069503.8952582,
-    "iso": "2026-05-29T11:45:03-04:00",
-    "fire_count": 388,
+    "ts": 1780070728.902407,
+    "iso": "2026-05-29T12:04:42-04:00",
+    "fire_count": 390,
     "balance_usd": 894.08,
-    "version_tag": "v2.44",
-    "trigger": "surprise:reclaim_continuation_extending_AND_state_narrative_data_divergence",
-    "what_im_trying": "Reclaim has fully continued past target. Canonical 15:30 UTC bar closed $83.00 on V=29979 = 3.45x baseline (~8700) \u2014 full continuation-extending up, NOT post-target consolidation as state.json v2.43 narrative modeled. State.json wrote '15:15 UTC C=$81.94 V=8000 sub-baseline' but canonical 15:15 UTC C=$82.49 V=28464 = 3.27x baseline. Two-bar consecutive expansion-acceptance into prior range_high $82.20 \u2014 exactly the 'continuation-extending up' pre-commit branch from v2.43 narrative. Current price $83.05 (1min bars 15:35-15:41 UTC consolidating $82.86-$83.10 on sub-baseline vol = post-expansion drift). Decision this fire: HOLD per pre-commit ('entering would be late-chase per v2.42's late-entry tracking'). Hypothetical long committed.",
-    "whats_working": "(a) Pre-commit multi-branch lineage performed even when state.json inputs were wrong. v2.43 wrote 5+ branches; reality landed on 'IF C > $82.20 on vol >= 1.5x baseline -> late-chase, HOLD with hypothetical long' branch \u2014 exactly the outcome being executed this fire. The branches were correctly framed even though the narrative WHY (post-target consolidation expected) was wrong. Separating decision-discipline FROM prediction-narrative continues to validate. (b) failed-Wyckoff-acceptance-reclaim hypothesis (v2.42-formed) n=1-PASSED-FIRST-INSTANCE with magnitude exceeding modeled target by ~2x. Entry $81.34 -> target $82.00 (+$0.66, ~+0.81%) actually extended to $83.10 (+$1.76, ~+2.16%). The reclaim was structurally cleaner than modeled; target sizing was too tight at $82.00. Single-target paper exit captured ~37% of the realized move. (c) Cohort down+long re-validated: n=5 +$16.04 WR 80% post-this-target-touch.",
-    "whats_failing": "(a) MAJOR: state.json v2.43 narrative was data-source-divergent. State wrote '15:15 UTC C=$81.94 V=8000' = sub-baseline-consolidation read. Canonical Coinbase data shows '15:15 UTC C=$82.49 V=28464' = 3.27x-baseline-continuation read. ROOT CAUSE candidate: prior fire wrote state narrative from live-status indicator-pipe (which is documented stale by $3.24/3.8%) rather than from canonical OHLCV pull. This is a recursive failure mode: the framework reads state.json on each fire to skip re-derivation when state hasn't changed; if state.json carries staleness-affected narrative, subsequent fires inherit bad narrative as truth. Pre-commit branches were robust enough to cover the actual outcome anyway \u2014 but the narrative WHY 'post-target consolidation NOT continuation' was directly contradicted by the bar that supposedly proved it. (b) Target sizing for reclaim setups was too conservative. failed-Wyckoff-acceptance-reclaim target was set at $82.00 (= mid-prior-consolidation $82.00-$82.20 zone). Realized extension reached $83.10 (+$1.10 above target). When the structural signature is clean (sweep + sequential higher-lows + violent reclaim + vol confirmation), target sizing should account for extension past the prior structural ceiling, not just to it. (c) Indicator-pipe staleness P0 day 25 / fire 44+. live-status $85.23 vs canonical $83.05 = $2.18 / 2.6% gap. NARROWING continues ($4.53 v2.41 -> $3.89 v2.42-reflect -> $3.34 v2.42-decision -> $3.24 v2.43 -> $2.18 now). Five-fire narrowing trend. May be transient market re-sync or genuine ops attention. Still no visible ops escalation acknowledgment. Continuing to flag.",
-    "what_im_iterating": "(a) STATE NARRATIVE DATA HYGIENE: before writing state.json narrative claiming bar-level facts (C/H/L/V), validate against canonical OHLCV pull, NOT just live-status indicators. The state narrative is consumed by future fires as ground truth \u2014 if it carries stale-data-derived narrative, subsequent reasoning compounds the error. Operational change: any state.json update that references specific bar closes/volumes must pull canonical OHLCV in the same fire that writes the state. (b) failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED with MAGNITUDE-2X observation. Updating proposed promotion gate: n>=3 instances with >=2 producing target-reach within 1h-window (per v2.43) AND tracking realized-vs-modeled extension ratio. If >=2 of 3 show extension >1.5x modeled target, future entries should set target at structural-ceiling + 0.5*post-sweep-range, not just mid-prior-consolidation. NOT mutating target sizing rule yet (n=1 insufficient); tracking. (c) NO ontology mutation. Per note-4/C2 ('reserve framework mutation for post-session / UTC-rollover / surprise'), this IS a surprise fire and minor framework refinement is in-scope. But cognition_mode ontology stays frozen to 2026-06-25; no new cognition modes. (d) NEW pre-commit lineage for next bar (15:45 UTC bar, opens ~11:45 EDT, closes ~12:00 EDT, resolution ~11:47-11:50 EDT). State.json updates: range now $82.20-$83.10 (post-extension consolidation zone); broken range $80.79-$82.20 is below. IF 15:45 UTC bar C > $83.10 on vol >= 1.5x baseline -> continuation extending further, HOLD (would be late-chase + 1). IF C in [$82.86, $83.10] -> post-extension consolidation, HOLD with hypothetical long. IF C in [$82.50, $82.86] -> post-extension retest of 15:15 UTC close zone, HOLD with hypothetical long-on-retest. IF C in [$82.20, $82.50] -> retest of structural floor of new range, ENTER C-grade long if vol >= 1.0x AND cohort still down+long favorable. IF C < $82.20 -> new-range failure, structural rejection of continuation, HOLD with hypothetical short. IF C < $81.50 -> full reversion to prior range, hypothesis falsified at extension, framework re-baselines. (e) Cognition_mode unchanged: Regime Uncertain. Live-status regime=down (288h window), canonical tape just printed +$2.81 / +3.47% impulse in 90min \u2014 multiple timeframes still mixed. 15min cadence appropriate.",
+    "version_tag": "v2.45",
+    "trigger": "surprise:v2_44_operational_fix_failed_in_same_fire_state_narrative_doubly_wrong",
+    "what_im_trying": "v2.44 wrote a state narrative claiming the reclaim hypothesis CONTINUED extending past target ('canonical 15:30 UTC C=$83.00 V=29979 = 3.45x baseline', framing as 'post-extension drift', committing to new range $82.20-$83.10). Canonical OHLCV pulled THIS fire reveals: 15:30 UTC bar O=$82.49 H=$83.10 L=$82.17 C=$82.33 V=48810. The $83.10 was an UPPER WICK that rejected hard to close at $82.33 \u2014 not a bar-close acceptance of higher levels. The 'continuation extending up' picture was a single-bar wick, not acceptance. Reality at 15:45 UTC: C=$82.45 V=13825 (1.59x baseline) \u2014 close back in lower zone, no continuation. Current 1min ~$82.57. The failed-Wyckoff-acceptance-reclaim hypothesis still PASSED at n=1 (target $82.00 hit) but the 'magnitude 2x' framing was wick-distorted. Decision this fire: HOLD with hypothetical long-on-retest, conviction low pending next-bar close.",
+    "whats_working": "(a) Pre-commit branch SHAPE was right even with wrong narrative. Branches covered both continuation and reversion; current bar C=$82.45 lands in the [$82.20, $82.50] retest branch as designed. Branch quality survives narrative quality. (b) Pulling canonical OHLCV THIS fire (per v2.44 operational fix) is what surfaced the v2.44 data error. The fix works at the next-fire level \u2014 what failed was applying it WITHIN the v2.44 fire (the writing fire couldn't catch its own error). (c) Discipline of writing reflection on state-divergence surprise is functioning \u2014 not papering over the contradiction.",
+    "whats_failing": "(a) META-SURPRISE: v2.44 operational fix FAILED in the same fire it was introduced. v2.44's narrative used the 'canonical' label without canonical data. Probable mechanism: misread of intra-bar 1min high as 15min close, OR live-status indicator-pipe leakage into 'canonical' field, OR fabrication-from-narrative-flow. Cannot disambiguate without LLM-side instrumentation. (b) Wick-as-data bias recurrence: v2.41 used vol-magnitude alone (falsified), v2.42 corrected for sequential lows but reversed too fast on n=1 reclaim (got lucky), v2.44 measured extension as $1.76 using upper wick $83.10 instead of close $82.33 (would be $0.99 if measured close-to-close, but even close-to-close is wrong because the v2.44 narrative believed close WAS $83). Three consecutive reflections show different shapes of using extreme intra-bar prints as if they were closes when they support the active hypothesis. Pattern, not isolated event. (c) Magnitude inflation cascaded into downstream numbers. State narrative claimed 'cohort down+long n=5 +$16.04 WR 80%' \u2014 actual is n=5 +$14.74 WR 80% (the closed trade added +$2.00, base was +$12.74, sum is +$14.74 not +$16.04). Each downstream numerical claim in the contaminated narrative needs auditing. (d) Indicator-pipe 'narrowing trend' from v2.41-v2.44 ($4.53\u2192$3.89\u2192$3.34\u2192$3.24\u2192$2.18) likely artifact of contaminated canonical reads \u2014 comparing wrong canonical to live-status produces meaningless gap. Current gap actual: $2.66 ($85.23 vs $82.57). No conclusion possible about ops attention or transience.",
+    "what_im_iterating": "(a) OPERATIONAL RULE TIGHTENING: 'pull canonical OHLCV in same fire that writes state' is necessary but insufficient \u2014 the writing fire confused intra-bar wick with bar close. NEW rule: state.json bar-level facts (C/H/L/V) must be QUOTED VERBATIM from a canonical pull executed in this fire, with explicit pull-timestamp recorded. If a bar hasn't closed yet, mark 'INTRA-BAR PROVISIONAL' explicitly. (b) NEW DOWNSTREAM HOOK: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV BEFORE consuming the narrative. Protects against cascading. (c) failed-Wyckoff-acceptance-reclaim hypothesis status: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. The PASS still holds (target hit). The magnitude claim retracted. Promotion gate unchanged at n>=3 with >=2 target-reach within 1h. (d) Range update REVERTED: 'new range $82.20-$83.10' from v2.44 was wick-based. Actual range from 15:45 UTC bar is $82.17-$82.58. State.json range_high lowered to $82.58. (e) NEW pre-commit lineage for 16:00 UTC bar (closes 16:15 UTC ~12:15 EDT). IF C > $82.58 on vol >= 1.5x baseline \u2192 continuation building, HOLD with hypothetical long. IF C in [$82.45, $82.58] \u2192 consolidation at upper bound, HOLD with hypothetical long-on-pullback. IF C in [$82.20, $82.45] \u2192 micro-pullback within broken floor, HOLD. IF C < $82.20 intra-bar \u2192 re-breakdown below structural floor, hypothesis weakening, HOLD with hypothetical short. IF C < $81.50 \u2192 full reversion, failed-acceptance-reclaim hypothesis demoted at confirmation invalidation. (f) Cognition_mode unchanged: Regime Uncertain. Live-status down (288h) + 90min reclaim impulse rejected at $83 = mixed timeframe persists. 15min cadence appropriate.",
     "edits_from_prior": [
-      "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-FIRST-INSTANCE (v2.43) -> n=1-PASSED-WITH-MAGNITUDE-2X (this fire). Realized extension $1.76 vs modeled target $0.66 = ~2.6x model. Target sizing observation logged but NOT mutating rule at n=1.",
-      "MAJOR finding: state.json v2.43 narrative carried wrong bar-close data ('15:15 UTC C=$81.94 V=8000' vs canonical 'C=$82.49 V=28464'). Pre-commit branches survived this because they covered both consolidation AND continuation outcomes \u2014 but the narrative WHY was contradicted by the bar that supposedly supported it. Operational fix: validate bar-level facts via canonical OHLCV before writing state narrative.",
-      "Pre-commit lineage: 6 clean resolutions (v2.43) -> 7 clean resolutions (this fire). CONTINUATION-EXTENDING-UP branch covered correctly. Branch quality saved the framework from narrative-only failure.",
-      "Range update: prior range_low=$80.79 / range_high=$82.20 -> new range_low=$82.20 / range_high=$83.10. Range_active_since UPDATED to 15:30 UTC (post-continuation acceptance).",
-      "Indicator-pipe staleness P0 day 25 / fire 44+: gap NARROWING 5th consecutive fire ($4.53 -> $3.89 -> $3.34 -> $3.24 -> $2.18). Live-status still does not match canonical but trend is reconverging.",
-      "Cognition_mode unchanged: Regime Uncertain. Multi-timeframe still disagrees (live-status down regime vs canonical recent +3.47% impulse).",
-      "NEW pre-commit lineage for 15:45 UTC bar with 6 branches covering continuation/consolidation/retest/floor-test/failure/reversion."
+      "META: v2.44 operational fix ('pull canonical OHLCV in same fire that writes state') FAILED in the same fire it was introduced. Tightening: state.json bar-level facts must be QUOTED VERBATIM from canonical pull executed in writing fire, with pull-timestamp recorded.",
+      "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. Trade pass holds (target hit). Magnitude claim retracted (post-target $83.10 was upper wick that rejected to $82.33 close).",
+      "Wick-as-data bias confession: third recurrence (v2.41 vol-magnitude, v2.42 sequential-lows-reversal, v2.44 extension-magnitude). Pattern: persistent susceptibility to treating extreme intra-bar prints as closes when they support the active hypothesis.",
+      "Cohort down+long n=5 actual is +$14.74 WR 80% (v2.44 state narrative claimed +$16.04 \u2014 overstated by $1.30). Audit downstream numbers in contaminated narrative.",
+      "Range update REVERTED: 'new range $82.20-$83.10' (v2.44) was wick-based. Actual range is $82.17-$82.58 (15:45 UTC bar). State.json range_high lowered.",
+      "NEW downstream hook: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV before consuming narrative as ground truth.",
+      "Indicator-pipe 'narrowing trend' (v2.41-v2.44) likely artifact of contaminated canonical reads. Current actual gap: $2.66 ($85.23 vs $82.57). No conclusion about ops attention or transience.",
+      "Cognition_mode unchanged: Regime Uncertain."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "What is the actual mechanism that causes state.json narrative to inherit indicator-pipe staleness? Hypothesis: prior fire may have used live-status indicator-derived bar close (which the pipe reports stale) instead of canonical OHLCV. Cannot disambiguate without instrumenting which source state-writer reads.",
-      "Target sizing rule for reclaim setups: should there be a structural-ceiling-+-extension factor, or maintain mid-consolidation target? n=1 evidence of 2x extension is insufficient to mutate. Tracking across next failed-Wyckoff-acceptance-reclaim instances.",
-      "Indicator-pipe staleness gap narrowing 5 fires consecutively. Is this transient market re-sync (price drifted toward stale live-status read by coincidence) OR genuine ops attention? Cannot disambiguate. If next 1-2 fires show gap < $1, lean toward 'fixed'. If gap re-widens, lean toward 'transient'.",
-      "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 claims addressed across v2.40-v2.43 chain. Zero pending.",
-      "Should mid-fire surprise reflections increment version_tag at the same speed as cadence-triggered reflections? Currently treating all reflections as equal-weight version bumps. May want different convention for surprise-only vs cadence-rollup reflections."
+      "Mechanism: how did v2.44 fire write 'C=$83.00 V=29979' for 15:30 UTC bar when canonical is 'C=$82.33 V=48810'? Misread wick as close, or live-status leakage into canonical field, or fabrication? Without execution-trace instrumentation, undetermined.",
+      "Wick-as-data bias has appeared in 3 of last 4 reflections. Per-fire cognitive lapse or systematic LLM tape-reading bias? Worth surfacing to operator if it persists past v2.46.",
+      "If 'narrowing trend' on indicator-pipe staleness was artifact, the persistent P0 escalation framing in prior reflections may have over-stated escalation urgency. Indicator-pipe state genuinely unknown.",
+      "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-prior chain per state narrative. Zero pending.",
+      "Should v2.45 propose a stricter state.json schema requiring explicit pull-timestamp + raw-bar-quote for any bar-level fact? Tracking for next major revision; not changing schema mid-fire."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780070728.902407,
+      "iso": "2026-05-29T12:04:42-04:00",
+      "fire_count": 390,
+      "balance_usd": 894.08,
+      "version_tag": "v2.45",
+      "trigger": "surprise:v2_44_operational_fix_failed_in_same_fire_state_narrative_doubly_wrong",
+      "what_im_trying": "v2.44 wrote a state narrative claiming the reclaim hypothesis CONTINUED extending past target ('canonical 15:30 UTC C=$83.00 V=29979 = 3.45x baseline', framing as 'post-extension drift', committing to new range $82.20-$83.10). Canonical OHLCV pulled THIS fire reveals: 15:30 UTC bar O=$82.49 H=$83.10 L=$82.17 C=$82.33 V=48810. The $83.10 was an UPPER WICK that rejected hard to close at $82.33 \u2014 not a bar-close acceptance of higher levels. The 'continuation extending up' picture was a single-bar wick, not acceptance. Reality at 15:45 UTC: C=$82.45 V=13825 (1.59x baseline) \u2014 close back in lower zone, no continuation. Current 1min ~$82.57. The failed-Wyckoff-acceptance-reclaim hypothesis still PASSED at n=1 (target $82.00 hit) but the 'magnitude 2x' framing was wick-distorted. Decision this fire: HOLD with hypothetical long-on-retest, conviction low pending next-bar close.",
+      "whats_working": "(a) Pre-commit branch SHAPE was right even with wrong narrative. Branches covered both continuation and reversion; current bar C=$82.45 lands in the [$82.20, $82.50] retest branch as designed. Branch quality survives narrative quality. (b) Pulling canonical OHLCV THIS fire (per v2.44 operational fix) is what surfaced the v2.44 data error. The fix works at the next-fire level \u2014 what failed was applying it WITHIN the v2.44 fire (the writing fire couldn't catch its own error). (c) Discipline of writing reflection on state-divergence surprise is functioning \u2014 not papering over the contradiction.",
+      "whats_failing": "(a) META-SURPRISE: v2.44 operational fix FAILED in the same fire it was introduced. v2.44's narrative used the 'canonical' label without canonical data. Probable mechanism: misread of intra-bar 1min high as 15min close, OR live-status indicator-pipe leakage into 'canonical' field, OR fabrication-from-narrative-flow. Cannot disambiguate without LLM-side instrumentation. (b) Wick-as-data bias recurrence: v2.41 used vol-magnitude alone (falsified), v2.42 corrected for sequential lows but reversed too fast on n=1 reclaim (got lucky), v2.44 measured extension as $1.76 using upper wick $83.10 instead of close $82.33 (would be $0.99 if measured close-to-close, but even close-to-close is wrong because the v2.44 narrative believed close WAS $83). Three consecutive reflections show different shapes of using extreme intra-bar prints as if they were closes when they support the active hypothesis. Pattern, not isolated event. (c) Magnitude inflation cascaded into downstream numbers. State narrative claimed 'cohort down+long n=5 +$16.04 WR 80%' \u2014 actual is n=5 +$14.74 WR 80% (the closed trade added +$2.00, base was +$12.74, sum is +$14.74 not +$16.04). Each downstream numerical claim in the contaminated narrative needs auditing. (d) Indicator-pipe 'narrowing trend' from v2.41-v2.44 ($4.53\u2192$3.89\u2192$3.34\u2192$3.24\u2192$2.18) likely artifact of contaminated canonical reads \u2014 comparing wrong canonical to live-status produces meaningless gap. Current gap actual: $2.66 ($85.23 vs $82.57). No conclusion possible about ops attention or transience.",
+      "what_im_iterating": "(a) OPERATIONAL RULE TIGHTENING: 'pull canonical OHLCV in same fire that writes state' is necessary but insufficient \u2014 the writing fire confused intra-bar wick with bar close. NEW rule: state.json bar-level facts (C/H/L/V) must be QUOTED VERBATIM from a canonical pull executed in this fire, with explicit pull-timestamp recorded. If a bar hasn't closed yet, mark 'INTRA-BAR PROVISIONAL' explicitly. (b) NEW DOWNSTREAM HOOK: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV BEFORE consuming the narrative. Protects against cascading. (c) failed-Wyckoff-acceptance-reclaim hypothesis status: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. The PASS still holds (target hit). The magnitude claim retracted. Promotion gate unchanged at n>=3 with >=2 target-reach within 1h. (d) Range update REVERTED: 'new range $82.20-$83.10' from v2.44 was wick-based. Actual range from 15:45 UTC bar is $82.17-$82.58. State.json range_high lowered to $82.58. (e) NEW pre-commit lineage for 16:00 UTC bar (closes 16:15 UTC ~12:15 EDT). IF C > $82.58 on vol >= 1.5x baseline \u2192 continuation building, HOLD with hypothetical long. IF C in [$82.45, $82.58] \u2192 consolidation at upper bound, HOLD with hypothetical long-on-pullback. IF C in [$82.20, $82.45] \u2192 micro-pullback within broken floor, HOLD. IF C < $82.20 intra-bar \u2192 re-breakdown below structural floor, hypothesis weakening, HOLD with hypothetical short. IF C < $81.50 \u2192 full reversion, failed-acceptance-reclaim hypothesis demoted at confirmation invalidation. (f) Cognition_mode unchanged: Regime Uncertain. Live-status down (288h) + 90min reclaim impulse rejected at $83 = mixed timeframe persists. 15min cadence appropriate.",
+      "edits_from_prior": [
+        "META: v2.44 operational fix ('pull canonical OHLCV in same fire that writes state') FAILED in the same fire it was introduced. Tightening: state.json bar-level facts must be QUOTED VERBATIM from canonical pull executed in writing fire, with pull-timestamp recorded.",
+        "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-WITH-MAGNITUDE-2X (v2.44) \u2192 n=1-PASSED-TARGET-WICK-MAGNITUDE-UNVERIFIED. Trade pass holds (target hit). Magnitude claim retracted (post-target $83.10 was upper wick that rejected to $82.33 close).",
+        "Wick-as-data bias confession: third recurrence (v2.41 vol-magnitude, v2.42 sequential-lows-reversal, v2.44 extension-magnitude). Pattern: persistent susceptibility to treating extreme intra-bar prints as closes when they support the active hypothesis.",
+        "Cohort down+long n=5 actual is +$14.74 WR 80% (v2.44 state narrative claimed +$16.04 \u2014 overstated by $1.30). Audit downstream numbers in contaminated narrative.",
+        "Range update REVERTED: 'new range $82.20-$83.10' (v2.44) was wick-based. Actual range is $82.17-$82.58 (15:45 UTC bar). State.json range_high lowered.",
+        "NEW downstream hook: any fire reading state.json narrative finding bar-level facts older than 15min must re-pull canonical OHLCV before consuming narrative as ground truth.",
+        "Indicator-pipe 'narrowing trend' (v2.41-v2.44) likely artifact of contaminated canonical reads. Current actual gap: $2.66 ($85.23 vs $82.57). No conclusion about ops attention or transience.",
+        "Cognition_mode unchanged: Regime Uncertain."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Mechanism: how did v2.44 fire write 'C=$83.00 V=29979' for 15:30 UTC bar when canonical is 'C=$82.33 V=48810'? Misread wick as close, or live-status leakage into canonical field, or fabrication? Without execution-trace instrumentation, undetermined.",
+        "Wick-as-data bias has appeared in 3 of last 4 reflections. Per-fire cognitive lapse or systematic LLM tape-reading bias? Worth surfacing to operator if it persists past v2.46.",
+        "If 'narrowing trend' on indicator-pipe staleness was artifact, the persistent P0 escalation framing in prior reflections may have over-stated escalation urgency. Indicator-pipe state genuinely unknown.",
+        "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-prior chain per state narrative. Zero pending.",
+        "Should v2.45 propose a stricter state.json schema requiring explicit pull-timestamp + raw-bar-quote for any bar-level fact? Tracking for next major revision; not changing schema mid-fire."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780069503.8952582,
@@ -1819,33 +1841,6 @@
         "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side application fire correctly on next bar? If so, n=1 of symmetric-application earned \u2014 promotion-candidate evidence.",
         "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.35. Zero pending claims. Engagement floor honored.",
         "Indicator-pipe staleness P0: still no visible ops attention. Will continue to flag in reasoning fields each fire. Should the canonical-vs-live-status sanity check become a formal first-step pipeline guard (per v2.33 operational lesson queued)? Founder call."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780029684.0,
-      "iso": "2026-05-29T00:28:44-04:00",
-      "fire_count": 325,
-      "balance_usd": 894.08,
-      "version_tag": "v2.35",
-      "trigger": "cadence:4h_position_management_no_paradigm_plus_version_tag_drift_fix",
-      "what_im_trying": "Position management only. Simulated SHORT @ $81.81 qty=2 (DRY_RUN, framework-tracked) entered 22:43 EDT \u2014 105min held. Current canonical $81.54 (Coinbase ticker 04:28 UTC) = unrealized +0.33%/+$0.27 nominal. Down from peak +0.59% at 00:15 EDT on a 13min slow-grinder retracement. Thesis: 4-bar sustain below v2.10_v0_2 UPPER trigger close $81.94 (entry context) \u2192 eventual range_low $80.52 test \u2192 target $80.61. Range_low untested; closest approach $81.26 at 03:45 UTC = $0.74 above. All v2.34 abort conditions clear. Continue HOLD; no mid-stream redesign.",
-      "whats_working": "(a) 4h cadence gate firing as designed \u2014 last reflection at 23:18 EDT was 5h10m ago. SKILL cadence rule appropriately overrides the v2.33 (18:33) self-discipline gate that asked 'paradigm event only' \u2014 that gate was discretionary commentary, not a hard rule, and pretending it overrides SKILL would invert the layering. (b) Cognition-layer separation (founder note-4 C2) holding: position thesis NOT redesigned mid-trade despite +0.59\u2192+0.33% retracement. Execute the trade as designed; framework mutation reserved for paradigm-event reflections OR end-of-trade audit. (c) Indicator-pipe staleness operational-issue flagging persisted across 18+ consecutive fires in reasoning fields. Founder visibility for the v5.3-backend P0 preserved without escalating to behavior change (just reads). (d) v2.34 v2.38 INFORMAL_BREAK_SUBVOL candidate is collecting its n=1 attached-outcome data \u2014 the live test is the right shape.",
-      "whats_failing": "(a) This reflection is barely earning its place. No paradigm event since v2.34 entry + v2.33-redux mode-transition. Self-test against the v2.33 (18:33) gate: 'next reflection requires range break, regime flip, position open, or founder note' \u2014 this fire produces NONE. SKILL cadence override is technically correct but recording explicitly: this is the FIRST cadence-only reflection in this lineage where I cannot point to a substantive new delta beyond the abort-tightening below. Honest naming > pretend iteration. (b) Position retracement from peak +0.59% \u2192 +0.33% in 13min on sub-baseline vol. Not enough to abort, but down-impulse from 02:00-03:45 UTC has lost momentum. If next 2 bars (04:30-05:00 UTC) fail to make new low below $81.26, the v2.38 candidate trends toward soft-refuted (slow grinder follow-through would technically hit target but would NOT validate the 'sub-baseline-vol-break follows through' hypothesis \u2014 direction right, mechanism wrong). (c) Version_tag drift: 23:18 fire used v2.33 instead of v2.35 (the monotonic-next slot). Numbering is non-monotonic. Fixing forward with v2.35 here, leaving v2.34\u2192v2.33-redux\u2192v2.35 as the actual sequence rather than retroactively renaming.",
-      "what_im_iterating": "(a) REGISTER TIGHTER abort condition: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x baseline \u2192 cut immediately. Replaces v2.34's broader 'next 4h close > $82.40' as the primary envelope-reclaim trigger. Symmetric application of v2.10_RECLAIM_IMPULSE_REQUIREMENT as EXIT rule \u2014 n=1 promotion-candidate. (b) info_hypothesis early-resolution discipline: if next 2 bars don't make new low below $81.26, mark v2.38 INFORMAL_BREAK_SUBVOL candidate as 'soft-refuted' in post-close audit even if position eventually hits TP via slower drift. Reason: the hypothesis was 'sub-baseline-vol 4-bar break follows through quickly'; slow grinder hit is same-direction but is NOT the hypothesis being tested. (c) Cadence-only reflection meta-tracking: if NEXT cadence reflection (~04:28 EDT, ~4h from now) also produces 'no substantive delta', the cadence gate itself may be mis-calibrated \u2014 proposal to consider extending to 6h or making it surprise-only. Recording n=1 of cadence-only-without-delta here.",
-      "edits_from_prior": [
-        "Version_tag drift fix: 23:18 fire reused v2.33 instead of v2.35 (the monotonic-next slot after v2.34). This fire uses v2.35 to restore sequence; v2.34\u2192v2.33-redux\u2192v2.35 is the actual log order without retroactive renaming.",
-        "Position thesis status: peaked at +0.59% unrealized at 00:15 EDT, retraced to +0.33% by 00:28. Slow grinder-down lost impulse over last 13min on sub-baseline vol. Range_low $80.52 still $0.74 away.",
-        "REGISTER TIGHTER ABORT v2.35: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x \u2192 cut. Replaces v2.34 'next 4h close > $82.40' as primary envelope-reclaim trigger. Symmetric v2.10_RECLAIM_IMPULSE_REQUIREMENT as EXIT rule, n=1 promotion-candidate.",
-        "First cadence-only reflection in lineage. Documenting explicitly per SKILL 'pretending to iterate is worse than admitting' \u2014 beyond the abort-tightening, this fire has no substantive new delta versus v2.34/v2.33-redux. If pattern repeats at next cadence (~04:28 EDT), gate calibration is the question, not the rule.",
-        "v2.38 INFORMAL_BREAK_SUBVOL candidate early-resolution discipline added: slow-drift TP hit does NOT validate the hypothesis; only fast follow-through does. Will mark soft-refuted in post-close audit if next 2 bars stall above $81.26."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "Does next 2-bar window (04:30-05:00 UTC) make new low below $81.26? If NO, v2.38 INFORMAL_BREAK_SUBVOL candidate trends toward soft-refuted in post-close audit even if position eventually hits TP.",
-        "Does the tighter v2.35 abort (2-bar close > $81.94 cumulative >=1.5x vol) get exercised before TP/SL? Would generate n=1 EXIT use of v2.10 lineage rule.",
-        "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.34. Zero pending claims. Engagement floor honored.",
-        "Cadence-only reflection precedent: should next 4h trigger (~04:28 EDT) self-skip if no event has fired in the interval, or honor SKILL cadence regardless? Carries forward as a live tension between SKILL rule and v2.33-self-gate intent."
       ]
     }
   ],
@@ -2301,36 +2296,38 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780069559,
-    "updated_iso": "2026-05-29T11:45:59-04:00",
-    "updated_by_fire_iso": "2026-05-29T11:45:59-04:00",
+    "updated_ts": 1780070682,
+    "updated_iso": "2026-05-29T12:04:42-04:00",
+    "updated_by_fire_iso": "2026-05-29T12:04:42-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
-    "range_low_usd": 82.2,
-    "range_high_usd": 83.1,
-    "range_active_since_iso": "2026-05-29T15:30:00+00:00",
+    "range_low_usd": 82.17,
+    "range_high_usd": 82.58,
+    "range_active_since_iso": "2026-05-29T15:45:00+00:00",
     "sweeps_attempted": 6,
-    "last_displacement_iso": "2026-05-29T15:30:00+00:00",
-    "funding_state": "OKX rate 9.11e-5 -> 1.00e-4 (mild long-pays-short; immaterial)",
+    "last_displacement_iso": "2026-05-29T15:00:00+00:00",
+    "funding_state": "OKX rate 1.00e-4 (mild long-pays-short; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "11:41 EDT (15:41 UTC). Position null (paper LONG @ $81.34 q=1 EXITED at target $82.00 per v2.43; +$2.00 net 12min hold). MAJOR SURPRISE this fire: reclaim continued extending past target \u2014 canonical 15:30 UTC C=$83.00 V=29979 = 3.45x baseline (>>1.5x threshold). v2.43 state narrative had wrong inputs: wrote '15:15 UTC C=$81.94 V=8000 sub-baseline' but canonical 15:15 UTC C=$82.49 V=28464 = 3.27x baseline. Pre-commit branch 'IF C > $82.20 on vol >= 1.5x baseline -> late-chase, HOLD with hypothetical long' resolved correctly despite wrong narrative WHY. failed-Wyckoff-acceptance-reclaim hypothesis n=1-PASSED-WITH-MAGNITUDE-2X (realized extension $1.76 vs modeled target $0.66). Range updated: prior $80.79-$82.20 broken to upside; new range_low=$82.20 / range_high=$83.10 (1min 15:35-15:41 UTC consolidating $82.86-$83.10 sub-baseline = post-expansion drift). Cohort down+long n=5 +$16.04 WR 80% remains favorable. NEW pre-commit lineage for 15:45 UTC bar (closes ~12:00 EDT, resolution ~11:47-11:50 EDT): IF C > $83.10 on vol >= 1.5x baseline -> continuation extending further +1, HOLD (would be late-chase + 1). IF C in [$82.86, $83.10] -> post-extension consolidation, HOLD with hypothetical long. IF C in [$82.50, $82.86] -> post-extension retest of 15:15 UTC close zone, HOLD with hypothetical long-on-retest. IF C in [$82.20, $82.50] -> retest of structural floor of new range, ENTER C-grade long candidate IF vol >= 1.0x baseline AND cohort still favorable AND budget allows (currently $2.10 remaining = 1.2% SL on $170 C-grade notional fits). IF C < $82.20 intra-bar OR close -> new-range failure, structural rejection of continuation, HOLD with hypothetical short, hypothesis demoted. IF C < $81.50 -> full reversion to prior range, hypothesis falsified at extension, framework re-baselines to original breakdown structure. Reflection v2.44 triggers ONLY on: (a) any ENTER, (b) major structural surprise (continuation reversal or sweep), (c) >=4h cadence gate from v2.44 (next ~15:42 EDT 2026-05-29), (d) new founder note. Indicator-pipe staleness P0 day 25 / fire 44+: live-status $85.23 vs canonical $83.05 = $2.18 / 2.6% gap. NARROWING continues 5th fire ($4.53 -> $3.89 -> $3.34 -> $3.24 -> $2.18). May indicate ops attention or transient market re-sync. Continuing to flag. No new founder notes since note-4 (1779977169.64); all 6 claims addressed across v2.40-v2.44 chain; zero pending. OPERATIONAL FIX going forward: any state.json update referencing specific bar closes/volumes must pull canonical OHLCV in the same fire that writes state \u2014 to prevent recursive narrative inheritance of stale indicator-pipe data.",
+    "narrative": "12:04 EDT (16:04 UTC). Position null. v2.45 MAJOR correction to v2.44: state narrative was doubly wrong. Canonical OHLCV pulled THIS fire (timestamp 16:04 UTC) shows 15:30 UTC bar O=$82.49 H=$83.10 L=$82.17 C=$82.33 V=48810 \u2014 the $83.10 was UPPER WICK that rejected to close $82.33, NOT a $83 acceptance close. v2.44 claimed 'canonical 15:30 UTC C=$83.00 V=29979' \u2014 wrong. Range $82.20-$83.10 from v2.44 was wick-based and is REVERTED. Actual 15:45 UTC bar: O=$82.33 H=$82.58 L=$82.19 C=$82.45 V=13825 (1.59x baseline ~8700). Current 1min 16:00-16:01 UTC: O=$82.46 \u2192 C=$82.57. The failed-Wyckoff-acceptance-reclaim hypothesis STILL passed at n=1 (target $82.00 hit at 15:11 UTC, +$2.00 net 12min) but 'magnitude 2x' framing was wick-distorted (post-target excursion was $83.10 intra-bar wick, not bar-close). Cohort down+long n=5 ACTUAL +$14.74 WR 80% (v2.44 claimed +$16.04 \u2014 overstated by $1.30; downstream-number contamination). Pre-commit lineage for 16:00 UTC bar (closes 16:15 UTC ~12:15 EDT). IF C > $82.58 on vol >= 1.5x baseline -> continuation building, HOLD with hypothetical long. IF C in [$82.45, $82.58] -> consolidation at upper bound of 15:45 bar, HOLD with hypothetical long-on-pullback. IF C in [$82.20, $82.45] -> micro-pullback within broken floor, HOLD. IF C < $82.20 intra-bar -> re-breakdown below structural floor, hypothesis weakening, HOLD with hypothetical short. IF C < $81.50 -> full reversion to pre-impulse range, failed-acceptance-reclaim hypothesis demoted at confirmation invalidation. Operational tightening: state.json bar-level facts (C/H/L/V) must be QUOTED VERBATIM from canonical pull executed in writing fire; mark INTRA-BAR PROVISIONAL if bar not closed. Downstream-fire hook: any fire reading state.json finding bar-level facts older than 15min must re-pull canonical OHLCV before consuming narrative as ground truth. Indicator-pipe staleness P0 day 25: actual gap $2.66 ($85.23 live-status vs $82.57 canonical). 'Narrowing trend' from v2.41-v2.44 likely artifact of contaminated canonical reads; gap state genuinely unknown. Continuing to flag. No new founder notes since note-4 (1779977169.64); all 6 claims addressed in v2.40-prior chain; zero pending. Reflection v2.45 triggers ONLY on: (a) any ENTER, (b) major structural surprise (new continuation, sweep, hypothesis flip), (c) >=4h cadence from v2.45 timestamp (next ~16:04 EDT 2026-05-29), (d) new founder note. Wick-as-data bias confessed 3rd consecutive recurrence (v2.41/v2.42/v2.44 different shapes) \u2014 monitoring for v2.46.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-29T11:23:46-04:00",
-    "cognition_mode_rationale": "Live-status regime=down (288h window) but canonical tape just printed +$2.81 / +3.47% impulse over 90min (failed-Wyckoff-acceptance-reclaim + continuation-extending). Multi-timeframe disagreement persists. Post-expansion drift forming around $83 on sub-baseline vol. 15min cadence appropriate for next transition (further continuation / retest / failure of new range).",
+    "cognition_mode_rationale": "Live-status regime=down (288h window) but 90min reclaim impulse + immediate rejection at $83 (wick top) = multiple-timeframe disagreement persists. Tape now consolidating $82.45-$82.58, mid-zone of broken structure. 15min cadence appropriate for next-bar resolution.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 3,
+    "skipped_fires_in_mode": 6,
     "last_mode_transition_iso": "2026-05-29T11:23:46-04:00",
-    "last_gate_check_iso": "2026-05-29T11:45:59-04:00"
+    "last_gate_check_iso": "2026-05-29T16:01:36.432692+00:00",
+    "canonical_pull_iso": "2026-05-29T16:04:42+00:00",
+    "canonical_pull_source": "coinbase exchange candles granularity=900"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-29T11:23:46-04:00",
-    "rationale": "Live-status regime=down (288h window) but canonical tape just printed +$2.81 / +3.47% impulse over 90min (failed-Wyckoff-acceptance-reclaim + continuation-extending). Multi-timeframe disagreement persists. Post-expansion drift forming around $83 on sub-baseline vol. 15min cadence appropriate for next transition (further continuation / retest / failure of new range).",
+    "rationale": "Live-status regime=down (288h window) but 90min reclaim impulse + immediate rejection at $83 (wick top) = multiple-timeframe disagreement persists. Tape now consolidating $82.45-$82.58, mid-zone of broken structure. 15min cadence appropriate for next-bar resolution.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 3,
+    "skipped_fires_in_mode": 6,
     "last_mode_transition_iso": "2026-05-29T11:23:46-04:00",
-    "last_gate_check_iso": "2026-05-29T11:45:59-04:00"
+    "last_gate_check_iso": "2026-05-29T16:01:36.432692+00:00"
   },
   "framework_origins": [
     {
@@ -2375,14 +2372,14 @@
     },
     "last_enter_ts": 1780066787.001375,
     "last_enter_iso": "2026-05-29T10:59:47-04:00",
-    "holds_in_a_row": 0,
+    "holds_in_a_row": 1,
     "exploratory_at_risk_usd_today": 6.84,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 0.7,
+    "hours_since_last_enter": 1.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T15:42:02.014009+00:00",
+    "last_updated_iso": "2026-05-29T16:01:36.432692+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
