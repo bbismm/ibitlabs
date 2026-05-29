@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780077592,
-  "generated_iso": "2026-05-29T13:59:52-0400",
+  "generated_at": 1780078145,
+  "generated_iso": "2026-05-29T14:09:05-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 399,
+    "decisions_total": 400,
     "actions": {
-      "HOLD": 382,
+      "HOLD": 383,
       "ENTER": 10,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 199,
+      "HOLD_with_counterfactual": 200,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 167,
-      "medium": 193,
+      "medium": 194,
       "low": 39
     },
     "reasoning_chars_avg_all": 1008,
-    "reasoning_chars_avg_last10": 1068,
+    "reasoning_chars_avg_last10": 1060,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T13:59:44.296671-04:00",
+    "last_fire_iso": "2026-05-29T14:05:00-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,18 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780077584.296671,
-    "fire_iso": "2026-05-29T13:59:44.296671-04:00",
+    "fire_ts": 1780077900.0,
+    "fire_iso": "2026-05-29T14:05:00-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.59,
+    "current_price": 82.62,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 1.04,
-      "momentum_pct": -0.3,
-      "rsi": null
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,19 +61,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "v2.47 pre-commit lineage for 17:45 UTC bar resolution is mid-resolve, bar not yet closed (closes 18:00 UTC, ~3min). Canonical pull this fire: 17:45 UTC intra-bar O=82.89 H=82.90 L=82.56 partial-C=82.59 V=9059 (~1.04x baseline). 1min sequence 17:45->17:56 drifts .84->.59 with decaying vol post-17:46 spike. Currently straddling [.60, .85] lower edge with downward bias. Per v2.46 anti-lean-anchoring rule, do not pre-commit on intra-bar print \u2014 both 2nd branch (close >=.60 -> A-grade LONG retest candidate) and 3rd branch (close <.60 -> reclaim fading, hypothetical short) remain structurally live. Indicator-pipe staleness P0 day 25 / fire 48+: live-status .23 vs canonical .59 = .64/3.2% gap. live-status market_snapshot fields contaminated; vol_ratio adjusted to canonical intra-bar partial. Budget remaining .10 < .38 1-contract-floor at-risk; B/C blocked anyway. Cognition_mode Expansion held pending bar close; transition candidate if 18:00 UTC closes sub-baseline within zone. HOLD with hypothetical-long-on-retest preserved as continuation of cohort down+long n=5 +.74 WR 80% favorable read IF structural retest holds.",
+    "reasoning": "17:45 UTC closed C=$82.67 V=10636 (1.22x baseline) in v2.47's [$82.60,$82.85] A-grade LONG retest branch -- BUT vol marginal AND 17:45 wick L=$82.55 already breached structural floor $82.60 AND 18:00 UTC partial (O=$82.67 L=$82.58 C=$82.62 V=2399) projecting sub-baseline. Sequential lower closes $82.97->$82.90->$82.67->$82.62 + vol decay 2.92x->2.77x->1.51x->1.22x->sub-baseline + intra-bar excursions below floor = reclaim-AND-FAIL signature, not retest-AND-continuation. A-grade LONG pre-commit thesis invalidated by missing vol confirmation on the retest. v0.9 ENTER inputs 2/4: cohort PASS (down+long n=5 +$14.74), marginal structural; vol_ratio FAIL (canonical 1.22x->sub-baseline), asymmetry FAIL (5L+5S symmetric on live-status). Hypothesis status n=2-CONFIRMED-FULL-CYCLE per v2.47 unchanged at cycle level; what fades is the extension beyond cycle. HOLD with hypothetical short.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "B",
-      "direction": "long",
-      "entry_price": 82.59,
-      "sl_pct": 0.0065,
-      "tp_pct": 0.01,
+      "direction": "short",
+      "entry_price": 82.62,
+      "sl_pct": 0.0058,
+      "tp_pct": 0.005,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Lower edge of v2.47 retest zone. n=2 reclaim confirmed; SL below 17:00 bar low .60 / 17:45 wick low .56. Long if bar closes >=.60, fades if <.60."
+      "reasoning_30_words": "Sequential lower closes 82.97 to 82.62 plus vol decay 2.92x to sub-baseline equals reclaim-and-fail signature; short bias structural but 82.60 floor is sensitive so slow drift expected."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1517,11 +1517,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 6,
-    "avg_chars": 1123,
+    "holds_since_framework": 7,
+    "avg_chars": 1089,
     "since_iso": "2026-05-29T13:21:37-04:00",
     "since_framework_version": "v2.47",
-    "latest_fire_iso": "2026-05-29T13:59:44.296671-04:00"
+    "latest_fire_iso": "2026-05-29T14:05:00-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2312,9 +2312,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780077075,
-    "updated_iso": "2026-05-29T13:51:15-04:00",
-    "updated_by_fire_iso": "2026-05-29T13:51:15-04:00",
+    "updated_ts": 1780077900,
+    "updated_iso": "2026-05-29T14:05:00-04:00",
+    "updated_by_fire_iso": "2026-05-29T14:05:00-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2323,27 +2323,27 @@
     "range_active_since_iso": "2026-05-29T17:00:00+00:00",
     "sweeps_attempted": 8,
     "last_displacement_iso": "2026-05-29T17:00:00+00:00",
-    "funding_state": "OKX 8.90e-5 (mild positive; immaterial)",
+    "funding_state": "OKX 8.48e-5 (mild positive; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "13:51 EDT (17:51 UTC). Position null. Canonical pulled this fire (verbatim 15min): 17:00 UTC C=$82.97 V=25434 (~2.92x baseline ~8700); 17:15 UTC C=$82.97 V=24073 (~2.77x) CLOSED in v2.47 [$82.85,$83.00] upper-zone-hold branch as predicted; 17:30 UTC C=$82.90 V=13143 (~1.51x) CLOSED continuation within upper-zone no fresh HH above $83.07; 17:45 UTC partial L=$82.69 V=5249 (~0.6x projection) IN PROGRESS fading. Canonical 1min sequence 17:41-17:46: $82.99/$83.00/$82.92/$82.90/$82.84/$82.85. Pre-commit lineage RESOLVED: 17:15 + 17:30 both upper-zone-hold = HOLD with hypothetical long-on-deeper-pullback (v2.47 disciplined call). Chase-vs-retest live test ACTIVELY UNFOLDING: deeper retest to $82.60-$82.75 has NOT yet materialized; current $82.85 is at lower edge of upper-zone. Vol decay across 17:00->17:15->17:30->17:45 (2.92x->2.77x->1.51x->0.6x partial) = momentum weakening despite price holding. failed-Wyckoff-acceptance-reclaim hypothesis status UNCHANGED at n=2-CONFIRMED-FULL-CYCLE (v2.47); promotion gate at n>=3 still pending. NO new founder notes since note-4 (1779977169.64); zero pending claims. NEW pre-commit lineage for 17:45 UTC close + 18:00 UTC bar open: IF 17:45 closes >$82.85 vol >=1.0x baseline -> upper-zone hold persists, HOLD with hypothetical long-on-pullback. IF 17:45 closes in [$82.60, $82.85] -> drift into structural retest zone, A-grade LONG candidate at next-bar retest of $82.65-$82.75. IF 17:45 closes <$82.60 -> reclaim fading post-confirmation, HOLD with hypothetical short on next-bar continuation. IF 17:45 closes <$82.20 -> reclaim falsified, hypothesis demoted to n=1.5. COGNITION_MODE held at Expansion (since 13:21:37 EDT, 30min in mode). FLAG: vol decay across last 3 bars starting to challenge Expansion signature. If 18:00 UTC bar closes sub-baseline within [$82.60, $83.00] zone with no fresh HH, candidate for revert to Regime Uncertain. Skipped_fires_in_mode 0. Indicator-pipe staleness P0 day 25 / fire 47+: live-status $85.23 vs canonical $82.85 = $2.38/2.9%. No claim about ops attention.",
+    "narrative": "14:05 EDT (18:05 UTC). Position null. Canonical pulled this fire (verbatim 15min): 17:00 UTC O=$82.81 H=$83.07 L=$82.60 C=$82.97 V=25434 (~2.92x baseline ~8700); 17:15 UTC O=$82.97 H=$83.07 L=$82.84 C=$82.97 V=24073 (~2.77x); 17:30 UTC O=$82.97 H=$83.10 L=$82.88 C=$82.90 V=13143 (~1.51x); 17:45 UTC O=$82.89 H=$82.90 L=$82.55 C=$82.67 V=10636 (~1.22x); 18:00 UTC partial O=$82.67 H=$82.72 L=$82.58 C=$82.62 V=2399 (5min in, projecting sub-baseline). Canonical 1min sequence 17:52-18:01: $82.74/$82.70/$82.66/$82.57/$82.59/$82.64/$82.66/$82.67/$82.58/$82.62. v2.47 pre-commit lineage RESOLVED: 17:45 closed $82.67 in [$82.60, $82.85] zone = 'A-grade LONG candidate at next-bar retest $82.65-$82.75' branch. HOWEVER -- vol on 17:45 (1.22x) marginal AND 18:00 partial sub-baseline AND 17:45 wick L=$82.55 already breached structural floor $82.60. Retest IS happening at $82.55-$82.65 but WITHOUT vol confirmation, contradicting the A-grade thesis. Structural signature now: sequential lower closes $82.97->$82.90->$82.67->$82.62 + vol decay 2.92x->2.77x->1.51x->1.22x->sub-baseline + intra-bar excursions below $82.60 = reclaim-AND-FAIL not retest-AND-continuation. failed-Wyckoff-acceptance-reclaim hypothesis status: n=2-CONFIRMED-FULL-CYCLE per v2.47 -- UNCHANGED at hypothesis level since the n=2 cycle did complete; what's failing now is the EXTENSION beyond n=2 cycle. Discipline call: HOLD with hypothetical short. v0.9 ENTER inputs: 2/4 (cohort down+long n=5 +$14.74 PASS, marginal structural; vol_ratio canonical 1.22x->sub-baseline FAIL, asymmetry FAIL -- symmetric 5L+5S on live-status). Budget $2.10 remaining + no forced_exploration_due + threshold_state normal -> no B/C charge needed; A/S not justified by 2/4 inputs. NO new founder notes since note-4 (1779977169.64); zero pending claims. NEW pre-commit lineage for 18:00 UTC close (~10min) + 18:15 UTC bar open: IF 18:00 closes >$82.75 on vol re-expansion >=1.5x baseline (~13000) -> reclaim re-attempt building, HOLD with hypothetical long IF 18:15 confirms vol. IF 18:00 closes in [$82.60, $82.75] sub-baseline -> continued upper-zone-fade, HOLD with hypothetical short on 18:15 continuation, candidate cognition_mode revert. IF 18:00 closes in [$82.45, $82.60] -> reclaim breakdown into broken zone, HOLD with hypothetical short, cognition_mode revert to Regime Uncertain. IF 18:00 closes <$82.45 -> reclaim falsified at extension, hypothesis demoted to n=1.5, mode revert. COGNITION_MODE held at Expansion this fire pending 18:00 bar close -- but vol decay signature is now actively challenging mode signature. If 18:00 UTC closes sub-baseline in [$82.45, $82.75], next fire transitions to Regime Uncertain. Skipped_fires_in_mode 0. Indicator-pipe staleness P0 day 25 / fire 48+: live-status $85.23 vs canonical $82.62 = $2.61/3.2%. No claim about ops attention.",
     "cognition_mode": "Expansion",
     "cognition_mode_since_iso": "2026-05-29T13:21:37-04:00",
-    "cognition_mode_rationale": "Held from v2.47 transition (17:00 UTC vol 2.92x + acceptance + 90min confirmed action). v2.47 pre-commit branches resolved cleanly within mode; structure still active despite vol decay across 17:15->17:30->17:45. 5-min cadence appropriate while chase-vs-retest live test unfolds. Candidate revert to Regime Uncertain if 18:00 UTC sub-baseline + no fresh HH.",
+    "cognition_mode_rationale": "Held from v2.47 transition (17:00 UTC vol 2.92x + structural acceptance + 90min confirmed action). 18:00 UTC bar in progress -- full mode transition deferred to next fire after bar close. But vol decay 2.92x->2.77x->1.51x->1.22x->sub-baseline AND sequential lower closes AND intra-bar excursions below structural floor $82.60 are now ACTIVELY challenging Expansion signature. If 18:00 UTC closes sub-baseline in [$82.45, $82.75], next fire transitions to Regime Uncertain.",
     "cognition_mode_cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T13:21:37-04:00",
-    "last_gate_check_iso": "2026-05-29T17:51:15+00:00",
-    "canonical_pull_iso": "2026-05-29T17:51:15+00:00",
+    "last_gate_check_iso": "2026-05-29T18:05:00+00:00",
+    "canonical_pull_iso": "2026-05-29T18:05:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900+60"
   },
   "cognition": {
     "mode": "Expansion",
     "since_iso": "2026-05-29T13:21:37-04:00",
-    "rationale": "Held from v2.47 transition (17:00 UTC vol 2.92x + acceptance + 90min confirmed action). v2.47 pre-commit branches resolved cleanly within mode; structure still active despite vol decay across 17:15->17:30->17:45. 5-min cadence appropriate while chase-vs-retest live test unfolds. Candidate revert to Regime Uncertain if 18:00 UTC sub-baseline + no fresh HH.",
+    "rationale": "Held from v2.47 transition (17:00 UTC vol 2.92x + structural acceptance + 90min confirmed action). 18:00 UTC bar in progress -- full mode transition deferred to next fire after bar close. But vol decay 2.92x->2.77x->1.51x->1.22x->sub-baseline AND sequential lower closes AND intra-bar excursions below structural floor $82.60 are now ACTIVELY challenging Expansion signature. If 18:00 UTC closes sub-baseline in [$82.45, $82.75], next fire transitions to Regime Uncertain.",
     "cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T13:21:37-04:00",
-    "last_gate_check_iso": "2026-05-29T17:51:15+00:00"
+    "last_gate_check_iso": "2026-05-29T18:05:00+00:00"
   },
   "framework_origins": [
     {
@@ -2388,14 +2388,14 @@
     },
     "last_enter_ts": 1780066787.001375,
     "last_enter_iso": "2026-05-29T10:59:47-04:00",
-    "holds_in_a_row": 10,
+    "holds_in_a_row": 11,
     "exploratory_at_risk_usd_today": 6.84,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 3.0,
+    "hours_since_last_enter": 3.1,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T17:57:33.991210+00:00",
+    "last_updated_iso": "2026-05-29T18:05:08.382777+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
