@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780026770,
-  "generated_iso": "2026-05-28T23:52:50-0400",
+  "generated_at": 1780027659,
+  "generated_iso": "2026-05-29T00:07:39-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 320,
+    "decisions_total": 322,
     "actions": {
-      "HOLD": 308,
+      "HOLD": 310,
       "ENTER": 7,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 137,
+      "HOLD_with_counterfactual": 139,
       "ENTER_C": 2,
       "HOLD_no_plausible": 20,
       "EXIT": 5,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 125,
+      "medium": 127,
       "low": 35
     },
-    "reasoning_chars_avg_all": 986,
-    "reasoning_chars_avg_last10": 1105,
+    "reasoning_chars_avg_all": 987,
+    "reasoning_chars_avg_last10": 1062,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T23:52:46-04:00",
+    "last_fire_iso": "2026-05-29T00:07:31.440402-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,19 +37,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780026766.6518662,
-    "fire_iso": "2026-05-28T23:52:46-04:00",
+    "fire_ts": 1780027651.440402,
+    "fire_iso": "2026-05-29T00:07:31.440402-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 81.58,
+    "current_price": 81.51,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.0008,
+      "stoch_rsi": null,
+      "vol_ratio": null,
+      "momentum_pct": -0.31,
       "rsi": null,
-      "_note": "live-status values shown for traceability; STALE \u2014 canonical Coinbase ticker $81.58 vs live-status $85.23 = $3.65 / 4.5% gap (P0 issue, 16th consecutive fire)"
+      "note": "live-status pipe stale (4.4% gap to canonical, P0 op flag); indicator values from live-status NOT reported. canonical spot 81.51 from Coinbase ticker 04:06 UTC; 15m closes 03:00-04:00 UTC: 81.77/81.58/81.54/81.50/81.55 (partial); vol 6509/4066/2098/2163/856 = sub-baseline drift."
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,24 +61,25 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "HOLD-the-tracked-SHORT. Paper position SHORT @ $81.81 qty=2 (~$815 notional, contract_size=5) from fire 22:43:30 EDT, 1h7min held. Canonical spot $81.58 (Coinbase ticker 03:50:48Z) = unrealized +0.28% / ~+$2.30 nominal pre-fee. The 03:00 UTC bounce ($81.77 close on vol 6509 = ~1.0x baseline) flagged in state.narrative as 'first bounce against the SHORT' has now FADED: 03:15 C $81.58 vol 4066, 03:30 C $81.54 vol 2098, 03:45 (forming) C $81.52 vol 901. Volume collapse + drift back down = failed-extension shape, NOT reversal start. v2.33 tightened abort (03:15-03:30 UTC close >= $82.00 on vol >= 1.5x) was checkable this fire \u2014 BOTH bars closed below $82.00 on sub-baseline vol \u2192 abort NOT triggered, condition expires. Original abort set (SL $82.25 / 6h-no-progress / sustained $81.94 reclaim on >=1.5x vol) all green: max recent high $82.10 at 02:15 UTC (1.5h ago) well below $82.25; progress +0.28% at 1h7m clears 6h gate; no envelope reclaim. Range_low_usd $80.52 still untested (-1.30% from spot). Thesis intact, let it play. State.json not rewritten \u2014 no material schema-trigger this fire (no regime flip, no displacement >1.5%, no sweep, no range break, no position open/close per live-status). Indicator-pipe staleness P0 persists 16th fire; awaiting ops attention. No reflection: 4h cadence not met (32min since v2.33), no paradigm-class surprise (bounce-fading CONFIRMS prior thesis rather than refuting it).",
+    "reasoning": "HOLD managing simulated cognitive SHORT entry .81 (fire 22:43:30, qty=2, DRY_RUN \u2014 live-status.position null, executor not routing). Canonical spot .51, unrealized +0.37%/+ nominal in thesis direction. v2.34 abort conditions all CLEAR: (i) no 4h close > .40 (max .09 at 01:45); (ii) 1.4h elapsed of 6h budget, -0.37% progress vs -0.5% trigger; (iii) no close above .94 trigger on >=1.5x vol since entry. v2.33 symmetric-EXIT 03:15-03:30 UTC check: 81.58/81.54 closes, vols 4066/2098 \u2014 well below .00 reclaim, NOT TRIGGERED. 04:00 UTC partial bar 81.55 on vol 856 = sub-baseline absorption-style continuation, consistent with v2.38 INFORMAL_BREAK_SUBVOL candidate shape. Sameness IS the read per SKILL. No reflection this fire \u2014 0.8h since v2.33, well under 4h cadence, no surprise event. State.json no rewrite needed: no regime flip, no sweep, no range break, no displacement, no position-state change.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "4h close > $82.40 (range_high envelope reclaim) \u2014 currently max recent $82.10 at 02:15 UTC",
-      "6h elapsed without -0.5% progress from $81.81 entry \u2014 currently +0.28% at 1h7m, gate clear",
-      "Sustained close above $81.94 v2.10_v0_2 UPPER trigger on >=1.5x vol baseline \u2014 full envelope reclaim",
-      "Original SL $82.25 (-0.54% from entry = +0.81% adverse from spot $81.58)"
+      "4h close > .40",
+      "6h elapsed without -0.5% progress (now 1.4h / -0.37%)",
+      "sustained close > .94 on >=1.5x vol",
+      "15m close >= .00 on >=1.5x vol (v2.33 symmetric-EXIT)",
+      "real position-state divergence: if executor wires live and bot disagrees with cognitive frame, force-reconcile to live-status"
     ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 81.58,
-      "sl_pct": 0.008,
-      "tp_pct": 0.013,
+      "entry_price": 81.51,
+      "sl_pct": 0.0055,
+      "tp_pct": 0.012,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "If flat: weak C-grade SHORT add toward $80.52 untested range_low. Vol-collapse-after-failed-bounce shape favors continuation. But chasing 0.28% already realized = informational only, not conviction."
+      "reasoning_30_words": "If forced lean: SHORT continues toward .52 range_low test. Sub-baseline vol drift below .94 trigger persisting 7 bars. Down+short cohort second-best (n=6 +.39 WR 83.3%)."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1585,11 +1586,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 5,
-    "avg_chars": 937,
+    "holds_since_framework": 7,
+    "avg_chars": 979,
     "since_iso": "2026-05-28T23:18:40-04:00",
     "since_framework_version": "v2.33",
-    "latest_fire_iso": "2026-05-28T23:52:46-04:00"
+    "latest_fire_iso": "2026-05-29T00:07:31.440402-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2695,14 +2696,14 @@
     },
     "last_enter_ts": 1780022939.228757,
     "last_enter_iso": "2026-05-28T22:43:30-04:00",
-    "holds_in_a_row": 5,
+    "holds_in_a_row": 7,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 1.0,
+    "hours_since_last_enter": 1.3,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T03:50:20.955396+00:00",
+    "last_updated_iso": "2026-05-29T04:05:28.931032+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
