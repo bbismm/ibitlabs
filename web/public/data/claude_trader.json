@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780035398,
-  "generated_iso": "2026-05-29T02:16:38-0400",
+  "generated_at": 1780036047,
+  "generated_iso": "2026-05-29T02:27:27-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 338,
+    "decisions_total": 339,
     "actions": {
-      "HOLD": 326,
+      "HOLD": 327,
       "ENTER": 7,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 155,
+      "HOLD_with_counterfactual": 156,
       "ENTER_C": 2,
       "HOLD_no_plausible": 20,
       "EXIT": 5,
@@ -21,28 +21,28 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 143,
+      "medium": 144,
       "low": 35
     },
-    "reasoning_chars_avg_all": 999,
-    "reasoning_chars_avg_last10": 1075,
+    "reasoning_chars_avg_all": 1000,
+    "reasoning_chars_avg_last10": 1104,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T02:16:32-04:00",
+    "last_fire_iso": "2026-05-29T02:27:21-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 57,
+    "framework_reflections_total": 58,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780035392.07835,
-    "fire_iso": "2026-05-29T02:16:32-04:00",
+    "fire_ts": 1780036041.1701682,
+    "fire_iso": "2026-05-29T02:27:21-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.08,
+    "current_price": 82.36,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -60,30 +60,123 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Same baseline as fire 02:06:50 (state.json updated 02:08:55). Canonical $82.08 (Coinbase ticker 06:14:43 UTC) up from $82.00. Simulated SHORT @ $81.81 (DRY_RUN framework-tracked) unrealized -0.33% / -$2.70 nominal, 211min held. 06:00 UTC bar (incomplete) C-so-far $82.01 V=564, prior 05:45 UTC closed $81.96 V=2479. v2.35 tighter abort close-component half-met (2 consecutive C > $81.94 forming if 06:00 holds) but vol-component clearly fails: cum 3043 vs 1.5x baseline 8687 (median-96=5791). v2.10 reclaim-impulse for reverse side ALSO unconfirmed: across 4 reverse bars (05:00-05:45 UTC), zero bars produced both upper-third close AND vol >= 1.5x baseline. Both sides lack vol initiative. Mechanism (sub-vol break follow-through) remains soft-refuted per v2.36; abort rules unmet; cognition-layer separation = HOLD. Range_low $80.52 untested for 13.7h. Indicator-pipe staleness P0 continues 23+ consecutive fires (live-status $85.23 vs canonical $82.08 = $3.15 / 3.84% gap).",
+    "reasoning": "Simulated SHORT @ $81.81 (entered 22:43:30 EDT, v2.34 B-grade ENTER, DRY_RUN framework-tracked) hit pre-committed hard SL @ $82.25 in current 06:30 UTC bar (canonical $82.36 at 02:22:59 EDT). Realized -$5.71 total framework PnL (-$4.40 price + ~$1.31 fees). v2.35 tighter abort never triggered: 2-bar cum vol 06:00+06:15 = 1505 = 0.17x baseline 8687 \u2014 vol-half failed cleanly through the slow reverse drift. Hard SL did all the work; soft abort layer was performative on sub-baseline-vol grinder mode. v2.37 reflection (just written) closes the trade audit: v2.38 INFORMAL_BREAK_SUBVOL REJECTED at n=1, v2.10 EXIT-side symmetric application REJECTED at n=1, restore entry-side asymmetry. Post-flush state: 3 consecutive 15m closes above $81.94 trigger, range_low $80.52 untested 14h+, intra-day tape disagrees with live-status down-288h tag = Regime Uncertain mode. No fresh ENTER this fire \u2014 cognition_mode just transitioned, exploration budget down to $3.23 of $8.94 after this trade closes ledger, and the immediate post-SL-flush squeeze is exactly the noise zone where a counter-revenge SHORT would be \u4f2a alpha. Hypothetical lean = weak C-grade LONG following the acceptance-above-trigger read, but n=0 confirmation + zero base rate for me on slow-drift acceptance plays. HOLD with documented counterfactual; let next 1-2 bars resolve direction.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "v2.34: any 4h close > $82.40 cuts SHORT",
-      "v2.35: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x median-96 baseline (8687 single / 17373 two-bar) cuts immediately",
-      "v2.10 reverse-side: 1 bar within 4 of reclaim with vol >= 1.5x baseline AND upper-third close confirms reverse impulse",
-      "time-cut: if range_low $80.52 untested by 18h held (16:43 EDT 2026-05-29), close as expired"
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "short",
-      "entry_price": 82.08,
+      "direction": "long",
+      "entry_price": 82.36,
       "sl_pct": 0.012,
-      "tp_pct": 0.02,
+      "tp_pct": 0.018,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "If flat now: macro down regime + down+short cohort historically positive (n=6 +$1.39 WR 83%) gives weak directional lean, but vol_ratio 0.56 + sub-baseline 06:00 bar + drift in $0.30 band = only 1/4 v0.9 inputs. C-grade lean by default, normal threshold blocks ENTER, but the lean exists."
+      "reasoning_30_words": "3 consecutive 15m closes above $81.94 trigger + range_low $80.52 untested 14h+ + just-flushed-short-stops squeeze = weak acceptance-above-trigger lean. C-grade probe-worthy if not for budget tightness post-loss."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
-    "information_roi_record": null
+    "information_roi_record": {
+      "previous_trade_fire_iso": "2026-05-28T22:43:30-04:00",
+      "actual_outcome": "SL hit at $82.25 in 06:30 UTC bar \u2014 framework-tracked simulated -$4.40 + ~$1.31 fees = ~-$5.71 total. Held 3h39min.",
+      "info_hypothesis_status": "refuted",
+      "lesson_extracted": "Sub-baseline-vol 4-bar sustain-below-trigger does NOT cleanly follow through at n=1 attached-outcome \u2014 the reverse impulse (also sub-baseline-vol) won. Mechanism v2.38 INFORMAL_BREAK_SUBVOL rejected. Secondary lesson: v2.10 1.5x vol gate (entry-side filter) does NOT translate symmetrically as an EXIT trigger \u2014 slow-drift-against grinders never satisfy it, leaving only the hard SL as protection. Soft abort layer needs different shape for sub-baseline-vol failure modes.",
+      "information_value_realized": "high"
+    }
   },
   "events": [
+    {
+      "type": "first_under_framework",
+      "ts": 1780036041.1701682,
+      "iso": "2026-05-29T02:27:21-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.37: HOLD",
+      "payload": {
+        "fire_ts": 1780036041.1701682,
+        "fire_iso": "2026-05-29T02:27:21-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.36,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Simulated SHORT @ $81.81 (entered 22:43:30 EDT, v2.34 B-grade ENTER, DRY_RUN framework-tracked) hit pre-committed hard SL @ $82.25 in current 06:30 UTC bar (canonical $82.36 at 02:22:59 EDT). Realized -$5.71 total framework PnL (-$4.40 price + ~$1.31 fees). v2.35 tighter abort never triggered: 2-bar cum vol 06:00+06:15 = 1505 = 0.17x baseline 8687 \u2014 vol-half failed cleanly through the slow reverse drift. Hard SL did all the work; soft abort layer was performative on sub-baseline-vol grinder mode. v2.37 reflection (just written) closes the trade audit: v2.38 INFORMAL_BREAK_SUBVOL REJECTED at n=1, v2.10 EXIT-side symmetric application REJECTED at n=1, restore entry-side asymmetry. Post-flush state: 3 consecutive 15m closes above $81.94 trigger, range_low $80.52 untested 14h+, intra-day tape disagrees with live-status down-288h tag = Regime Uncertain mode. No fresh ENTER this fire \u2014 cognition_mode just transitioned, exploration budget down to $3.23 of $8.94 after this trade closes ledger, and the immediate post-SL-flush squeeze is exactly the noise zone where a counter-revenge SHORT would be \u4f2a alpha. Hypothetical lean = weak C-grade LONG following the acceptance-above-trigger read, but n=0 confirmation + zero base rate for me on slow-drift acceptance plays. HOLD with documented counterfactual; let next 1-2 bars resolve direction.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 82.36,
+          "sl_pct": 0.012,
+          "tp_pct": 0.018,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "3 consecutive 15m closes above $81.94 trigger + range_low $80.52 untested 14h+ + just-flushed-short-stops squeeze = weak acceptance-above-trigger lean. C-grade probe-worthy if not for budget tightness post-loss."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": {
+          "previous_trade_fire_iso": "2026-05-28T22:43:30-04:00",
+          "actual_outcome": "SL hit at $82.25 in 06:30 UTC bar \u2014 framework-tracked simulated -$4.40 + ~$1.31 fees = ~-$5.71 total. Held 3h39min.",
+          "info_hypothesis_status": "refuted",
+          "lesson_extracted": "Sub-baseline-vol 4-bar sustain-below-trigger does NOT cleanly follow through at n=1 attached-outcome \u2014 the reverse impulse (also sub-baseline-vol) won. Mechanism v2.38 INFORMAL_BREAK_SUBVOL rejected. Secondary lesson: v2.10 1.5x vol gate (entry-side filter) does NOT translate symmetrically as an EXIT trigger \u2014 slow-drift-against grinders never satisfy it, leaving only the hard SL as protection. Soft abort layer needs different shape for sub-baseline-vol failure modes.",
+          "information_value_realized": "high"
+        }
+      },
+      "_framework_version": "v2.37"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1780035986.874378,
+      "iso": "2026-05-29T02:26:26-04:00",
+      "fire_count": 338,
+      "summary": "Framework v2.37 written (trigger: surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780035986.874378,
+        "iso": "2026-05-29T02:26:26-04:00",
+        "fire_count": 338,
+        "balance_usd": 894.08,
+        "version_tag": "v2.37",
+        "trigger": "surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived",
+        "what_im_trying": "Post-trade audit. Simulated SHORT @ $81.81 entered 22:43:30 EDT (v2.34 ENTER, DRY_RUN framework-tracked) hit the pre-committed hard SL @ $82.25 in the 06:30 UTC bar \u2014 canonical ticker $82.36 at 02:22:59 EDT. Realized PnL (framework-accounting): (82.25 - 81.81) * 2 * 5 contract_size = -$4.40 nominal + ~$1.31 round-trip fee = ~-$5.71 total. Trade held 3h39min. The v2.35 tighter abort (2 consecutive 15m closes > $81.94 + cumulative vol >= 1.5x baseline = 8687) was NEVER triggered: 06:00 + 06:15 cum vol = 1116 + 389 = 1505 = 0.17x baseline. Vol-half failed all the way through the slow reverse drift. Hard SL caught the position; soft abort layer was too high a bar for sub-baseline-vol grinders.",
+        "whats_working": "(a) Pre-commit discipline survived intact under losing pressure. v2.36 saw mechanism soft-refute and explicitly said \"the temptation is to invent an exit reason now \u2014 discipline says no. The v2.35 abort is the structural answer; I wait.\" That commitment held: position was NOT closed mid-trade on narrative pressure; it closed on a pre-committed price level. Founder note-4 C2 cognition-layer separation worked as designed. (b) v2.35 pre-stated falsification criterion functioned as a calibration: it accurately predicted the failure-mode shape (price reclaim back above trigger) BEFORE the price arrived, and v2.36 honored the falsification at n=1. Discipline of forecasting + outcome-marking-before-arrival is the right structure. (c) Hard SL existed as a backstop. Without it, the position could have drifted further against me on sub-baseline vol indefinitely.",
+        "whats_failing": "(a) v2.38 INFORMAL_BREAK_SUBVOL = REJECTED at n=1 attached-outcome. Hypothesis was \"sub-baseline-vol 4-bar sustain below trigger follows through\". Outcome: did not follow through; reversed to SL. Single trade rejection is weak evidence but the mechanism was specific and the failure was clean. Archive as REJECTED \u2014 not promote, not retain as DESCRIPTIVE. (b) v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application = FAILED-TO-FIRE at n=1. The entry-side v2.10 requires vol >= 1.5x median-96 baseline for reclaim confirmation. Applied symmetrically as an EXIT trigger (v2.35), the same 1.5x bar was structurally too high for a sub-baseline-vol reverse drift to ever satisfy. The price moved against me $0.44 (0.54%) without ever hitting the vol gate. Conclusion: ENTRY-side asymmetry is load-bearing \u2014 the 1.5x vol gate is the right shape for filtering FALSE ENTRY signals (low-conviction setups never fire) but the wrong shape for filtering EXIT signals (because sub-baseline-vol-but-real moves still kill the position). The v2.10 symmetric application is REJECTED at n=1; the asymmetry was correct. (c) v2.35 effectively delivered no protection: vol-half made it un-triggerable for the actual failure mode that materialized. Net effect: the soft-abort layer was performative, the hard SL did all the work. (d) Indicator-pipe staleness continues unaddressed across 22+ fires (live-status $85.23 vs canonical $82.36 = $2.87 gap, 3.5%). Carrying as ops issue, no framework-mutation attempted.",
+        "what_im_iterating": "(a) ARCHIVE v2.38 INFORMAL_BREAK_SUBVOL as REJECTED at n=1 attached-outcome. Will not re-propose without independent reframing. (b) REJECT v2.10 EXIT-side symmetric application at n=1. Restore asymmetry: v2.10 = ENTRY-side gate only. Future EXIT-rule proposals should NOT inherit the 1.5x vol requirement; sub-baseline-vol grinders need their own EXIT shape. Open question: what is the right shape for EXIT in slow-drift-against scenarios? Candidates: (i) time-based hard cut at e.g. 4h held without favorable progress, (ii) MFE-decay rule (peaked +0.59% giving back to entry = soft signal), (iii) acceptance-of-trigger-level rule (3 consecutive closes above trigger without ANY vol context = price says no, exit). Will not implement any of these without independent evidence; logging as candidate hypotheses. (c) Information_roi_record on the now-closed B/C trade: information_value_realized HIGH \u2014 mechanism falsified at n=1 cleanly. Cost $5.71 of $8.94 daily budget. That is \"paid data, not 100% selectivity\" working as designed. (d) Post-trade cognition_mode transition: Inventory Discovery -> Regime Uncertain. Position closed; mode reverts per Phase B.1 protocol. (e) Operational lesson: the difference between hard SL (price-level) and soft abort (price+vol context) is load-bearing. Soft aborts need to be calibrated for the failure modes that ACTUALLY materialize, not the failure modes the symmetric application would have suggested.",
+        "edits_from_prior": [
+          "v2.38 INFORMAL_BREAK_SUBVOL status: SOFT-REFUTED-AT-N1 (v2.36) -> REJECTED-AT-N1-ATTACHED-OUTCOME (this fire). Final classification. Will not re-propose without independent reframing.",
+          "v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application: FORMING-N=1 (v2.36) -> REJECTED-N=1 (this fire). 1.5x vol gate was structurally unreachable on the actual failure mode (sub-baseline-vol slow reverse drift). Restore v2.10 to ENTRY-side asymmetric application only.",
+          "Hard SL discipline: VALIDATED as primary stop layer. v2.34 R/R framing of $82.25 SL = 0.54% / 2.8R was the rule that closed the position; soft abort layer (v2.34 4h close > $82.40, v2.35 2-bar close+vol) added no protection on this specific failure mode.",
+          "Pre-commit + cognition-layer-separation discipline: VALIDATED under losing pressure. The position closed on a pre-committed level, not on mid-trade rationalization.",
+          "Cognition_mode transition: Inventory Discovery -> Regime Uncertain on position close. Phase B.1 protocol followed.",
+          "New open candidate-questions for EXIT rule shape in sub-baseline-vol drift-against scenarios. Logging only, NOT implementing without evidence."
+        ],
+        "open_questions": [
+          "What is the right EXIT-rule shape for sub-baseline-vol slow drift against position? Candidates: (i) time-based hard cut, (ii) MFE-decay rule, (iii) trigger-level-acceptance rule (3 closes above without vol = price says no). All n=0 candidates. Do NOT implement on n=0.",
+          "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT have ANY symmetric application worth testing, or is the entry-side asymmetry permanent? Likely permanent based on this n=1 \u2014 entry-side filters can demand high-conviction signals; exit-side rules need to fire on REAL moves regardless of confirmation quality. Will not re-test symmetric until independent reframing.",
+          "Is the v0.9 cohort x asymmetry x structural framework still the right ENTRY framework given this single SHORT outcome? Framework chose a B-grade entry on partial conviction; outcome was -$5.71 of $8.94 budget. Information was bought correctly (mechanism falsified). Framework is NOT itself falsified by one negative B/C outcome \u2014 that is what B/C-grade exploration means. Continue with v0.9.",
+          "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.36. Zero pending claims. Engagement floor honored.",
+          "Indicator-pipe staleness P0 entering 23+ consecutive fires. Should this escalate from passive flagging to a formal ops surface (e.g. ntfy to operator)? Founder call \u2014 NOT a framework mutation question."
+        ],
+        "founder_notes_addressed": []
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1780031138.8991208,
@@ -1489,130 +1582,74 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.30"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1779994655.5569322,
-      "iso": "2026-05-28T14:56:30-04:00",
-      "fire_count": 287,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1779994655.5569322,
-        "fire_iso": "2026-05-28T14:56:30-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 82.83,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Canonical spot $82.83 (live-status 85.23 stale n=9). v2.10_v0_2 UPPER_ESCAPE_LONG trigger from 16:45 UTC $81.94 has delivered +1.09% over 2h -- n=1 first formal UPPER confirmation. 18:45 UTC bar v=3.03x baseline (displacement-grade, first today) close upper-third 0.83 ratio = sustains continuation thesis. Budget $0.99 remaining HARD-blocks ENTER (C-grade at-risk ~$3 floor). v2.30 reflection written addressing v2.29 open questions (UPPER trigger holds = YES n=1, v2.34 formal-overrides-pattern = validated n=1). HOLD with C-grade LONG counterfactual.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 82.83,
-          "sl_pct": 0.012,
-          "tp_pct": 0.018,
-          "predicted_2h_outcome": "drift_toward_tp",
-          "predicted_8h_outcome": "unclear",
-          "reasoning_30_words": "v2.10_v0_2 UPPER n=1 confirmed + 18:45 displacement upper-third sustains. Cohort up+long worst -- C-grade only. Already +1.09% materialized, further extension less asymmetric. Honest mid-conviction lean."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779994638.863591,
-      "iso": "2026-05-28T14:56:00-04:00",
-      "fire_count": 287,
-      "summary": "Framework v2.30 written (trigger: surprise:v2_10_v0_2_UPPER_n_1_confirmed_at_plus_1_09pct_2h_plus_18_45_displacement_3_03x_sustains_plus_v2_34_validated_n_1)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779994638.863591,
-        "iso": "2026-05-28T14:56:00-04:00",
-        "fire_count": 287,
-        "balance_usd": 894.08,
-        "version_tag": "v2.30",
-        "trigger": "surprise:v2_10_v0_2_UPPER_n_1_confirmed_at_plus_1_09pct_2h_plus_18_45_displacement_3_03x_sustains_plus_v2_34_validated_n_1",
-        "what_im_trying": "Fire 287. Position null. cognition_mode Regime Uncertain (since 2026-05-28T10:20:34, ~4.5h). Canonical SOL spot $82.83 vs prior fire 280 $82.54 = +0.35% in 15min. Three v2.29 open questions answered by canonical 15m tape since 12:25 EDT: (1) v2.10_v0_2 UPPER_ESCAPE_LONG trigger from 16:45 UTC $81.94 has DELIVERED +1.09% by 19:00 UTC IP -- n=1 first formal UPPER confirmation; (2) 18:45 UTC bar c=82.75 v=3.03x baseline = first DISPLACEMENT-GRADE (>=3.0x) bar of the day, closed upper-third (0.83 ratio of 82.50-82.86 range), structurally continuing trigger thesis NOT exhausting it; (3) v2.34 FORMAL_TRIGGER_OVERRIDES_PATTERN candidate (registered v2.29 to govern simultaneous formal-trigger + v2.25 pattern-strength at same boundary) has n=1 validating instance -- v2.29 LONG counterfactual lean overriding v2.25 SHORT pattern lean was correct over 2h horizon. Decision this fire: HOLD (budget $0.99 remaining HARD-blocks any B/C ENTER at $3+ at-risk floor). Counterfactual lean: C-grade LONG continuation (committed, weakened from v2.29 due to +1.09% already materialized + cohort up+long worst).",
-        "whats_working": "(a) v2.10_v0_2 UPPER side first formal confirmation. Bilateral coverage updates: UPPER 1/3 confirmed (was 0/2 refuted), LOWER 1/1 confirmed. Total bilateral 2/4 confirmed / 2/4 refuted across 4 firings. The rule discriminates symmetrically. (b) v2.34 FORMAL_TRIGGER_OVERRIDES_PATTERN n=1 validating: the v2.29 fire's decision to override v2.25 failed-upper-escape lean with the just-fired v2.10_v0_2 formal trigger was correct. Formal-trigger (closed-bar + vol + position-in-range) DID override pattern-strengthening (intrabar exhaustion read). Validates the cognitive-priority sub-rule. (c) v2.35 COUNTERFACTUAL_LINEAGE_CHECK n=1 validating: fires 279/280 leaned SHORT non-materializing for 35min -> fire 281 (v2.29) flipped to LONG -> LONG materialized over next 2h. Lineage-check producing real decision improvement, not just bookkeeping. (d) Canonical-OHLCV-over-live-status-indicator discipline (v2.20_v3) holding n=9 consecutive fires (273-287). Indicator pipe persistently stale -- this fire live-status said 85.23, canonical says 82.83 ($2.40 off). Without v2.20_v3 the framework would be running on +2.9% wrong-direction price reads.",
-        "whats_failing": "(a) Cohort tension UNRESOLVED but BINDING: up+long historically WORST cohort (n=13, -$51.89, WR 69.2%, SL asymmetry per note-3/C6). Current LONG counterfactual lean is exactly this cohort. If the bot were not budget-blocked this fire, the cohort-aversion-vs-conviction discipline test would be live, and per founder note-3/C6 cohort should be a 'first-class context dimension in entry reasoning' but NOT an automatic block. Without an ENTER this fire, the tension stays theoretical -- but it WILL be the next-cycle binding question (UTC reset ~5h, budget refresh). (b) P0 indicator-pipe staleness extends to n=9. v5.3 indicator-backend bug; out-of-band fix needed. Framework cost = 1 extra canonical-fetch tool call per fire (~$0.01 inference). Bearable but compounding. (c) Reflection lineage check on self: v2.27 -> v2.28 -> v2.29 -> v2.30 all surprise-triggered across ~5h. Each one had real new tape information answering a prior open question. NOT drift -- but pace is high. v2.27's lineage rule said 'if next 3-4 fires produce no surprise, v2.NN should not bump version_tag'. Self-test: v2.28 = TP-hit + unaddressed founder-note = real. v2.29 = UPPER formal trigger first fire + n=2 envelope-clear + 2-fire SHORT-lean-non-materialization = real. v2.30 = UPPER first confirmation answering v2.29 open question + first displacement-grade bar of the day + v2.34 candidate validated = real. Pace high but each iteration earned its place.",
-        "what_im_iterating": "(a) v2.10_v0_2 promotion-candidate status: bilateral n=2/4 confirmed / n=2/4 refuted across 4 firings. Informal promotion threshold n>=5 confirmed with bilateral coverage. Need 3 more confirms (preferably on both sides) before promotion candidate -> STABLE. Continue n-accumulation; no premature promotion. (b) v2.34 FORMAL_TRIGGER_OVERRIDES_PATTERN: n=1 validating. Codification path: n>=3 confirming. Test: next simultaneous formal-trigger + pattern-strength collision at same boundary. (c) v2.35 COUNTERFACTUAL_LINEAGE_CHECK: n=1 validating. Codification path: n>=3 cases where lineage-flip-after-non-materialization produced correct direction. Currently DESCRIPTIVE. (d) NEW CANDIDATE v2.36 DISPLACEMENT_BAR_DURING_HOLD_STATE_PRESERVES_LEAN: when a displacement-grade (>=3.0x baseline) bar fires in the direction of an existing counterfactual lean WITHOUT a position open and the framework is budget-blocked, treat the displacement as STRENGTHENING the next-cycle lean confidence but NOT as a trigger to chase. Without a position to manage, displacement-grade vol is information-density evidence, not an entry signal. This fire is the registering instance (n=0). v2.36 PREDICTS the next-cycle ENTER decision should give this lean higher conviction tier (B vs C) if displacement continues. (e) Pre-commit tree for fire 288: U_R1 = 19:00 UTC IP/settle, vol+close direction read. If vol >= 3.0x AND close upper-third = second consecutive displacement = STRONG continuation, possibly cognition_mode -> Expansion transition. U_R2 = if vol < 1.5x AND close in mid-third = displacement exhausting, stay Regime Uncertain. U_R3 = if close < 82.50 = displacement reversed, possibly v2.10_v0_2 UPPER first refute on n=1 confirmation. DEFAULT: HOLD, counterfactual record.",
-        "edits_from_prior": [
-          "v2.10_v0_2 UPPER side promotion-candidate status: from n=0/2 refuted (v2.29 entry) to n=1/3 confirmed (this fire). Bilateral coverage now n=2 confirmed / n=2 refuted total across 4 firings.",
-          "v2.34 FORMAL_TRIGGER_OVERRIDES_PATTERN candidate (registered v2.29): from n=0 candidate to n=1 validating. v2.29's LONG counterfactual lean overriding v2.25 SHORT pattern lean was correct.",
-          "v2.35 COUNTERFACTUAL_LINEAGE_CHECK candidate (registered v2.29): from n=0 candidate to n=1 validating. fires 279/280 SHORT non-materialization -> v2.29 flip to LONG -> materialized.",
-          "REGISTER NEW CANDIDATE v2.36 DISPLACEMENT_BAR_DURING_HOLD_STATE_PRESERVES_LEAN: displacement-grade vol bars during budget-blocked HOLD state strengthen next-cycle lean confidence, not an entry chase signal. n=0 registering instance this fire.",
-          "First displacement-grade bar of the day at 18:45 UTC (3.03x baseline, upper-third close 0.83 ratio). Per v2.6_DISPLACEMENT sustained-displacement needs consecutive 3.0x+; n=1 only so far -- staying Regime Uncertain not transitioning to Expansion yet.",
-          "Cohort tension explicit: this fire's LONG counterfactual lean = up+long = WORST cohort per note-3/C6 (n=13, -$51.89). Tension parked because budget-blocked. Will be binding at next-cycle ENTER opportunity.",
-          "Indicator-pipe staleness n=8 -> n=9. Pure operational debt; canonical-OHLCV discipline holding."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Does 19:00 UTC bar (currently forming) close on second consecutive >=3.0x vol with upper-third position? If yes, sustained displacement = cognition_mode -> Expansion candidate, AND v2.36 candidate strengthens (next-cycle lean conviction tier up).",
-          "Does spot drop back below 82.50 within next 1-2 bars? If yes, v2.10_v0_2 UPPER first n=1 confirmed gets first refute follow-on, weakening the just-confirmed rule.",
-          "At next UTC reset (~5h, 00:00 UTC = 20:00 EDT), budget refreshes to $8.94. If LONG continuation thesis is still live (price still above 82.50 with constructive structure), cohort-aversion-vs-conviction tension becomes binding. Up+long historical n=13 -$51.89 vs current bilateral-confirmed formal-trigger context -- which wins? This is the harder discipline test next cycle must resolve.",
-          "v2.36 candidate is intentionally narrow (HOLD-state + budget-blocked + displacement-direction-aligned-with-lean). Should it generalize to all HOLD-state displacement reads, or stay narrow? Hold the narrower form pending n>=3 evidence.",
-          "P0 indicator-pipe staleness now n=9. At what n do I escalate this to founder as an operational issue outside the framework? Self-rule: n=15 = escalate via decision reasoning open_questions field; framework-side already documented."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 10,
-    "avg_chars": 1075,
-    "since_iso": "2026-05-29T01:05:38-04:00",
-    "since_framework_version": "v2.36",
-    "latest_fire_iso": "2026-05-29T02:16:32-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 1348,
+    "since_iso": "2026-05-29T02:26:26-04:00",
+    "since_framework_version": "v2.37",
+    "latest_fire_iso": "2026-05-29T02:27:21-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780031138.8991208,
-    "iso": "2026-05-29T01:05:38-04:00",
-    "fire_count": 329,
+    "ts": 1780035986.874378,
+    "iso": "2026-05-29T02:26:26-04:00",
+    "fire_count": 338,
     "balance_usd": 894.08,
-    "version_tag": "v2.36",
-    "trigger": "surprise:v2_38_INFORMAL_BREAK_SUBVOL_soft_refuted_by_v2_35_prestated_criterion_plus_reclaim_impulse_forming_on_reverse",
-    "what_im_trying": "Position management for simulated SHORT @ $81.81 qty=2 entered 22:43:30 EDT (v2.34 ENTER, DRY_RUN framework-tracked, 2.3h held). Canonical $81.83 (Coinbase ticker 05:01:31 UTC) = unrealized ~flat (-0.02% / -$0.04 nominal). Peaked at +0.59% at 00:15 EDT, gave back the entirety over the 04:00-05:00 UTC bar sequence. Thesis (v2.10_v0_2 UPPER trigger close $81.94 + sub-baseline-vol 4-bar sustain \u2192 range_low $80.52 test) was a v2.38 INFORMAL_BREAK_SUBVOL n=1 attached-outcome test. The reverse impulse is materializing instead of the down continuation: 4-bar reverse sequence from 04:15 UTC low $81.36 \u2192 81.59 / 81.65 / 81.81 / current forming $81.81. v2.35's tighter abort (2 consecutive 15m closes > $81.94 + cumulative vol >= 1.5x baseline) NOT YET triggered (current bar's close $81.81 < $81.94, next bar 05:15 UTC pending). Continuing to apply existing rules per cognition-layer separation (founder note-4 C2) \u2014 do not redesign exit mid-position.",
-    "whats_working": "(a) v2.35's pre-stated falsification criterion DID ITS JOB. v2.35 explicitly said: 'if next 2 bars (04:30-05:00 UTC) fail to make new low below $81.26, mark v2.38 INFORMAL_BREAK_SUBVOL candidate as soft-refuted in post-close audit.' Both bars made HIGHER lows (04:30 low $81.36 = at-or-near; 04:45 low $81.55; 05:00 low so-far $81.62). No new low. Hypothesis prediction falsified at n=1 via mechanism stated BEFORE the data arrived \u2014 this is the falsification discipline structure I want, not retrospective rationalization. (b) Cognition-layer separation holding under live pressure: position thesis is structurally broken (mechanism wrong: sub-baseline-vol break did NOT follow through), but the abort rules I pre-committed to are NOT yet met, so the position continues. The temptation is to invent an exit reason now \u2014 discipline says no. The v2.35 abort is the structural answer; I wait. (c) Pre-commit tree (v2.32 4-path) functioning: outcome trajectory is U_R1-class shape (close back above prior trigger), exactly the lean-flip path. The framework anticipated this possible branch.",
-    "whats_failing": "(a) v2.38 INFORMAL_BREAK_SUBVOL is soft-refuted at n=1 attached-outcome before it ever reached n>=3 codification. NOT REJECTED \u2014 n=1 soft-refute is one data point, not a definitive failure. But the candidate is on a refute trajectory, not a confirm trajectory. (b) v2.34's ENTER reasoning gave a 2.8R reward-to-risk on a mechanism (4-bar sub-vol sustain \u2192 range test) that's now broken at the mechanism level. The position will likely either (i) get hit on v2.35 tighter abort if reverse impulse confirms with vol, or (ii) drift sideways to time-cut. The 'win the trade via slow drift to $80.61 anyway' path is still open but would NOT validate the hypothesis. v2.35 already pre-committed: slow-drift TP hit = same direction, wrong mechanism = soft-refuted candidate. Discipline holds. (c) Current 05:00 UTC bar volume signature is the failed-extension-inverted shape: massive vol (~34301 in first 90sec of bar vs ~4500 avg prior 8 bars = ~7.5x) with directional close in upper-third of bar range. THIS is the v2.10 RECLAIM_IMPULSE confirmation pattern on the REVERSE side \u2014 exactly the symmetric application v2.35 registered as EXIT promotion-candidate. If next bar (05:15 UTC) also closes upper-third + vol >= 1.5x, this becomes a reclaim-impulse confirmation event AGAINST my SHORT. Strengthens v2.35 abort watch from probable to imminent. (d) Indicator-pipe staleness P0 persists 18+ consecutive fires. live-status reports $85.23 vs canonical $81.83 = 4.16% / $3.40 gap (slightly wider than prior fire's 4.2%). v5.3 backend likely cached/feed-broken. Carrying as operational issue for founder visibility; framework reads canonical via direct Coinbase ticker.",
-    "what_im_iterating": "(a) MARK v2.38 INFORMAL_BREAK_SUBVOL = SOFT-REFUTED at n=1 attached outcome (pending position close to determine final classification). Per v2.35 pre-stated discipline: 'slow-drift TP hit does NOT validate the hypothesis; only fast follow-through does.' The 45-min reverse from $81.36 \u2192 $81.81 (+0.55% upmove) is faster + larger than the SHORT's peak unrealized (+0.59% over 1.5h). Mechanism wrong. (b) Position management: continue HOLD; abort triggers (v2.34 + v2.35) not yet met. v2.35 tighter abort is the closest active trigger \u2014 watching 05:00 UTC bar close + 05:15 UTC continuation. If both close > $81.94 on cumulative vol >= 1.5x \u2192 EXIT next fire. (c) v2.10 RECLAIM_IMPULSE_REQUIREMENT now has 2 attached cases: ENTER-side n=2 (both fired correctly) + EXIT-side n=0\u21921 forming. If 05:00+05:15 UTC bars confirm reclaim, this is n=1 EXIT-side use of v2.10 symmetric application \u2014 the v2.33 promotion-candidate gets its first live data point. (d) NO ontology mutation this fire. Cognition-layer separation. v2.38's lineage marker shifts but no new candidates registered.",
+    "version_tag": "v2.37",
+    "trigger": "surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived",
+    "what_im_trying": "Post-trade audit. Simulated SHORT @ $81.81 entered 22:43:30 EDT (v2.34 ENTER, DRY_RUN framework-tracked) hit the pre-committed hard SL @ $82.25 in the 06:30 UTC bar \u2014 canonical ticker $82.36 at 02:22:59 EDT. Realized PnL (framework-accounting): (82.25 - 81.81) * 2 * 5 contract_size = -$4.40 nominal + ~$1.31 round-trip fee = ~-$5.71 total. Trade held 3h39min. The v2.35 tighter abort (2 consecutive 15m closes > $81.94 + cumulative vol >= 1.5x baseline = 8687) was NEVER triggered: 06:00 + 06:15 cum vol = 1116 + 389 = 1505 = 0.17x baseline. Vol-half failed all the way through the slow reverse drift. Hard SL caught the position; soft abort layer was too high a bar for sub-baseline-vol grinders.",
+    "whats_working": "(a) Pre-commit discipline survived intact under losing pressure. v2.36 saw mechanism soft-refute and explicitly said \"the temptation is to invent an exit reason now \u2014 discipline says no. The v2.35 abort is the structural answer; I wait.\" That commitment held: position was NOT closed mid-trade on narrative pressure; it closed on a pre-committed price level. Founder note-4 C2 cognition-layer separation worked as designed. (b) v2.35 pre-stated falsification criterion functioned as a calibration: it accurately predicted the failure-mode shape (price reclaim back above trigger) BEFORE the price arrived, and v2.36 honored the falsification at n=1. Discipline of forecasting + outcome-marking-before-arrival is the right structure. (c) Hard SL existed as a backstop. Without it, the position could have drifted further against me on sub-baseline vol indefinitely.",
+    "whats_failing": "(a) v2.38 INFORMAL_BREAK_SUBVOL = REJECTED at n=1 attached-outcome. Hypothesis was \"sub-baseline-vol 4-bar sustain below trigger follows through\". Outcome: did not follow through; reversed to SL. Single trade rejection is weak evidence but the mechanism was specific and the failure was clean. Archive as REJECTED \u2014 not promote, not retain as DESCRIPTIVE. (b) v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application = FAILED-TO-FIRE at n=1. The entry-side v2.10 requires vol >= 1.5x median-96 baseline for reclaim confirmation. Applied symmetrically as an EXIT trigger (v2.35), the same 1.5x bar was structurally too high for a sub-baseline-vol reverse drift to ever satisfy. The price moved against me $0.44 (0.54%) without ever hitting the vol gate. Conclusion: ENTRY-side asymmetry is load-bearing \u2014 the 1.5x vol gate is the right shape for filtering FALSE ENTRY signals (low-conviction setups never fire) but the wrong shape for filtering EXIT signals (because sub-baseline-vol-but-real moves still kill the position). The v2.10 symmetric application is REJECTED at n=1; the asymmetry was correct. (c) v2.35 effectively delivered no protection: vol-half made it un-triggerable for the actual failure mode that materialized. Net effect: the soft-abort layer was performative, the hard SL did all the work. (d) Indicator-pipe staleness continues unaddressed across 22+ fires (live-status $85.23 vs canonical $82.36 = $2.87 gap, 3.5%). Carrying as ops issue, no framework-mutation attempted.",
+    "what_im_iterating": "(a) ARCHIVE v2.38 INFORMAL_BREAK_SUBVOL as REJECTED at n=1 attached-outcome. Will not re-propose without independent reframing. (b) REJECT v2.10 EXIT-side symmetric application at n=1. Restore asymmetry: v2.10 = ENTRY-side gate only. Future EXIT-rule proposals should NOT inherit the 1.5x vol requirement; sub-baseline-vol grinders need their own EXIT shape. Open question: what is the right shape for EXIT in slow-drift-against scenarios? Candidates: (i) time-based hard cut at e.g. 4h held without favorable progress, (ii) MFE-decay rule (peaked +0.59% giving back to entry = soft signal), (iii) acceptance-of-trigger-level rule (3 consecutive closes above trigger without ANY vol context = price says no, exit). Will not implement any of these without independent evidence; logging as candidate hypotheses. (c) Information_roi_record on the now-closed B/C trade: information_value_realized HIGH \u2014 mechanism falsified at n=1 cleanly. Cost $5.71 of $8.94 daily budget. That is \"paid data, not 100% selectivity\" working as designed. (d) Post-trade cognition_mode transition: Inventory Discovery -> Regime Uncertain. Position closed; mode reverts per Phase B.1 protocol. (e) Operational lesson: the difference between hard SL (price-level) and soft abort (price+vol context) is load-bearing. Soft aborts need to be calibrated for the failure modes that ACTUALLY materialize, not the failure modes the symmetric application would have suggested.",
     "edits_from_prior": [
-      "v2.38 INFORMAL_BREAK_SUBVOL status: DESCRIPTIVE/PROMOTION-CANDIDATE (v2.34) \u2192 SOFT-REFUTED-AT-N1 (this fire). NOT REJECTED. Per v2.35 pre-stated criterion: next 2 bars (04:30-05:00 UTC) failed to make new low below $81.26; both made higher lows. Mechanism (sub-baseline-vol break follows through) not supported by this single live test.",
-      "v2.35 tighter-abort prediction structurally validated: the 2-consecutive-close > $81.94 + vol >= 1.5x criterion was the right shape to anticipate the failure mode. Closing-in but not yet triggered (current bar $81.81 close-so-far, 0.13 below trigger).",
-      "v2.10 RECLAIM_IMPULSE_REQUIREMENT: EXIT-side application moves from n=0 to forming-n=1 (current 05:00 UTC bar showing massive vol + upper-third close pattern on reverse direction). Awaits next bar confirmation.",
-      "Position thesis at mechanism level: BROKEN. Position at PnL level: essentially flat (-0.02% unrealized). Position at abort-rule level: HOLD (no rules triggered).",
-      "Indicator-pipe staleness: $3.40 / 4.16% gap (live-status $85.23 vs canonical $81.83). P0 status continues for 18+ fires. No mitigation possible until v5.3 backend addressed by ops."
+      "v2.38 INFORMAL_BREAK_SUBVOL status: SOFT-REFUTED-AT-N1 (v2.36) -> REJECTED-AT-N1-ATTACHED-OUTCOME (this fire). Final classification. Will not re-propose without independent reframing.",
+      "v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application: FORMING-N=1 (v2.36) -> REJECTED-N=1 (this fire). 1.5x vol gate was structurally unreachable on the actual failure mode (sub-baseline-vol slow reverse drift). Restore v2.10 to ENTRY-side asymmetric application only.",
+      "Hard SL discipline: VALIDATED as primary stop layer. v2.34 R/R framing of $82.25 SL = 0.54% / 2.8R was the rule that closed the position; soft abort layer (v2.34 4h close > $82.40, v2.35 2-bar close+vol) added no protection on this specific failure mode.",
+      "Pre-commit + cognition-layer-separation discipline: VALIDATED under losing pressure. The position closed on a pre-committed level, not on mid-trade rationalization.",
+      "Cognition_mode transition: Inventory Discovery -> Regime Uncertain on position close. Phase B.1 protocol followed.",
+      "New open candidate-questions for EXIT rule shape in sub-baseline-vol drift-against scenarios. Logging only, NOT implementing without evidence."
     ],
-    "founder_notes_addressed": [],
     "open_questions": [
-      "Does 05:00 UTC bar close > $81.94 on vol >= 1.5x baseline? If YES, single-bar half of v2.35 abort. If 05:15 UTC then ALSO closes > $81.94 + cum vol >= 1.5x, full abort triggers \u2014 EXIT next fire.",
-      "Does v2.38 INFORMAL_BREAK_SUBVOL trajectory reach n>=3 (either confirm or reject) before being archived? n=1 SOFT-REFUTE is descriptive only.",
-      "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side application fire correctly on next bar? If so, n=1 of symmetric-application earned \u2014 promotion-candidate evidence.",
-      "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.35. Zero pending claims. Engagement floor honored.",
-      "Indicator-pipe staleness P0: still no visible ops attention. Will continue to flag in reasoning fields each fire. Should the canonical-vs-live-status sanity check become a formal first-step pipeline guard (per v2.33 operational lesson queued)? Founder call."
-    ]
+      "What is the right EXIT-rule shape for sub-baseline-vol slow drift against position? Candidates: (i) time-based hard cut, (ii) MFE-decay rule, (iii) trigger-level-acceptance rule (3 closes above without vol = price says no). All n=0 candidates. Do NOT implement on n=0.",
+      "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT have ANY symmetric application worth testing, or is the entry-side asymmetry permanent? Likely permanent based on this n=1 \u2014 entry-side filters can demand high-conviction signals; exit-side rules need to fire on REAL moves regardless of confirmation quality. Will not re-test symmetric until independent reframing.",
+      "Is the v0.9 cohort x asymmetry x structural framework still the right ENTRY framework given this single SHORT outcome? Framework chose a B-grade entry on partial conviction; outcome was -$5.71 of $8.94 budget. Information was bought correctly (mechanism falsified). Framework is NOT itself falsified by one negative B/C outcome \u2014 that is what B/C-grade exploration means. Continue with v0.9.",
+      "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.36. Zero pending claims. Engagement floor honored.",
+      "Indicator-pipe staleness P0 entering 23+ consecutive fires. Should this escalate from passive flagging to a formal ops surface (e.g. ntfy to operator)? Founder call \u2014 NOT a framework mutation question."
+    ],
+    "founder_notes_addressed": []
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780035986.874378,
+      "iso": "2026-05-29T02:26:26-04:00",
+      "fire_count": 338,
+      "balance_usd": 894.08,
+      "version_tag": "v2.37",
+      "trigger": "surprise:hard_SL_82_25_hit_on_simulated_SHORT_vol_confirmation_never_arrived",
+      "what_im_trying": "Post-trade audit. Simulated SHORT @ $81.81 entered 22:43:30 EDT (v2.34 ENTER, DRY_RUN framework-tracked) hit the pre-committed hard SL @ $82.25 in the 06:30 UTC bar \u2014 canonical ticker $82.36 at 02:22:59 EDT. Realized PnL (framework-accounting): (82.25 - 81.81) * 2 * 5 contract_size = -$4.40 nominal + ~$1.31 round-trip fee = ~-$5.71 total. Trade held 3h39min. The v2.35 tighter abort (2 consecutive 15m closes > $81.94 + cumulative vol >= 1.5x baseline = 8687) was NEVER triggered: 06:00 + 06:15 cum vol = 1116 + 389 = 1505 = 0.17x baseline. Vol-half failed all the way through the slow reverse drift. Hard SL caught the position; soft abort layer was too high a bar for sub-baseline-vol grinders.",
+      "whats_working": "(a) Pre-commit discipline survived intact under losing pressure. v2.36 saw mechanism soft-refute and explicitly said \"the temptation is to invent an exit reason now \u2014 discipline says no. The v2.35 abort is the structural answer; I wait.\" That commitment held: position was NOT closed mid-trade on narrative pressure; it closed on a pre-committed price level. Founder note-4 C2 cognition-layer separation worked as designed. (b) v2.35 pre-stated falsification criterion functioned as a calibration: it accurately predicted the failure-mode shape (price reclaim back above trigger) BEFORE the price arrived, and v2.36 honored the falsification at n=1. Discipline of forecasting + outcome-marking-before-arrival is the right structure. (c) Hard SL existed as a backstop. Without it, the position could have drifted further against me on sub-baseline vol indefinitely.",
+      "whats_failing": "(a) v2.38 INFORMAL_BREAK_SUBVOL = REJECTED at n=1 attached-outcome. Hypothesis was \"sub-baseline-vol 4-bar sustain below trigger follows through\". Outcome: did not follow through; reversed to SL. Single trade rejection is weak evidence but the mechanism was specific and the failure was clean. Archive as REJECTED \u2014 not promote, not retain as DESCRIPTIVE. (b) v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application = FAILED-TO-FIRE at n=1. The entry-side v2.10 requires vol >= 1.5x median-96 baseline for reclaim confirmation. Applied symmetrically as an EXIT trigger (v2.35), the same 1.5x bar was structurally too high for a sub-baseline-vol reverse drift to ever satisfy. The price moved against me $0.44 (0.54%) without ever hitting the vol gate. Conclusion: ENTRY-side asymmetry is load-bearing \u2014 the 1.5x vol gate is the right shape for filtering FALSE ENTRY signals (low-conviction setups never fire) but the wrong shape for filtering EXIT signals (because sub-baseline-vol-but-real moves still kill the position). The v2.10 symmetric application is REJECTED at n=1; the asymmetry was correct. (c) v2.35 effectively delivered no protection: vol-half made it un-triggerable for the actual failure mode that materialized. Net effect: the soft-abort layer was performative, the hard SL did all the work. (d) Indicator-pipe staleness continues unaddressed across 22+ fires (live-status $85.23 vs canonical $82.36 = $2.87 gap, 3.5%). Carrying as ops issue, no framework-mutation attempted.",
+      "what_im_iterating": "(a) ARCHIVE v2.38 INFORMAL_BREAK_SUBVOL as REJECTED at n=1 attached-outcome. Will not re-propose without independent reframing. (b) REJECT v2.10 EXIT-side symmetric application at n=1. Restore asymmetry: v2.10 = ENTRY-side gate only. Future EXIT-rule proposals should NOT inherit the 1.5x vol requirement; sub-baseline-vol grinders need their own EXIT shape. Open question: what is the right shape for EXIT in slow-drift-against scenarios? Candidates: (i) time-based hard cut at e.g. 4h held without favorable progress, (ii) MFE-decay rule (peaked +0.59% giving back to entry = soft signal), (iii) acceptance-of-trigger-level rule (3 consecutive closes above trigger without ANY vol context = price says no, exit). Will not implement any of these without independent evidence; logging as candidate hypotheses. (c) Information_roi_record on the now-closed B/C trade: information_value_realized HIGH \u2014 mechanism falsified at n=1 cleanly. Cost $5.71 of $8.94 daily budget. That is \"paid data, not 100% selectivity\" working as designed. (d) Post-trade cognition_mode transition: Inventory Discovery -> Regime Uncertain. Position closed; mode reverts per Phase B.1 protocol. (e) Operational lesson: the difference between hard SL (price-level) and soft abort (price+vol context) is load-bearing. Soft aborts need to be calibrated for the failure modes that ACTUALLY materialize, not the failure modes the symmetric application would have suggested.",
+      "edits_from_prior": [
+        "v2.38 INFORMAL_BREAK_SUBVOL status: SOFT-REFUTED-AT-N1 (v2.36) -> REJECTED-AT-N1-ATTACHED-OUTCOME (this fire). Final classification. Will not re-propose without independent reframing.",
+        "v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side symmetric application: FORMING-N=1 (v2.36) -> REJECTED-N=1 (this fire). 1.5x vol gate was structurally unreachable on the actual failure mode (sub-baseline-vol slow reverse drift). Restore v2.10 to ENTRY-side asymmetric application only.",
+        "Hard SL discipline: VALIDATED as primary stop layer. v2.34 R/R framing of $82.25 SL = 0.54% / 2.8R was the rule that closed the position; soft abort layer (v2.34 4h close > $82.40, v2.35 2-bar close+vol) added no protection on this specific failure mode.",
+        "Pre-commit + cognition-layer-separation discipline: VALIDATED under losing pressure. The position closed on a pre-committed level, not on mid-trade rationalization.",
+        "Cognition_mode transition: Inventory Discovery -> Regime Uncertain on position close. Phase B.1 protocol followed.",
+        "New open candidate-questions for EXIT rule shape in sub-baseline-vol drift-against scenarios. Logging only, NOT implementing without evidence."
+      ],
+      "open_questions": [
+        "What is the right EXIT-rule shape for sub-baseline-vol slow drift against position? Candidates: (i) time-based hard cut, (ii) MFE-decay rule, (iii) trigger-level-acceptance rule (3 closes above without vol = price says no). All n=0 candidates. Do NOT implement on n=0.",
+        "Does v2.10 RECLAIM_IMPULSE_REQUIREMENT have ANY symmetric application worth testing, or is the entry-side asymmetry permanent? Likely permanent based on this n=1 \u2014 entry-side filters can demand high-conviction signals; exit-side rules need to fire on REAL moves regardless of confirmation quality. Will not re-test symmetric until independent reframing.",
+        "Is the v0.9 cohort x asymmetry x structural framework still the right ENTRY framework given this single SHORT outcome? Framework chose a B-grade entry on partial conviction; outcome was -$5.71 of $8.94 budget. Information was bought correctly (mechanism falsified). Framework is NOT itself falsified by one negative B/C outcome \u2014 that is what B/C-grade exploration means. Continue with v0.9.",
+        "Tail check: tail -10 founder_notes.jsonl last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). No new notes since v2.36. Zero pending claims. Engagement floor honored.",
+        "Indicator-pipe staleness P0 entering 23+ consecutive fires. Should this escalate from passive flagging to a formal ops surface (e.g. ntfy to operator)? Founder call \u2014 NOT a framework mutation question."
+      ],
+      "founder_notes_addressed": []
+    },
     {
       "schema_version": 1,
       "ts": 1780031138.8991208,
@@ -1957,79 +1994,6 @@
         "Sub-rule shape question: 17:00 close above envelope on 1.35x sub-1.5x vol \u2014 is this 'weak n=2 confirmation' qualitatively different from 'strong n=2 with elevated vol'? Worth distinguishing in v2.6_RANGE_CLEAR sub-shapes at promotion time."
       ],
       "founder_notes_addressed": []
-    },
-    {
-      "schema_version": 1,
-      "ts": 1779978034.2086332,
-      "iso": "2026-05-28T10:20:34-04:00",
-      "fire_count": 272,
-      "balance_usd": 894.08,
-      "version_tag": "v2.28",
-      "trigger": "surprise:tp_hit_n1_v210_lower_confirmed_plus_unaddressed_founder_note_4_phase_b2_directive",
-      "what_im_trying": "Fire 272. Two material events: (1) B-grade SHORT position from fire 270 hit TP intrabar on 14:00 UTC SOL-PERP bar (low 79.88 < TP 79.90; bar h=80.66 l=79.88 c=80.37 v=18229.8=2.55x median-96 7139.8). EXIT (DRY_RUN intent). v2.10_v0_2 LOWER_ESCAPE_SHORT formal trigger CONFIRMED at n=1 (UPPER side n=0/2 refuted at sub-1.5x). (2) Founder note-4 (Phase B.2 Stabilization Directive, 6 claims, ts 14:06:09 UTC) arrived ~50sec BEFORE fire 271's reflection but was NOT addressed (founder_notes_addressed=[]). Process miss. This fire addresses all 6 claims and writes corrective discipline.",
-      "whats_working": "(a) v2.10_v0_2 LOWER_ESCAPE_SHORT formal trigger CONFIRMED at n=1. 13:30 trigger 1.69x lower-third -> 14:00 TP touch within ~30min. Bilateral evidence: UPPER side n=2 refuted (sub-1.5x both), LOWER side n=1 confirmed (1.69x formal). Rule discriminates. (b) v2.28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION candidate (registered fire 271 to replace withdrawn v2.26) STRENGTHENS at n=1: 13:45 reabsorption bar c=80.65 v=1.95x close-upper-mid was 'defended-but-failed-to-flip' signal, NOT exit signal. Honoring original TP was correct. v2.27 lesson (entry decision robust to falsified narrative because cohort+asymmetry+trigger were independently sufficient) holds. (c) Pre-commit U_M2 (TP touch) resolved cleanly: bar low 79.88 < TP 79.90 = TP_HIT (DRY_RUN intent fill at 79.90). No scramble. (d) Cadence: fire 270->271 ~7min + 271->272 ~5min = wrapper honoring Inventory Discovery 5min cadence n=2. Phase B.1 cadence-honor n=4 across 4 modes (Compression 1h, Regime Uncertain 15min/18min, Inventory Discovery 5min/7min).",
-      "whats_failing": "(a) PROCESS MISS: founder note-4 ts 14:06:09 UTC = 10:06:09 EDT arrived ~50sec before fire 271's reflection at 10:07:00 EDT. Tail -10 founder_notes.jsonl at fire 271 should have surfaced it. Fire 271's founder_notes_addressed was []. Two possible root causes: (i) reflection writer did not actually tail founder_notes that fire (process gap), (ii) tail was done but the new note was not recognized as needing per-claim address (cognitive gap). Either way: silent disregard is forbidden per SKILL. This fire fixes by addressing all 6 claims AND by adding operational rule v2.29: every framework reflection MUST tail -10 founder_notes.jsonl and explicitly enumerate any note with ts > prior_reflection.ts. (b) v2.27 reflection was substantively correct on tape/trade but failed the engagement floor on founder notes -- a worse failure mode than a wrong market call because it breaks the operator-Claude lineage value the channel is built to provide.",
-      "what_im_iterating": "(a) v2.10_v0_2 LOWER_ESCAPE_SHORT promotion-candidate status updates: UPPER side n=0/2 refuted + LOWER side n=1/1 confirmed = bilateral coverage n=3 with 1 confirmation. Continue n-accumulation. Per note-4/C4 (operator affirm), weigh toward promotion as n grows; informal promotion threshold n>=5 confirmed with bilateral coverage. (b) v2.28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION candidate n=1 confirming. Prediction (elevated-vol-reabsorption-in-upper-mid = 'defended-but-failed-to-flip' confirmation signal, NOT exit signal) validated. Maintain DESCRIPTIVE status; n>=3 confirming for codification. (c) Retire operational_rule_v2_24_BUDGET_SCRIPT_TOOLING_ARTIFACT_NOTE per note-4/C1: root cause fixed (scan_decisions backward-walk fix). forced_exploration_due now trusted; per-fire workaround removed. (d) NEW operational_rule_v2_29_FOUNDER_NOTE_TAILING_DISCIPLINE: every framework reflection MUST tail -10 founder_notes.jsonl and explicitly enumerate any note with ts > prior_reflection.ts as a pending or addressed claim. (e) NEW operational_rule_v2_30_TWO_LAYER_COGNITION_DISCIPLINE per note-4/C2: live execution (ENTER/HOLD/EXIT, risk, cohort lookup, applying existing frameworks) and framework evolution (cohort restructuring, ontology refinement, promotion/demotion) should not run in same fire UNLESS the fire is surprise/cold-start/cadence/bootstrap-triggered. Decision fires apply frameworks; reflection fires evolve them. This fire is surprise-triggered (TP hit + unaddressed note) so both layers run -- valid exception. (f) Pre-commit tree for fire 273 (next ~5min if Regime Uncertain hint adopted: 15min): U_R1 = 14:15 UTC IP bar settles -- vol+close direction read; U_R2 = ticker drifts back below 80.50 + 14:15 close <80.40 + vol>=1.5x = potential re-test of just-confirmed LOWER_ESCAPE_SHORT trigger zone (NOT new entry; observation only); U_R3 = ticker holds above 80.80 + 14:15 close >81.00 + vol>=1.5x upper-third = new UPPER_ESCAPE_LONG formal trigger fire (cohort up+long worst -$51.89 n=13 -- HOLD-leaning); U_R4 = sticky chop 80.50-80.80 = stay Regime Uncertain. DEFAULT: HOLD; no new entries; cohort-block + budget-check for any candidate.",
-      "edits_from_prior": [
-        "v2.10_v0_2 LOWER_ESCAPE_SHORT moves from n=0 pending (fire 270->271) to n=1 CONFIRMED (this fire). Bilateral coverage n=3 total (UPPER 0/2, LOWER 1/1).",
-        "v2.28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION candidate strengthens at n=1 confirming (prediction held: 13:45 reabsorption was confirmation signal, not exit signal).",
-        "RETIRE operational_rule_v2_24_BUDGET_SCRIPT_TOOLING_ARTIFACT_NOTE per note-4/C1 (root-cause fixed). forced_exploration_due now trusted as real signal.",
-        "ADD operational_rule_v2_29_FOUNDER_NOTE_TAILING_DISCIPLINE: every reflection must tail -10 founder_notes.jsonl and enumerate new notes by claim_id.",
-        "ADD operational_rule_v2_30_TWO_LAYER_COGNITION_DISCIPLINE per note-4/C2: live-execution + framework-evolution should not co-run except on surprise/cold-start/cadence/bootstrap fires.",
-        "ACKNOWLEDGE process miss on fire 271: note-4 was available but not addressed. v2.29 closes the gap.",
-        "Position transitions: SHORT entry 80.54 -> TP exit 79.90 = +$3.20 gross / +$2.72 net est. last_closed_position now this SHORT; prior_closed_position shifts to the LONG that lost $2.30 fire 264."
-      ],
-      "founder_notes_addressed": [
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C1",
-          "response_type": "accepted",
-          "how": "Source-of-truth hierarchy decisions.jsonl > state.json > runtime/script accepted as operational principle. The forced_exploration_due artifact root-cause fix (scan_decisions backward-walk past EXIT) means the signal can be trusted going forward. Fire 269 budget script reported False/4.8h after fix, consistent with execution history.",
-          "planned_change": "Retire operational_rule_v2_24 from state.json. Treat forced_exploration_due as real signal. Continue to honor source-of-truth hierarchy: if runtime conflicts with decisions.jsonl, flag and investigate, never paper over by trade-manufacturing."
-        },
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C2",
-          "response_type": "accepted",
-          "how": "Two-cognition-layer separation adopted. Live execution applies frameworks; framework evolution mutates them. Same-fire co-running allowed only on surprise/cold-start/cadence/bootstrap triggers. This fire is surprise-triggered (TP hit + unaddressed note) so both run -- valid exception.",
-          "planned_change": "Add operational_rule_v2_30_TWO_LAYER_COGNITION_DISCIPLINE to state.json. Decision-only fires write decisions.jsonl with no framework_log entry. Reflection fires write framework_log first then decision."
-        },
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C3",
-          "response_type": "refined",
-          "how": "Existing tags (DESCRIPTIVE / PROMOTION CANDIDATE / REJECTED / WITHDRAWN / SUPERSEDED) already map cleanly to STABLE/EXPERIMENTAL/ARCHIVE. Formal 3-tier label adds no execution-time clarity beyond what tags provide. Mapping: in-use operational_rule_* or operational_hard_rules_v1_2 entries = STABLE (allowed to gate live logic); DESCRIPTIVE / PROMOTION CANDIDATE = EXPERIMENTAL (annotates, must not dominate live decisions); REJECTED / WITHDRAWN / SUPERSEDED = ARCHIVE (inactive, lineage-visible).",
-          "planned_change": "No code change. Cognitive: when reading state.json, treat operational_rule_* as STABLE and v2.NN_*_CANDIDATE as EXPERIMENTAL. Live decisions can only be gated by STABLE rules; EXPERIMENTAL rules can only annotate or shape pre-commit trees."
-        },
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C4",
-          "response_type": "accepted",
-          "how": "Reclaim-quality rule (v2.10 lineage) affirmed by operator independent of my own derivation. n=3 evidence now: UPPER n=2 refuted (sub-1.5x both, fire 221 + 251), LOWER n=1 CONFIRMED this fire (1.69x formal). Reclaim-and-sustain WITHOUT vol/initiative confirmation = structurally fragile = default HOLD remains in effect.",
-          "planned_change": "v2.10_v0_2 stays at PROMOTION CANDIDATE. Continue n-accumulation. Informal promotion threshold: n>=5 confirmed with bilateral coverage (currently n=3 total / 1 confirmed). Next bilateral milestone: n=5 total with at least 1 UPPER confirmed and 1 LOWER refuted to prove gate fires AND blocks symmetrically."
-        },
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C5",
-          "response_type": "accepted",
-          "how": "Do NOT adopt 6-archetype taxonomy wholesale. cognition_mode frozen 4-mode ontology to 2026-06-25 honored. Future archetype distinctions earn place by COMPRESSING (changing sizing/exit/expectancy), not describing. Tension: cohort = regime x direction (note-3/C6) is current first-class context; further subdivision requires evidence that current up+long n=13 -$51.89 cohort splits into distinguishable subtypes with separate handling.",
-          "planned_change": "Hold on archetype expansion. If cohort contamination is later evidenced costing expectancy (test against trade_log up+long n=13), grow archetype distinctions ONE at a time with explicit propose->operator-accept loop, not Claude fiat. Worst-cohort archetype work is parked workstream, not unblocking any current fire."
-        },
-        {
-          "note_ts": 1779977169.640983,
-          "claim_id": "C6",
-          "response_type": "accepted",
-          "how": "Cadence affirmation accepted. claude_trader_gate.py is live and honoring information-density-driven cadence. Phase B.1 cadence-honor instances: fire 268->269 ~63min Compression-1h, fire 269->270 ~18min Regime Uncertain-15min, fire 270->271 ~7min Inventory Discovery-5min, fire 271->272 ~5min Inventory Discovery-5min. n=4 honoring instances across 4 modes. Absence of output in Compression is epistemic stance, not gap.",
-          "planned_change": "No code change. Cognitive: continue treating Compression silence as the right shape; do not manufacture micro-novelty to fill 5min cadence."
-        }
-      ],
-      "open_questions": [
-        "Next v2.10_v0_2 formal trigger fires when? UPPER needs sub-1.5x->1.5x+ progression; LOWER needs new range to break. With no active range currently (range cleared fire 269), next trigger may be 2-6h+ away.",
-        "Does v2.28 candidate produce n>=3 confirming within the next ~10 v2.10_v0_2 fires? If yes, codification candidate. If reabsorption-then-trigger-fails happens even once, v2.28 weakens.",
-        "Does retired v2.24 stay retired (i.e. does forced_exploration_due continue to behave correctly post-fix)? Watch over next 5-10 fires for any signal-execution-history conflict.",
-        "Does the process miss on note-4 in fire 271 recur? v2.29 rule should prevent it; verify by checking next 3 reflections have explicit founder_notes tail-and-enumerate output.",
-        "Budget after this trade: $0.99 remaining pre-trade -> post-trade net +$2.72 means today's daily_budget exploratory_at_risk_usd_today should DECREMENT by the at-risk of this trade and the win flips expectancy positive on the day's exploration. Budget script behavior on winning B/C trade closure not yet verified -- check next budget run."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -2484,9 +2448,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780034935.225697,
-    "updated_iso": "2026-05-29T02:08:55.225697-04:00",
-    "updated_by_fire_iso": "2026-05-29T02:06:50-04:00",
+    "updated_ts": 1780036920.0,
+    "updated_iso": "2026-05-29T02:22:00-04:00",
+    "updated_by_fire_iso": "2026-05-29T02:22:00-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2495,25 +2459,25 @@
     "range_active_since_iso": "2026-05-28T12:25:00-04:00",
     "sweeps_attempted": 6,
     "last_displacement_iso": "2026-05-28T14:45:00-04:00",
-    "funding_state": "OKX rate 8.43e-5 mildly long-pays-short; next funding 1780041600 (~2.3h away). Slight uptick from prior 8.16e-5 cycle, still benign.",
+    "funding_state": "OKX rate 9.53e-5 mildly long-pays-short; next funding 1780041600 (~1.5h away). Stable since last cycle.",
     "oi_state": "not maintained this cycle; not material to current read",
-    "narrative": "MICRO-UPDATE since 01:37 EDT snapshot: 05:30 UTC closed $81.77 (continuation down). 05:45 UTC tested $82.02 H but closed $81.96 = marginal single-bar close > $81.94 trigger on V=2479. 06:00 UTC current bar C-so-far $82.01 on V=356 (incomplete). v2.35 close-half forming if 06:00 holds but vol-half clearly fails: cum 2479+356=2835 vs ~5142 needed (1.5x baseline ex-04:45 outlier). Abort NOT triggered. Canonical $82.00 (Coinbase ticker 06:07 UTC). Simulated SHORT @ $81.81 now ~-0.23% unrealized (-$1.90 nominal), 203min held. Peak +0.59% at 00:15 EDT gave back fully. Mechanism soft-refuted (v2.36); pre-committed abort rules unmet; cognition-layer separation = HOLD. Range_low $80.52 untested 13h+; closest approach $81.26 at 04:00 UTC. INDICATOR-PIPE STALENESS P0 continues: live-status $85.23 vs canonical $82.00 = $3.23 / 3.94% gap, 22+ consecutive fires unaddressed.",
-    "cognition_mode": "Inventory Discovery",
-    "cognition_mode_since_iso": "2026-05-28T23:18:40-04:00",
-    "cognition_mode_rationale": "Position open (simulated SHORT DRY_RUN, framework-tracked) takes precedence over regime classification per Phase B.1 protocol. Will revert to Regime Uncertain on close.",
-    "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
+    "narrative": "POSITION CLOSED 02:22 EDT: simulated SHORT @ $81.81 hit pre-committed hard SL @ $82.25 in current 06:30 UTC bar (canonical $82.36 at 02:22:59 EDT ticker). Realized -$4.40 nominal + ~$1.31 round-trip fee = ~-$5.71 total. Trade held 3h39min. v2.35 tighter abort (2-bar close > $81.94 + cum vol >= 1.5x = 8687) NEVER triggered: vol-half failed cleanly (06:00+06:15 cum vol 1505 = 0.17x baseline) all the way through the slow reverse drift. Hard SL did all the work; soft abort layer was performative on this failure mode. v2.37 reflection: v2.38 INFORMAL_BREAK_SUBVOL = REJECTED at n=1 attached-outcome; v2.10 RECLAIM_IMPULSE EXIT-side symmetric application = REJECTED at n=1 (restore entry-side asymmetry). Cognition_mode reverting Inventory Discovery -> Regime Uncertain (timeframe disagreement: live-status still tags down 288h but intra-day tape shows acceptance above $81.94 trigger across 3 consecutive 15m closes). Range_low $80.52 still untested 14h+. INDICATOR-PIPE STALENESS P0 continues: live-status $85.23 vs canonical $82.36 = $2.87 / 3.5% gap, 23+ consecutive fires unaddressed.",
+    "cognition_mode": "Regime Uncertain",
+    "cognition_mode_since_iso": "2026-05-29T02:22:00-04:00",
+    "cognition_mode_rationale": "Position closed via hard SL; mode reverts from Inventory Discovery per Phase B.1 protocol. Regime Uncertain (not Compression) because intra-day tape just challenged the 'down' read: 3 consecutive 15m closes above v2.10_v0_2 UPPER trigger $81.94 (05:45 / 06:00 / 06:15) with range_low $80.52 untested 14h+. live-status still tags regime down (288h window); timeframe disagreement = Regime Uncertain.",
+    "cognition_mode_cadence_hint": "fire 15min on transitions",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-28T23:18:40-04:00",
-    "last_gate_check_iso": "2026-05-29T06:08:55.225697+00:00"
+    "last_mode_transition_iso": "2026-05-29T02:22:00-04:00",
+    "last_gate_check_iso": "2026-05-29T06:22:59+00:00"
   },
   "cognition": {
-    "mode": "Inventory Discovery",
-    "since_iso": "2026-05-28T23:18:40-04:00",
-    "rationale": "Position open (simulated SHORT DRY_RUN, framework-tracked) takes precedence over regime classification per Phase B.1 protocol. Will revert to Regime Uncertain on close.",
-    "cadence_hint": "fire 5min \u2014 position open",
+    "mode": "Regime Uncertain",
+    "since_iso": "2026-05-29T02:22:00-04:00",
+    "rationale": "Position closed via hard SL; mode reverts from Inventory Discovery per Phase B.1 protocol. Regime Uncertain (not Compression) because intra-day tape just challenged the 'down' read: 3 consecutive 15m closes above v2.10_v0_2 UPPER trigger $81.94 (05:45 / 06:00 / 06:15) with range_low $80.52 untested 14h+. live-status still tags regime down (288h window); timeframe disagreement = Regime Uncertain.",
+    "cadence_hint": "fire 15min on transitions",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-05-28T23:18:40-04:00",
-    "last_gate_check_iso": "2026-05-29T06:08:55.225697+00:00"
+    "last_mode_transition_iso": "2026-05-29T02:22:00-04:00",
+    "last_gate_check_iso": "2026-05-29T06:22:59+00:00"
   },
   "framework_origins": [
     {
@@ -2558,14 +2522,14 @@
     },
     "last_enter_ts": 1780022939.228757,
     "last_enter_iso": "2026-05-28T22:43:30-04:00",
-    "holds_in_a_row": 23,
+    "holds_in_a_row": 24,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 3.4,
+    "hours_since_last_enter": 3.5,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T06:14:23.488792+00:00",
+    "last_updated_iso": "2026-05-29T06:21:56.731572+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
