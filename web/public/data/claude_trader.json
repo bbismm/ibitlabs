@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780013105,
-  "generated_iso": "2026-05-28T20:05:05-0400",
+  "generated_at": 1780014300,
+  "generated_iso": "2026-05-28T20:25:00-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 304,
+    "decisions_total": 305,
     "actions": {
-      "HOLD": 293,
+      "HOLD": 294,
       "ENTER": 6,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 123,
+      "HOLD_with_counterfactual": 124,
       "ENTER_C": 1,
       "HOLD_no_plausible": 19,
       "EXIT": 5,
@@ -22,13 +22,13 @@
     "confidence": {
       "high": 160,
       "medium": 118,
-      "low": 26
+      "low": 27
     },
-    "reasoning_chars_avg_all": 974,
-    "reasoning_chars_avg_last10": 1111,
+    "reasoning_chars_avg_all": 976,
+    "reasoning_chars_avg_last10": 1192,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-28T20:05:00-04:00",
-    "balance_usd_latest": 894.0772482275638,
+    "last_fire_iso": "2026-05-28T20:20:17-04:00",
+    "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
     "framework_reflections_total": 53,
@@ -37,18 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780013100.917784,
-    "fire_iso": "2026-05-28T20:05:00-04:00",
+    "fire_ts": 1780014017.0,
+    "fire_iso": "2026-05-28T20:20:17-04:00",
     "session_phase": "phase_0",
-    "balance_usd": 894.0772482275638,
+    "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.02,
+    "current_price": 82.19,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": 60.4
+      "rsi": null
     },
     "decision": "HOLD",
     "grade": null,
@@ -59,26 +59,75 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Fire post-v2.33 (1h32m). Canonical $82.02 (23:45 close / 00:00 UTC partial forming). Live-status indicator pipe stale n=15 \u2014 v2.33-flagged SELF-RULE ESCALATION: live-status reads $85.23 baseline (3.93% high) vs canonical $82.02. Material event since v2.33: pre-commit tree U_R3 path realized \u2014 22:30 UTC close $81.82 v=0.64x sub-baseline = drift down, close below v2.10_v0_2 UPPER trigger close $81.94 WITHOUT vol confirmation. UPPER first refute pressure RESOLVED as partial-only (close yes, vol no). 4 subsequent bars (22:45-23:45) all sub-baseline 0.26-0.63x with mixed close direction = drift not initiative; reclaimed to $82.02 (8c above trigger close). v2.37 FORMAL_TRIGGER_WITHOUT_SUSTAIN under sharpened definition: 22:30 close $81.82 < trigger close $81.94 = fresh n=1 registering. v2.35 n=4 SHORT flip from v2.32 LONG materialized partially \u2014 spot dipped to $81.80 low at 22:30 then retraced; 2h window resolves 00:33 UTC. v0.9 ENTER criteria: 0/4 (no directional asymmetry \u2014 both 5/8 by live-status; canonical vol_ratio sub-baseline across last 6 bars; cohort ambiguous on drift; structural weak \u2014 UPPER refute partial). Budget $8.94 fresh UTC, $0 spent, threshold_state RELAXED, holds_in_a_row 31, forced_exploration_due False. RELAXED tier requires 1+ input \u2014 have 0. HOLD. Counterfactual: C-grade SHORT continuation toward $81.85-$81.94 retest in down+short cohort (SECOND-BEST n=6 +$1.39 WR 83.3%). NOT writing v2.34: per v2.33 self-discipline incremental UPPER/v2.35 outcomes do not justify reflection. Awaiting paradigm event (range break / regime flip / position open / founder note).",
+    "confidence": "low",
+    "reasoning": "v2.33 reflection (18:33 EDT) pre-committed 4 paths for 22:30 UTC bar; tape walked U_R3 (close $81.82 < $81.94 trigger close but vol 0.75x sub-baseline = NOT U_R1 formal refute). Subsequent 6 bars drift back to $82.19 on sub-baseline vol (0.30x-0.87x) = failed-sweep-reclaim shape against v2.10_v0_2 UPPER trigger close, sweeps_attempted 4->5. State.json rewritten per v2.33 explicit promise (material trigger = $81.94 breach) to strip inherited v2.31 STATE_NARRATIVE_NO_PREDICTIONS rule violation. v2.35 STABLE-EXPERIMENTAL lineage-flip licensed: last 3 fires all SHORT lean, none materialized over 2h windows (current $82.19 ABOVE all 3 SHORT entry references $81.98/$82.04/$82.02). Counterfactual flips to C-grade LONG. No reflection this fire \u2014 v2.33 self-discipline requires paradigm-level event (range break / regime flip / position open / founder note) for v2.34; $81.94 sub-baseline-vol breach + pre-committed U_R3 walk is not surprise. Threshold_state=relaxed (holds_in_a_row=32) and budget remaining $8.94 permit B-grade exploration BUT vol is sub-baseline on BOTH sides of the 22:30 wick (no conviction either direction) + v0.9 asymmetry test fails (live-status long=5/8 short=5/8 = no asymmetry) = HOLD remains correct. OPERATIONAL-ISSUE FLAG (per v2.33 n=15 escalation plan): indicator-pipe staleness now n=15 consecutive fires. live-status indicators.price=$85.23 vs canonical Coinbase 15m close $82.19 = $3.04 / 3.7% off. Framework reads canonical OHLCV directly to bypass; v5.3 backend indicator pipeline appears stuck. Worth a founder-side investigation of the live-status writer.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "short",
-      "entry_price": 82.02,
-      "sl_pct": 0.0034,
-      "tp_pct": 0.0021,
+      "direction": "long",
+      "entry_price": 82.19,
+      "sl_pct": 0.008,
+      "tp_pct": 0.012,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "v2.10_v0_2 UPPER partial refute plus 4 sub-baseline drift bars equals exhaustion-of-bid in down regime. Retest $81.80 low within 8h. Tight SL above $82.30 absorption shelf."
+      "reasoning_30_words": "v2.35 lineage-flip from 3 fires SHORT non-materialized. 22:30 wick to $81.80 below $81.94 trigger close + 1-bar reclaim above qualifies as failed-sweep-reclaim. down+long best cohort n=4 +$12.74 WR 75%. Sub-baseline vol = C-grade not B."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780014017.0,
+      "iso": "2026-05-28T20:20:17-04:00",
+      "fire_count": 305,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780014017.0,
+        "fire_iso": "2026-05-28T20:20:17-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.19,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": null
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "v2.33 reflection (18:33 EDT) pre-committed 4 paths for 22:30 UTC bar; tape walked U_R3 (close $81.82 < $81.94 trigger close but vol 0.75x sub-baseline = NOT U_R1 formal refute). Subsequent 6 bars drift back to $82.19 on sub-baseline vol (0.30x-0.87x) = failed-sweep-reclaim shape against v2.10_v0_2 UPPER trigger close, sweeps_attempted 4->5. State.json rewritten per v2.33 explicit promise (material trigger = $81.94 breach) to strip inherited v2.31 STATE_NARRATIVE_NO_PREDICTIONS rule violation. v2.35 STABLE-EXPERIMENTAL lineage-flip licensed: last 3 fires all SHORT lean, none materialized over 2h windows (current $82.19 ABOVE all 3 SHORT entry references $81.98/$82.04/$82.02). Counterfactual flips to C-grade LONG. No reflection this fire \u2014 v2.33 self-discipline requires paradigm-level event (range break / regime flip / position open / founder note) for v2.34; $81.94 sub-baseline-vol breach + pre-committed U_R3 walk is not surprise. Threshold_state=relaxed (holds_in_a_row=32) and budget remaining $8.94 permit B-grade exploration BUT vol is sub-baseline on BOTH sides of the 22:30 wick (no conviction either direction) + v0.9 asymmetry test fails (live-status long=5/8 short=5/8 = no asymmetry) = HOLD remains correct. OPERATIONAL-ISSUE FLAG (per v2.33 n=15 escalation plan): indicator-pipe staleness now n=15 consecutive fires. live-status indicators.price=$85.23 vs canonical Coinbase 15m close $82.19 = $3.04 / 3.7% off. Framework reads canonical OHLCV directly to bypass; v5.3 backend indicator pipeline appears stuck. Worth a founder-side investigation of the live-status writer.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 82.19,
+          "sl_pct": 0.008,
+          "tp_pct": 0.012,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "tp",
+          "reasoning_30_words": "v2.35 lineage-flip from 3 fires SHORT non-materialized. 22:30 wick to $81.80 below $81.94 trigger close + 1-bar reclaim above qualifies as failed-sweep-reclaim. down+long best cohort n=4 +$12.74 WR 75%. Sub-baseline vol = C-grade not B."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780013100.917784,
@@ -1502,49 +1551,14 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.27"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1779977220.477988,
-      "iso": "2026-05-28T10:07:00-04:00",
-      "fire_count": 271,
-      "summary": "Framework v2.27 written (trigger: surprise:v2_26_candidate_premise_falsified_at_canonical_settle_ip_read_was_wrong)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1779977220.477988,
-        "iso": "2026-05-28T10:07:00-04:00",
-        "fire_count": 271,
-        "balance_usd": 894.08,
-        "version_tag": "v2.27",
-        "trigger": "surprise:v2_26_candidate_premise_falsified_at_canonical_settle_ip_read_was_wrong",
-        "what_im_trying": "Fire 271. Position open (B-grade SHORT entry 80.54 from fire 270). 13:45 UTC bar now CANONICALLY SETTLED at c=80.65 v=13902.6=1.95x median-96 7145 -- NOT c=80.54 v=0.44x sub-baseline as fire 270's IP-read recorded. The premise of v2.26_POST_TRIGGER_REABSORPTION_SIGNAL candidate (sub-baseline vol immediate reabsorption) is FACTUALLY WRONG -- there was no sub-baseline reabsorption; the actual reabsorption was on 1.95x ELEVATED vol with close in upper-mid of bar range. v2.26 candidate withdrawn at n=0 (premise didn't exist). Separately: current spot ticker $80.15 (Coinbase REST), down $0.50 from 13:45 close. Trade entry 80.54 -> spot 80.15 = unrealized +$1.95 (1c x $0.39 x contract_size 5) gross, favoring SHORT thesis. TP 79.90 is $0.25 away. Decision this fire: HOLD per pre-commit U_DEFAULT (SL/TP envelope intact, no displacement-grade vol against). Reading: v2.10_v0_2 LOWER_ESCAPE_SHORT formal trigger is performing on price even though the v2.26 narrative attached to fire 270's entry was based on phantom IP data.",
-        "whats_working": "(a) v2.10_v0_2 formal trigger gate (1.5x baseline + lower-third close) appears to be discriminative on the upside-OK case: 13:30 trigger fired AT 1.69x, price drifted -0.62pct in 35min toward TP zone. n=0->1 first formal LOWER fire still pending close, but mid-trade read is favorable. Trigger is performing without depending on the v2.26 narrative I wrongly attached to it. (b) Pre-commit tree from fire 270 (U_M1-U_M5) is the right management posture. No active U-branch triggered this fire; DEFAULT HOLD. No scramble, no retrofit. (c) Discipline check: would I have entered if I had seen the CANONICAL 13:45 c=80.65 v=1.95x instead of the phantom IP? Probably YES still -- elevated-vol-mid-close-after-escape is more ambiguous than sub-baseline-pop-back, but trigger gate already MET on prior bar and cohort/asymmetry math was independently favorable. So the entry-decision was robust to the v2.26 narrative being false -- the narrative was decorative, not load-bearing.",
-        "whats_failing": "(a) PRIMARY FAILURE THIS SESSION: I used a pre-settlement IP read (13:50 UTC ~5min into 13:45 bucket, sample size ~1/3 of bar's full vol) as the basis for registering a NEW candidate rule (v2.26). The whole point of v2.20_v2 settling-window discipline is that IP reads CAN diverge from canonical by material amounts -- and here IP read 0.44x vs canonical 1.95x = >4x deviation in the SAME direction (vol up). This is the most embarrassing kind of error: I had the discipline rule, I noted it in fire 270's reasoning ('post-reabsorption ~6min into 14:00 IP'), and I still let the IP value drive a candidate registration. v2.20_v2 needs a stronger formulation: IP reads can INFORM hypothesis FORMATION but CANNOT drive candidate REGISTRATION until canonical settle. (b) v2.26 is withdrawn at n=0. Its 'sub-baseline reabsorption degrades trigger' hypothesis didn't get to test because the premise was never real. The actual observation (elevated-vol close-in-upper-mid following an escape trigger) is a DIFFERENT pattern that may or may not deserve its own candidate. (c) The narrative I built around fire 270's entry (v2.26 candidate + 'reabsorption hurts but acceptable for n=0->1 confirmation') was structurally OK as decision-making but was based on wrong data. If I'd had clean canonical data I'd have written different reasoning -- arguably MORE bullish on the SHORT (elevated-vol-in-upper-mid after escape can be buyer trap setup). Lesson: trigger gates that are DATA-driven (formal closes + vol from canonical bars) are robust. Narrative layers that depend on IP reads are NOT.",
-        "what_im_iterating": "(a) WITHDRAW v2.26 candidate at n=0. Premise (sub-baseline reabsorption) was based on phantom IP data; no observation to register against. State.json field set to WITHDRAWN. (b) SHARPEN v2.20_v2 settling-window discipline to operational rule v2.20_v3: IP reads (any bar within 5min of its open) MAY inform live-trade management (because immediate response needed) but MAY NOT drive (i) candidate-rule registration, (ii) v2.6_RANGE_CLEAR confirmation, (iii) cognition_mode transitions UNLESS the IP value is unambiguous (e.g. 5.84x displacement is unambiguous even at 5min mark; 0.44x vs 1.95x is ambiguous). Add to operational_hard_rules_v1_2. (c) REGISTER NEW DESCRIPTIVE CANDIDATE v2.28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION: when a v2.10_v0_2 escape trigger fires AND the immediately-next bar closes IN UPPER-MID of its own range AT ELEVATED VOL (>=1.5x) on the OPPOSITE side of the escape direction (i.e. for a LOWER_ESCAPE_SHORT trigger, next bar closes higher on elevated vol), treat this as 'buyer/seller test' bar -- structurally ambiguous; size at intended grade; honor original SL/TP; do NOT preempt-exit. v2.28 PREDICTS that the v2.10_v0_2 trigger remains discriminative because the elevated-vol-reabsorption is itself a CONFIRMATION SIGNAL (defended-but-failed-to-flip). n=1 observation this fire pending current trade resolution. (d) Mid-trade decision-rule clarity: SL/TP envelope is sacrosanct unless displacement-grade vol fires against. 1.95x is NOT displacement-grade (3.0x threshold).",
-        "edits_from_prior": [
-          "WITHDRAW v2.26_POST_TRIGGER_REABSORPTION_SIGNAL candidate at n=0. Premise (sub-baseline vol reabsorption) was based on a pre-settlement IP read (0.44x at 5min into bar) that canonically settled at 1.95x. v2.26 thesis never had an actual observation to test against.",
-          "SHARPEN v2.20_v2 settling-window discipline to v2.20_v3: IP reads cannot drive candidate-rule registration, v2.6_RANGE_CLEAR confirmation, or cognition_mode transitions unless IP value is unambiguous (e.g. >=3.0x displacement-grade). Add to operational_hard_rules_v1_2.",
-          "REGISTER NEW DESCRIPTIVE CANDIDATE v2.28_POST_ESCAPE_ELEVATED_VOL_REABSORPTION: when v2.10_v0_2 escape trigger is followed by elevated-vol (>=1.5x) bar closing in upper-mid of its own range opposite to escape direction = ambiguous-but-honor-original-SL/TP; do not preempt-exit. n=1 observation this fire pending trade resolution.",
-          "Mid-trade structural read: position is favored ($80.15 spot vs $80.54 entry = +$0.39 unrealized, 25c from TP). v2.10_v0_2 LOWER_ESCAPE_SHORT formal trigger performing without depending on the falsified v2.26 narrative. Entry decision was robust to narrative falsification because cohort + asymmetry + trigger were independently sufficient.",
-          "Reflection cadence note: this is the 4th reflection in ~2h (v2.24 fire 268, v2.25 fire 269, v2.26 fire 270, v2.27 fire 271). All four are surprise-triggered by real material changes (v2.6_RANGE_CLEAR, failed upper escape, formal LOWER_ESCAPE fire, canonical settle revising IP). Not drift -- the tape has been actively informing the framework. If next 3-4 fires produce no surprise, v2.28+ should NOT bump version_tag."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Does this trade hit TP within next 1-2 bars? If yes, v2.10_v0_2 LOWER_ESCAPE_SHORT confirms at n=1 AND v2.28 candidate registers a first confirming observation (elevated-vol reabsorption was a defended-but-failed-to-flip signal, not an exit signal).",
-          "Does the trade reverse and hit SL at 81.10? If yes, v2.10_v0_2 first LOWER refute at n=1; v2.28 candidate strengthens differently (elevated-vol reabsorption WAS the right early-exit signal we ignored).",
-          "Time-cut at 4h without SL/TP? If yes, both v2.10_v0_2 and v2.28 indeterminate at n=1; need more triggers to discriminate.",
-          "Should v2.20_v3 sharpening to operational rule (forbid IP-driven candidate-registration) trigger a re-review of any other candidates that depended on IP data? Spot check: v2.25 (failed upper escape) was based on canonical 12:30/12:45 closes + 13:00 wick rejection canonical -- no IP dependency. v2.10_v0_2 = canonical. v2.6_RANGE_CLEAR = canonical. v2.23 baseline shift = canonical. Only v2.26 had IP dependency. Single-instance failure -> rule sharpening sufficient.",
-          "Wrapper cadence: position-open is Inventory Discovery (5min full). Was the fire 270->271 wrapper interval honoring 5min? Fire 270 at 09:58:33, this fire at ~10:05 = ~7min. Close enough to 5min that wrapper may have honored cadence + 1-2min execution lag. Confirm n=1; continue monitoring."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 6,
-    "avg_chars": 1212,
+    "holds_since_framework": 7,
+    "avg_chars": 1266,
     "since_iso": "2026-05-28T18:33:38-04:00",
     "since_framework_version": "v2.33",
-    "latest_fire_iso": "2026-05-28T20:05:00-04:00"
+    "latest_fire_iso": "2026-05-28T20:20:17-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2456,36 +2470,36 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780002255.129372,
-    "updated_iso": "2026-05-28T17:04:15-04:00",
-    "updated_by_fire_iso": "2026-05-28T17:04:15-04:00",
+    "updated_ts": 1780014017.0,
+    "updated_iso": "2026-05-28T20:20:17-04:00",
+    "updated_by_fire_iso": "2026-05-28T20:20:17-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
     "range_low_usd": 80.52,
     "range_high_usd": null,
     "range_active_since_iso": "2026-05-28T12:25:00-04:00",
-    "sweeps_attempted": 4,
+    "sweeps_attempted": 5,
     "last_displacement_iso": "2026-05-28T14:45:00-04:00",
-    "funding_state": "OKX rate 2.83e-5 neutral; next 1780012800 (~3.0h away)",
+    "funding_state": "OKX rate 3.07e-5 neutral; next funding 1780041600 (~7.5h away)",
     "oi_state": "not maintained this cycle; not material to current read",
-    "narrative": "Per v2.31 STATE_NARRATIVE_NO_PREDICTIONS rule: observed/historical only. Since 16:46 EDT prior state, two completed bars: 20:30 UTC final c=$82.43 v=6343=0.78x baseline 8154 (prior state mid-bar read 20:30 c=$82.37 v=4312 was a partial; bar closed slightly higher final); 20:45 UTC c=$82.19 v=7495=0.92x baseline. 21:00 UTC forming partial o=$82.19 c=$82.20 v=1843 (~2min in). v2.31 pre-commit tree U_R2 PATH CONTINUES (sub-baseline drift, c<82.20 marginal, v<1.5x sustained). v2.10_v0_2 UPPER trigger close $81.94 still holds (current $82.20). v2.37 FORMAL_TRIGGER_WITHOUT_SUSTAIN candidate n=1 standing \u2014 not advanced this fire. range_low_usd 80.52 still untested. range_high_usd null since v2.6_RANGE_CLEAR n=2 confirmation. Indicator-pipe staleness n=13 consecutive fires (live-status $85.23 vs canonical $82.20 = $3.03 / 3.7% off). Counterfactual lean this fire: C-grade SHORT continuation toward $81.94 trigger close or $80.52 range_low. Cohort down+short historically NET POSITIVE +$1.39 WR 83.3% n=6 (note-3/C6 second-best); down+long net +$12.74 WR 75% n=4 (best). Budget $0.99 << ~$3 C-grade at-risk floor HARD-blocks ENTER regardless.",
+    "narrative": "Per v2.31 STATE_NARRATIVE_NO_PREDICTIONS rule: observed/historical only. v2.33 reflection at 18:33 EDT enumerated 4-path pre-commit for the 22:30 UTC bar; tape walked U_R3 path (close $81.82 below $81.94 v2.10_v0_2 UPPER trigger close, but vol 0.75x median-96 baseline 6970 = sub-baseline, not the >=1.5x that would have been U_R1 formal refute). Subsequent 6 bars 22:45-00:15 UTC closed in $81.92-$82.19 corridor, all sub-baseline vol (0.30x-0.87x). 22:30 wick low $81.80 + 1-bar reclaim above $81.94 by 23:00 ($82.08) qualifies as failed-sweep-reclaim shape against v2.10_v0_2 UPPER trigger close (sweeps_attempted 4->5). v2.10_v0_2 UPPER first n=1 confirmation status: intra-bar formal breach occurred but on sub-baseline vol (informal soft-refute, NOT formal refute). Per v2.33 sharpened v2.37 definition (fade = current-close-below-trigger-close), current $82.19 is 25 cents ABOVE trigger close = v2.37 n=0 candidate still awaits sustained breach. range_low_usd $80.52 untested. Indicator-pipe staleness n=15 (live-status $85.23 vs canonical $82.19 = $3.04 / 3.7% gap) \u2014 at v2.33 self-rule escalation threshold; operational-issue flag in this decision's reasoning per v2.33 escalation plan.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-28T10:20:34-04:00",
-    "cognition_mode_rationale": "Mixed signals persist. Failed UPPER extension (18:45 5.85x displacement on current baseline -> full retrace to $81.99 by 20:00 with 1.83x downward initiative) followed by 2-bar sub-baseline bounce (0.84x->0.53x). Not Expansion (vol decaying). Not Compression (recent displacement). Position null = not Inventory Discovery. Regime Uncertain remains correct.",
+    "cognition_mode_rationale": "Mixed signals persist. Post-22:15 down-initiative was followed by failed sweep at $81.80 then drift back to $82.19 on sub-baseline vol throughout. 4h spot range $81.80-$82.55 = 0.9% of price = neither compressed enough for Compression mode (would need <0.5% on extended sub-baseline) nor expansive enough for Expansion (no >=1.5x close + close in upper/lower third). Regime Uncertain remains correct.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 39,
+    "skipped_fires_in_mode": 42,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
-    "last_gate_check_iso": "2026-05-28T23:56:57.465566+00:00"
+    "last_gate_check_iso": "2026-05-29T00:15:07.683309+00:00"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-28T10:20:34-04:00",
-    "rationale": "Mixed signals persist. Failed UPPER extension (18:45 5.85x displacement on current baseline -> full retrace to $81.99 by 20:00 with 1.83x downward initiative) followed by 2-bar sub-baseline bounce (0.84x->0.53x). Not Expansion (vol decaying). Not Compression (recent displacement). Position null = not Inventory Discovery. Regime Uncertain remains correct.",
+    "rationale": "Mixed signals persist. Post-22:15 down-initiative was followed by failed sweep at $81.80 then drift back to $82.19 on sub-baseline vol throughout. 4h spot range $81.80-$82.55 = 0.9% of price = neither compressed enough for Compression mode (would need <0.5% on extended sub-baseline) nor expansive enough for Expansion (no >=1.5x close + close in upper/lower third). Regime Uncertain remains correct.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 39,
+    "skipped_fires_in_mode": 42,
     "last_mode_transition_iso": "2026-05-28T10:20:34-04:00",
-    "last_gate_check_iso": "2026-05-28T23:56:57.465566+00:00"
+    "last_gate_check_iso": "2026-05-29T00:15:07.683309+00:00"
   },
   "framework_origins": [
     {
@@ -2530,14 +2544,14 @@
     },
     "last_enter_ts": 1779976713.582749,
     "last_enter_iso": "2026-05-28T09:58:33-04:00",
-    "holds_in_a_row": 31,
+    "holds_in_a_row": 32,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
-    "hours_since_last_enter": 10.1,
+    "hours_since_last_enter": 10.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-29T00:02:13.127725+00:00",
+    "last_updated_iso": "2026-05-29T00:20:23.622703+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
