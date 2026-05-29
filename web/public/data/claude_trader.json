@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780032982,
-  "generated_iso": "2026-05-29T01:36:22-0400",
+  "generated_at": 1780033937,
+  "generated_iso": "2026-05-29T01:52:17-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 333,
+    "decisions_total": 335,
     "actions": {
-      "HOLD": 321,
+      "HOLD": 323,
       "ENTER": 7,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 150,
+      "HOLD_with_counterfactual": 152,
       "ENTER_C": 2,
       "HOLD_no_plausible": 20,
       "EXIT": 5,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 138,
+      "medium": 140,
       "low": 35
     },
-    "reasoning_chars_avg_all": 998,
-    "reasoning_chars_avg_last10": 1345,
+    "reasoning_chars_avg_all": 997,
+    "reasoning_chars_avg_last10": 1180,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T01:33:40-04:00",
+    "last_fire_iso": "2026-05-29T01:52:10-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,26 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780033020.0,
-    "fire_iso": "2026-05-29T01:33:40-04:00",
+    "fire_ts": 1780033930.089202,
+    "fire_iso": "2026-05-29T01:52:10-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": {
-      "direction": "short",
-      "entry_price": 81.81,
-      "qty": 2,
-      "unrealized_pnl_pct": 0.01,
-      "minutes_held": 170,
-      "note": "DRY_RUN simulated, framework-tracked; live-status position=null because executor in DRY_RUN"
-    },
-    "current_price": 81.8,
+    "position_at_fire": null,
+    "current_price": 81.9,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": 60.4,
-      "_note": "live-status indicator-pipe staleness P0 persists ~20 fires: live-status price 85.23 vs canonical 81.80 = 4.20% gap; indicator snapshot reads from live-status (stale-frame), framework reads canonical via Coinbase ticker."
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -68,23 +60,24 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management only. Simulated SHORT @ $81.81 qty=2 (DRY_RUN tracked), 170min held, canonical $81.80 = +0.01% unrealized (essentially flat). MATERIAL RESOLUTION: 05:15 UTC 15m bar closed $81.86 BELOW v2.35 trigger $81.94. v2.35 abort question RESOLVED NEGATIVE at n=1 \u2014 needed 2 consecutive closes > $81.94 + cum vol >= 1.5x baseline; 05:00 met close-half ($81.97), 05:15 failed close-half ($81.86). Cumulative 2-bar vol $9987 = ~1.62x baseline cleared vol-half BUT AND-gate correctly held since close-half failed in bar 2. v2.10 RECLAIM_IMPULSE_REQUIREMENT EXIT-side n=1 application validated AS-DESIGNED (required confirmation, none came, no false trigger). Reverse-reclaim impulse failed. v2.34 broader abort (4h close > $82.40) clear. Range_low $80.52 untested 12h+ \u2014 still $1.28 below; mechanism for entry (v2.38 sub-baseline-vol break) was soft-refuted v2.36, but PnL-direction-target remains open via slower drift. Continue HOLD per pre-committed v2.34+v2.35 abort rules. Cognition-layer separation (founder note-4 C2) holds \u2014 no mid-trade ontology redesign. Last reflection v2.36 28min ago; no paradigm event this fire (pre-stated branch resolved), cadence (4h) not met, skip reflection.",
-    "expected_holding_hours": 4,
-    "expected_pnl_pct_target": -1.5,
+    "reasoning": "Position mgmt (sim SHORT @ $81.81 qty=2 DRY_RUN framework-tracked, ~3.1h held). Canonical ticker $81.90 (Coinbase 05:50 UTC) = unrealized -$0.90 / -0.11% notional. 05:30 UTC bar closed $81.77 vol 2166 (~0.7x baseline = nowhere near confirmation). 05:45 UTC bar in progress: close-so-far ~$81.96, high tagged $82.02 - first intra-bar print above $81.94 trigger since v2.35 resolved negative @ 05:15 close. For v2.35 abort to fire requires 05:45 close > $81.94 AND 06:00 close > $81.94 AND cum vol >= 1.5x baseline (~9225). Close-half plausible (~$81.96), vol-half implausible (cum so far ~1753, would need 06:00 vol > 7470 vs prior bars tracking 1700-2200). Abort NOT triggered. v2.38 INFORMAL_BREAK_SUBVOL remains SOFT-REFUTED at n=1 (no new low since $81.26 @ 04:00 UTC, 1.8h ago). Mechanism broken but pre-committed discipline (cognition-layer separation per founder note-4 C2): let abort/TP/SL/time-cut resolve, no mid-position redesign. Indicator-pipe staleness P0 continues: live-status $85.23 vs canonical $81.90 = $3.33 / 4.07% gap. ~22 fires unaddressed. HOLD continue.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "v2.35: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x median-9 baseline (~6150) \u2014 cut immediately",
-      "v2.34: any 4h close > $82.40 \u2014 cut",
-      "time-cut bias: if 8h held without progress toward $81.26 retest, re-evaluate"
+      "05:45 UTC + 06:00 UTC both close > $81.94 with cumulative vol >= ~9225 (1.5x baseline) - v2.35 tighter abort",
+      "any single 15m close > $82.40 - v2.34 broader envelope-reclaim",
+      "fast reverse displacement > 0.5% in <5min (interruption-class)",
+      "time-cut: 12h held without TP test (~10:43 EDT)"
     ],
     "hypothetical_entry_record": {
-      "implied_grade": "B",
-      "direction": "short",
-      "entry_price": 81.8,
+      "implied_grade": "C",
+      "direction": "long",
+      "entry_price": 81.9,
       "sl_pct": 0.005,
-      "tp_pct": 0.015,
+      "tp_pct": 0.005,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Failed reclaim above $81.94 confirms local resistance; reverse-impulse n=1 unconfirmed; vol regime stays sub-baseline; range_low $80.52 untested 12h \u2014 same SHORT lean as active position, mechanism still soft-refuted, modest conviction."
+      "reasoning_30_words": "Failed-down-extension shape persists (no new low 1.8h), 05:45 intra-bar test of $82.02 = weak reclaim lean if forced. C-grade only; not strong enough for real ENTER."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1585,11 +1578,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 5,
-    "avg_chars": 1081,
+    "holds_since_framework": 7,
+    "avg_chars": 1045,
     "since_iso": "2026-05-29T01:05:38-04:00",
     "since_framework_version": "v2.36",
-    "latest_fire_iso": "2026-05-29T01:33:40-04:00"
+    "latest_fire_iso": "2026-05-29T01:52:10-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2565,14 +2558,14 @@
     },
     "last_enter_ts": 1780022939.228757,
     "last_enter_iso": "2026-05-28T22:43:30-04:00",
-    "holds_in_a_row": 18,
+    "holds_in_a_row": 20,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 2.7,
+    "hours_since_last_enter": 3.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T05:33:21.931849+00:00",
+    "last_updated_iso": "2026-05-29T05:48:41.720123+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
