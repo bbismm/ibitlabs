@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780088526,
-  "generated_iso": "2026-05-29T17:02:06-0400",
+  "generated_at": 1780089697,
+  "generated_iso": "2026-05-29T17:21:37-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 408,
+    "decisions_total": 409,
     "actions": {
-      "HOLD": 391,
+      "HOLD": 392,
       "ENTER": 10,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 208,
+      "HOLD_with_counterfactual": 209,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,27 +23,27 @@
     "confidence": {
       "high": 169,
       "medium": 195,
-      "low": 44
+      "low": 45
     },
     "reasoning_chars_avg_all": 1003,
-    "reasoning_chars_avg_last10": 804,
+    "reasoning_chars_avg_last10": 784,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T17:00:00-04:00",
+    "last_fire_iso": "2026-05-29T17:19:08-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 74,
+    "framework_reflections_total": 75,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780088519.646815,
-    "fire_iso": "2026-05-29T17:00:00-04:00",
+    "fire_ts": 1780089548.0,
+    "fire_iso": "2026-05-29T17:19:08-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 81.97,
+    "current_price": 82.15,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -61,29 +61,126 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "low",
-    "reasoning": "Same baseline as fire 407 (v2.53). 20:45 UTC bar resolved EXACTLY per pre-commit branch #3: close $82.12 V=7320 (0.84x baseline sub-baseline 1.5x trigger) in $81.71-$82.20 corridor. 21:00 UTC opening drift to $81.97 = leak toward lower corridor edge $81.71 ($0.26 below). Range maintained, mode Regime Uncertain unchanged, sweeps_attempted held at 9. Pre-commit lineage advances 14/14 -> 15/15. v0.9 hypothetical SHORT 1/4 (cohort down+short n=6 +$1.39 WR 83% favorable; vol sub-baseline NO; asymmetry stale-pipe-uninformative NO; structural drift-only no displacement NO). Hypothetical LONG 1/4 (cohort favorable only; structural double-test rejected at $82.20 weakens further). Budget $2.10 + threshold normal + 1/4 inputs = blocks B/C; A/S need structural break + retest not present. HOLD with hypothetical SHORT $81.97 per drift-direction. Indicator-pipe staleness P0 day 25: live-status $85.23 vs canonical $81.97 = $3.26/4.0%. Founder notes pending: 0.",
+    "reasoning": "MODE TRANSITION Regime Uncertain -> Compression: v2.52's 2-consecutive-sub-baseline-corridor-close criterion fired again (20:45 C=$82.12 V=0.84x + 21:00 C=$82.20 V=0.5x + 21:15 sub-baseline drift). 21:00 UTC wick to $82.28 + close at $82.20 = 4th wick-test of corridor top in 1h45min, all rejections on sub-baseline vol. v0.9 hypothetical SHORT 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable + emerging quadruple-test-as-resistance; asymmetry NO 5/5 symmetric, vol NO sub-baseline). Operator-affirmed C4 (v2.10_RECLAIM_IMPULSE_REQUIREMENT) blocks SHORT promotion absent vol-impulse confirmation. Budget $2.10, 21 holds-in-a-row post-this, normal threshold, forced_exploration_due False = B/C ENTERs blocked at normal-state gate. HOLD with hypothetical SHORT at $82.15 chase entry. Discipline: 4th chase-decline (v2.47/v2.49/v2.53/this), pattern stable. Pre-commit lineage advances 14/14 -> 15/15. Reflection v2.54 written.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "range break below $81.71 vol >= 1.5x baseline -> branch #4 fires, mode reverts Expansion, SHORT becomes A-grade retest candidate $81.85-$81.95",
-      "range break above $82.20 vol >= 1.5x baseline -> branch #1 fires (genuine reclaim, not edge-trigger), mode reverts Expansion, LONG candidate $82.00-$82.10 retest",
-      "corridor drift sub-baseline next bar -> Regime Uncertain ongoing, 15min cadence, no entry"
+      "range breaks ABOVE $82.20 close vol>=1.5x baseline (~13000) -> reverse to A-grade LONG retest at $82.05-$82.10",
+      "range breaks BELOW $81.71 close vol>=1.5x baseline -> A-grade SHORT retest at $81.85-$81.95",
+      "5th-6th wick-test of $82.20 sub-baseline accumulates AND budget threshold shifts (relaxed at 30 holds OR forced_exploration at 24h) -> conditional B-grade SHORT probe at corridor top",
+      "4 consecutive 1h heartbeats with mid-corridor sub-baseline drift -> ranging regime hypothesis"
     ],
     "hypothetical_entry_record": {
-      "implied_grade": "C",
+      "implied_grade": "B",
       "direction": "short",
-      "entry_price": 81.97,
-      "sl_pct": 0.0028,
-      "tp_pct": 0.0027,
+      "entry_price": 82.15,
+      "sl_pct": 0.0018,
+      "tp_pct": 0.0037,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Drift toward lower corridor edge with cohort tailwind but no vol confirmation. Sub-baseline vol implies chop continuation more likely than range break. Lean short on direction-of-drift, low conviction."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "4th wick-test of $82.20 corridor top sub-baseline rejection signals structural resistance forming silently; cohort down+short favorable; absent vol confirmation = drift-sideways 2h, modest tilt downward 8h"
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780089548.0,
+      "iso": "2026-05-29T17:19:08-04:00",
+      "fire_count": 408,
+      "summary": "Framework v2.54 written (trigger: surprise:mode_transition_RU_to_Compression_via_v252_criterion_AND_4th_test_corridor_top_sub_baseline_rejection)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780089548.0,
+        "iso": "2026-05-29T17:19:08-04:00",
+        "fire_count": 408,
+        "balance_usd": 894.08,
+        "version_tag": "v2.54",
+        "trigger": "surprise:mode_transition_RU_to_Compression_via_v252_criterion_AND_4th_test_corridor_top_sub_baseline_rejection",
+        "what_im_trying": "v2.53 left Regime Uncertain with pre-commit branches keyed on 20:45/21:00 UTC bar outcomes. Actual: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) sub-baseline inside corridor + 21:00 UTC close $82.20 V=4373 (0.5x) at corridor TOP with high $82.28 wicked above range then rejected back to $82.20 close. Two consecutive sub-baseline corridor closes = v2.52's exact mode-transition criterion fired again (Regime Uncertain -> Compression). 21:15 UTC in-progress C=$82.18 V=3359 sub-baseline mid-corridor confirms drift continuation. The 21:00 wick-to-$82.28-close-at-$82.20 is also the 4th test of $82.20 corridor top resistance (after 19:30 close $82.21 trigger-then-failure / 20:00 H $82.18 / 20:15 H $82.22 / 20:30 H $82.22 / 21:00 H $82.28 / 21:15 H $82.21 \u2014 let me be precise: tests with wick above $82.20 = 19:30 (close $82.21 above), 20:30 (H $82.22), 21:00 (H $82.28), 21:15 (H $82.21) = 4 wick-tests, 1 close above [19:30 trigger-failure], 3 wick rejections sub-baseline). Decision this fire: HOLD with hypothetical SHORT lean at $82.15 chase pricing (B-grade conviction; ideal entry $82.18-$82.20 retest already past). v0.9 inputs hypothetical SHORT: 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable, structural quadruple-test-of-corridor-top emerging-resistance; asymmetry NO 5/5 live-status symmetric, vol NO sub-baseline on all rejection bars). v0.9 inputs hypothetical LONG: 0/4 ($82.20 keeps failing as breakout on sub-baseline = LONG hypothesis structurally weak). Conviction LOW-MEDIUM. Budget $2.10, threshold normal, forced_exploration_due False, holds_in_a_row will be 21 post-this-fire. B/C ENTERs technically possible at C-grade (1-contract clamp $410 notional, SL $82.30 = at-risk $0.74) but v0.9 normal-state gate requires 3/4 inputs OR forced_exploration; neither holds.",
+        "whats_working": "(a) Pre-commit lineage 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent (drift back to corridor sub-baseline) fired exactly per 20:45 + 21:00 + 21:15 sub-baseline sequence. (b) Mode-transition discipline at the pre-committed criterion exactly honored across 5 transitions in 2h22min (Compression 14:36->Expansion 14:58->RU 15:17->Compression 15:35->RU 16:43->Compression 17:19). The 2-consecutive-sub-baseline-corridor-close criterion has now fired twice (15:35 and 17:19) \u2014 early evidence the transition rule is replicable, not a one-off. (c) Operator-affirmed C4 (v2.10_RECLAIM_IMPULSE_REQUIREMENT) is doing the work it was promoted to do: 4 wick tests of $82.20 corridor top all on sub-baseline vol = no vol-impulse confirmation = no SHORT promotion despite emerging structural pattern. Discipline holding. (d) Symmetric chase-vs-retest n=3 decline history: v2.47 chase-LONG @ $82.94 declined; v2.49 chase-SHORT @ $81.94 declined; v2.53 chase-SHORT @ $82.14 declined. Current $82.15: v2.53 decline mildly-rewarded ($0.01 above = trivially indifferent); v2.49 decline rewarded ($0.21 unfavorable = -$0.46 net); v2.47 decline rewarded ($0.79 favorable = +$3.62 net BUT trade window long-since closed). Net discipline track: 1/3 clean reward, 2/3 indeterminate-but-no-loss. Holding the framework.",
+        "whats_failing": "(a) The 4-tests-of-$82.20-with-sub-baseline-rejection setup is creating the strongest structural-resistance signature I've seen this corridor cycle, AND simultaneously the strongest case AGAINST taking a position via the C4 vol-impulse gate. This is a real tension: if sub-baseline-rejection-on-repeated-test IS the silent structural read (sellers stepping in without needing aggressive vol), then C4 is structurally over-tight for compression-regime resistance-formation. If C4 is correct and absence of vol means the rejection is mechanical/temporary, then HOLD is right. I do NOT have the data to discriminate yet \u2014 this is the first multi-test compression-regime resistance I've witnessed in this lineage. Tracking explicitly: if 6+ wick-tests of $82.20 sub-baseline accumulate WITHOUT range break in either direction by EOD, that becomes evidence FOR sub-baseline-rejection-as-structural-read. If range breaks UPWARD via vol within 2h, that's evidence FOR C4 (the silent rejections were mechanical). (b) Mode-cycling now n=5 transitions in 2h22min \u2014 pattern stable at ~28min avg per mode. Within-ontology framing 'brief mode-cycling IS the correct read' continues to hold; sustained-mode hypothesis (RU or Compression as 60+min stable) further weakened. Frozen until 2026-06-25; tracking only. Compression at 15:35 lasted 68min (sustained!) before transitioning to RU at 16:43 \u2014 this DID sustain 60+min, contradicting my earlier prediction that Compression itself would fail to sustain. v2.52 open question RESOLVED positively for Compression-sustains. (c) Budget structurally stalled at $2.10 with 21 holds-in-a-row post-this-fire and 6.3h since last ENTER. Per SKILL: 'A B/C exploratory trade that loses $8 has bought you a data point. A 24-hour HOLD streak has bought you nothing. Under this budget, the latter is the more expensive choice.' Currently NOT at 24h drought (only 6.3h); not at relaxed threshold (only 21 holds, threshold relaxed=30). System-design says this is appropriate HOLD discipline. But the structural setup IS forming \u2014 if a 5th wick-test arrives and budget thresholds shift (forced_exploration or relaxed), I should be willing to take a B-grade SHORT probe at the corridor top.",
+        "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim 2-axis hypothesis: cycle n=1.5-DEMOTED stable; extension n=0/2-FAILED stable. The 21:00 UTC trigger-then-failure pattern (4th test) is now annotated lineage-evidence-AGAIN for cycle hypothesis but does NOT advance n \u2014 n is gated on resolved sweep cycles, not in-progress drift. (b) COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression (this fire). Rationale: 2 consecutive sub-baseline corridor closes (20:45 V=0.84x + 21:00 V=0.5x) + 21:15 sub-baseline drift = mode signature decayed per v2.52 criterion. 1h heartbeat cadence + transition-triggered. (c) NEW pre-commit lineage event-keyed (not bar-keyed) per Compression: (1) IF range breaks ABOVE $82.20 close vol>=1.5x baseline (~13000) -> reclaim genuine (= sweep #11); cycle promotion n=1.5 -> n=2.5; mode reverts Expansion; A-grade LONG candidate at $82.05-$82.10 retest if forms (NOT $82.20-$82.25 because the corridor top is the resistance-being-broken; retest happens at the prior support midpoint), SL $81.65, target $82.85. Cohort down+long n=4 +$12.74 WR 75% favorable. (2) IF range breaks BELOW $81.71 close vol>=1.5x baseline -> downside continuation confirmed; cycle full-demotion n=1.5 -> n=1; mode reverts Expansion; A-grade SHORT candidate at $81.85-$81.95 retest if forms, SL $82.25, target $81.00. Cohort down+short n=6 +$1.39 WR 83% favorable. (3) IF 5th-6th wick-test of $82.20 sub-baseline rejection accumulates WITHOUT range break -> consider WHETHER absence-of-vol-on-repeated-rejection should itself promote SHORT thesis to B-grade exploratory. Specifically: if budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), the 'structural resistance forming silently' read warrants a B-grade SHORT probe at corridor top $82.15-$82.20 retest with tight SL $82.30. This is a CONDITIONAL promotion \u2014 gated on budget state AND continued sub-baseline behavior, not on this fire. (4) IF 4 consecutive 1h heartbeats with mid-corridor drift sub-baseline -> ranging regime hypothesis (not transitional aftermath); flag for narrative update. (d) Wick-as-data counter: REMAINS downgraded per v2.49 commitment. Individual instances spot-evaluated. (e) Budget: $2.10 remaining. UTC rollover ~4.2h. B/C blocked at normal threshold; A/S need structural break + retest with vol confirmation.",
+        "edits_from_prior": [
+          "COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression. Triggered exactly at v2.52's 2-consecutive-sub-baseline-corridor-close criterion firing for the SECOND time in this lineage (first was 15:35 EDT). 1h heartbeat cadence; wrapper invariant-safety bypasses on structural events.",
+          "Pre-commit lineage: 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent fired EXACTLY: 20:45 $82.12 V=7320 (0.84x sub-baseline) + 21:00 $82.20 V=4373 (0.5x sub-baseline) corridor closes + 21:15 sub-baseline drift = mode-criterion satisfied.",
+          "v2.52 open question 'Will Compression sustain >=60min this time' RESOLVED POSITIVELY for the 15:35 instance: Compression lasted 68min (15:35-16:43) before transitioning to RU at branch #1 trigger-then-failure. This contradicts the v2.52 prediction-pattern that Compression itself would fail to sustain. Sustained-Compression IS achievable when no structural event interrupts. Recorded for 2026-06-25 ontology review.",
+          "Mode-cycling pattern at n=5 transitions in 2h22min, avg ~28min/mode. Pattern stable. Within-ontology framing 'brief mode-cycling IS the correct read of structural events' continues to hold; alternate-transitional-mode hypothesis further weakened.",
+          "failed-Wyckoff-acceptance-reclaim 2-axis state UNCHANGED: cycle n=1.5-DEMOTED; extension n=0/2-FAILED. 21:00 wick-then-close-at-boundary on sub-baseline vol IS new structural evidence-AGAIN for cycle hypothesis but does NOT advance n.",
+          "Sweeps_attempted incremented 9 -> 10. The 21:00 UTC wick to $82.28 then close at $82.20 is a 4th wick-test of corridor top, but on close-at-boundary not close-above, so this is sweep-attempt (failed reclaim) #10 \u2014 NOT branch #1 trigger like 19:30.",
+          "Range maintained $81.71-$82.20 active (range_active_since 18:45 UTC unchanged, ~2.5h aged). $82.20 corridor top now tested 4 times with wick-rejections in 1h45min \u2014 building structural-resistance signature but no vol-impulse confirmation per C4.",
+          "NEW conditional pre-commit branch (#3): if 5th-6th wick-test of $82.20 sub-baseline accumulates AND budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), promote SHORT thesis to B-grade exploratory at $82.15-$82.20 retest with tight SL $82.30. Conditional on budget state, not on this fire.",
+          "Chase-vs-retest discipline track formalized: n=3 declines (v2.47 LONG / v2.49 SHORT / v2.53 SHORT); 1/3 clean reward (v2.47), 2/3 indeterminate-but-no-loss (v2.49 mild-favorable / v2.53 trivial). Framework holding.",
+          "Indicator-pipe gap: live-status $85.23 vs canonical $82.15 = $3.08/3.7%. Slightly narrowed from v2.53 $3.09. P0 day 25; consistent with stale-pull mechanism. No structural ops-attention claim."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Sub-baseline-rejection-on-repeated-test (C4-blocked structural pattern) vs C4 vol-impulse gate: which is the correct read for compression-regime resistance? Tracking: if 6+ wick-tests of $82.20 sub-baseline accumulate without range break by EOD = evidence FOR sub-baseline-rejection-as-structural-read. If range breaks upward via vol within 2h = evidence FOR C4 (rejections were mechanical). First discriminating dataset of its kind in this lineage.",
+          "Mode-cycling pattern: 5 transitions in 2h22min, avg ~28min/mode. Compression at 15:35 sustained 68min (positive for within-ontology framing). If this 17:19 Compression also sustains 60+min, the 'sustained Compression IS achievable' hypothesis strengthens to n=2; if it transitions <30min, the brief-mode-cycling framing reasserts. Watch.",
+          "Budget at $2.10 remaining, 21 holds-in-a-row, 6.3h since last ENTER. Path to data acquisition: (a) wait for UTC rollover ~4.2h for budget reset = inertia-cost ~4h additional drought; (b) wait for relaxed threshold at 30 holds (~9 more fires if 15min cadence in Compression = 2.25h; OR if 60min heartbeat = 9h) \u2014 depends on how Compression cadence plays out; (c) wait for forced_exploration at 24h drought = ~17.7h away. Most likely activation point: budget reset at UTC rollover (~01:00 EDT 5-30).",
+          "Conditional pre-commit branch #3 design (B-grade SHORT probe at 5th-6th wick-test + budget shift): IS this the right way to structure conditional ENTRY promotion within Compression mode, OR does it violate execution-research-separation per note-4/C2 (designing during execution)? Conservative read: this IS execution-time application of existing framework (v0.9 inputs + C4 gate + budget) plus an annotation that conditional thresholds exist. NOT designing new framework. Filing as borderline; will check if pattern recurs.",
+          "Hypothesis-CONFIRMED promotion gate (>=4 consecutive 15min bars / 1h survival) proposed in v2.50: still no field-test. Will field-test on next cycle candidate that reaches promotion criteria.",
+          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4, 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-v2.43 chain per state narrative. Zero pending. Standing claim addressed."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780089548.0,
+      "iso": "2026-05-29T17:19:08-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.54: HOLD",
+      "payload": {
+        "fire_ts": 1780089548.0,
+        "fire_iso": "2026-05-29T17:19:08-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.15,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "MODE TRANSITION Regime Uncertain -> Compression: v2.52's 2-consecutive-sub-baseline-corridor-close criterion fired again (20:45 C=$82.12 V=0.84x + 21:00 C=$82.20 V=0.5x + 21:15 sub-baseline drift). 21:00 UTC wick to $82.28 + close at $82.20 = 4th wick-test of corridor top in 1h45min, all rejections on sub-baseline vol. v0.9 hypothetical SHORT 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable + emerging quadruple-test-as-resistance; asymmetry NO 5/5 symmetric, vol NO sub-baseline). Operator-affirmed C4 (v2.10_RECLAIM_IMPULSE_REQUIREMENT) blocks SHORT promotion absent vol-impulse confirmation. Budget $2.10, 21 holds-in-a-row post-this, normal threshold, forced_exploration_due False = B/C ENTERs blocked at normal-state gate. HOLD with hypothetical SHORT at $82.15 chase entry. Discipline: 4th chase-decline (v2.47/v2.49/v2.53/this), pattern stable. Pre-commit lineage advances 14/14 -> 15/15. Reflection v2.54 written.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [
+          "range breaks ABOVE $82.20 close vol>=1.5x baseline (~13000) -> reverse to A-grade LONG retest at $82.05-$82.10",
+          "range breaks BELOW $81.71 close vol>=1.5x baseline -> A-grade SHORT retest at $81.85-$81.95",
+          "5th-6th wick-test of $82.20 sub-baseline accumulates AND budget threshold shifts (relaxed at 30 holds OR forced_exploration at 24h) -> conditional B-grade SHORT probe at corridor top",
+          "4 consecutive 1h heartbeats with mid-corridor sub-baseline drift -> ranging regime hypothesis"
+        ],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "short",
+          "entry_price": 82.15,
+          "sl_pct": 0.0018,
+          "tp_pct": 0.0037,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "4th wick-test of $82.20 corridor top sub-baseline rejection signals structural resistance forming silently; cohort down+short favorable; absent vol confirmation = drift-sideways 2h, modest tilt downward 8h"
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.54"
+    },
     {
       "type": "first_under_framework",
       "ts": 1780087474.088382,
@@ -1408,114 +1505,84 @@
           "information_value_realized": "high"
         }
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780069503.8952582,
-      "iso": "2026-05-29T11:45:03-04:00",
-      "fire_count": 388,
-      "summary": "Framework v2.44 written (trigger: surprise:reclaim_continuation_extending_AND_state_narrative_data_divergence)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780069503.8952582,
-        "iso": "2026-05-29T11:45:03-04:00",
-        "fire_count": 388,
-        "balance_usd": 894.08,
-        "version_tag": "v2.44",
-        "trigger": "surprise:reclaim_continuation_extending_AND_state_narrative_data_divergence",
-        "what_im_trying": "Reclaim has fully continued past target. Canonical 15:30 UTC bar closed $83.00 on V=29979 = 3.45x baseline (~8700) \u2014 full continuation-extending up, NOT post-target consolidation as state.json v2.43 narrative modeled. State.json wrote '15:15 UTC C=$81.94 V=8000 sub-baseline' but canonical 15:15 UTC C=$82.49 V=28464 = 3.27x baseline. Two-bar consecutive expansion-acceptance into prior range_high $82.20 \u2014 exactly the 'continuation-extending up' pre-commit branch from v2.43 narrative. Current price $83.05 (1min bars 15:35-15:41 UTC consolidating $82.86-$83.10 on sub-baseline vol = post-expansion drift). Decision this fire: HOLD per pre-commit ('entering would be late-chase per v2.42's late-entry tracking'). Hypothetical long committed.",
-        "whats_working": "(a) Pre-commit multi-branch lineage performed even when state.json inputs were wrong. v2.43 wrote 5+ branches; reality landed on 'IF C > $82.20 on vol >= 1.5x baseline -> late-chase, HOLD with hypothetical long' branch \u2014 exactly the outcome being executed this fire. The branches were correctly framed even though the narrative WHY (post-target consolidation expected) was wrong. Separating decision-discipline FROM prediction-narrative continues to validate. (b) failed-Wyckoff-acceptance-reclaim hypothesis (v2.42-formed) n=1-PASSED-FIRST-INSTANCE with magnitude exceeding modeled target by ~2x. Entry $81.34 -> target $82.00 (+$0.66, ~+0.81%) actually extended to $83.10 (+$1.76, ~+2.16%). The reclaim was structurally cleaner than modeled; target sizing was too tight at $82.00. Single-target paper exit captured ~37% of the realized move. (c) Cohort down+long re-validated: n=5 +$16.04 WR 80% post-this-target-touch.",
-        "whats_failing": "(a) MAJOR: state.json v2.43 narrative was data-source-divergent. State wrote '15:15 UTC C=$81.94 V=8000' = sub-baseline-consolidation read. Canonical Coinbase data shows '15:15 UTC C=$82.49 V=28464' = 3.27x-baseline-continuation read. ROOT CAUSE candidate: prior fire wrote state narrative from live-status indicator-pipe (which is documented stale by $3.24/3.8%) rather than from canonical OHLCV pull. This is a recursive failure mode: the framework reads state.json on each fire to skip re-derivation when state hasn't changed; if state.json carries staleness-affected narrative, subsequent fires inherit bad narrative as truth. Pre-commit branches were robust enough to cover the actual outcome anyway \u2014 but the narrative WHY 'post-target consolidation NOT continuation' was directly contradicted by the bar that supposedly proved it. (b) Target sizing for reclaim setups was too conservative. failed-Wyckoff-acceptance-reclaim target was set at $82.00 (= mid-prior-consolidation $82.00-$82.20 zone). Realized extension reached $83.10 (+$1.10 above target). When the structural signature is clean (sweep + sequential higher-lows + violent reclaim + vol confirmation), target sizing should account for extension past the prior structural ceiling, not just to it. (c) Indicator-pipe staleness P0 day 25 / fire 44+. live-status $85.23 vs canonical $83.05 = $2.18 / 2.6% gap. NARROWING continues ($4.53 v2.41 -> $3.89 v2.42-reflect -> $3.34 v2.42-decision -> $3.24 v2.43 -> $2.18 now). Five-fire narrowing trend. May be transient market re-sync or genuine ops attention. Still no visible ops escalation acknowledgment. Continuing to flag.",
-        "what_im_iterating": "(a) STATE NARRATIVE DATA HYGIENE: before writing state.json narrative claiming bar-level facts (C/H/L/V), validate against canonical OHLCV pull, NOT just live-status indicators. The state narrative is consumed by future fires as ground truth \u2014 if it carries stale-data-derived narrative, subsequent reasoning compounds the error. Operational change: any state.json update that references specific bar closes/volumes must pull canonical OHLCV in the same fire that writes the state. (b) failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED with MAGNITUDE-2X observation. Updating proposed promotion gate: n>=3 instances with >=2 producing target-reach within 1h-window (per v2.43) AND tracking realized-vs-modeled extension ratio. If >=2 of 3 show extension >1.5x modeled target, future entries should set target at structural-ceiling + 0.5*post-sweep-range, not just mid-prior-consolidation. NOT mutating target sizing rule yet (n=1 insufficient); tracking. (c) NO ontology mutation. Per note-4/C2 ('reserve framework mutation for post-session / UTC-rollover / surprise'), this IS a surprise fire and minor framework refinement is in-scope. But cognition_mode ontology stays frozen to 2026-06-25; no new cognition modes. (d) NEW pre-commit lineage for next bar (15:45 UTC bar, opens ~11:45 EDT, closes ~12:00 EDT, resolution ~11:47-11:50 EDT). State.json updates: range now $82.20-$83.10 (post-extension consolidation zone); broken range $80.79-$82.20 is below. IF 15:45 UTC bar C > $83.10 on vol >= 1.5x baseline -> continuation extending further, HOLD (would be late-chase + 1). IF C in [$82.86, $83.10] -> post-extension consolidation, HOLD with hypothetical long. IF C in [$82.50, $82.86] -> post-extension retest of 15:15 UTC close zone, HOLD with hypothetical long-on-retest. IF C in [$82.20, $82.50] -> retest of structural floor of new range, ENTER C-grade long if vol >= 1.0x AND cohort still down+long favorable. IF C < $82.20 -> new-range failure, structural rejection of continuation, HOLD with hypothetical short. IF C < $81.50 -> full reversion to prior range, hypothesis falsified at extension, framework re-baselines. (e) Cognition_mode unchanged: Regime Uncertain. Live-status regime=down (288h window), canonical tape just printed +$2.81 / +3.47% impulse in 90min \u2014 multiple timeframes still mixed. 15min cadence appropriate.",
-        "edits_from_prior": [
-          "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-FIRST-INSTANCE (v2.43) -> n=1-PASSED-WITH-MAGNITUDE-2X (this fire). Realized extension $1.76 vs modeled target $0.66 = ~2.6x model. Target sizing observation logged but NOT mutating rule at n=1.",
-          "MAJOR finding: state.json v2.43 narrative carried wrong bar-close data ('15:15 UTC C=$81.94 V=8000' vs canonical 'C=$82.49 V=28464'). Pre-commit branches survived this because they covered both consolidation AND continuation outcomes \u2014 but the narrative WHY was contradicted by the bar that supposedly supported it. Operational fix: validate bar-level facts via canonical OHLCV before writing state narrative.",
-          "Pre-commit lineage: 6 clean resolutions (v2.43) -> 7 clean resolutions (this fire). CONTINUATION-EXTENDING-UP branch covered correctly. Branch quality saved the framework from narrative-only failure.",
-          "Range update: prior range_low=$80.79 / range_high=$82.20 -> new range_low=$82.20 / range_high=$83.10. Range_active_since UPDATED to 15:30 UTC (post-continuation acceptance).",
-          "Indicator-pipe staleness P0 day 25 / fire 44+: gap NARROWING 5th consecutive fire ($4.53 -> $3.89 -> $3.34 -> $3.24 -> $2.18). Live-status still does not match canonical but trend is reconverging.",
-          "Cognition_mode unchanged: Regime Uncertain. Multi-timeframe still disagrees (live-status down regime vs canonical recent +3.47% impulse).",
-          "NEW pre-commit lineage for 15:45 UTC bar with 6 branches covering continuation/consolidation/retest/floor-test/failure/reversion."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "What is the actual mechanism that causes state.json narrative to inherit indicator-pipe staleness? Hypothesis: prior fire may have used live-status indicator-derived bar close (which the pipe reports stale) instead of canonical OHLCV. Cannot disambiguate without instrumenting which source state-writer reads.",
-          "Target sizing rule for reclaim setups: should there be a structural-ceiling-+-extension factor, or maintain mid-consolidation target? n=1 evidence of 2x extension is insufficient to mutate. Tracking across next failed-Wyckoff-acceptance-reclaim instances.",
-          "Indicator-pipe staleness gap narrowing 5 fires consecutively. Is this transient market re-sync (price drifted toward stale live-status read by coincidence) OR genuine ops attention? Cannot disambiguate. If next 1-2 fires show gap < $1, lean toward 'fixed'. If gap re-widens, lean toward 'transient'.",
-          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 claims addressed across v2.40-v2.43 chain. Zero pending.",
-          "Should mid-fire surprise reflections increment version_tag at the same speed as cadence-triggered reflections? Currently treating all reflections as equal-weight version bumps. May want different convention for surprise-only vs cadence-rollup reflections."
-        ]
-      }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780068226.0,
-      "iso": "2026-05-29T11:23:46-04:00",
-      "fire_count": 388,
-      "summary": "Framework v2.43 written (trigger: surprise:target_hit_failed_wyckoff_acceptance_reclaim_confirmed_n1)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780068226.0,
-        "iso": "2026-05-29T11:23:46-04:00",
-        "fire_count": 388,
-        "balance_usd": 894.08,
-        "version_tag": "v2.43",
-        "trigger": "surprise:target_hit_failed_wyckoff_acceptance_reclaim_confirmed_n1",
-        "what_im_trying": "Reflect on first instance of the failed-Wyckoff-acceptance-reclaim hypothesis (v2.42 n=1-forming). Paper / decision-chain LONG @ $81.34 (entered v2.42 10:59:08 EDT) hit target $82.00 at intra-bar touch 15:11 UTC = 11:11 EDT \u2014 12min hold. 15:15 UTC bar confirmed H=$82.20. Gross +$3.30 (=$0.66 * contract_size=5 * q=1), ~+$2.00 net of round-trip fees. EXIT decision logged this fire per pre-commit TARGET-HIT branch. Hypothesis now n=1-PASSED-FIRST-INSTANCE. Holding the line per own discipline: n=1 is NOT promotion. Promotion gate requires n>=3 with >=2 producing target-reach.",
-        "whats_working": "(a) Hypothesis-immediate-reversal discipline at v2.42: rather than paralysis on Wyckoff-acceptance-n=2 falsification, decisively reframed to the opposite structural signature (reclaim) and entered LONG on n=1-forming. Decisive reversal under uncertainty. (b) Pre-commit lineage: 6th clean resolution. State.json wrote 9-branch lineage for 15:15 UTC bar; reality landed on 'IF H >= $82.00 intra-bar -> target touched, exit at market on touch' branch at 15:11 UTC. Multi-branch coverage continues to hold across all resolution types. (c) Target reached in ~12-min hold \u2014 significantly faster than the 4h promotion-gate window modeled at v2.42 time. NEW structural observation: when reclaim is real (no continuation, full snap-back), resolution is FAST. Speed itself is information. (d) Cohort discipline working with data: down+long historical n=4 +$12.74 WR 75% -> n=5 +$16.04 WR 80% after this trade. Cohort framework grows by accumulated evidence per note-3/C6 (cohort = regime x direction first-class).",
-        "whats_failing": "(a) Magnitude of hypothesis-promotion question is acute. v2.41 promoted Wyckoff-acceptance-n=2 to PROMOTION-CANDIDATE on striking vol magnitudes (4.47x + 3.57x baseline) and got falsified at first promotion-candidate instance within 1 bar. SAME eagerness possible here \u2014 n=1 PASSED could be coincidence. Holding line per note-4/C5 + own discipline: failed-Wyckoff-acceptance-reclaim stays DESCRIPTIVE at n=1; promotion only at n>=3 with >=2 confirmations. (b) Pattern of over-eager promotion confessed in v2.42 (2 consecutive structural hypotheses falsified at first-instance in 24h) still under remediation. Resisting the symmetric trap: 'this one worked, so the framework is right' is the same shape as v2.41's 'magnitude is striking, so promotion-candidate'. Both are n=1-2 inferences. (c) Indicator-pipe staleness P0 day 25 / fire 43+. live-status $85.23 vs canonical $81.99 = $3.24 / 3.8% gap. Continuing to narrow ($4.53 v2.41 -> $3.89 v2.42-reflect -> $3.34 v2.42-decision-fire -> $3.24 now). Three-fire narrowing trend may indicate ops attention or transient market re-sync \u2014 cannot disambiguate. Continuing to flag.",
-        "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim hypothesis: DESCRIPTIVE-n=1-forming (v2.42) -> DESCRIPTIVE-n=1-PASSED-FIRST-INSTANCE (this fire). Status promotion gate intact: n>=3 with >=2 target-reach. (b) NEW observation: information-half-life of structural reclaim patterns appears to be ~1 bar (15-30min), not 4h. Updating proposed promotion-gate window from 4h to 1h. Reasoning: if reclaim doesn't snap-back fast, it's probably not the real pattern (a fade or drift not a reclaim). 1h tight gate forces stricter discrimination. (c) Symmetric observation across two hypotheses now: BOTH Wyckoff-acceptance-n=2 (v2.41) AND failed-acceptance-reclaim (this fire) resolved in 1-bar timeframes \u2014 falsification took 1 bar, confirmation took 1 bar. Speed-of-resolution may itself be a structural variable warranting framework-level attention. NOT mutating ontology yet; just observation under test. (d) Real-bot effect: DRY_RUN absorbs the EXIT logged this fire. When DRY_RUN flips off the decision-chain will route. Live-status position=null is correct for DRY_RUN; paper position tracked via decisions.jsonl lineage per note-4/C1 (source-of-truth hierarchy). (e) Cognition_mode transition: Inventory Discovery -> Regime Uncertain. Paper position closed; post-event consolidation; mixed-timeframe signals (15:15 UTC bar post-target-touch closed C=$81.94 V=8000 = ~0.92x baseline = sub-expansion; 15:00 UTC bar was the expansion event V=21325 = ~2.5x; 14:15-14:45 UTC was breakdown sweep). 15min cadence appropriate.",
-        "edits_from_prior": [
-          "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-forming (v2.42) -> n=1-PASSED-FIRST-INSTANCE (this fire). Target reach in ~12min hold (significantly faster than 4h modeled window).",
-          "Pre-commit lineage: 5 clean resolutions (v2.42) -> 6 clean resolutions (this fire). Branch types covered: HOLD-multi, LONG-RECLAIM (v2.38r), BREAKDOWN (v2.40), CONTINUATION-EXTENDING-2 (v2.41), BREAKDOWN-FALSIFIED-TRAIL-BREACH (v2.42), TARGET-HIT (this fire).",
-          "NEW observation: information-half-life of structural reclaim patterns ~1 bar, not 4h. Proposed promotion-gate window for failed-Wyckoff-acceptance-reclaim updated from 4h to 1h. Resisting expansion of this observation beyond the specific hypothesis until more data.",
-          "Cohort down+long: n=4 +$12.74 WR 75% -> n=5 +$16.04 WR 80% post-this. Down regime continues net-positive both sides (down+long, down+short).",
-          "Cognition mode: Inventory Discovery -> Regime Uncertain (position closed, post-event consolidation, mixed-timeframe).",
-          "Symmetric-speed observation across both failed (v2.41 Wyckoff-acceptance-n=2) AND passed (this fire failed-acceptance-reclaim) hypotheses: both resolved in 1-bar timeframes. Speed-of-resolution as structural variable noted, NOT promoted to framework component.",
-          "Real-bot-vs-DRY_RUN gap explicitly acknowledged in decision lineage. Paper position tracked via decisions.jsonl per note-4/C1; live-status position=null is DRY_RUN-correct."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Is 12-min target-reach generalizable, or specific to this tape state (small ~$1.21 range, low-vol session, post-expansion drift)? Cannot disambiguate at n=1.",
-          "Information-half-life as cross-hypothesis structural variable: both promotion-candidate failures AND first-instance passes resolved in 1-bar timeframes. Should expected-holding-window be set per setup-type, with 1-bar default for reclaim patterns? Needs more data across more pattern types.",
-          "v2.10 RECLAIM_IMPULSE_REQUIREMENT framework: this LONG was not strictly a v2.10 entry (counter-displacement-reclaim with vol confirmation). It was reclaim-of-broken-floor entry with structural-sweep signature. Different shape; v2.10 promotion status unchanged at n=3 / 1 confirmed / 1 loss.",
-          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 claims addressed across v2.40-v2.42 chain. Zero pending.",
-          "Indicator-pipe staleness P0 day 25 / fire 43+. Gap continues narrowing trend ($4.53 -> $3.89 -> $3.34 -> $3.24). Still no visible ops attention. Continuing to flag."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 830,
-    "since_iso": "2026-05-29T16:43:00-04:00",
-    "since_framework_version": "v2.53",
-    "latest_fire_iso": "2026-05-29T17:00:00-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 926,
+    "since_iso": "2026-05-29T17:19:08-04:00",
+    "since_framework_version": "v2.54",
+    "latest_fire_iso": "2026-05-29T17:19:08-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780087425.92205,
-    "iso": "2026-05-29T16:43:00-04:00",
-    "fire_count": 407,
+    "ts": 1780089548.0,
+    "iso": "2026-05-29T17:19:08-04:00",
+    "fire_count": 408,
     "balance_usd": 894.08,
-    "version_tag": "v2.53",
-    "trigger": "surprise:branch_1_failed_trigger_AND_mode_transition_compression_to_regime_uncertain",
-    "what_im_trying": "v2.52 pre-commit branch #1 TRIGGERED (19:30 UTC bar close $82.21 V=17371 = 2.0x baseline, edge-of-threshold $0.01 over $82.20) AND was IMMEDIATELY INVALIDATED on 19:45 UTC bar (open $82.21 close $81.94 V=11473 1.32x). 20:00 UTC bar elevated vol 17305 (2.0x) close $82.11 \u2014 drift back up but mid-corridor. 20:30 UTC in-progress hit high $82.22, current $82.14 \u2014 double-test of $82.20 resolution with rejection on SUB-BASELINE vol (no vol confirmation). Pre-commit didn't anticipate 'branch #1 trigger followed by immediate failure within 1 bar' case. Decision this fire: HOLD with hypothetical SHORT at $82.14 chase pricing (low conviction; ideal retest entry $82.18-$82.20 already passed). v0.9 inputs hypothetical SHORT 2/4 (cohort favorable down+short, structural emerging double-test-as-resistance; asymmetry NO 5/5 symmetric, vol NO sub-baseline on rejection bar). v0.9 inputs hypothetical LONG 0/4. COGNITION_MODE TRANSITION: Compression -> Regime Uncertain at the trigger condition. Compression signature structurally invalidated (vol 2x baseline two bars + close above range = not low info density). Regime Uncertain because range-status genuinely ambiguous \u2014 broke for 1 bar then re-asserted. failed-Wyckoff-acceptance-reclaim 2-axis state: cycle n=1.5-DEMOTED edges toward n=2-EVIDENCE-AGAIN (this 2nd failed-trigger instance is consistent with cycle hypothesis); extension n=0/2-FAILED unchanged.",
-    "whats_working": "Pre-commit lineage 14/14 clean across structural events EXCEPT this fire \u2014 branch #1 fired AND failed within 1 bar, a case the pre-commit didn't enumerate. Catching this as surprise + writing v2.53 evidence note (per surprise-triggered rule) is the right disposition vs silently treating as 'branch #1 confirmed reclaim'. Mode-transition discipline at the pre-committed criterion exactly was honored (Compression set on 2nd sub-baseline close per v2.51; now Regime Uncertain on vol-regime invalidation). Cohort-conditioned reasoning still useful: down+short n=6 WR 83% +$1.39 cohort is favorable for hypothetical SHORT.",
-    "whats_failing": "v0.9 entry-timing discipline says wait for vol-confirmed rejection at $82.20 \u2014 but the rejection bar (20:30 in-progress) is on sub-baseline vol. Structural read (double-test rejected) without vol confirmation is exactly the C2 'wiggle-grade' setup that note-1/operator C2 warned against \u2014 even with C1/C7 retracted, the underlying caution about \u4f2a alpha at small accounts stands. Decision: respect that caution, HOLD. Also: chasing at $82.14 ($0.04-$0.06 below ideal $82.18-$82.20 retest entry) is the exact symmetric trap of v2.47 chase-LONG-at-$82.94 (declined) and v2.49 chase-SHORT-at-$81.94 (declined). 3 chase-vs-retest declines in 2h is consistent discipline, but if discipline produces zero ENTERs for 19 fires (post-this) the budget-funded data-acquisition is bleeding to inaction.",
-    "what_im_iterating": "No framework edit this fire \u2014 recording evidence on existing v0.9 model. Per Phase B.2 doctrine (note-4/C2: cognition-layer separation, don't redesign mid-execution) and operator-affirmed cohort framework (note-3/C6 refined), this fire applies framework + annotates. NEW observation worth carrying: branch #1-style trigger criteria ('close above range + vol >=1.5x baseline') has now PRE-CONDITIONED interpretation \u2014 must be re-evaluated on next bar before granting 'real reclaim' status. Pre-commit branches should include 'trigger+failure' branches alongside 'trigger+confirmation' branches. This is an ANNOTATION not an ontology change; will compress into next pre-commit if a 4th occurrence emerges.",
+    "version_tag": "v2.54",
+    "trigger": "surprise:mode_transition_RU_to_Compression_via_v252_criterion_AND_4th_test_corridor_top_sub_baseline_rejection",
+    "what_im_trying": "v2.53 left Regime Uncertain with pre-commit branches keyed on 20:45/21:00 UTC bar outcomes. Actual: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) sub-baseline inside corridor + 21:00 UTC close $82.20 V=4373 (0.5x) at corridor TOP with high $82.28 wicked above range then rejected back to $82.20 close. Two consecutive sub-baseline corridor closes = v2.52's exact mode-transition criterion fired again (Regime Uncertain -> Compression). 21:15 UTC in-progress C=$82.18 V=3359 sub-baseline mid-corridor confirms drift continuation. The 21:00 wick-to-$82.28-close-at-$82.20 is also the 4th test of $82.20 corridor top resistance (after 19:30 close $82.21 trigger-then-failure / 20:00 H $82.18 / 20:15 H $82.22 / 20:30 H $82.22 / 21:00 H $82.28 / 21:15 H $82.21 \u2014 let me be precise: tests with wick above $82.20 = 19:30 (close $82.21 above), 20:30 (H $82.22), 21:00 (H $82.28), 21:15 (H $82.21) = 4 wick-tests, 1 close above [19:30 trigger-failure], 3 wick rejections sub-baseline). Decision this fire: HOLD with hypothetical SHORT lean at $82.15 chase pricing (B-grade conviction; ideal entry $82.18-$82.20 retest already past). v0.9 inputs hypothetical SHORT: 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable, structural quadruple-test-of-corridor-top emerging-resistance; asymmetry NO 5/5 live-status symmetric, vol NO sub-baseline on all rejection bars). v0.9 inputs hypothetical LONG: 0/4 ($82.20 keeps failing as breakout on sub-baseline = LONG hypothesis structurally weak). Conviction LOW-MEDIUM. Budget $2.10, threshold normal, forced_exploration_due False, holds_in_a_row will be 21 post-this-fire. B/C ENTERs technically possible at C-grade (1-contract clamp $410 notional, SL $82.30 = at-risk $0.74) but v0.9 normal-state gate requires 3/4 inputs OR forced_exploration; neither holds.",
+    "whats_working": "(a) Pre-commit lineage 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent (drift back to corridor sub-baseline) fired exactly per 20:45 + 21:00 + 21:15 sub-baseline sequence. (b) Mode-transition discipline at the pre-committed criterion exactly honored across 5 transitions in 2h22min (Compression 14:36->Expansion 14:58->RU 15:17->Compression 15:35->RU 16:43->Compression 17:19). The 2-consecutive-sub-baseline-corridor-close criterion has now fired twice (15:35 and 17:19) \u2014 early evidence the transition rule is replicable, not a one-off. (c) Operator-affirmed C4 (v2.10_RECLAIM_IMPULSE_REQUIREMENT) is doing the work it was promoted to do: 4 wick tests of $82.20 corridor top all on sub-baseline vol = no vol-impulse confirmation = no SHORT promotion despite emerging structural pattern. Discipline holding. (d) Symmetric chase-vs-retest n=3 decline history: v2.47 chase-LONG @ $82.94 declined; v2.49 chase-SHORT @ $81.94 declined; v2.53 chase-SHORT @ $82.14 declined. Current $82.15: v2.53 decline mildly-rewarded ($0.01 above = trivially indifferent); v2.49 decline rewarded ($0.21 unfavorable = -$0.46 net); v2.47 decline rewarded ($0.79 favorable = +$3.62 net BUT trade window long-since closed). Net discipline track: 1/3 clean reward, 2/3 indeterminate-but-no-loss. Holding the framework.",
+    "whats_failing": "(a) The 4-tests-of-$82.20-with-sub-baseline-rejection setup is creating the strongest structural-resistance signature I've seen this corridor cycle, AND simultaneously the strongest case AGAINST taking a position via the C4 vol-impulse gate. This is a real tension: if sub-baseline-rejection-on-repeated-test IS the silent structural read (sellers stepping in without needing aggressive vol), then C4 is structurally over-tight for compression-regime resistance-formation. If C4 is correct and absence of vol means the rejection is mechanical/temporary, then HOLD is right. I do NOT have the data to discriminate yet \u2014 this is the first multi-test compression-regime resistance I've witnessed in this lineage. Tracking explicitly: if 6+ wick-tests of $82.20 sub-baseline accumulate WITHOUT range break in either direction by EOD, that becomes evidence FOR sub-baseline-rejection-as-structural-read. If range breaks UPWARD via vol within 2h, that's evidence FOR C4 (the silent rejections were mechanical). (b) Mode-cycling now n=5 transitions in 2h22min \u2014 pattern stable at ~28min avg per mode. Within-ontology framing 'brief mode-cycling IS the correct read' continues to hold; sustained-mode hypothesis (RU or Compression as 60+min stable) further weakened. Frozen until 2026-06-25; tracking only. Compression at 15:35 lasted 68min (sustained!) before transitioning to RU at 16:43 \u2014 this DID sustain 60+min, contradicting my earlier prediction that Compression itself would fail to sustain. v2.52 open question RESOLVED positively for Compression-sustains. (c) Budget structurally stalled at $2.10 with 21 holds-in-a-row post-this-fire and 6.3h since last ENTER. Per SKILL: 'A B/C exploratory trade that loses $8 has bought you a data point. A 24-hour HOLD streak has bought you nothing. Under this budget, the latter is the more expensive choice.' Currently NOT at 24h drought (only 6.3h); not at relaxed threshold (only 21 holds, threshold relaxed=30). System-design says this is appropriate HOLD discipline. But the structural setup IS forming \u2014 if a 5th wick-test arrives and budget thresholds shift (forced_exploration or relaxed), I should be willing to take a B-grade SHORT probe at the corridor top.",
+    "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim 2-axis hypothesis: cycle n=1.5-DEMOTED stable; extension n=0/2-FAILED stable. The 21:00 UTC trigger-then-failure pattern (4th test) is now annotated lineage-evidence-AGAIN for cycle hypothesis but does NOT advance n \u2014 n is gated on resolved sweep cycles, not in-progress drift. (b) COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression (this fire). Rationale: 2 consecutive sub-baseline corridor closes (20:45 V=0.84x + 21:00 V=0.5x) + 21:15 sub-baseline drift = mode signature decayed per v2.52 criterion. 1h heartbeat cadence + transition-triggered. (c) NEW pre-commit lineage event-keyed (not bar-keyed) per Compression: (1) IF range breaks ABOVE $82.20 close vol>=1.5x baseline (~13000) -> reclaim genuine (= sweep #11); cycle promotion n=1.5 -> n=2.5; mode reverts Expansion; A-grade LONG candidate at $82.05-$82.10 retest if forms (NOT $82.20-$82.25 because the corridor top is the resistance-being-broken; retest happens at the prior support midpoint), SL $81.65, target $82.85. Cohort down+long n=4 +$12.74 WR 75% favorable. (2) IF range breaks BELOW $81.71 close vol>=1.5x baseline -> downside continuation confirmed; cycle full-demotion n=1.5 -> n=1; mode reverts Expansion; A-grade SHORT candidate at $81.85-$81.95 retest if forms, SL $82.25, target $81.00. Cohort down+short n=6 +$1.39 WR 83% favorable. (3) IF 5th-6th wick-test of $82.20 sub-baseline rejection accumulates WITHOUT range break -> consider WHETHER absence-of-vol-on-repeated-rejection should itself promote SHORT thesis to B-grade exploratory. Specifically: if budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), the 'structural resistance forming silently' read warrants a B-grade SHORT probe at corridor top $82.15-$82.20 retest with tight SL $82.30. This is a CONDITIONAL promotion \u2014 gated on budget state AND continued sub-baseline behavior, not on this fire. (4) IF 4 consecutive 1h heartbeats with mid-corridor drift sub-baseline -> ranging regime hypothesis (not transitional aftermath); flag for narrative update. (d) Wick-as-data counter: REMAINS downgraded per v2.49 commitment. Individual instances spot-evaluated. (e) Budget: $2.10 remaining. UTC rollover ~4.2h. B/C blocked at normal threshold; A/S need structural break + retest with vol confirmation.",
     "edits_from_prior": [
-      "v2.52 said 'broken-floor-as-resistance ($82.20 active)' SHORT lean 1/4 \u2014 now 2/4 with structural double-test resolution adding emerging-rejection input (still without vol confirmation).",
-      "v2.52 expected branch #3 (drift sub-baseline) to continue \u2014 actual: branch #1 trigger fired AND failed instead. v2.52 pre-commit list missed the 'trigger-then-failure' case.",
-      "v2.52 stated mode transition criterion 'Compression sustains until next material event' \u2014 branch #1 trigger IS the material event; honoring transition Compression -> Regime Uncertain immediately."
+      "COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression. Triggered exactly at v2.52's 2-consecutive-sub-baseline-corridor-close criterion firing for the SECOND time in this lineage (first was 15:35 EDT). 1h heartbeat cadence; wrapper invariant-safety bypasses on structural events.",
+      "Pre-commit lineage: 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent fired EXACTLY: 20:45 $82.12 V=7320 (0.84x sub-baseline) + 21:00 $82.20 V=4373 (0.5x sub-baseline) corridor closes + 21:15 sub-baseline drift = mode-criterion satisfied.",
+      "v2.52 open question 'Will Compression sustain >=60min this time' RESOLVED POSITIVELY for the 15:35 instance: Compression lasted 68min (15:35-16:43) before transitioning to RU at branch #1 trigger-then-failure. This contradicts the v2.52 prediction-pattern that Compression itself would fail to sustain. Sustained-Compression IS achievable when no structural event interrupts. Recorded for 2026-06-25 ontology review.",
+      "Mode-cycling pattern at n=5 transitions in 2h22min, avg ~28min/mode. Pattern stable. Within-ontology framing 'brief mode-cycling IS the correct read of structural events' continues to hold; alternate-transitional-mode hypothesis further weakened.",
+      "failed-Wyckoff-acceptance-reclaim 2-axis state UNCHANGED: cycle n=1.5-DEMOTED; extension n=0/2-FAILED. 21:00 wick-then-close-at-boundary on sub-baseline vol IS new structural evidence-AGAIN for cycle hypothesis but does NOT advance n.",
+      "Sweeps_attempted incremented 9 -> 10. The 21:00 UTC wick to $82.28 then close at $82.20 is a 4th wick-test of corridor top, but on close-at-boundary not close-above, so this is sweep-attempt (failed reclaim) #10 \u2014 NOT branch #1 trigger like 19:30.",
+      "Range maintained $81.71-$82.20 active (range_active_since 18:45 UTC unchanged, ~2.5h aged). $82.20 corridor top now tested 4 times with wick-rejections in 1h45min \u2014 building structural-resistance signature but no vol-impulse confirmation per C4.",
+      "NEW conditional pre-commit branch (#3): if 5th-6th wick-test of $82.20 sub-baseline accumulates AND budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), promote SHORT thesis to B-grade exploratory at $82.15-$82.20 retest with tight SL $82.30. Conditional on budget state, not on this fire.",
+      "Chase-vs-retest discipline track formalized: n=3 declines (v2.47 LONG / v2.49 SHORT / v2.53 SHORT); 1/3 clean reward (v2.47), 2/3 indeterminate-but-no-loss (v2.49 mild-favorable / v2.53 trivial). Framework holding.",
+      "Indicator-pipe gap: live-status $85.23 vs canonical $82.15 = $3.08/3.7%. Slightly narrowed from v2.53 $3.09. P0 day 25; consistent with stale-pull mechanism. No structural ops-attention claim."
     ],
+    "founder_notes_addressed": [],
     "open_questions": [
-      "Does the branch #1 trigger-then-failure pattern (close above $82.20 + vol 2x followed by immediate reversion) constitute new evidence specifically against the 'reclaim genuinely complete' hypothesis, or is it just the same failed-Wyckoff data the cycle hypothesis already predicts? If new evidence, the down+long cohort thesis weakens further at this range top. If same data, no update needed.",
-      "20:30 in-progress bar high $82.22 hit with sub-baseline vol \u2014 does that count as the 'second test' of $82.20-as-resistance? If yes, the corridor structural lifetime is extending (range_active_since 18:45 UTC = ~2h aged). If no, we need vol-confirmed rejection bar to establish resistance.",
-      "5.7h since last ENTER + 18 holds-in-a-row + $2.10 budget remaining = budget-funded data-acquisition is structurally stalled. Reaching 24h drought would force_exploration_due regardless of conviction \u2014 should that be the relief valve, or is HOLDing through to UTC budget rollover the cleaner path?"
-    ],
-    "founder_notes_addressed": []
+      "Sub-baseline-rejection-on-repeated-test (C4-blocked structural pattern) vs C4 vol-impulse gate: which is the correct read for compression-regime resistance? Tracking: if 6+ wick-tests of $82.20 sub-baseline accumulate without range break by EOD = evidence FOR sub-baseline-rejection-as-structural-read. If range breaks upward via vol within 2h = evidence FOR C4 (rejections were mechanical). First discriminating dataset of its kind in this lineage.",
+      "Mode-cycling pattern: 5 transitions in 2h22min, avg ~28min/mode. Compression at 15:35 sustained 68min (positive for within-ontology framing). If this 17:19 Compression also sustains 60+min, the 'sustained Compression IS achievable' hypothesis strengthens to n=2; if it transitions <30min, the brief-mode-cycling framing reasserts. Watch.",
+      "Budget at $2.10 remaining, 21 holds-in-a-row, 6.3h since last ENTER. Path to data acquisition: (a) wait for UTC rollover ~4.2h for budget reset = inertia-cost ~4h additional drought; (b) wait for relaxed threshold at 30 holds (~9 more fires if 15min cadence in Compression = 2.25h; OR if 60min heartbeat = 9h) \u2014 depends on how Compression cadence plays out; (c) wait for forced_exploration at 24h drought = ~17.7h away. Most likely activation point: budget reset at UTC rollover (~01:00 EDT 5-30).",
+      "Conditional pre-commit branch #3 design (B-grade SHORT probe at 5th-6th wick-test + budget shift): IS this the right way to structure conditional ENTRY promotion within Compression mode, OR does it violate execution-research-separation per note-4/C2 (designing during execution)? Conservative read: this IS execution-time application of existing framework (v0.9 inputs + C4 gate + budget) plus an annotation that conditional thresholds exist. NOT designing new framework. Filing as borderline; will check if pattern recurs.",
+      "Hypothesis-CONFIRMED promotion gate (>=4 consecutive 15min bars / 1h survival) proposed in v2.50: still no field-test. Will field-test on next cycle candidate that reaches promotion criteria.",
+      "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4, 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-v2.43 chain per state narrative. Zero pending. Standing claim addressed."
+    ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780089548.0,
+      "iso": "2026-05-29T17:19:08-04:00",
+      "fire_count": 408,
+      "balance_usd": 894.08,
+      "version_tag": "v2.54",
+      "trigger": "surprise:mode_transition_RU_to_Compression_via_v252_criterion_AND_4th_test_corridor_top_sub_baseline_rejection",
+      "what_im_trying": "v2.53 left Regime Uncertain with pre-commit branches keyed on 20:45/21:00 UTC bar outcomes. Actual: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) sub-baseline inside corridor + 21:00 UTC close $82.20 V=4373 (0.5x) at corridor TOP with high $82.28 wicked above range then rejected back to $82.20 close. Two consecutive sub-baseline corridor closes = v2.52's exact mode-transition criterion fired again (Regime Uncertain -> Compression). 21:15 UTC in-progress C=$82.18 V=3359 sub-baseline mid-corridor confirms drift continuation. The 21:00 wick-to-$82.28-close-at-$82.20 is also the 4th test of $82.20 corridor top resistance (after 19:30 close $82.21 trigger-then-failure / 20:00 H $82.18 / 20:15 H $82.22 / 20:30 H $82.22 / 21:00 H $82.28 / 21:15 H $82.21 \u2014 let me be precise: tests with wick above $82.20 = 19:30 (close $82.21 above), 20:30 (H $82.22), 21:00 (H $82.28), 21:15 (H $82.21) = 4 wick-tests, 1 close above [19:30 trigger-failure], 3 wick rejections sub-baseline). Decision this fire: HOLD with hypothetical SHORT lean at $82.15 chase pricing (B-grade conviction; ideal entry $82.18-$82.20 retest already past). v0.9 inputs hypothetical SHORT: 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable, structural quadruple-test-of-corridor-top emerging-resistance; asymmetry NO 5/5 live-status symmetric, vol NO sub-baseline on all rejection bars). v0.9 inputs hypothetical LONG: 0/4 ($82.20 keeps failing as breakout on sub-baseline = LONG hypothesis structurally weak). Conviction LOW-MEDIUM. Budget $2.10, threshold normal, forced_exploration_due False, holds_in_a_row will be 21 post-this-fire. B/C ENTERs technically possible at C-grade (1-contract clamp $410 notional, SL $82.30 = at-risk $0.74) but v0.9 normal-state gate requires 3/4 inputs OR forced_exploration; neither holds.",
+      "whats_working": "(a) Pre-commit lineage 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent (drift back to corridor sub-baseline) fired exactly per 20:45 + 21:00 + 21:15 sub-baseline sequence. (b) Mode-transition discipline at the pre-committed criterion exactly honored across 5 transitions in 2h22min (Compression 14:36->Expansion 14:58->RU 15:17->Compression 15:35->RU 16:43->Compression 17:19). The 2-consecutive-sub-baseline-corridor-close criterion has now fired twice (15:35 and 17:19) \u2014 early evidence the transition rule is replicable, not a one-off. (c) Operator-affirmed C4 (v2.10_RECLAIM_IMPULSE_REQUIREMENT) is doing the work it was promoted to do: 4 wick tests of $82.20 corridor top all on sub-baseline vol = no vol-impulse confirmation = no SHORT promotion despite emerging structural pattern. Discipline holding. (d) Symmetric chase-vs-retest n=3 decline history: v2.47 chase-LONG @ $82.94 declined; v2.49 chase-SHORT @ $81.94 declined; v2.53 chase-SHORT @ $82.14 declined. Current $82.15: v2.53 decline mildly-rewarded ($0.01 above = trivially indifferent); v2.49 decline rewarded ($0.21 unfavorable = -$0.46 net); v2.47 decline rewarded ($0.79 favorable = +$3.62 net BUT trade window long-since closed). Net discipline track: 1/3 clean reward, 2/3 indeterminate-but-no-loss. Holding the framework.",
+      "whats_failing": "(a) The 4-tests-of-$82.20-with-sub-baseline-rejection setup is creating the strongest structural-resistance signature I've seen this corridor cycle, AND simultaneously the strongest case AGAINST taking a position via the C4 vol-impulse gate. This is a real tension: if sub-baseline-rejection-on-repeated-test IS the silent structural read (sellers stepping in without needing aggressive vol), then C4 is structurally over-tight for compression-regime resistance-formation. If C4 is correct and absence of vol means the rejection is mechanical/temporary, then HOLD is right. I do NOT have the data to discriminate yet \u2014 this is the first multi-test compression-regime resistance I've witnessed in this lineage. Tracking explicitly: if 6+ wick-tests of $82.20 sub-baseline accumulate WITHOUT range break in either direction by EOD, that becomes evidence FOR sub-baseline-rejection-as-structural-read. If range breaks UPWARD via vol within 2h, that's evidence FOR C4 (the silent rejections were mechanical). (b) Mode-cycling now n=5 transitions in 2h22min \u2014 pattern stable at ~28min avg per mode. Within-ontology framing 'brief mode-cycling IS the correct read' continues to hold; sustained-mode hypothesis (RU or Compression as 60+min stable) further weakened. Frozen until 2026-06-25; tracking only. Compression at 15:35 lasted 68min (sustained!) before transitioning to RU at 16:43 \u2014 this DID sustain 60+min, contradicting my earlier prediction that Compression itself would fail to sustain. v2.52 open question RESOLVED positively for Compression-sustains. (c) Budget structurally stalled at $2.10 with 21 holds-in-a-row post-this-fire and 6.3h since last ENTER. Per SKILL: 'A B/C exploratory trade that loses $8 has bought you a data point. A 24-hour HOLD streak has bought you nothing. Under this budget, the latter is the more expensive choice.' Currently NOT at 24h drought (only 6.3h); not at relaxed threshold (only 21 holds, threshold relaxed=30). System-design says this is appropriate HOLD discipline. But the structural setup IS forming \u2014 if a 5th wick-test arrives and budget thresholds shift (forced_exploration or relaxed), I should be willing to take a B-grade SHORT probe at the corridor top.",
+      "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim 2-axis hypothesis: cycle n=1.5-DEMOTED stable; extension n=0/2-FAILED stable. The 21:00 UTC trigger-then-failure pattern (4th test) is now annotated lineage-evidence-AGAIN for cycle hypothesis but does NOT advance n \u2014 n is gated on resolved sweep cycles, not in-progress drift. (b) COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression (this fire). Rationale: 2 consecutive sub-baseline corridor closes (20:45 V=0.84x + 21:00 V=0.5x) + 21:15 sub-baseline drift = mode signature decayed per v2.52 criterion. 1h heartbeat cadence + transition-triggered. (c) NEW pre-commit lineage event-keyed (not bar-keyed) per Compression: (1) IF range breaks ABOVE $82.20 close vol>=1.5x baseline (~13000) -> reclaim genuine (= sweep #11); cycle promotion n=1.5 -> n=2.5; mode reverts Expansion; A-grade LONG candidate at $82.05-$82.10 retest if forms (NOT $82.20-$82.25 because the corridor top is the resistance-being-broken; retest happens at the prior support midpoint), SL $81.65, target $82.85. Cohort down+long n=4 +$12.74 WR 75% favorable. (2) IF range breaks BELOW $81.71 close vol>=1.5x baseline -> downside continuation confirmed; cycle full-demotion n=1.5 -> n=1; mode reverts Expansion; A-grade SHORT candidate at $81.85-$81.95 retest if forms, SL $82.25, target $81.00. Cohort down+short n=6 +$1.39 WR 83% favorable. (3) IF 5th-6th wick-test of $82.20 sub-baseline rejection accumulates WITHOUT range break -> consider WHETHER absence-of-vol-on-repeated-rejection should itself promote SHORT thesis to B-grade exploratory. Specifically: if budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), the 'structural resistance forming silently' read warrants a B-grade SHORT probe at corridor top $82.15-$82.20 retest with tight SL $82.30. This is a CONDITIONAL promotion \u2014 gated on budget state AND continued sub-baseline behavior, not on this fire. (4) IF 4 consecutive 1h heartbeats with mid-corridor drift sub-baseline -> ranging regime hypothesis (not transitional aftermath); flag for narrative update. (d) Wick-as-data counter: REMAINS downgraded per v2.49 commitment. Individual instances spot-evaluated. (e) Budget: $2.10 remaining. UTC rollover ~4.2h. B/C blocked at normal threshold; A/S need structural break + retest with vol confirmation.",
+      "edits_from_prior": [
+        "COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression. Triggered exactly at v2.52's 2-consecutive-sub-baseline-corridor-close criterion firing for the SECOND time in this lineage (first was 15:35 EDT). 1h heartbeat cadence; wrapper invariant-safety bypasses on structural events.",
+        "Pre-commit lineage: 14/14 (v2.53) -> 15/15 (this fire). v2.53 branch #3-equivalent fired EXACTLY: 20:45 $82.12 V=7320 (0.84x sub-baseline) + 21:00 $82.20 V=4373 (0.5x sub-baseline) corridor closes + 21:15 sub-baseline drift = mode-criterion satisfied.",
+        "v2.52 open question 'Will Compression sustain >=60min this time' RESOLVED POSITIVELY for the 15:35 instance: Compression lasted 68min (15:35-16:43) before transitioning to RU at branch #1 trigger-then-failure. This contradicts the v2.52 prediction-pattern that Compression itself would fail to sustain. Sustained-Compression IS achievable when no structural event interrupts. Recorded for 2026-06-25 ontology review.",
+        "Mode-cycling pattern at n=5 transitions in 2h22min, avg ~28min/mode. Pattern stable. Within-ontology framing 'brief mode-cycling IS the correct read of structural events' continues to hold; alternate-transitional-mode hypothesis further weakened.",
+        "failed-Wyckoff-acceptance-reclaim 2-axis state UNCHANGED: cycle n=1.5-DEMOTED; extension n=0/2-FAILED. 21:00 wick-then-close-at-boundary on sub-baseline vol IS new structural evidence-AGAIN for cycle hypothesis but does NOT advance n.",
+        "Sweeps_attempted incremented 9 -> 10. The 21:00 UTC wick to $82.28 then close at $82.20 is a 4th wick-test of corridor top, but on close-at-boundary not close-above, so this is sweep-attempt (failed reclaim) #10 \u2014 NOT branch #1 trigger like 19:30.",
+        "Range maintained $81.71-$82.20 active (range_active_since 18:45 UTC unchanged, ~2.5h aged). $82.20 corridor top now tested 4 times with wick-rejections in 1h45min \u2014 building structural-resistance signature but no vol-impulse confirmation per C4.",
+        "NEW conditional pre-commit branch (#3): if 5th-6th wick-test of $82.20 sub-baseline accumulates AND budget threshold state shifts (relaxed at 30 holds OR forced_exploration at 24h), promote SHORT thesis to B-grade exploratory at $82.15-$82.20 retest with tight SL $82.30. Conditional on budget state, not on this fire.",
+        "Chase-vs-retest discipline track formalized: n=3 declines (v2.47 LONG / v2.49 SHORT / v2.53 SHORT); 1/3 clean reward (v2.47), 2/3 indeterminate-but-no-loss (v2.49 mild-favorable / v2.53 trivial). Framework holding.",
+        "Indicator-pipe gap: live-status $85.23 vs canonical $82.15 = $3.08/3.7%. Slightly narrowed from v2.53 $3.09. P0 day 25; consistent with stale-pull mechanism. No structural ops-attention claim."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Sub-baseline-rejection-on-repeated-test (C4-blocked structural pattern) vs C4 vol-impulse gate: which is the correct read for compression-regime resistance? Tracking: if 6+ wick-tests of $82.20 sub-baseline accumulate without range break by EOD = evidence FOR sub-baseline-rejection-as-structural-read. If range breaks upward via vol within 2h = evidence FOR C4 (rejections were mechanical). First discriminating dataset of its kind in this lineage.",
+        "Mode-cycling pattern: 5 transitions in 2h22min, avg ~28min/mode. Compression at 15:35 sustained 68min (positive for within-ontology framing). If this 17:19 Compression also sustains 60+min, the 'sustained Compression IS achievable' hypothesis strengthens to n=2; if it transitions <30min, the brief-mode-cycling framing reasserts. Watch.",
+        "Budget at $2.10 remaining, 21 holds-in-a-row, 6.3h since last ENTER. Path to data acquisition: (a) wait for UTC rollover ~4.2h for budget reset = inertia-cost ~4h additional drought; (b) wait for relaxed threshold at 30 holds (~9 more fires if 15min cadence in Compression = 2.25h; OR if 60min heartbeat = 9h) \u2014 depends on how Compression cadence plays out; (c) wait for forced_exploration at 24h drought = ~17.7h away. Most likely activation point: budget reset at UTC rollover (~01:00 EDT 5-30).",
+        "Conditional pre-commit branch #3 design (B-grade SHORT probe at 5th-6th wick-test + budget shift): IS this the right way to structure conditional ENTRY promotion within Compression mode, OR does it violate execution-research-separation per note-4/C2 (designing during execution)? Conservative read: this IS execution-time application of existing framework (v0.9 inputs + C4 gate + budget) plus an annotation that conditional thresholds exist. NOT designing new framework. Filing as borderline; will check if pattern recurs.",
+        "Hypothesis-CONFIRMED promotion gate (>=4 consecutive 15min bars / 1h survival) proposed in v2.50: still no field-test. Will field-test on next cycle candidate that reaches promotion criteria.",
+        "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4, 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-v2.43 chain per state narrative. Zero pending. Standing claim addressed."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780087425.92205,
@@ -1790,36 +1857,6 @@
         "If 'narrowing trend' on indicator-pipe staleness was artifact, the persistent P0 escalation framing in prior reflections may have over-stated escalation urgency. Indicator-pipe state genuinely unknown.",
         "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-prior chain per state narrative. Zero pending.",
         "Should v2.45 propose a stricter state.json schema requiring explicit pull-timestamp + raw-bar-quote for any bar-level fact? Tracking for next major revision; not changing schema mid-fire."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780069503.8952582,
-      "iso": "2026-05-29T11:45:03-04:00",
-      "fire_count": 388,
-      "balance_usd": 894.08,
-      "version_tag": "v2.44",
-      "trigger": "surprise:reclaim_continuation_extending_AND_state_narrative_data_divergence",
-      "what_im_trying": "Reclaim has fully continued past target. Canonical 15:30 UTC bar closed $83.00 on V=29979 = 3.45x baseline (~8700) \u2014 full continuation-extending up, NOT post-target consolidation as state.json v2.43 narrative modeled. State.json wrote '15:15 UTC C=$81.94 V=8000 sub-baseline' but canonical 15:15 UTC C=$82.49 V=28464 = 3.27x baseline. Two-bar consecutive expansion-acceptance into prior range_high $82.20 \u2014 exactly the 'continuation-extending up' pre-commit branch from v2.43 narrative. Current price $83.05 (1min bars 15:35-15:41 UTC consolidating $82.86-$83.10 on sub-baseline vol = post-expansion drift). Decision this fire: HOLD per pre-commit ('entering would be late-chase per v2.42's late-entry tracking'). Hypothetical long committed.",
-      "whats_working": "(a) Pre-commit multi-branch lineage performed even when state.json inputs were wrong. v2.43 wrote 5+ branches; reality landed on 'IF C > $82.20 on vol >= 1.5x baseline -> late-chase, HOLD with hypothetical long' branch \u2014 exactly the outcome being executed this fire. The branches were correctly framed even though the narrative WHY (post-target consolidation expected) was wrong. Separating decision-discipline FROM prediction-narrative continues to validate. (b) failed-Wyckoff-acceptance-reclaim hypothesis (v2.42-formed) n=1-PASSED-FIRST-INSTANCE with magnitude exceeding modeled target by ~2x. Entry $81.34 -> target $82.00 (+$0.66, ~+0.81%) actually extended to $83.10 (+$1.76, ~+2.16%). The reclaim was structurally cleaner than modeled; target sizing was too tight at $82.00. Single-target paper exit captured ~37% of the realized move. (c) Cohort down+long re-validated: n=5 +$16.04 WR 80% post-this-target-touch.",
-      "whats_failing": "(a) MAJOR: state.json v2.43 narrative was data-source-divergent. State wrote '15:15 UTC C=$81.94 V=8000' = sub-baseline-consolidation read. Canonical Coinbase data shows '15:15 UTC C=$82.49 V=28464' = 3.27x-baseline-continuation read. ROOT CAUSE candidate: prior fire wrote state narrative from live-status indicator-pipe (which is documented stale by $3.24/3.8%) rather than from canonical OHLCV pull. This is a recursive failure mode: the framework reads state.json on each fire to skip re-derivation when state hasn't changed; if state.json carries staleness-affected narrative, subsequent fires inherit bad narrative as truth. Pre-commit branches were robust enough to cover the actual outcome anyway \u2014 but the narrative WHY 'post-target consolidation NOT continuation' was directly contradicted by the bar that supposedly proved it. (b) Target sizing for reclaim setups was too conservative. failed-Wyckoff-acceptance-reclaim target was set at $82.00 (= mid-prior-consolidation $82.00-$82.20 zone). Realized extension reached $83.10 (+$1.10 above target). When the structural signature is clean (sweep + sequential higher-lows + violent reclaim + vol confirmation), target sizing should account for extension past the prior structural ceiling, not just to it. (c) Indicator-pipe staleness P0 day 25 / fire 44+. live-status $85.23 vs canonical $83.05 = $2.18 / 2.6% gap. NARROWING continues ($4.53 v2.41 -> $3.89 v2.42-reflect -> $3.34 v2.42-decision -> $3.24 v2.43 -> $2.18 now). Five-fire narrowing trend. May be transient market re-sync or genuine ops attention. Still no visible ops escalation acknowledgment. Continuing to flag.",
-      "what_im_iterating": "(a) STATE NARRATIVE DATA HYGIENE: before writing state.json narrative claiming bar-level facts (C/H/L/V), validate against canonical OHLCV pull, NOT just live-status indicators. The state narrative is consumed by future fires as ground truth \u2014 if it carries stale-data-derived narrative, subsequent reasoning compounds the error. Operational change: any state.json update that references specific bar closes/volumes must pull canonical OHLCV in the same fire that writes the state. (b) failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED with MAGNITUDE-2X observation. Updating proposed promotion gate: n>=3 instances with >=2 producing target-reach within 1h-window (per v2.43) AND tracking realized-vs-modeled extension ratio. If >=2 of 3 show extension >1.5x modeled target, future entries should set target at structural-ceiling + 0.5*post-sweep-range, not just mid-prior-consolidation. NOT mutating target sizing rule yet (n=1 insufficient); tracking. (c) NO ontology mutation. Per note-4/C2 ('reserve framework mutation for post-session / UTC-rollover / surprise'), this IS a surprise fire and minor framework refinement is in-scope. But cognition_mode ontology stays frozen to 2026-06-25; no new cognition modes. (d) NEW pre-commit lineage for next bar (15:45 UTC bar, opens ~11:45 EDT, closes ~12:00 EDT, resolution ~11:47-11:50 EDT). State.json updates: range now $82.20-$83.10 (post-extension consolidation zone); broken range $80.79-$82.20 is below. IF 15:45 UTC bar C > $83.10 on vol >= 1.5x baseline -> continuation extending further, HOLD (would be late-chase + 1). IF C in [$82.86, $83.10] -> post-extension consolidation, HOLD with hypothetical long. IF C in [$82.50, $82.86] -> post-extension retest of 15:15 UTC close zone, HOLD with hypothetical long-on-retest. IF C in [$82.20, $82.50] -> retest of structural floor of new range, ENTER C-grade long if vol >= 1.0x AND cohort still down+long favorable. IF C < $82.20 -> new-range failure, structural rejection of continuation, HOLD with hypothetical short. IF C < $81.50 -> full reversion to prior range, hypothesis falsified at extension, framework re-baselines. (e) Cognition_mode unchanged: Regime Uncertain. Live-status regime=down (288h window), canonical tape just printed +$2.81 / +3.47% impulse in 90min \u2014 multiple timeframes still mixed. 15min cadence appropriate.",
-      "edits_from_prior": [
-        "failed-Wyckoff-acceptance-reclaim hypothesis: n=1-PASSED-FIRST-INSTANCE (v2.43) -> n=1-PASSED-WITH-MAGNITUDE-2X (this fire). Realized extension $1.76 vs modeled target $0.66 = ~2.6x model. Target sizing observation logged but NOT mutating rule at n=1.",
-        "MAJOR finding: state.json v2.43 narrative carried wrong bar-close data ('15:15 UTC C=$81.94 V=8000' vs canonical 'C=$82.49 V=28464'). Pre-commit branches survived this because they covered both consolidation AND continuation outcomes \u2014 but the narrative WHY was contradicted by the bar that supposedly supported it. Operational fix: validate bar-level facts via canonical OHLCV before writing state narrative.",
-        "Pre-commit lineage: 6 clean resolutions (v2.43) -> 7 clean resolutions (this fire). CONTINUATION-EXTENDING-UP branch covered correctly. Branch quality saved the framework from narrative-only failure.",
-        "Range update: prior range_low=$80.79 / range_high=$82.20 -> new range_low=$82.20 / range_high=$83.10. Range_active_since UPDATED to 15:30 UTC (post-continuation acceptance).",
-        "Indicator-pipe staleness P0 day 25 / fire 44+: gap NARROWING 5th consecutive fire ($4.53 -> $3.89 -> $3.34 -> $3.24 -> $2.18). Live-status still does not match canonical but trend is reconverging.",
-        "Cognition_mode unchanged: Regime Uncertain. Multi-timeframe still disagrees (live-status down regime vs canonical recent +3.47% impulse).",
-        "NEW pre-commit lineage for 15:45 UTC bar with 6 branches covering continuation/consolidation/retest/floor-test/failure/reversion."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "What is the actual mechanism that causes state.json narrative to inherit indicator-pipe staleness? Hypothesis: prior fire may have used live-status indicator-derived bar close (which the pipe reports stale) instead of canonical OHLCV. Cannot disambiguate without instrumenting which source state-writer reads.",
-        "Target sizing rule for reclaim setups: should there be a structural-ceiling-+-extension factor, or maintain mid-consolidation target? n=1 evidence of 2x extension is insufficient to mutate. Tracking across next failed-Wyckoff-acceptance-reclaim instances.",
-        "Indicator-pipe staleness gap narrowing 5 fires consecutively. Is this transient market re-sync (price drifted toward stale live-status read by coincidence) OR genuine ops attention? Cannot disambiguate. If next 1-2 fires show gap < $1, lean toward 'fixed'. If gap re-widens, lean toward 'transient'.",
-        "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4 at 10:06 EDT 2026-05-28). All 6 claims addressed across v2.40-v2.43 chain. Zero pending.",
-        "Should mid-fire surprise reflections increment version_tag at the same speed as cadence-triggered reflections? Currently treating all reflections as equal-weight version bumps. May want different convention for surprise-only vs cadence-rollup reflections."
       ]
     }
   ],
@@ -2275,38 +2312,38 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780087460.0868502,
-    "updated_iso": "2026-05-29T16:43:00-04:00",
-    "updated_by_fire_iso": "2026-05-29T16:43:00-04:00",
+    "updated_ts": 1780089548.0,
+    "updated_iso": "2026-05-29T17:19:08-04:00",
+    "updated_by_fire_iso": "2026-05-29T17:19:08-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
     "range_low_usd": 81.71,
     "range_high_usd": 82.2,
     "range_active_since_iso": "2026-05-29T18:45:00+00:00",
-    "sweeps_attempted": 9,
+    "sweeps_attempted": 10,
     "last_displacement_iso": "2026-05-29T19:30:00+00:00",
-    "funding_state": "OKX 6.60e-5 (mild positive; immaterial)",
+    "funding_state": "OKX 7.29e-5 (mild positive; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "16:43:00 EDT (20:43 UTC). Position null. Balance $894.08. v2.52 pre-commit branch #1 TRIGGERED 19:30 UTC: bar closed $82.21 V=17371 = 2.0x baseline + $0.01 over $82.20 corridor high (edge-of-threshold). IMMEDIATELY INVALIDATED on 19:45 UTC bar: open $82.21 close $81.94 V=11473 = 1.32x. 20:00 UTC bar close $82.11 V=17305 = 2.0x baseline elevated; drift back into corridor upper-half. 20:15 UTC bar close $82.15 V=3107 = 0.36x sub-baseline. 20:30 UTC in-progress: high $82.22 (double-test of $82.20 from below), current 1min ~$82.14 (drift back to mid-corridor). Sweeps_attempted incremented 8 -> 9. failed-Wyckoff-acceptance-reclaim 2-axis state: cycle n=1.5-DEMOTED edges toward n=2-EVIDENCE-AGAIN (this trigger-then-failure is consistent with cycle hypothesis, 2nd close-above-and-fail in 24h); extension n=0/2-FAILED unchanged. COGNITION_MODE TRANSITION: Compression -> Regime Uncertain at the trigger event. Compression signature structurally invalidated by 2x baseline vol on 19:30 + 20:00 + close $82.21 outside corridor on 19:30. Mode-cycling now n=5 transitions in ~1h45min (Compression->Expansion->RU->Compression->RU). Wrapper invariant fired the position/range/displacement bypass for this fire (range-break-then-reassertion event-keyed). v0.9 hypothetical SHORT 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable, structural emerging double-test-as-resistance; asymmetry NO live-status 5/5 symmetric, vol NO sub-baseline on 20:30 rejection bar). v0.9 hypothetical LONG 0/4 (cohort down+long n=4 +$12.74 WR 75% favorable but no other inputs; range top failed = LONG hypothesis structurally weakened). Conviction LOW. Budget: $2.10 remaining, threshold normal, forced_exploration_due False, holds_in_a_row will be 19 post-this-fire, 5.7h since last ENTER (within 24h gate). B/C ENTERs technically possible at C-grade $2.06 at-risk (1 contract @ $82.20 SL $82.30 0.12%) but TIGHT-STOP fragile + below v0.9 normal-state 3/4 input gate. HOLD with hypothetical SHORT at $82.14 chase entry. Chase-vs-retest discipline test n=3 (v2.47 chase-LONG declined / v2.49 chase-SHORT declined / this fire chase-SHORT declined). Pre-commit lineage for next material event: (1) 20:45 UTC OR 21:00 UTC bar closes >= $82.30 with vol >= 1.5x baseline -> branch #1 genuine reclaim (not edge-of-threshold failed-trigger); mode reverts Expansion; A-grade LONG candidate at $82.20-$82.25 retest. (2) 20:45 UTC bar closes <= $82.05 with vol >= 1.5x baseline -> double-test rejection vol-confirmed; mode stays Regime Uncertain; B-grade SHORT candidate at $82.10-$82.18 retest if forms next bar. (3) 20:45 OR 21:00 bar closes in $82.05-$82.20 corridor sub-baseline vol -> Regime Uncertain ongoing; 15min cadence per mode protocol; no entry. (4) Range close below $81.71 with vol >= 1.5x baseline -> downside continuation (branch #2 of v2.51 re-armed); mode reverts Expansion; A-grade SHORT candidate at $81.85-$81.95 retest. New annotation: pre-commit branches should include 'trigger+failure' branches alongside 'trigger+confirmation' \u2014 see reflection v2.53 'whats failing' for the v0.9 lineage note. Indicator-pipe staleness P0 day 25: live-status $85.23 vs canonical $82.14 = $3.09/3.8%. Slightly narrowed from v2.52 $3.27. Stale-pull mechanism consistent. No new founder notes since note-4 (1779977169.64); zero pending claims.",
-    "cognition_mode": "Regime Uncertain",
-    "cognition_mode_since_iso": "2026-05-29T16:43:00-04:00",
-    "cognition_mode_rationale": "v2.52 branch #1 trigger fired on 19:30 UTC (close $82.21 V 2.0x baseline) AND immediately invalidated on 19:45 UTC (open $82.21 close $81.94 V 1.32x). Compression signature structurally invalidated: vol 2x baseline on 19:30 + 20:00 + close outside corridor on 19:30 = NOT low info density. But range remains effectively active ($82.20 retested high $82.22 then rejected on 20:30). Range-status ambiguous = Regime Uncertain. 15min cadence on next bar transitions per mode protocol.",
-    "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 2,
-    "last_mode_transition_iso": "2026-05-29T16:43:00-04:00",
-    "last_gate_check_iso": "2026-05-29T20:54:45.540243+00:00",
-    "canonical_pull_iso": "2026-05-29T20:43:00+00:00",
+    "narrative": "17:19:08 EDT (21:19 UTC). Position null. Balance $894.08. v2.53 left Regime Uncertain with pre-commit branches keyed on 20:45/21:00 UTC bar outcomes. Actual: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) sub-baseline inside corridor + 21:00 UTC close $82.20 V=4373 (0.5x) at corridor TOP with high $82.28 wicked above range then rejected to $82.20 close + 21:15 in-progress C=$82.18 V=3359 sub-baseline mid-corridor. v2.52's 2-consecutive-sub-baseline-corridor-close criterion fired for the SECOND time in this lineage (first at 15:35 EDT). COGNITION_MODE TRANSITION: Regime Uncertain (since 16:43 EDT, 36min) -> Compression (this fire). The 21:00 UTC wick to $82.28 + close at $82.20 is the 4th wick-test of corridor top resistance in 1h45min (after 19:30 close-above-trigger-failure / 20:00 H $82.18 / 20:15 H $82.22 / 20:30 H $82.22 / 21:00 H $82.28 / 21:15 H $82.21 \u2014 corrected count: 4 wick-tests at >=$82.20 = 19:30 close $82.21, 20:30 H $82.22, 21:00 H $82.28, 21:15 H $82.21). Sweeps_attempted incremented 9 -> 10 for the 21:00 wick-failure event. failed-Wyckoff-acceptance-reclaim 2-axis state: cycle n=1.5-DEMOTED stable (4th test on sub-baseline = evidence-AGAIN for cycle but does not advance n); extension n=0/2-FAILED unchanged. v2.52 open question 'Will Compression sustain >=60min' RESOLVED POSITIVELY for the 15:35 instance (68min sustained before RU transition). Mode-cycling at n=5 transitions in 2h22min, avg ~28min/mode. v0.9 hypothetical SHORT 2/4 (cohort down+short n=6 +$1.39 WR 83% favorable, structural quadruple-test-of-corridor-top emerging-resistance; asymmetry NO 5/5 symmetric live-status, vol NO sub-baseline on all 4 rejection bars). v0.9 hypothetical LONG 0/4 ($82.20 keeps failing breakout on sub-baseline = LONG structurally weak). Conviction LOW-MEDIUM. Budget $2.10, threshold normal, forced_exploration_due False, holds_in_a_row will be 21 post-this-fire, 6.3h since last ENTER. B/C ENTERs technically possible at C-grade ($410 1-contract notional, SL $82.30 = at-risk $0.74) but v0.9 normal-state gate requires 3/4 inputs OR forced_exploration; neither holds. HOLD with hypothetical SHORT lean at $82.15 chase pricing. Chase-vs-retest discipline test n=4 (v2.47 chase-LONG declined / v2.49 chase-SHORT declined / v2.53 chase-SHORT declined / this fire chase-SHORT declined). Pre-commit lineage for next material event (event-keyed Compression): (1) range breaks ABOVE $82.20 close vol>=1.5x ~13000 -> reclaim genuine sweep #11, cycle promote 1.5->2.5, mode Expansion, A-grade LONG at $82.05-$82.10 retest SL $81.65; cohort down+long favorable. (2) range breaks BELOW $81.71 close vol>=1.5x -> downside continuation, cycle full-demote 1.5->1, mode Expansion, A-grade SHORT at $81.85-$81.95 retest SL $82.25; cohort down+short favorable. (3) 5th-6th wick-test of $82.20 sub-baseline rejection accumulates AND budget threshold shifts (relaxed at 30 OR forced_exploration at 24h) -> conditional B-grade SHORT probe at $82.15-$82.20 retest SL $82.30. (4) 4 consecutive 1h heartbeats with mid-corridor sub-baseline drift -> ranging regime hypothesis. Indicator-pipe staleness P0 day 25: live-status $85.23 vs canonical $82.15 = $3.08/3.7% (narrowed slightly from v2.53). Stale-pull anchor consistent. No new founder notes since note-4 (1779977169.64); zero pending claims.",
+    "cognition_mode": "Compression",
+    "cognition_mode_since_iso": "2026-05-29T17:19:08-04:00",
+    "cognition_mode_rationale": "v2.52's 2-consecutive-sub-baseline-corridor-close criterion fired for the second time in this lineage: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) + 21:00 UTC close $82.20 V=4373 (0.5x) + 21:15 in-progress C=$82.18 V=3359 sub-baseline. Structural drama from 19:30 trigger-then-failure (mode RU since 16:43) is now digested into sub-baseline drift. Range $81.71-$82.20 holding. 1h heartbeat cadence + wrapper invariant-safety bypasses on structural events.",
+    "cognition_mode_cadence_hint": "fire 1h heartbeat",
+    "skipped_fires_in_mode": 0,
+    "last_mode_transition_iso": "2026-05-29T17:19:08-04:00",
+    "last_gate_check_iso": "2026-05-29T21:19:08+00:00",
+    "canonical_pull_iso": "2026-05-29T21:15:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900+60"
   },
   "cognition": {
-    "mode": "Regime Uncertain",
-    "since_iso": "2026-05-29T16:43:00-04:00",
-    "rationale": "v2.52 branch #1 trigger fired on 19:30 UTC (close $82.21 V 2.0x baseline) AND immediately invalidated on 19:45 UTC (open $82.21 close $81.94 V 1.32x). Compression signature structurally invalidated: vol 2x baseline on 19:30 + 20:00 + close outside corridor on 19:30 = NOT low info density. But range remains effectively active ($82.20 retested high $82.22 then rejected on 20:30). Range-status ambiguous = Regime Uncertain. 15min cadence on next bar transitions per mode protocol.",
-    "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 2,
-    "last_mode_transition_iso": "2026-05-29T16:43:00-04:00",
-    "last_gate_check_iso": "2026-05-29T20:54:45.540243+00:00"
+    "mode": "Compression",
+    "since_iso": "2026-05-29T17:19:08-04:00",
+    "rationale": "v2.52's 2-consecutive-sub-baseline-corridor-close criterion fired for the second time in this lineage: 20:45 UTC close $82.12 V=7320 (0.84x baseline ~8700) + 21:00 UTC close $82.20 V=4373 (0.5x) + 21:15 in-progress C=$82.18 V=3359 sub-baseline. Structural drama from 19:30 trigger-then-failure (mode RU since 16:43) is now digested into sub-baseline drift. Range $81.71-$82.20 holding. 1h heartbeat cadence + wrapper invariant-safety bypasses on structural events.",
+    "cadence_hint": "fire 1h heartbeat",
+    "skipped_fires_in_mode": 0,
+    "last_mode_transition_iso": "2026-05-29T17:19:08-04:00",
+    "last_gate_check_iso": "2026-05-29T21:19:08+00:00"
   },
   "framework_origins": [
     {
@@ -2351,14 +2388,14 @@
     },
     "last_enter_ts": 1780066787.001375,
     "last_enter_iso": "2026-05-29T10:59:47-04:00",
-    "holds_in_a_row": 19,
+    "holds_in_a_row": 20,
     "exploratory_at_risk_usd_today": 6.84,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 6.0,
+    "hours_since_last_enter": 6.3,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T21:00:02.971747+00:00",
+    "last_updated_iso": "2026-05-29T21:17:28.957867+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
