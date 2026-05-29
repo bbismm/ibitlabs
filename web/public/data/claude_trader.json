@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780066833,
-  "generated_iso": "2026-05-29T11:00:33-0400",
+  "generated_at": 1780067296,
+  "generated_iso": "2026-05-29T11:08:16-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 385,
+    "decisions_total": 386,
     "actions": {
-      "HOLD": 369,
+      "HOLD": 370,
       "ENTER": 10,
       "EXIT": 6
     },
@@ -15,20 +15,20 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 187,
       "ENTER_C": 2,
-      "HOLD_no_plausible": 31,
+      "HOLD_no_plausible": 32,
       "EXIT": 6,
       "ENTER_B": 7,
       "ENTER_A": 1
     },
     "confidence": {
       "high": 165,
-      "medium": 182,
+      "medium": 183,
       "low": 38
     },
     "reasoning_chars_avg_all": 1007,
-    "reasoning_chars_avg_last10": 1103,
+    "reasoning_chars_avg_last10": 1084,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T10:59:47-04:00",
+    "last_fire_iso": "2026-05-29T11:07:49.675499-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,55 +38,50 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780066787.001375,
-    "fire_iso": "2026-05-29T10:59:47-04:00",
+    "fire_ts": 1780067269.675499,
+    "fire_iso": "2026-05-29T11:07:49.675499-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": null,
-    "current_price": 81.34,
+    "position_at_fire": {
+      "direction": "long",
+      "entry_price": 81.34,
+      "qty": 1,
+      "unrealized_pnl_pct": 0.184,
+      "minutes_held": 8
+    },
+    "current_price": 81.49,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 3.75,
-      "momentum_pct": -0.08,
+      "vol_ratio": 1.09,
+      "momentum_pct": 0.36,
       "rsi": 60.4,
-      "_note": "live-status indicators stale at $85.23 (P0 day 25); vol_ratio computed from canonical Coinbase 14:45 UTC bar V=32565 / baseline 8687"
+      "_note": "stoch_rsi/rsi from stale live-status pipe (P0 day 25); vol_ratio derived from 15:00 UTC bar 6min-into-15min extrapolation (V=3775*2.5 = ~9438 vs baseline ~8687 = 1.09x); momentum from 14:45 UTC C=$81.20 -> $81.49 = +0.36%"
     },
-    "decision": "ENTER",
-    "grade": "B",
-    "size_multiplier": 0.35,
-    "setup_type": "failed_wyckoff_acceptance_reclaim",
-    "direction": "long",
+    "decision": "HOLD",
+    "grade": null,
+    "size_multiplier": null,
+    "setup_type": null,
+    "direction": null,
     "symbol": "SOL-PERP",
-    "quantity": 1,
-    "leverage": 0.46,
-    "sl_pct": 0.00688,
+    "quantity": null,
+    "leverage": null,
+    "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Wyckoff sell-side acceptance n=2 (v2.41 promotion-candidate) FALSIFIED within 1 bar of confirmation. 14:45 UTC bar (forming, ~13min in): O=$80.46 H=$81.44 L=$80.37 C=$81.15 V=32565=3.75x baseline. Intra-bar H=$81.44 breached pre-committed tightened trail $81.10 = framework paper SHORT exited. The predicted continuation to $80.20 DID NOT MATERIALIZE. Instead: 3-bar sequential higher lows ($80.24 -> $80.34 -> $80.37) + violent reclaim of broken structure $80.79 + reclaim above trail $81.10 + currently at $81.34 = classic Wyckoff spring (sell-stop sweep + reclaim), not acceptance. NEW HYPOTHESIS under test n=1: failed-Wyckoff-acceptance-reclaim. Cohort down+long historical n=4 +$12.74 WR 75% = favorable, second-best cohort behind down+short. Inputs: (i) asymmetry: reclaim above broken support + above prior trail = directional ASYMMETRY for longs; (ii) vol_ratio 14:45 bar 3.75x baseline = STRONG; (iii) cohort down+long non-worst; (iv) structural trigger: sweep + reclaim of $80.79 = clean structural reversal signature. 4/4 v0.9 inputs met. Why B not S/A: (a) regime still 'down' per live-status 288h classifier \u2014 counter-regime entry; (b) just had 2 consecutive structural-pattern hypotheses falsified at n=1 in 24h (v2.38r failed-sweep-reclaim + Wyckoff n=2) so claiming high-conviction reversal at n=1 contradicts visible pattern of my own over-promotion; (c) magnitude-bias self-correction \u2014 refusing to up-grade based on excitement about the falsification itself. SL $80.78 = $0.01 buffer below pre-break range_low $80.79 (failed reclaim = structural invalidation). TP $82.00 = mid-prior consolidation range $81.40-$82.20. At-risk $2.85 fits remaining B/C budget $4.89. Indicator-pipe staleness P0 day 25 (live-status $85.23 vs canonical $81.34 = $3.89/4.8% gap, NARROWING from v2.41).",
-    "expected_holding_hours": 6,
-    "expected_pnl_pct_target": 0.00811,
+    "reasoning": "Pre-commit v2.42 resolved cleanly. 14:45 UTC bar closed C=$81.20 V=54122 (~6.23x baseline) \u2014 falls in [$81.00, $81.40] mid-reclaim consolidation branch. Trail unchanged $80.78 hard SL. Real bot LONG @ $81.34 q=1 alive at $81.49 = +$0.75 gross / +0.18%, held ~7 min. 15:00 UTC bar 6min in: O=$81.20 H=$81.38 L=$81.08 C=$81.35 V=3775 partial \u2014 drifting up, reclaim sustaining above prior structural ceiling $80.79 and prior trail $81.10. No fresh ENTER this fire (position-open + B-grade exploration_at_risk already $6.84/$8.94 of daily budget; chase entry at $81.49 worse than existing $81.34 fill on identical thesis). No exit triggers fired. State.json carries lineage forward to 15:00 UTC bar close (~9min, 11:15 EDT). Inventory Discovery mode unchanged.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "intra-bar low <= $80.78 (hard SL = failed reclaim invalidation)",
-      "15:00 UTC bar close < $80.79 on any vol (immediate failure of reclaim signature)",
-      "15:00-15:30 UTC: any 15min bar close < $81.00 (reclaim weakening)",
-      "4h elapsed without close > $81.40 (drift = thesis stale)",
-      "Wyckoff sell-side continuation re-establishes: 2 consecutive 15min bars closing below $80.79 on vol >= 1.5x baseline (original hypothesis reasserts)",
-      "C > $82.00 on vol = target HIT, exit at market"
+      "Intra-bar L <= $80.78 any time -> hard SL hit (entry-side stop @ $80.78)",
+      "15:00 UTC bar C < $80.79 on close -> structural reclaim invalidation, exit at market",
+      "C in [$80.79, $81.00] on close -> reclaim weakening, exit at market (close-soft-abort)",
+      "C > $82.00 any vol -> TP hit, exit at market",
+      "Intra-bar wick to $82.00+ followed by reversal toward $81.40 within bar -> tighten trail to $81.00 (per v2.42 pre-commit higher-confirm branch)"
     ],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": null,
-    "exploration_attribution": {
-      "reason": "regime_transition_candidate",
-      "info_hypothesis": "tests whether failed-Wyckoff-sell-side-acceptance (3-bar sequential higher-lows + vol-confirmed reclaim above prior trail level) produces tradeable bull continuation expectancy at n=1",
-      "predicted_information_value": "high"
-    },
-    "information_roi_record": {
-      "previous_trade_fire_iso": "2026-05-29T08:04:45-04:00",
-      "actual_outcome": "framework paper SHORT @ $81.63 q=1 trail-stopped @ $81.10 = +$2.65 nominal -$0.65 fee = +$2.00 net, held 4h53m",
-      "info_hypothesis_status": "indeterminate",
-      "lesson_extracted": "Pre-committed BREAKDOWN entry at $81.63 produced winning paper trade via trail discipline ($81.40 then tightened to $81.10), BUT the underlying Wyckoff sell-side acceptance n=2 continuation hypothesis it tested was FALSIFIED on the post-confirmation bar. The trade was net-positive due to trail discipline NOT due to the hypothesis it tested. Lesson: trade-outcome and hypothesis-outcome can diverge \u2014 trail discipline can manufacture a small win even on a falsified hypothesis. Future B/C exploratory trades should report hypothesis_status independently of PnL outcome.",
-      "information_value_realized": "high"
-    }
+    "no_plausible_counterfactual": "Existing LONG @ $81.34 q=1 IS the active directional counterfactual under test (B-grade, failed-Wyckoff-acceptance-reclaim hypothesis n=1, pre-committed thesis with multi-branch resolution lineage). A 'fresh ENTER this fire' at $81.49 chase-premium would degrade entry vs existing fill on identical thesis; no new structural information has emerged in 7 minutes. The decisional lean is fully committed in the open position.",
+    "exploration_attribution": null,
+    "information_roi_record": null
   },
   "events": [
     {
@@ -1530,9 +1525,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 0,
-    "avg_chars": 0,
-    "since_iso": null
+    "holds_since_framework": 1,
+    "avg_chars": 756,
+    "since_iso": "2026-05-29T10:59:08-04:00",
+    "since_framework_version": "v2.42",
+    "latest_fire_iso": "2026-05-29T11:07:49.675499-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2393,9 +2390,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780066824,
-    "updated_iso": "2026-05-29T11:00:24-04:00",
-    "updated_by_fire_iso": "2026-05-29T11:00:24-04:00",
+    "updated_ts": 1780067291,
+    "updated_iso": "2026-05-29T11:08:11.600108-04:00",
+    "updated_by_fire_iso": "2026-05-29T11:08:11.600108-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2404,25 +2401,25 @@
     "range_active_since_iso": "2026-05-29T14:45:00+00:00",
     "sweeps_attempted": 6,
     "last_displacement_iso": "2026-05-29T14:45:00+00:00",
-    "funding_state": "OKX rate 8.68e-5 (mild long-pays-short; immaterial)",
+    "funding_state": "OKX rate 8.62e-5 (mild long-pays-short; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "10:58 EDT (14:58 UTC). MAJOR HYPOTHESIS FALSIFICATION: pre-committed Wyckoff sell-side acceptance n=2 PROMOTION-CANDIDATE from v2.41 was REJECTED within ONE BAR. 14:45 UTC bar (still forming, 2min to close at 15:00 UTC): O=$80.46 H=$81.44 L=$80.37 C=current $81.34 (drifting up from intra-bar close $81.15) V=32565=3.75x baseline. Per v2.41 pre-commit: intra-bar H=$81.44 >= tightened trail $81.10 = framework paper SHORT trail-stopped @ $81.10 (entry $81.63, +$2.65 nominal -$0.65 fee = +$2.00 net, held 4h53m). PREDICTED continuation to $80.20 DID NOT MATERIALIZE. Instead: 3-bar sequential higher-lows ($80.24 14:15 -> $80.34 14:30 -> $80.37 14:45) + violent reclaim above broken structure $80.79 + above prior trail $81.10 + currently $81.34 = classic Wyckoff SPRING (sell-stop liquidity sweep + reclaim), NOT acceptance. NEW position: real bot LONG @ $81.34 q=1 B-grade ENTER this fire (4/4 v0.9 inputs: asymmetry+vol+cohort+structural; B-not-S/A because counter-regime + visible over-promotion pattern in last 24h + magnitude-bias self-correction). SL $80.78 (below pre-break range_low $80.79), TP $82.00 (mid-prior consolidation). Framework paper LONG mirrors. NEW pre-commit lineage for 15:00 UTC bar CLOSE (resolves next 1-2 fires): IF intra-bar L <= $80.78 ANY TIME -> hard SL hit, EXIT immediately. IF C > $82.00 on any vol -> target HIT, exit at market. IF C in [$81.40, $82.00] on vol >= 1.5x baseline -> reclaim confirmed, hold long, tighten trail to $81.00. IF C in [$81.00, $81.40] -> mid-reclaim consolidation, trail unchanged $80.78. IF C in [$80.79, $81.00] -> reclaim weakening, exit at market (close-soft-abort even though hard SL not hit yet \u2014 signal of failed reclaim before structural invalidation). IF C < $80.79 on close -> reclaim failed = structural invalidation, exit at market. IF C in [$80.79, $81.00] AND next bar 15:15 UTC also closes in same zone OR lower on rising vol -> 2-bar weak-reclaim confirm, exit at market. NEW hypothesis under test n=1: failed-Wyckoff-acceptance-reclaim signature (sweep-low + 3-bar sequential higher-lows + vol-confirmed reclaim above prior trail level + cohort favorable). Reflection v2.42 written THIS fire (Wyckoff n=2 acceptance REJECTED-AT-N1-FIRST-PROMOTION-CANDIDATE-INSTANCE + magnitude-bias confession + new failed-acceptance-reclaim hypothesis). Reflection v2.43 will trigger ONLY on: (a) hard SL hit, (b) target $82.00 hit, (c) reclaim weakening / failure on close-zone $80.79-$81.00, OR (d) materially new structural shape. Otherwise reasoning stays compressed pending resolution. Indicator-pipe staleness P0 day 25 / fire 40+: live-status $85.23 vs canonical $81.34 = $3.89 / 4.8% gap NARROWING (was $4.53 v2.41). Op escalation remains filed. No new founder notes since note-4 (1779977169.64). Zero pending claims.",
+    "narrative": "11:06 EDT (15:06 UTC). Pre-commit v2.42 RESOLVED CLEANLY. 14:45 UTC bar closed C=$81.20 V=54122 (~6.23x baseline expansion bar). Per v2.42 lineage: C in [$81.00, $81.40] -> mid-reclaim consolidation branch. Trail $80.78 unchanged. Real bot LONG @ $81.34 q=1 alive at current $81.49 = +$0.75 gross / +0.18%, held ~7 min. 15:00 UTC bar 6min in: O=$81.20 H=$81.38 L=$81.08 C=$81.35 (current tick $81.49) V=3775 partial = ~1.09x baseline extrapolated. Drift continues UP from 14:45 close \u2014 reclaim sustaining above both prior structural ceiling $80.79 AND prior trail level $81.10. Failed-Wyckoff-acceptance-reclaim hypothesis (v2.42 n=1) still attached, outcome forming. NEW pre-commit lineage for 15:00 UTC bar CLOSE (resolves ~11:15 EDT, ~9min from now): IF intra-bar L <= $80.78 ANY TIME -> hard SL hit, EXIT at market. IF C > $82.00 on any vol -> target HIT, exit at market. IF C in [$81.40, $82.00] on vol >= 1.5x baseline -> reclaim acceleration confirmed, tighten trail to $81.00. IF C in [$81.40, $82.00] on vol < 1.5x -> reclaim continuation but unconvincing, trail unchanged $80.78. IF C in [$81.00, $81.40] -> continued mid-reclaim consolidation, trail unchanged $80.78 (current most-likely branch given drift pattern). IF C in [$80.79, $81.00] on close -> reclaim weakening signature, exit at market (close-soft-abort). IF C < $80.79 on close -> reclaim failed = structural invalidation, exit at market. IF 15:00 UTC AND 15:15 UTC bars BOTH close in [$80.79, $81.00] on rising vol -> 2-bar weak-reclaim confirm, exit at market. Reflection v2.43 will trigger ONLY on: (a) hard SL hit, (b) target $82.00 hit, (c) reclaim weakening/failure on close-zone $80.79-$81.00, (d) materially new structural shape, OR (e) cadence gate (>=4h since v2.42 = 14:59 EDT). Otherwise reasoning stays compressed pending resolution. Cohort tracking: down+long historical n=4 +$12.74 WR 75%; this trade attaches as n=5 in-flight, projected +$3.30 if exits at $82.00 (qty 1 * 5 contract * $0.66) or -$2.80 if hard SL hit. Indicator-pipe staleness P0 day 25 / fire 41+: live-status $85.23 vs canonical $81.49 = $3.74 / 4.4% gap narrowing slightly from v2.42 ($3.89). Op escalation remains filed. No new founder notes since note-4 (1779977169.64); all 6 claims already addressed across v2.40/v2.41/v2.42 chain; zero pending claims.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-29T08:04:45-04:00",
-    "cognition_mode_rationale": "Real bot LONG @ $81.34 q=1 just opened this fire after framework paper SHORT trail-stopped. Inventory Discovery mode continues uninterrupted (position-replaced, not position-closed-to-flat). Phase B.1 protocol: never skip a fire while position is open. High-information resolution window: next 2-4 fires resolve hard SL / reclaim weakening / target reach.",
+    "cognition_mode_rationale": "Real bot LONG @ $81.34 q=1 actively in position management. Phase B.1 protocol: never skip a fire while position open. Multi-branch pre-commit lineage carries resolution discipline; high-information window continues with 15:00 UTC bar close ~9min away.",
     "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T08:04:45-04:00",
-    "last_gate_check_iso": "2026-05-29T11:00:24-04:00"
+    "last_gate_check_iso": "2026-05-29T11:08:11.600108-04:00"
   },
   "cognition": {
     "mode": "Inventory Discovery",
     "since_iso": "2026-05-29T08:04:45-04:00",
-    "rationale": "Real bot LONG @ $81.34 q=1 just opened this fire after framework paper SHORT trail-stopped. Inventory Discovery mode continues uninterrupted (position-replaced, not position-closed-to-flat). Phase B.1 protocol: never skip a fire while position is open. High-information resolution window: next 2-4 fires resolve hard SL / reclaim weakening / target reach.",
+    "rationale": "Real bot LONG @ $81.34 q=1 actively in position management. Phase B.1 protocol: never skip a fire while position open. Multi-branch pre-commit lineage carries resolution discipline; high-information window continues with 15:00 UTC bar close ~9min away.",
     "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T08:04:45-04:00",
-    "last_gate_check_iso": "2026-05-29T11:00:24-04:00"
+    "last_gate_check_iso": "2026-05-29T11:08:11.600108-04:00"
   },
   "framework_origins": [
     {
@@ -2465,16 +2462,16 @@
       "aggressive_threshold_holds": 100,
       "default_sl_pct_for_at_risk_estimate": 0.02
     },
-    "last_enter_ts": 1780056512.81317,
-    "last_enter_iso": "2026-05-29T08:04:45-04:00",
-    "holds_in_a_row": 20,
-    "exploratory_at_risk_usd_today": 4.05,
-    "exploratory_entries_today": 2,
-    "hours_since_last_enter": 2.8,
+    "last_enter_ts": 1780066787.001375,
+    "last_enter_iso": "2026-05-29T10:59:47-04:00",
+    "holds_in_a_row": 0,
+    "exploratory_at_risk_usd_today": 6.84,
+    "exploratory_entries_today": 3,
+    "hours_since_last_enter": 0.1,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T14:55:31.585444+00:00",
+    "last_updated_iso": "2026-05-29T15:05:49.600042+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
