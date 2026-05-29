@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780031142,
-  "generated_iso": "2026-05-29T01:05:42-0400",
+  "generated_at": 1780032078,
+  "generated_iso": "2026-05-29T01:21:18-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 329,
+    "decisions_total": 331,
     "actions": {
-      "HOLD": 317,
+      "HOLD": 319,
       "ENTER": 7,
       "EXIT": 5
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 146,
+      "HOLD_with_counterfactual": 148,
       "ENTER_C": 2,
       "HOLD_no_plausible": 20,
       "EXIT": 5,
@@ -21,13 +21,13 @@
     },
     "confidence": {
       "high": 160,
-      "medium": 134,
+      "medium": 136,
       "low": 35
     },
-    "reasoning_chars_avg_all": 997,
-    "reasoning_chars_avg_last10": 1378,
+    "reasoning_chars_avg_all": 998,
+    "reasoning_chars_avg_last10": 1353,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T01:05:38-04:00",
+    "last_fire_iso": "2026-05-29T01:21:14-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -37,25 +37,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780031138.8991208,
-    "fire_iso": "2026-05-29T01:05:38-04:00",
+    "fire_ts": 1780032074.070566,
+    "fire_iso": "2026-05-29T01:21:14-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
-    "position_at_fire": {
-      "direction": "short",
-      "entry_price": 81.81,
-      "qty": 2,
-      "unrealized_pnl_pct": -0.0002,
-      "minutes_held": 138
-    },
-    "current_price": 81.83,
+    "position_at_fire": null,
+    "current_price": 81.89,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": null,
-      "momentum_pct": null,
-      "rsi": null,
-      "_note": "live-status indicator pipe STALE (P0 18+ fires); price reads $85.23 vs canonical $81.83. BB/StochRSI/vol_ratio downstream of stale price feed = not used. Canonical 4-bar reverse sequence from 04:15 UTC low $81.36: 81.59 / 81.65 / 81.81 / 81.81-forming. 05:00 UTC bar vol ~34301 in first 90sec vs ~4500 avg prior 8 bars = ~7.5x. Reclaim-impulse shape forming."
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.56,
+      "momentum_pct": -0.08,
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -67,24 +60,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Position management. Simulated SHORT @ $81.81 qty=2 (DRY_RUN, framework-tracked). 2.3h held; canonical $81.83 = unrealized ~flat. v2.38 INFORMAL_BREAK_SUBVOL hypothesis SOFT-REFUTED at n=1 per v2.35 pre-stated criterion (next 2 bars 04:30-05:00 UTC failed to make new low below $81.26; both made higher lows: 04:30 low $81.36, 04:45 low $81.55). 45-min reverse impulse $81.36 \u2192 $81.81 on accelerating volume \u2014 05:00 UTC bar shows ~7.5x avg volume + upper-third close pattern = v2.10 RECLAIM_IMPULSE_REQUIREMENT signal forming on reverse side. v2.35 tighter abort (2 consecutive 15m closes > $81.94 + cum vol >= 1.5x) is the structural answer; NOT YET triggered ($81.81 close-so-far < $81.94). v2.34 broader abort (4h close > $82.40) also not triggered. Per cognition-layer separation discipline (founder note-4 C2), HOLD rather than invent narrative-driven exit. EXIT next fire if 05:15 UTC bar also closes > $81.94 + cum vol >= 1.5x baseline. Operational: indicator-pipe staleness P0 persists 4.16% gap (live-status $85.23 vs canonical $81.83), 18+ fires.",
+    "reasoning": "05:00 UTC 15m bar closed $81.96 (>$81.94 v2.35 close-trigger \u2713) on vol 3586 (<<1.5x baseline ~6150 \u2717). One half of v2.35 abort met; vol-half decisively NOT met (single bar at ~0.87x baseline). Crystallized asymmetric pattern: 04:45 had 34680 vol (~8.5x) but failed close above trigger (C=81.80); 05:00 had the close (81.96) but failed vol confirmation. v2.10 RECLAIM_IMPULSE_REQUIREMENT showing borderline EXIT-side behavior \u2014 n=1 forming for symmetric-application question. Simulated SHORT @ $81.81 (DRY_RUN/framework-tracked; position_at_fire null per live-status authoritative rule) now -0.10% on canonical $81.89; partial recovery from prior -0.26% at $82.02 as reverse-impulse stalled below $82.00 resistance. v2.38 INFORMAL_BREAK_SUBVOL remains SOFT-REFUTED at n=1 per v2.36. HOLD per pre-commit: v2.35 requires 2 consecutive closes + cum vol >=1.5x; only one half active. No mid-stream redesign (cognition-layer separation, founder C2). Watch 05:15 UTC bar close for second-leg of v2.35 abort. live-status indicators read off stale price $85.23 (gap $3.34 / 4.07%) \u2014 flagged as P0 19+ fires, indicators carried but interpreted with the staleness caveat.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "v2.35 tighter abort: 2 consecutive 15m closes > $81.94 on cumulative vol >= 1.5x baseline \u2192 EXIT immediately (PRIMARY watch \u2014 close to firing)",
-      "v2.34 broader: 4h close > $82.40 \u2192 cut (back above range_high envelope)",
-      "v2.34 time-cut: 6h elapsed without sustained -0.5% progress (currently 2.3h, peak +0.59% reached but given back; not 6h yet)",
-      "Sustained close above $81.94 trigger close on >=1.5x vol = full envelope reclaim \u2192 cut"
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "long",
-      "entry_price": 81.83,
-      "sl_pct": 0.0058,
-      "tp_pct": 0.007,
+      "entry_price": 81.89,
+      "sl_pct": 0.007,
+      "tp_pct": 0.012,
       "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "unclear",
-      "reasoning_30_words": "If position-naive, the 4-bar reverse uptrend off $81.36 + 7.5x-vol upper-third close on current bar is a C-grade LONG counterfactual (1/4 v0.9: structural soft yes; cohort down+long n=4 +$12.74 WR 75% small-sample-positive; asymmetry no; vol-spike yes but trend-direction transitional). Dialectical tension with held SHORT."
+      "reasoning_30_words": "Reverse impulse vol fired 04:45 (failed close) + 05:00 first reclaim close (failed vol) = partial v2.10 setup. Long counterfactual tests if reverse follow-through materializes with neither half clean."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1585,11 +1573,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 1056,
+    "holds_since_framework": 3,
+    "avg_chars": 1166,
     "since_iso": "2026-05-29T01:05:38-04:00",
     "since_framework_version": "v2.36",
-    "latest_fire_iso": "2026-05-29T01:05:38-04:00"
+    "latest_fire_iso": "2026-05-29T01:21:14-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2491,36 +2479,36 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780024720.0,
-    "updated_iso": "2026-05-28T23:18:40-04:00",
-    "updated_by_fire_iso": "2026-05-28T23:18:40-04:00",
+    "updated_ts": 1780032000.0,
+    "updated_iso": "2026-05-29T01:20:00-04:00",
+    "updated_by_fire_iso": "2026-05-29T01:20:00-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
     "range_low_usd": 80.52,
     "range_high_usd": null,
     "range_active_since_iso": "2026-05-28T12:25:00-04:00",
-    "sweeps_attempted": 5,
+    "sweeps_attempted": 6,
     "last_displacement_iso": "2026-05-28T14:45:00-04:00",
-    "funding_state": "OKX rate 4.60e-5 mildly long-pays-short; next funding 1780041600 (~4.6h away)",
+    "funding_state": "OKX rate 8.16e-5 mildly long-pays-short; next funding 1780041600 (~2.4h away). Slightly elevated from prior 7.78e-5 cycle.",
     "oi_state": "not maintained this cycle; not material to current read",
-    "narrative": "Per v2.31 STATE_NARRATIVE_NO_PREDICTIONS rule: observed/historical only. MATERIAL UPDATE from prior narrative \u2014 cognition_mode transitioned to Inventory Discovery on position-management read. Active simulated SHORT (DRY_RUN) from fire 22:43:30 @ $81.81 qty=2 (B-grade exploratory, 0.35x base), SL @ $82.25 (0.54%), TP target ~$80.61. Canonical spot $81.67 (Coinbase ticker 03:18:11Z). Latest 4 closed 15m bars (UTC) sequence: 02:15 close $81.72 / 02:30 close $81.44 / 02:45 close $81.59 / 03:00 close $81.79 (UP bar O 81.45 / C 81.79, vol 6171 = 1.33x prior bar but still sub-1.5x baseline). 4-bar sustain BELOW v2.10_v0_2 UPPER trigger close $81.94 STILL HOLDS through this UP bar (close $81.79 < $81.94). range_low_usd $80.52 untested (closest approach $81.36 at 02:30 UTC = 1.04% away). SHORT unrealized = (81.81-81.67)/81.81 = +0.17% / +~$0.14/qty (~$0.28 total nominal, not fee-adjusted). Prior fire 23:02 showed +0.45% \u2014 have given back 0.28pp of unrealized to the latest UP bar bounce. INDICATOR-PIPE STALENESS PERSISTS: live-status price=$85.23 vs canonical $81.67 = $3.56 / 4.4% gap; live-status BB/StochRSI/vol_ratio are correspondingly stale. Carrying P0 op-issue. Bot v5.3 is paused so staleness affects only my read.",
+    "narrative": "MATERIAL UPDATE: 05:00 UTC 15m bar CLOSED. O=81.79 / H=82.07 / L=81.78 / C=81.96 / V=3586. v2.35 close-trigger half: C=81.96 > $81.94 trigger \u2713 (1 of 2 consecutive closes needed). v2.35 vol-half: V=3586 < ~1.5x baseline (~6150 using median-9 of 4100). Vol-half DECISIVELY NOT MET on single bar. Cum vol for v2.35 (single bar so far) = 3586 = ~0.87x baseline, far short of 1.5x. The asymmetric pattern crystallized: 04:45 bar had massive 34680 vol (~8.5x baseline) but FAILED to close above $81.94 (C=81.80). 05:00 bar HAD the close (81.96) but FAILED the vol confirmation. This is exactly the v2.10 RECLAIM_IMPULSE_REQUIREMENT pattern showing BORDERLINE behavior on the EXIT side \u2014 n=1 forming for symmetric-application question. Current canonical $81.89 (Coinbase ticker 05:19:06 UTC). Current 05:15 UTC bar in progress (~4min in, no close data yet). Simulated SHORT @ $81.81 qty=2 (DRY_RUN/framework-tracked) now -0.10% unrealized at $81.89 (was -0.26% at $82.02 in prior snapshot \u2014 partial recovery as reverse impulse stalled below $82.00 resistance). Range_low_usd $80.52 still untested; closest approach $81.26 at 04:00 UTC bar low (now $0.63 away). v2.34 broader abort (next 4h close > $82.40): NOT TRIGGERED. v2.38 INFORMAL_BREAK_SUBVOL: SOFT-REFUTED at n=1 per v2.36, no change this fire. INDICATOR-PIPE STALENESS P0 continues: live-status reports $85.23 vs canonical $81.89 = $3.34 / 4.07% gap. 19+ consecutive fires this issue persists.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-28T23:18:40-04:00",
-    "cognition_mode_rationale": "Position open \u2192 managing live risk takes precedence over regime classification. Per Phase B.1 protocol, Inventory Discovery is the correct mode whenever a position exists, regardless of underlying tape character. Will revert to Regime Uncertain on close.",
+    "cognition_mode_rationale": "Position open (simulated SHORT DRY_RUN, framework-tracked) takes precedence over regime classification per Phase B.1 protocol. Will revert to Regime Uncertain on close.",
     "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-28T23:18:40-04:00",
-    "last_gate_check_iso": "2026-05-29T03:12:36.512297+00:00"
+    "last_gate_check_iso": "2026-05-29T05:20:00+00:00"
   },
   "cognition": {
     "mode": "Inventory Discovery",
     "since_iso": "2026-05-28T23:18:40-04:00",
-    "rationale": "Position open \u2192 managing live risk takes precedence over regime classification. Per Phase B.1 protocol, Inventory Discovery is the correct mode whenever a position exists, regardless of underlying tape character. Will revert to Regime Uncertain on close.",
+    "rationale": "Position open (simulated SHORT DRY_RUN, framework-tracked) takes precedence over regime classification per Phase B.1 protocol. Will revert to Regime Uncertain on close.",
     "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-28T23:18:40-04:00",
-    "last_gate_check_iso": "2026-05-29T03:12:36.512297+00:00"
+    "last_gate_check_iso": "2026-05-29T05:20:00+00:00"
   },
   "framework_origins": [
     {
@@ -2565,14 +2553,14 @@
     },
     "last_enter_ts": 1780022939.228757,
     "last_enter_iso": "2026-05-28T22:43:30-04:00",
-    "holds_in_a_row": 14,
+    "holds_in_a_row": 16,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 2.2,
+    "hours_since_last_enter": 2.5,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T05:01:09.603645+00:00",
+    "last_updated_iso": "2026-05-29T05:18:54.348275+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
