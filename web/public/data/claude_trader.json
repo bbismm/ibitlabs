@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780087482,
-  "generated_iso": "2026-05-29T16:44:42-0400",
+  "generated_at": 1780088526,
+  "generated_iso": "2026-05-29T17:02:06-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 407,
+    "decisions_total": 408,
     "actions": {
-      "HOLD": 390,
+      "HOLD": 391,
       "ENTER": 10,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 207,
+      "HOLD_with_counterfactual": 208,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,12 +23,12 @@
     "confidence": {
       "high": 169,
       "medium": 195,
-      "low": 43
+      "low": 44
     },
     "reasoning_chars_avg_all": 1003,
-    "reasoning_chars_avg_last10": 790,
+    "reasoning_chars_avg_last10": 804,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T16:43:00-04:00",
+    "last_fire_iso": "2026-05-29T17:00:00-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,12 +38,12 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780087474.088382,
-    "fire_iso": "2026-05-29T16:43:00-04:00",
+    "fire_ts": 1780088519.646815,
+    "fire_iso": "2026-05-29T17:00:00-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.14,
+    "current_price": 81.97,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -61,19 +61,23 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "low",
-    "reasoning": "v2.52 branch #1 TRIGGERED (19:30 UTC close $82.21 V 2.0x baseline + $0.01 over $82.20) AND IMMEDIATELY INVALIDATED (19:45 UTC close $81.94 V 1.32x). 20:30 in-progress hit high $82.22 then drifted to $82.14 \u2014 double-test of $82.20 rejected but on sub-baseline vol (NO vol confirmation). v0.9 inputs SHORT 2/4: cohort down+short favorable (n=6 +$1.39 WR 83%), structural emerging double-test-as-resistance; asymmetry NO live-status 5/5 symmetric, vol NO sub-baseline rejection bar. Chase entry at $82.14 = $0.04-$0.06 below ideal $82.18-$82.20 retest zone (3rd consecutive chase-vs-retest decline). Mode transition Compression -> Regime Uncertain at trigger event. HOLD. See state.json + reflection v2.53.",
+    "reasoning": "Same baseline as fire 407 (v2.53). 20:45 UTC bar resolved EXACTLY per pre-commit branch #3: close $82.12 V=7320 (0.84x baseline sub-baseline 1.5x trigger) in $81.71-$82.20 corridor. 21:00 UTC opening drift to $81.97 = leak toward lower corridor edge $81.71 ($0.26 below). Range maintained, mode Regime Uncertain unchanged, sweeps_attempted held at 9. Pre-commit lineage advances 14/14 -> 15/15. v0.9 hypothetical SHORT 1/4 (cohort down+short n=6 +$1.39 WR 83% favorable; vol sub-baseline NO; asymmetry stale-pipe-uninformative NO; structural drift-only no displacement NO). Hypothetical LONG 1/4 (cohort favorable only; structural double-test rejected at $82.20 weakens further). Budget $2.10 + threshold normal + 1/4 inputs = blocks B/C; A/S need structural break + retest not present. HOLD with hypothetical SHORT $81.97 per drift-direction. Indicator-pipe staleness P0 day 25: live-status $85.23 vs canonical $81.97 = $3.26/4.0%. Founder notes pending: 0.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "range break below $81.71 vol >= 1.5x baseline -> branch #4 fires, mode reverts Expansion, SHORT becomes A-grade retest candidate $81.85-$81.95",
+      "range break above $82.20 vol >= 1.5x baseline -> branch #1 fires (genuine reclaim, not edge-trigger), mode reverts Expansion, LONG candidate $82.00-$82.10 retest",
+      "corridor drift sub-baseline next bar -> Regime Uncertain ongoing, 15min cadence, no entry"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.14,
-      "sl_pct": 0.002,
-      "tp_pct": 0.0052,
-      "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "tp",
-      "reasoning_30_words": "Double-test of $82.20 just rejected high $82.22 back to $82.14; cohort down+short favorable; but vol sub-baseline on rejection bar means no confirmation; range-bound drift toward $81.71 floor favored."
+      "entry_price": 81.97,
+      "sl_pct": 0.0028,
+      "tp_pct": 0.0027,
+      "predicted_2h_outcome": "drift_sideways",
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "Drift toward lower corridor edge with cohort tailwind but no vol confirmation. Sub-baseline vol implies chop continuation more likely than range break. Lean short on direction-of-drift, low conviction."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1481,11 +1485,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 703,
+    "holds_since_framework": 2,
+    "avg_chars": 830,
     "since_iso": "2026-05-29T16:43:00-04:00",
     "since_framework_version": "v2.53",
-    "latest_fire_iso": "2026-05-29T16:43:00-04:00"
+    "latest_fire_iso": "2026-05-29T17:00:00-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2289,9 +2293,9 @@
     "cognition_mode_since_iso": "2026-05-29T16:43:00-04:00",
     "cognition_mode_rationale": "v2.52 branch #1 trigger fired on 19:30 UTC (close $82.21 V 2.0x baseline) AND immediately invalidated on 19:45 UTC (open $82.21 close $81.94 V 1.32x). Compression signature structurally invalidated: vol 2x baseline on 19:30 + 20:00 + close outside corridor on 19:30 = NOT low info density. But range remains effectively active ($82.20 retested high $82.22 then rejected on 20:30). Range-status ambiguous = Regime Uncertain. 15min cadence on next bar transitions per mode protocol.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 2,
     "last_mode_transition_iso": "2026-05-29T16:43:00-04:00",
-    "last_gate_check_iso": "2026-05-29T20:43:00+00:00",
+    "last_gate_check_iso": "2026-05-29T20:54:45.540243+00:00",
     "canonical_pull_iso": "2026-05-29T20:43:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900+60"
   },
@@ -2300,9 +2304,9 @@
     "since_iso": "2026-05-29T16:43:00-04:00",
     "rationale": "v2.52 branch #1 trigger fired on 19:30 UTC (close $82.21 V 2.0x baseline) AND immediately invalidated on 19:45 UTC (open $82.21 close $81.94 V 1.32x). Compression signature structurally invalidated: vol 2x baseline on 19:30 + 20:00 + close outside corridor on 19:30 = NOT low info density. But range remains effectively active ($82.20 retested high $82.22 then rejected on 20:30). Range-status ambiguous = Regime Uncertain. 15min cadence on next bar transitions per mode protocol.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 2,
     "last_mode_transition_iso": "2026-05-29T16:43:00-04:00",
-    "last_gate_check_iso": "2026-05-29T20:43:00+00:00"
+    "last_gate_check_iso": "2026-05-29T20:54:45.540243+00:00"
   },
   "framework_origins": [
     {
@@ -2347,14 +2351,14 @@
     },
     "last_enter_ts": 1780066787.001375,
     "last_enter_iso": "2026-05-29T10:59:47-04:00",
-    "holds_in_a_row": 18,
+    "holds_in_a_row": 19,
     "exploratory_at_risk_usd_today": 6.84,
     "exploratory_entries_today": 3,
-    "hours_since_last_enter": 5.7,
+    "hours_since_last_enter": 6.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T20:38:59.375077+00:00",
+    "last_updated_iso": "2026-05-29T21:00:02.971747+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
