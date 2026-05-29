@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780047896,
-  "generated_iso": "2026-05-29T05:44:56-0400",
+  "generated_at": 1780048961,
+  "generated_iso": "2026-05-29T06:02:41-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 356,
+    "decisions_total": 357,
     "actions": {
-      "HOLD": 342,
+      "HOLD": 343,
       "ENTER": 8,
       "EXIT": 6
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 167,
+      "HOLD_with_counterfactual": 168,
       "ENTER_C": 2,
       "HOLD_no_plausible": 24,
       "EXIT": 6,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 162,
-      "medium": 156,
+      "medium": 157,
       "low": 38
     },
-    "reasoning_chars_avg_all": 1001,
-    "reasoning_chars_avg_last10": 972,
+    "reasoning_chars_avg_all": 1002,
+    "reasoning_chars_avg_last10": 1005,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T05:44:52-04:00",
+    "last_fire_iso": "2026-05-29T06:01:42-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,18 +38,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780047892.444179,
-    "fire_iso": "2026-05-29T05:44:52-04:00",
+    "fire_ts": 1780048902.0,
+    "fire_iso": "2026-05-29T06:01:42-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.34,
+    "current_price": 82.32,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": 60.4
+      "rsi": 60.4,
+      "_note": "live-status indicator block stale day 25 \u2014 canonical price .32 not .23; indicators apply to stale price"
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,28 +61,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "low",
-    "reasoning": "Canonical $82.34 (live-status pipe $85.23 stale day 25, ignored). Post-SL tape: 09:15 UTC bar broke ceiling $82.37 (C=82.46 on V=3702), but 09:30 UTC partial bar immediately reverted (C=82.33 V=825 = 0.20x baseline so far) suggesting failed acceptance. State.json pause discipline binds: no SHORT in $81.80-$82.55 vicinity without independent reframing \u2014 current $82.34 is dead in that zone. No LONG setup at upper edge (cohort down+long thesis lives at lower edge $81.79, not here). Cognition mode Regime Uncertain awaiting 1-4h resolution (hold > $82.40-$82.50 = uptrend; revert to $81.40-$81.80 mid-range = sideways noise) \u2014 partial 09:30 reversion is suggestive but n=0 confirmed. HOLD.",
+    "confidence": "medium",
+    "reasoning": "State per v2.39 (~33min ago) holds with one update: 09:15 UTC bar wicked range_high .52 (hit SL .45 intra-bar) but reverted \u2014 2 subsequent 15m closes (.36, .34) back below .37 structural ceiling, ticker now .32. Pattern shape = failed-acceptance / sweep-reclaim of the upper edge \u2014 structurally a SHORT setup. BUT v2.39 pause discipline is binding: no SHORT re-entry in .80-.55 vicinity without independent reframing, where the explicitly-named reframe is \"acceptance above .55 then rejection back below\". Current 09:15 wick to .52 NEVER closed above .55 (single bar wick to SL run-out level), so the reframe trigger is NOT met. LONG side: .32 sits mid-range (mid .16), not lower edge (.85-.95) where cohort down+long n=4 +.74 WR 75% would be on-table. No structural LONG trigger formed. HOLD per pause discipline. Cognition_mode Regime Uncertain holds \u2014 n=2 SHORT losses in same range have not been resolved into either regime transition or noise; the post-SL wick + reject is consistent with stop-run within range (noise) but n=1 evidence for that read too. State.json updated: sweeps_attempted 0\u21921. Hypothetical SHORT C-grade counterfactual recorded \u2014 that is the honest directional lean if pause discipline did not bind. Indicator-pipe staleness P0 day 25 continues: live-status .23 vs canonical .32.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [
-      "n/a HOLD"
-    ],
+    "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.34,
-      "sl_pct": 0.008,
-      "tp_pct": 0.013,
-      "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Failed-acceptance fade \u2014 09:15 close-through $82.37 immediately rejected by 09:30 partial reversion to $82.33. Sub-baseline vol thin. C-grade probe only; pause discipline blocks live execution."
+      "entry_price": 82.32,
+      "sl_pct": 0.0036,
+      "tp_pct": 0.0057,
+      "predicted_2h_outcome": "drift_toward_tp",
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "Post-SL wick to $82.52 rejected; 2 consecutive 15m closes back below $82.37 ceiling. Failed-acceptance shape leans SHORT toward range mid/low. SL above $82.55 acceptance level."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780048902.0,
+      "iso": "2026-05-29T06:01:42-04:00",
+      "fire_count": 357,
+      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780048902.0,
+        "fire_iso": "2026-05-29T06:01:42-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.32,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4,
+          "_note": "live-status indicator block stale day 25 \u2014 canonical price .32 not .23; indicators apply to stale price"
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "State per v2.39 (~33min ago) holds with one update: 09:15 UTC bar wicked range_high .52 (hit SL .45 intra-bar) but reverted \u2014 2 subsequent 15m closes (.36, .34) back below .37 structural ceiling, ticker now .32. Pattern shape = failed-acceptance / sweep-reclaim of the upper edge \u2014 structurally a SHORT setup. BUT v2.39 pause discipline is binding: no SHORT re-entry in .80-.55 vicinity without independent reframing, where the explicitly-named reframe is \"acceptance above .55 then rejection back below\". Current 09:15 wick to .52 NEVER closed above .55 (single bar wick to SL run-out level), so the reframe trigger is NOT met. LONG side: .32 sits mid-range (mid .16), not lower edge (.85-.95) where cohort down+long n=4 +.74 WR 75% would be on-table. No structural LONG trigger formed. HOLD per pause discipline. Cognition_mode Regime Uncertain holds \u2014 n=2 SHORT losses in same range have not been resolved into either regime transition or noise; the post-SL wick + reject is consistent with stop-run within range (noise) but n=1 evidence for that read too. State.json updated: sweeps_attempted 0\u21921. Hypothetical SHORT C-grade counterfactual recorded \u2014 that is the honest directional lean if pause discipline did not bind. Indicator-pipe staleness P0 day 25 continues: live-status .23 vs canonical .32.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 82.32,
+          "sl_pct": 0.0036,
+          "tp_pct": 0.0057,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "drift_sideways",
+          "reasoning_30_words": "Post-SL wick to $82.52 rejected; 2 consecutive 15m closes back below $82.37 ceiling. Failed-acceptance shape leans SHORT toward range mid/low. SL above $82.55 acceptance level."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780047892.444179,
@@ -1547,64 +1596,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780009867.745853,
-      "iso": "2026-05-28T19:11:07-04:00",
-      "fire_count": 301,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780009867.745853,
-        "fire_iso": "2026-05-28T19:11:07-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 81.98,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.4,
-          "momentum_pct": -0.08,
-          "rsi": 60.4,
-          "note": "stoch_rsi/rsi from live-status (stale indicator pipe n=15 \u2014 escalation threshold per v2.33); vol_ratio derived from canonical 23:00 UTC partial 3270 vs baseline ~8154"
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Fire 301. Position null. Canonical 15m since v2.33 (22:33 UTC): 22:30 c=$81.82 v=0.64x = FIRST formal close below v2.10_v0_2 UPPER trigger close $81.94, but vol sub-1.5x = does NOT meet v2.37 sharpened fresh-n=1 condition. Maps to v2.33 pre-commit U_R3 (close<$82.00 + vol<1.5x). 22:45 c=$81.92 v=0.53x, 23:00 partial $81.98 v=0.40x = continued sub-baseline drift with exhaustion-bounce shape. v2.33 SHORT lean from 18:33 materialized over 36min (peak $82.53 -> low $81.80 -> partial $81.98). Lineage holds per v2.35 codified rule; lean stays SHORT low-conviction toward range_low $80.52 test. No reflection write \u2014 per v2.33 self-discipline 'next reflection requires paradigm event (range break/regime flip/position open/founder note)' and an incremental UPPER trigger close break is precisely the case v2.33 forbade. State.json: no schema trigger (range_low $80.52 untested, no regime flip, no displacement >1.5%, no sweep crossing maintained range, no position). FLAG: indicator-pipe staleness extends to n=15 = self-rule escalation threshold from v2.33; live-status indicators $85.23 vs canonical $81.98 = $3.25/3.97% gap, persisting 15 consecutive fires. Budget $0.99 << ~$3.40 C-grade at-risk = ENTER hard-blocked regardless of cohort/conviction. Counterfactual record only.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 81.98,
-          "sl_pct": 0.013,
-          "tp_pct": 0.018,
-          "predicted_2h_outcome": "drift_toward_tp",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "UPPER trigger close $81.94 formally broken (sub-1.5x vol, weak break). Down regime + declining vol + sub-baseline drift sequence biases toward range_low $80.52 test. Cohort down+short n=6 +$1.39 WR 83.3% friendly."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 690,
+    "holds_since_framework": 2,
+    "avg_chars": 997,
     "since_iso": "2026-05-29T05:27:11-04:00",
     "since_framework_version": "v2.39",
-    "latest_fire_iso": "2026-05-29T05:44:52-04:00"
+    "latest_fire_iso": "2026-05-29T06:01:42-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2468,36 +2467,36 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780046871,
-    "updated_iso": "2026-05-29T05:27:51-04:00",
-    "updated_by_fire_iso": "2026-05-29T05:27:51-04:00",
+    "updated_ts": 1780048902,
+    "updated_iso": "2026-05-29T06:01:42-04:00",
+    "updated_by_fire_iso": "2026-05-29T06:01:42-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
     "range_low_usd": 81.79,
     "range_high_usd": 82.52,
     "range_active_since_iso": "2026-05-29T05:27:51-04:00",
-    "sweeps_attempted": 0,
+    "sweeps_attempted": 1,
     "last_displacement_iso": "2026-05-29T05:15:00-04:00",
-    "funding_state": "OKX rate ~6.67e-5 mildly long-pays-short. Stable.",
+    "funding_state": "OKX rate ~5.98e-5 mildly long-pays-short. Stable.",
     "oi_state": "not maintained this cycle; not material to current read",
-    "narrative": "Position SHORT @ $81.97 qty=1 STOPPED OUT at hard SL $82.45 intra-bar on 09:15 UTC bar (O=82.31 H=82.52 L=82.31 C=82.38 V=2645). Two confirmations: bar HIGH $82.52 >= SL $82.45 (intra-bar trigger), AND bar CLOSE $82.38 > structural ceiling $82.37 (1st of 2-consec required for soft abort; hard SL fired first). Realized framework PnL: (81.97-82.45)*1*5 = -$2.40 nominal + ~$0.65 RT fee = ~-$3.05 total. Held 1h28min. v2.39 archives v2.38r entry pattern (failed-sweep-reclaim + down+short cohort + vol-confirmation entry) as REJECTED-AT-N1-ATTACHED-OUTCOME. Two consecutive SHORT losses (v2.34 -$5.71 + v2.38r -$3.05 = ~-$8.76) in $81.80-$82.50 vicinity within 7h; cohort down+short historical n=6 +$1.39 -> n=7 -$1.66 (still positive, eroded). Range re-baselined $81.79-$82.52 pending confirmation of new structural read; sweeps_attempted reset 0. Soft-abort vol-gated layer FAILED-TO-FIRE twice (v2.37+this fire) on sub-baseline-vol close-throughs; v2.10 symmetric application to EXIT permanently structurally broken. Cognition_mode: Inventory Discovery -> Regime Uncertain. PAUSE DISCIPLINE: no SHORT re-entry in $81.80-$82.55 vicinity without independent reframing (different cohort signature OR different structural shape). LONGS at lower edge (cohort down+long n=4 +$12.74 WR 75%) remain on-table if setup forms. P0 indicator-pipe staleness day 25+: live-status $85.23 vs canonical $82.38 = $2.85/3.5% gap.",
+    "narrative": "Post-SL audit + 2 fires later. SHORT v2.38r SL'd at $82.45 on 09:15 UTC wick (H=82.52). Three 15m bars since: 09:15 C=82.46 (above ceiling intra-bar, closed below SL trigger), 09:30 C=82.36, 09:45 C=82.34. Ticker now $82.32. Pattern: range_high $82.52 (= SL run-out level) swept on the 09:15 wick, then REJECTED \u2014 2 consecutive 15m closes back below $82.37 structural ceiling. sweeps_attempted now 1 (the 09:15 wick to $82.52). Structurally this is a failed-acceptance / liquidity-grab reversal SHORT setup. BUT v2.39 pause discipline explicitly binds: 'no SHORT re-entry in $81.80-$82.55 vicinity without independent reframing \u2014 different cohort signature OR different structural shape (e.g. acceptance above $82.55 then rejection back below)'. Current wick to $82.52 did NOT close above $82.55, NOT acceptance, trigger NOT met. LONG side: $82.32 mid-range (range mid $82.16), not lower-edge ($81.85-$81.95 zone), no structural LONG trigger. Cohort down+long n=4 +$12.74 WR 75% remains best-cohort if lower-edge setup forms; cohort down+short n=7 -$1.66 eroded after v2.38r. P0 indicator-pipe staleness day 25 continues: live-status $85.23 vs canonical $82.32 = $2.91/3.5% gap.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-29T05:27:51-04:00",
     "cognition_mode_rationale": "Position closed at hard SL. Two consecutive SHORT losses in same range; whether the regime is sideways-holding, transitioning to up, or just delivering n=2 negative noise cannot be resolved at n=2. 1H/4H alignment unread independently; need next 1-4h price action to clarify (hold above $82.40-$82.50 region = uptrend signal; revert to $81.40-$81.80 mid-range = sideways noise).",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 2,
+    "skipped_fires_in_mode": 5,
     "last_mode_transition_iso": "2026-05-29T05:27:51-04:00",
-    "last_gate_check_iso": "2026-05-29T09:38:06.785536+00:00"
+    "last_gate_check_iso": "2026-05-29T09:54:59.672008+00:00"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-29T05:27:51-04:00",
     "rationale": "Position closed at hard SL. Two consecutive SHORT losses in same range; whether the regime is sideways-holding, transitioning to up, or just delivering n=2 negative noise cannot be resolved at n=2. 1H/4H alignment unread independently; need next 1-4h price action to clarify (hold above $82.40-$82.50 region = uptrend signal; revert to $81.40-$81.80 mid-range = sideways noise).",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 2,
+    "skipped_fires_in_mode": 5,
     "last_mode_transition_iso": "2026-05-29T05:27:51-04:00",
-    "last_gate_check_iso": "2026-05-29T09:38:06.785536+00:00"
+    "last_gate_check_iso": "2026-05-29T09:54:59.672008+00:00"
   },
   "framework_origins": [
     {
@@ -2542,14 +2541,14 @@
     },
     "last_enter_ts": 1780041330.0,
     "last_enter_iso": "2026-05-29T03:55:30-04:00",
-    "holds_in_a_row": 0,
+    "holds_in_a_row": 1,
     "exploratory_at_risk_usd_today": 2.21,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 1.8,
+    "hours_since_last_enter": 2.1,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T09:43:22.740898+00:00",
+    "last_updated_iso": "2026-05-29T10:00:16.577080+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
