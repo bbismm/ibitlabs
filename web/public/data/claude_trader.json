@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780061320,
-  "generated_iso": "2026-05-29T09:28:40-0400",
+  "generated_at": 1780061824,
+  "generated_iso": "2026-05-29T09:37:04-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 374,
+    "decisions_total": 375,
     "actions": {
-      "HOLD": 359,
+      "HOLD": 360,
       "ENTER": 9,
       "EXIT": 6
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 179,
+      "HOLD_with_counterfactual": 180,
       "ENTER_C": 2,
       "HOLD_no_plausible": 29,
       "EXIT": 6,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 163,
-      "medium": 173,
+      "medium": 174,
       "low": 38
     },
-    "reasoning_chars_avg_all": 1004,
-    "reasoning_chars_avg_last10": 1133,
+    "reasoning_chars_avg_all": 1005,
+    "reasoning_chars_avg_last10": 1104,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T09:27:41-04:00",
+    "last_fire_iso": "2026-05-29T09:35:00-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,18 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780061261.0,
-    "fire_iso": "2026-05-29T09:27:41-04:00",
+    "fire_ts": 1780061700.0,
+    "fire_iso": "2026-05-29T09:35:00-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": {
       "direction": "short",
       "entry_price": 81.63,
       "qty": 1,
-      "unrealized_pnl_pct": 0.55,
-      "minutes_held": 83
+      "unrealized_pnl_pct": 0.0075,
+      "minutes_held": 90
     },
-    "current_price": 81.18,
+    "current_price": 81.02,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -67,23 +67,24 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Same baseline as fire 09:20. Position SHORT @ 81.63 (framework-tracked) alive; trail SL 81.65 intact (max bar high since trail-move = 13:15 UTC partial 81.31, well below 81.65). Canonical 81.18, unrealized ~+0.55% favorable. Measured-move target 81.20 already tagged at 13:00 UTC L=81.09 per state.json pre-commit STRONG CONTINUATION YES; framework discipline = hold trail through next-floor crystallization, NOT exit at target. 13:15 UTC bar still active (closes 13:30 UTC = 09:30 EDT in ~3min): C=81.22 partial, will resolve pre-stated branch (C<81.20 = CONTINUATION VALIDATED n=2 / C in [81.20,81.40] sub-vol = REVERT-ATTEMPT-WEAK / etc per state.json). HOLD per pre-commit. Indicator-pipe staleness widened again: live-status 85.23 vs canonical 81.18 = 4.05 / 4.99% gap (v2.40 flagged 3.60). market_snapshot block carries live-status values verbatim per state.json convention; reasoning reads canonical. No new founder notes since note-4 1779977169.64. Zero pending claims.",
+    "reasoning": "Pre-commit 13:15 UTC bar (closed 09:30 EDT) resolved REVERT-ATTEMPT-WEAK per state.json discipline: O=81.16 H=81.31 L=81.15 C=81.25 V=4386. C=$81.25 in [.20, .40] AND V=4386 = 0.50x baseline 8687 (<1.0x) -> REVERT-ATTEMPT-WEAK branch fired. Per pre-stated rule: hold trail .65, no mutation, vigilance raised. Trail SL $81.65 untouched (high $81.31 well below). Position SHORT @ $81.63 qty=1 continues: canonical $81.02 (Coinbase ticker 13:34 UTC), unrealized = (81.63 - 81.02) * 5 = +$3.05 nominal pre-fee (+0.75% notional), 90min held. Partial 13:30 UTC bar (closes 13:45 UTC / 09:45 EDT, observed ~09:48 EDT): L=$81.00 mid-bar already breaks prior range_low $81.09 - continuation thesis live, not yet confirmed (bar open). NEW pre-commit for 13:30 UTC close maintained in state.json (5 branches). Indicator-pipe staleness P0 day 25 / fire 32+: live-status $85.23 vs canonical $81.02 = $4.21 / 5.2% gap, widening from $3.96 prior fire; ops escalation already filed via CLAUDE.md (22 scans / ~264h fields absent). market_snapshot block carries live-status values verbatim for schema-completeness; framework reads canonical tape. Cognition_mode Inventory Discovery: managing live risk, not entry-seeking. HOLD per pre-commit discipline.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [
-      "canonical 1m or 15m bar high reclaims 81.65 = trail SL hit, exit at next open",
-      "pre-committed 13:15 UTC C>81.40 single-bar on vol >=1.5x baseline = URGENT REJECTION, soft-abort armed for next bar reclaim of 81.65",
-      "pre-committed single-bar C>=81.65 = TRAIL SL HIT, exit at next open per stated discipline"
+      "Trail SL hit: single-bar close >= $81.65 -> exit at next open",
+      "Soft-abort armed: 2 consecutive 15min closes > $81.65 with vol >= 1.0x baseline (8687) -> exit",
+      "Urgent rejection: single-bar close > $81.40 on vol >= 1.5x baseline -> soft-abort armed for next-bar reclaim of $81.65",
+      "Manual SL invariant: structural ceiling $82.37; if breached, exit regardless"
     ],
     "hypothetical_entry_record": {
-      "implied_grade": "C",
+      "implied_grade": "B",
       "direction": "short",
-      "entry_price": 81.18,
-      "sl_pct": 0.01,
-      "tp_pct": 0.008,
-      "predicted_2h_outcome": "drift_sideways",
+      "entry_price": 81.02,
+      "sl_pct": 0.018,
+      "tp_pct": 0.011,
+      "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "If flat: late-chase short after measured-move target already tagged, sub-baseline vol weakens continuation. Range-build likely 2h, slow drift toward next floor 8h. Down-regime + cohort lean only."
+      "reasoning_30_words": "If flat, B-grade SHORT continuation at $81.02: range_low $81.09 broken intra-bar partial, down regime, sub-baseline vol consistent with prior breakdown character, cohort down+short historically non-worst."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1595,11 +1596,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 10,
-    "avg_chars": 1133,
+    "holds_since_framework": 11,
+    "avg_chars": 1142,
     "since_iso": "2026-05-29T08:04:30-04:00",
     "since_framework_version": "v2.40",
-    "latest_fire_iso": "2026-05-29T09:27:41-04:00"
+    "latest_fire_iso": "2026-05-29T09:35:00-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2460,36 +2461,36 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780060842,
-    "updated_iso": "2026-05-29T09:20:42-04:00",
-    "updated_by_fire_iso": "2026-05-29T09:20:42-04:00",
+    "updated_ts": 1780061640,
+    "updated_iso": "2026-05-29T09:34:00-04:00",
+    "updated_by_fire_iso": "2026-05-29T09:34:00-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
-    "range_low_usd": 81.09,
+    "range_low_usd": 81.0,
     "range_high_usd": 81.4,
     "range_active_since_iso": "2026-05-29T13:00:00+00:00",
     "sweeps_attempted": 2,
     "last_displacement_iso": "2026-05-29T12:30:00+00:00",
-    "funding_state": "OKX rate ~7.86e-5 (mild long-pays-short, slight downtick from 8.01e-5 prior fire). Stable; not material to current read.",
+    "funding_state": "OKX rate ~7.77e-5 (mild long-pays-short, downtick from 7.86e-5 prior fire). Stable; not material to current read.",
     "oi_state": "not maintained this cycle; not material to current read",
-    "narrative": "Pre-commit STRONG CONTINUATION resolved YES on 13:00 UTC bar: O=81.38 H=81.38 L=81.09 C=81.15 V=4251 (0.49x baseline 8687). Close <81.20 floor AND high <81.40 ceiling \u2192 both AND-conditions met \u2192 trail SL .85 \u2192 .65 (entry breakeven .63 + /bin/zsh.02 fee buffer). Position SHORT @ .63 qty=1 lev 0.46x: unrealized +.80/contract = +.80 nominal pre-fee (+0.44%). MFE this leg ~+.70 (13:00 UTC L=.09). Sub-range .20-.40 broken on canonical close; new active band .09-.40 (range_high preserved as .40 = recent ceiling level). Cumulative MFE since entry: +.70/contract = +.50 nominal if I sized 5 contracts (but I am qty=1, so +.70 actualized). NEW pre-commit for 13:15 UTC bar (closes 13:30 UTC = 09:30 EDT, observed by fire ~09:33 or ~09:38 EDT under cadence-gate delay): IF C<.20 on any vol \u2192 CONTINUATION VALIDATED n=2; hold trail .65, await next-floor crystallization. IF C in [.20, .40] on vol <1.0x baseline \u2192 REVERT-ATTEMPT-WEAK; hold trail .65, no mutation, vigilance raised. IF C in [.20, .40] on vol >=1.0x baseline \u2192 REVERT-ATTEMPT-CONVICTION; hold trail .65, soft-abort armed if next bar 2c>.79. IF single-bar close >=.65 \u2192 TRAIL SL HIT, exit at next open per stated discipline. IF C >.40 single-bar on vol >=1.5x baseline \u2192 URGENT REJECTION; soft-abort armed for next bar reclaim of .65. IF C >.79 single-bar on vol >=1.5x baseline (~13030) \u2192 trail .65 catches before this fires; recorded as theoretical for completeness. Indicator-pipe staleness P0 day 25 / fire 31+: live-status .23 vs canonical .27 = .96/4.9% gap (widening from .00 prior fire \u2014 gap consistent with stale-feed thesis, not narrowing). market_snapshot block in decisions.jsonl carries live-status values verbatim for schema-completeness; reasoning reads canonical Coinbase tape directly. Continuing to flag. No new founder notes since note-4 (1779977169.64). Zero pending claims.",
+    "narrative": "Pre-commit 13:15 UTC bar (closed 09:30 EDT) resolved REVERT-ATTEMPT-WEAK per state.json discipline: O=81.16 H=81.31 L=81.15 C=81.25 V=4386. C=$81.25 in [.20, .40] AND V=4386 = 0.50x baseline 8687 (<1.0x) \u2192 REVERT-ATTEMPT-WEAK branch fired. Per pre-stated rule: hold trail .65, no mutation, vigilance raised. Trail SL $81.65 untouched (high $81.31 well below). Position SHORT @ $81.63 qty=1 lev 0.46x continues: current canonical $81.02 (Coinbase ticker 13:34 UTC), unrealized = (81.63 \u2212 81.02) \u00d7 5 = +$3.05 nominal pre-fee (+0.75% notional). MFE this leg ~$0.70/contract intact (13:00 UTC L=$81.09 was prior MFE bar). Held 1h29min. New partial 13:30 UTC bar (closes 13:45 UTC / 09:45 EDT, observed ~09:48 EDT): O=81.25 H=81.25 L=81.00 C=81.12 V=3573 mid-bar. L=$81.00 ALREADY BROKEN below prior range_low $81.09 intra-bar \u2014 continuation thesis live. Range_low extended down to $81.00 in state. NEW pre-commit for 13:30 UTC bar close: IF C<$80.90 on any vol \u2192 CONTINUATION-CONFIRMED n=3; hold trail .65, propose drop trail to $81.40 (preserve $0.23/contract profit ratchet). IF C in [$80.90, $81.20] on vol <1.0x baseline \u2192 DRIFT-DOWN-WEAK continuation; hold trail .65, no mutation. IF C in [$80.90, $81.20] on vol >=1.0x baseline \u2192 DRIFT-DOWN-CONVICTION; hold trail .65, propose drop trail to $81.45. IF C in [$81.20, $81.40] on any vol \u2192 mid-range reversion; hold trail .65, soft-abort armed if next bar 2c>$81.65. IF C >$81.40 single-bar on vol >=1.5x baseline \u2192 URGENT REJECTION; soft-abort armed for next bar reclaim of $81.65. IF single-bar close >=$81.65 \u2192 TRAIL SL HIT, exit at next open. Indicator-pipe staleness P0 day 25 / fire 32+: live-status $85.23 vs canonical $81.02 = $4.21 / 5.2% gap, WIDENING from $3.96/4.9% in 09:20 fire. CLAUDE.md ops escalation already filed (live-status writer fields absent 22 scans / ~264h). market_snapshot block in decisions.jsonl carries live-status values verbatim for schema-completeness; reasoning reads canonical Coinbase tape directly. No new founder notes since note-4 (1779977169.64). Zero pending claims. v2.40 BREAKDOWN entry hypothesis (n=1 attached outcome forming): +$3.05 unrealized at 1h29min held, structurally tracking continuation \u2014 evidence for hypothesis, not yet outcome-resolution.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-05-29T08:04:45-04:00",
-    "cognition_mode_rationale": "Position open (SHORT @ .63 qty=1, framework-tracked). Phase B.1 protocol: never skip a fire while position open. Pre-commit STRONG CONTINUATION resolved YES with authorized trail mutation; live risk management active.",
+    "cognition_mode_rationale": "Position open (SHORT @ $81.63 qty=1, framework-tracked). Phase B.1 protocol: never skip a fire while position open. Pre-commit 13:15 UTC bar resolved cleanly to REVERT-ATTEMPT-WEAK; partial 13:30 UTC bar breaking range_low to $81.00; live risk management active.",
     "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T08:04:45-04:00",
-    "last_gate_check_iso": "2026-05-29T09:20:42-04:00"
+    "last_gate_check_iso": "2026-05-29T09:34:00-04:00"
   },
   "cognition": {
     "mode": "Inventory Discovery",
     "since_iso": "2026-05-29T08:04:45-04:00",
-    "rationale": "Position open (SHORT @ .63 qty=1, framework-tracked). Phase B.1 protocol: never skip a fire while position open. Pre-commit STRONG CONTINUATION resolved YES with authorized trail mutation; live risk management active.",
+    "rationale": "Position open (SHORT @ $81.63 qty=1, framework-tracked). Phase B.1 protocol: never skip a fire while position open. Pre-commit 13:15 UTC bar resolved cleanly to REVERT-ATTEMPT-WEAK; partial 13:30 UTC bar breaking range_low to $81.00; live risk management active.",
     "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-05-29T08:04:45-04:00",
-    "last_gate_check_iso": "2026-05-29T09:20:42-04:00"
+    "last_gate_check_iso": "2026-05-29T09:34:00-04:00"
   },
   "framework_origins": [
     {
@@ -2534,14 +2535,14 @@
     },
     "last_enter_ts": 1780056512.81317,
     "last_enter_iso": "2026-05-29T08:04:45-04:00",
-    "holds_in_a_row": 9,
+    "holds_in_a_row": 10,
     "exploratory_at_risk_usd_today": 4.05,
     "exploratory_entries_today": 2,
-    "hours_since_last_enter": 1.3,
+    "hours_since_last_enter": 1.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-29T13:26:03.558413+00:00",
+    "last_updated_iso": "2026-05-29T13:33:54.379413+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
