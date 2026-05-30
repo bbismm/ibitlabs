@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780178672,
-  "generated_iso": "2026-05-30T18:04:32-0400",
+  "generated_at": 1780179761,
+  "generated_iso": "2026-05-30T18:22:41-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 487,
+    "decisions_total": 488,
     "actions": {
-      "HOLD": 469,
+      "HOLD": 470,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 286,
+      "HOLD_with_counterfactual": 287,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 176,
-      "medium": 257,
+      "medium": 258,
       "low": 54
     },
     "reasoning_chars_avg_all": 957,
-    "reasoning_chars_avg_last10": 518,
+    "reasoning_chars_avg_last10": 563,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T18:03:38-0400",
+    "last_fire_iso": "2026-05-30T18:21:25-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,18 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780178669.0877209,
-    "fire_iso": "2026-05-30T18:03:38-0400",
+    "fire_ts": 1780179685.0,
+    "fire_iso": "2026-05-30T18:21:25-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.74,
+    "current_price": 82.6,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
+      "vol_ratio": 3.74,
       "momentum_pct": -0.08,
-      "rsi": null
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,19 +61,23 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Continuation of fire 17:47 baseline. v2.63_DRIFT_ACCEPTANCE state sustained ~8h. 22:00 UTC bar opened 82.90 -> wicked $82.74 in 3.5min (in-progress, vol 918 ~partial); last closed 21:45 UTC $82.90. Still inside drift-band $82.65-$82.88, no close-back-below $82.40, no v2.10 vol-confirmation fire (recalibrated baseline_v96=2789, threshold ~4184; recent bars 1378-3601). State materially unchanged since 17:15 snapshot. v2.64 reflection 49min ago; cadence (>=4h) not met, no surprise trigger. HOLD continuation.",
+    "reasoning": "Material change vs fire 486: 22:00 UTC bar fired ~3.74x baseline (vol 10429 vs 2789) on wick down to $82.43 \u2014 first vol-confirmed test of contested floor $82.40 in this drift-acceptance episode. But (a) 16 bars past 14:15 UTC counter-displacement = outside v2.10 4-bar window, (b) close $82.63 sits mid-range of bar (~42% from low), not outer-third, so v2.10 declines on the close criterion anyway. Drift-acceptance state v2.63 still holds \u2014 no close-back-below $82.40. Cohort down+short remains favorable (n=6 +$1.39 WR 83%) but no rule fires. Hypothetical short C-grade lean recorded; framework binding = HOLD. Per v2.64 open question this is the 2nd post-window vol expansion in this episode \u2014 evidence accruing toward window-adequacy revisit, still below 3+ threshold across 2+ episodes.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "v2.10 full-pass actually fires (vol>=1.5x + outer-third close within 4 bars of a fresh counter-displacement)",
+      "Clean close back below $82.40 on a 15m candle \u2192 v2.63 failed-acceptance resolution + reversion thesis activates",
+      "Price breaks above $82.88 with vol confirmation \u2192 drift-acceptance resolves up, short lean invalidated"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.74,
-      "sl_pct": 0.012,
-      "tp_pct": 0.01,
+      "entry_price": 82.6,
+      "sl_pct": 0.015,
+      "tp_pct": 0.007,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Cohort down+short historically +EV (n=6, +$1.39, WR 83%). Drift-acceptance without vol conviction typically mean-reverts toward $82.40 floor. C-grade \u2014 no v2.10 confirmation, weak informational probe."
+      "reasoning_30_words": "Vol-confirmed wick to contested floor + mid-range close = exhaustion-of-drift signal. Cohort down+short favorable. But R:R 0.47 fails v2.60_RR; explicit C-grade probe acknowledgment only."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1641,11 +1645,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 608,
+    "holds_since_framework": 5,
+    "avg_chars": 644,
     "since_iso": "2026-05-30T17:14:47-04:00",
     "since_framework_version": "v2.64",
-    "latest_fire_iso": "2026-05-30T18:03:38-0400"
+    "latest_fire_iso": "2026-05-30T18:21:25-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2545,41 +2549,41 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780175718,
-    "updated_iso": "2026-05-30T17:15:18-04:00",
-    "updated_by_fire_iso": "2026-05-30T17:15:18-04:00",
+    "updated_ts": 1780179685,
+    "updated_iso": "2026-05-30T18:21:25-04:00",
+    "updated_by_fire_iso": "2026-05-30T18:21:25-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0.0,
     "range_low_usd": 81.77,
     "range_high_usd": 82.4,
     "range_active_since_iso": "2026-05-30T04:30:00+00:00",
-    "sweeps_attempted": 25,
+    "sweeps_attempted": 26,
     "last_displacement_iso": "2026-05-30T14:15:00+00:00",
-    "funding_state": "OKX 6.95e-5 (mild positive; immaterial)",
+    "funding_state": "OKX 6.42e-5 (mild positive; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "17:13 EDT fire. v2.64 cadence reflection written this fire. v2.63_DRIFT_ACCEPTANCE state sustained ~7h since 14:15 UTC. Canonical $82.88 (21:00 UTC close). Last 7 bars $82.73-$83.02 on sub-2x vol. baseline_v96 recalibrated 3020->2789 (-7.6%/1.75h). 18:15 UTC (5726, ~2.05x new baseline) and 19:00 UTC (5790, ~2.08x) cross new 1.5x threshold but sit 16-18 bars post-14:15-displacement = outside v2.10 4-bar window, correctly no fire. No close-back-below $82.40. Indicator-pipe gap $2.35/2.76%, narrowing within band. Hypothetical lean if forced: short C-grade \u2014 cohort down+short (n=6 +$1.39 WR 83%) + drift-without-vol-conviction typically mean-reverts. Watch unchanged: (a) fresh in-window v2.10 full-pass, (b) close back below $82.37, (c) displacement >1.5%/15min w/ vol.",
+    "narrative": "18:21 EDT fire. Material change vs 17:15 snapshot: 22:00 UTC bar fired vol 10429 (~3.74x stale baseline 2789, ~3.4x with new bar in window) on wick down to $82.43 \u2014 FIRST vol-confirmed test of contested floor $82.40 in this drift-acceptance episode. But (a) 16 bars past 14:15 UTC counter-displacement = outside v2.10 4-bar window, (b) close $82.63 \u2248 mid-range of bar (42% from low), not outer-third \u2192 v2.10 declines on the close criterion anyway. sweeps_attempted 25\u219226. Drift-acceptance v2.63 state still holds (no close-back-below $82.40). 22:15 UTC partial bar o=82.63 c=82.60 small (vol 314) \u2014 drifting slightly lower but not decisive. Canonical $82.60 vs live-status $85.23 staleness gap $2.63 / 3.09%. baseline_v96 will recalibrate UP on next gate check as 10429 enters median window. Open question v2.64: this is 2nd post-window vol expansion in this episode (after 18:15+19:00 UTC) \u2014 evidence accruing toward 4-bar-window-adequacy revisit; still below 3+ instances across 2+ episodes trigger. Hypothetical lean if forced: short C-grade \u2014 exhaustion-of-drift signal + cohort down+short favorable, but R:R 0.47 fails v2.60_RR. Watch unchanged: (a) fresh in-window v2.10 full-pass on a new counter-displacement, (b) clean close back below $82.40, (c) decisive break above $82.88 with vol.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
-    "cognition_mode_rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution sustained ~7h. Neither vol-confirmation (v2.10) nor failed-acceptance (close-back-below) has fired.",
+    "cognition_mode_rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution; first vol-confirmed floor test 22:00 UTC adds resolution-pending pressure but no transition trigger yet.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 135,
+    "skipped_fires_in_mode": 138,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T21:58:07.420442+00:00",
-    "canonical_pull_iso": "2026-05-30T21:00:00+00:00",
+    "last_gate_check_iso": "2026-05-30T22:14:35.837145+00:00",
+    "canonical_pull_iso": "2026-05-30T22:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
     "baseline_v96_ts": 1780174800,
-    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes)"
+    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes); STALE \u2014 22:00 UTC bar 10429 not yet in window, expect upward drift on next gate check"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-30T00:55:40-0400",
-    "rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution sustained ~7h. Neither vol-confirmation (v2.10) nor failed-acceptance (close-back-below) has fired.",
+    "rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution; first vol-confirmed floor test 22:00 UTC adds resolution-pending pressure but no transition trigger yet.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 135,
+    "skipped_fires_in_mode": 138,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T21:58:07.420442+00:00"
+    "last_gate_check_iso": "2026-05-30T22:14:35.837145+00:00"
   },
   "framework_origins": [
     {
@@ -2624,14 +2628,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 69,
+    "holds_in_a_row": 70,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 18.3,
+    "hours_since_last_enter": 18.5,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-30T22:03:23.196643+00:00",
+    "last_updated_iso": "2026-05-30T22:19:51.015550+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
