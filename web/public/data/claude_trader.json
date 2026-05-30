@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780151627,
-  "generated_iso": "2026-05-30T10:33:47-0400",
+  "generated_at": 1780152646,
+  "generated_iso": "2026-05-30T10:50:46-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 460,
+    "decisions_total": 461,
     "actions": {
-      "HOLD": 442,
+      "HOLD": 443,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 259,
+      "HOLD_with_counterfactual": 260,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 174,
-      "medium": 237,
+      "medium": 238,
       "low": 49
     },
     "reasoning_chars_avg_all": 974,
-    "reasoning_chars_avg_last10": 547,
+    "reasoning_chars_avg_last10": 575,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T10:33:00-0400",
+    "last_fire_iso": "2026-05-30T10:50:42-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,16 +38,16 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780151624.037014,
-    "fire_iso": "2026-05-30T10:33:00-0400",
+    "fire_ts": 1780152642.182773,
+    "fire_iso": "2026-05-30T10:50:42-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.59,
+    "current_price": 82.52,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.551,
-      "vol_ratio": 1.11,
+      "stoch_rsi": 0.5506,
+      "vol_ratio": 0.98,
       "momentum_pct": -0.08,
       "rsi": 60.4
     },
@@ -61,19 +61,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "First close-above $82.40 of the range: 14:15 UTC bar C=$82.55 on vol 4857 = 1.11x baseline 4373. Forming 14:30 UTC sustains at $82.59. Structurally different from 3 prior sub-baseline wick attempts (07:00/11:30/13:15 UTC, 0.46-0.58x). But v2.10_RECLAIM_IMPULSE_REQUIREMENT explicitly gates this case: vol must be >=1.5x for confirmation; 1.11x FAILS. v2.62 framework applies \u2192 HOLD. Taking the trade to 'test v2.10' would contradict the rule itself (founder note-4/C2: execution applies frameworks, doesn't redesign mid-fire). State.json updated with range-break narrative; range definition held pending vol-confirmation in next 1-2 bars.",
+    "reasoning": "State essentially unchanged since 10:33 fire (per state.json narrative). 14:30 UTC bar closed C=82.56 on V=4280=0.98x baseline 4373 (sub-1.5x, FAILS v2.10 confirmation; weaker than the 14:15 UTC 1.11x break). 14:45 UTC forming at .52 \u2014 failing to extend higher despite 30min above .40. Per v2.62 framework: v2.10 full-pass NECESSARY for B/C-grade reclaim ENTER on counter-displacement; weak breakout = default HOLD. cohort=down+long would be favorable historically (n=4 +.74 WR 75%), but rule precedence holds. One bar left in 4-bar v2.10 confirmation window (15:00 UTC). HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "long",
-      "entry_price": 82.59,
-      "sl_pct": 0.0033,
-      "tp_pct": 0.0044,
+      "entry_price": 82.52,
+      "sl_pct": 0.0021,
+      "tp_pct": 0.0047,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_toward_sl",
-      "reasoning_30_words": "Close above $82.40 on 1.11x vol fails v2.10 confirmation. In down regime, weak breakouts typically retest range edge, then fade. Lean: drift back toward $82.40, possibly retest $81.77."
+      "predicted_8h_outcome": "unclear",
+      "reasoning_30_words": "first-close-above .40 with sub-1.5x vol; if forced lean LONG: entry .52 SL .35 (below reclaimed boundary) TP .91 (next structural) R:R 2.3:1 but v2.10 unconfirmed; weak conviction"
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1626,11 +1626,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 6,
-    "avg_chars": 610,
+    "holds_since_framework": 7,
+    "avg_chars": 605,
     "since_iso": "2026-05-30T09:07:40-0400",
     "since_framework_version": "v2.62",
-    "latest_fire_iso": "2026-05-30T10:33:00-0400"
+    "latest_fire_iso": "2026-05-30T10:50:42-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2683,9 +2683,9 @@
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
     "cognition_mode_rationale": "Contested range $81.77-$82.40 with first close-above on sub-1.5x vol. Either v2.10 correctly gates failed breakout or rule over-specifies. Next 1-2 bars resolve.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 78,
+    "skipped_fires_in_mode": 80,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T14:33:00+00:00",
+    "last_gate_check_iso": "2026-05-30T14:43:50.431077+00:00",
     "canonical_pull_iso": "2026-05-30T14:30:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 4373,
@@ -2697,9 +2697,9 @@
     "since_iso": "2026-05-30T00:55:40-0400",
     "rationale": "Contested range $81.77-$82.40 with first close-above on sub-1.5x vol. Either v2.10 correctly gates failed breakout or rule over-specifies. Next 1-2 bars resolve.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 78,
+    "skipped_fires_in_mode": 80,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T14:33:00+00:00"
+    "last_gate_check_iso": "2026-05-30T14:43:50.431077+00:00"
   },
   "framework_origins": [
     {
@@ -2744,14 +2744,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 42,
+    "holds_in_a_row": 43,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 10.7,
+    "hours_since_last_enter": 11.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-30T14:31:26.782014+00:00",
+    "last_updated_iso": "2026-05-30T14:49:06.253460+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
