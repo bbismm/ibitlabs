@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780116966,
-  "generated_iso": "2026-05-30T00:56:06-0400",
+  "generated_at": 1780118020,
+  "generated_iso": "2026-05-30T01:13:40-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 426,
+    "decisions_total": 427,
     "actions": {
-      "HOLD": 408,
+      "HOLD": 409,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 225,
+      "HOLD_with_counterfactual": 226,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 172,
-      "medium": 207,
+      "medium": 208,
       "low": 47
     },
     "reasoning_chars_avg_all": 1000,
-    "reasoning_chars_avg_last10": 808,
+    "reasoning_chars_avg_last10": 792,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T00:56:00-04:00",
+    "last_fire_iso": "2026-05-30T01:13:34-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,18 +38,19 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780116960.297459,
-    "fire_iso": "2026-05-30T00:56:00-04:00",
+    "fire_ts": 1780118014.997062,
+    "fire_iso": "2026-05-30T01:13:34-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.2,
+    "current_price": 82.39,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": 60.4
+      "rsi": 60.4,
+      "_note": "live-status pipeline ~3.4% stale ($85.23 reported vs canonical Coinbase $82.39); zones useful, absolute price taken from canonical pull"
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,26 +61,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "high",
-    "reasoning": "Live-status price $85.23 STALE (3.7% gap); canonical Coinbase $82.20 (04:45 UTC forming bar). Post-v2.58 SHORT target hit at $82.10 (40min trade), 04:30 UTC printed vol-confirmed sweep-of-$81.77-and-reclaim (V=9430/1.81x baseline, close $82.06 upper-third) = v2.10 FULL PASS for LONG opposite direction. v0.9 inputs LONG 3/4 nominal (cohort+vol+structural YES, asymmetry NO) \u2014 but new v2.60_RR_REGIME_ALIGNMENT gate (codified this fire's reflection) blocks: structural SL below swept low $81.70 gives 0.61% stop; conservative TP $82.40 = R:R 0.4:1; aggressive TP $82.91 = R:R 1.4:1 (under 1.5:1 threshold). Regime-against LONG in sustained down regime fails R:R economics despite valid v2.10 signal. Also tests v2.59_POST_TARGET_HOLD candidate at ~1h after target hit. cognition_mode transitioned Expansion \u2192 Regime Uncertain (bidirectional v2.10 in 1.5h, contested $81.77-$82.40 range). HOLD with hypothetical_entry_record (LONG) for calibration. Budget $7.58 remaining; 9 holds in row; not forced.",
+    "confidence": "medium",
+    "reasoning": "Fresh canonical: 05:00 UTC closed O=$82.21 H=$82.62 L=$82.11 C=$82.39 V=11664 (2.24x baseline 5197). Vol-confirmed wick above range_high $82.40 to $82.62 + close $82.39 in mid-third (upper-third boundary $82.45) = v2.10 SPLIT-GATE FAIL for LONG. Split-gate lineage (n=1 prior 21:30 EDT HOLD-vindicated) = HOLD. v2.60_RR_REGIME_ALIGNMENT independently blocks: regime-against LONG R:R structural SL $81.70 / TP $82.91 = 0.75 (< 1.5 gate). v2.59_POST_TARGET_HOLD discipline still binding (1.7h since $82.10 target hit). sweeps_attempted 16->17 (failed-N-acceptance at $82.40-$82.62). Holds_in_a_row 9->10. Budget $7.58 remaining today, forced_exploration_due False, threshold_state normal. Mode Regime Uncertain reinforced (3rd HOLD in mode, bidirectional v2.10 firings continuing). Sameness IS the read: contested range $81.77-$82.40, no decisive directional commitment.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "long",
-      "entry_price": 82.2,
-      "sl_pct": 0.0061,
-      "tp_pct": 0.0024,
+      "direction": "short",
+      "entry_price": 82.39,
+      "sl_pct": 0.0028,
+      "tp_pct": 0.0075,
       "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "unclear",
-      "reasoning_30_words": "v2.10 full-pass LONG on 04:30 sweep+reclaim from $81.77; regime-against; if forced, lean north toward $82.40 broken-corridor-resistance but expect failure to fully reclaim"
+      "predicted_8h_outcome": "drift_sideways",
+      "reasoning_30_words": "Regime-aligned short; cohort down+short +$1.39 n=6 WR 83% favorable; range floor $81.77 target; 05:00 vol-confirmed N-test failed-acceptance = bearish micro-evidence. Not full-pass v2.10 SHORT (mid-third close)."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780118014.997062,
+      "iso": "2026-05-30T01:13:34-0400",
+      "fire_count": 427,
+      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780118014.997062,
+        "fire_iso": "2026-05-30T01:13:34-0400",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.39,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4,
+          "_note": "live-status pipeline ~3.4% stale ($85.23 reported vs canonical Coinbase $82.39); zones useful, absolute price taken from canonical pull"
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Fresh canonical: 05:00 UTC closed O=$82.21 H=$82.62 L=$82.11 C=$82.39 V=11664 (2.24x baseline 5197). Vol-confirmed wick above range_high $82.40 to $82.62 + close $82.39 in mid-third (upper-third boundary $82.45) = v2.10 SPLIT-GATE FAIL for LONG. Split-gate lineage (n=1 prior 21:30 EDT HOLD-vindicated) = HOLD. v2.60_RR_REGIME_ALIGNMENT independently blocks: regime-against LONG R:R structural SL $81.70 / TP $82.91 = 0.75 (< 1.5 gate). v2.59_POST_TARGET_HOLD discipline still binding (1.7h since $82.10 target hit). sweeps_attempted 16->17 (failed-N-acceptance at $82.40-$82.62). Holds_in_a_row 9->10. Budget $7.58 remaining today, forced_exploration_due False, threshold_state normal. Mode Regime Uncertain reinforced (3rd HOLD in mode, bidirectional v2.10 firings continuing). Sameness IS the read: contested range $81.77-$82.40, no decisive directional commitment.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 82.39,
+          "sl_pct": 0.0028,
+          "tp_pct": 0.0075,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "drift_sideways",
+          "reasoning_30_words": "Regime-aligned short; cohort down+short +$1.39 n=6 WR 83% favorable; range floor $81.77 target; 05:00 vol-confirmed N-test failed-acceptance = bearish micro-evidence. Not full-pass v2.10 SHORT (mid-third close)."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1780116960.297459,
@@ -1449,52 +1500,14 @@
           "Indicator-pipe staleness P0 day 25 / fire ~55+ in current session. Gap $3.27/4.0%, narrowed slightly. No structural claim about ops attention; flagging continues."
         ]
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780082270.0,
-      "iso": "2026-05-29T15:17:50-04:00",
-      "fire_count": 405,
-      "summary": "Framework v2.51 written (trigger: surprise:branch_3_resolved_AND_mode_transition_expansion_to_regime_uncertain)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780082270.0,
-        "iso": "2026-05-29T15:17:50-04:00",
-        "fire_count": 405,
-        "balance_usd": 894.08,
-        "version_tag": "v2.51",
-        "trigger": "surprise:branch_3_resolved_AND_mode_transition_expansion_to_regime_uncertain",
-        "what_im_trying": "v2.50 pre-commit branch #3 RESOLVED on 19:00 UTC bar close: C=$81.77 V=9902 = 1.14x baseline (~8700) sub-baseline 1.5x trigger, close in corridor lower-edge ($81.71-$82.20). All three trigger conditions of branch #3 (vol <1.5x baseline + close in corridor) met simultaneously. 19:15 UTC bar in-progress at $81.76-$81.78 confirms drift continuation, not directional structural move. failed-Wyckoff-acceptance-reclaim 2-axis state unchanged: cycle n=1.5-DEMOTED (v2.50); extension n=0/2-FAILED. Mode discipline this fire: COGNITION_MODE TRANSITION Expansion -> Regime Uncertain at the trigger condition exactly per v2.50's pre-commit. 19min in Expansion this cycle (14:58 -> 15:17). Decision this fire: HOLD with hypothetical SHORT (mild, broken-floor-as-resistance lean), bilateral acceptable. Budget $2.10 remaining blocks B/C ENTERs; no A/S structural conviction available (1/4 v0.9 inputs for SHORT, 0/4 for LONG).",
-        "whats_working": "(a) Pre-commit lineage advances 12/12 (v2.50) -> 13/13 (this fire). v2.50 branch #3 fired EXACTLY as written: sub-baseline vol + close-in-corridor + drift continuation = transition trigger. Branch decomposition continues as the most reliable epistemic surface across the chain. (b) Anti-mode-persistence-anchoring discipline operating in BOTH directions across 3 transitions in 40 minutes: Compression->Expansion at 14:58 (v2.50, range break with vol), Expansion->Regime Uncertain at 15:17 (this fire, vol decay + drift continuation). Mode is tracking real info density, not anchored. (c) Symmetric chase-vs-retest discipline test n=1 partial-resolution: v2.50 declined chase SHORT at $81.94; current $81.78 = $0.16 below would-be entry. Per contract_size=5 qty=2 math: gross ~$1.60, fees ~$1.31, net ~$0.29 had I chased \u2014 discipline mildly punished but trivially. Test is NOT yet resolved either way (retest to $82.30-$82.45 still possible in next 1-2 bars; continuation lower past $81.50 without retest would also be possible). Keeping as open test.",
-        "whats_failing": "(a) Mode-cycling observation: 3 cognition_mode transitions in 40 minutes (Compression -> Expansion -> Regime Uncertain). v2.50 open_question already flagged this: 'could two near-back-to-back transitions suggest a third mode is the better resting state during transitional periods?' Now n=3 transitions. The ontology is FROZEN until 2026-06-25 per Phase B.1 founder constraint \u2014 I CANNOT propose a new mode. But the pattern is observable and worth carrying forward. Tracking as a candidate-for-2026-06-25-review issue, not as a current change-request. Possible alternate framing within existing ontology: 'Regime Uncertain' might be the correct resting state for the entire window since the 18:45 UTC range break, with Expansion being a fleeting intra-event mode rather than a 30-90min sustained posture. Will judge by whether this Regime Uncertain transition sticks. (b) Hypothesis-CONFIRMED promotion gate proposal from v2.50 (>=4 consecutive 15min bars survival = 1h) has no field-test yet \u2014 current cycle was already demoted in v2.50 before the gate could apply. Carrying forward as deferred field-test. (c) Indicator-pipe staleness P0 day 25: live-status $85.23 vs canonical ~$81.78 = $3.45/4.2%. Gap continues to widen on directional moves (v2.48 $2.44 -> v2.49 $2.64 -> v2.50 $3.29 -> now $3.45). Consistent with stale-pull mechanism (anchor lags real price). No ops-attention claim.",
-        "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim 2-axis hypothesis state unchanged from v2.50: cycle n=1.5-DEMOTED; extension n=0/2-FAILED. The 19:00 UTC sub-baseline-vol close at corridor lower-edge IS the aftermath, not a new n. No further demotion warranted. (b) COGNITION_MODE TRANSITION: Expansion (since 14:58 EDT, 19min) -> Regime Uncertain. Rationale: sub-baseline vol (1.14x) + close-in-corridor + drift continuation = mode signature decayed within single cycle. 15min cadence on transitions; wrapper invariant-safety still bypasses on position/regime/range/displacement. Will revert to Compression if vol stays sub-baseline 60+min without structural event; or to Expansion if structural move re-emerges. (c) NEW pre-commit lineage for 19:30 UTC bar close (~13min from now). Equal-weight branches per anti-lean-anchoring: (1) IF 19:30 closes <$81.71 vol >=1.5x baseline (~13000) lower-third -> downside continuation confirmed, cycle demoted to n=1 (full demotion, acceptance failed AND new lower range), structural read becomes downside trend continuation, mode reverts Expansion; A-grade SHORT candidate at $81.85-$82.00 retest if forms, budget A/S not charged. (2) IF 19:30 closes >$82.20 vol >=1.5x baseline upper-third -> reclaim re-attempt #3 confirmed (this becomes sweep #9), branch #3 lineage from v2.50 reactivates; cycle promotion path back to n=2.5; A-grade LONG candidate at $82.00-$82.10 retest if forms. (3) IF 19:30 closes in $81.71-$82.20 corridor sub-baseline vol -> Regime Uncertain confirmed for another cycle; if 2nd consecutive sub-baseline corridor close, transition to Compression (1h heartbeat cadence). (4) IF 19:30 closes outside corridor sub-baseline vol -> weak signal, HOLD with prepared bilateral. (d) Symmetric chase-vs-retest test status: PENDING. Discipline mildly-punished if continuation continues without retest; discipline rewarded if retest to $82.30-$82.45 forms in next 1-2 bars; trivial-either-way at current prices. Will judge at 19:45-20:00 UTC. (e) Budget unchanged: $2.10 remaining, threshold normal, forced_exploration False. UTC rollover ~4h45m. B/C ENTERs blocked; A/S require structural conviction not present at retest pricing.",
-        "edits_from_prior": [
-          "COGNITION_MODE TRANSITION: Expansion (since 14:58 EDT, 19min) -> Regime Uncertain. Triggered exactly at v2.50 branch #3 pre-committed condition. 15min cadence on transitions; wrapper invariant-safety bypasses on structural events.",
-          "Pre-commit lineage: 12/12 (v2.50) -> 13/13 (this fire). v2.50 branch #3 fired EXACTLY: 19:00 UTC close $81.77 V=9902 (1.14x baseline sub-baseline 1.5x trigger) in corridor lower-edge.",
-          "failed-Wyckoff-acceptance-reclaim 2-axis hypothesis state UNCHANGED from v2.50: cycle n=1.5-DEMOTED; extension n=0/2-FAILED. Sub-baseline-vol corridor-close is aftermath, not new n.",
-          "Mode-cycling pattern observation: 3 transitions in 40 minutes (Compression->Expansion->Regime Uncertain). Carrying forward as candidate-for-2026-06-25-review (ontology frozen until then). Possible alternate within-ontology framing: Regime Uncertain may be the correct sustained mode for the broader range-break event, with Expansion as fleeting intra-event.",
-          "Symmetric chase-vs-retest discipline test n=1 PARTIAL RESOLUTION: v2.50 declined SHORT chase at $81.94; current $81.78 = $0.16 below entry, would have been ~$0.29 net win after fees. Mild discipline punishment if continuation persists; full test pending 19:45-20:00 UTC.",
-          "Wick-as-data bias counter UNCHANGED at 5 instances. v2.49 commitment: if no 6th by v2.51-v2.52, downgrade to spot-observation. This fire (v2.51) did NOT compound. One more fire (v2.52) without compounding = downgrade.",
-          "Range maintained: $81.71-$82.20 active from v2.50. 19:00 UTC close $81.77 within range. Sweeps_attempted held at 8 (the v2.50 break was the previous structural sweep; subsequent drift does not advance counter).",
-          "Indicator-pipe gap widened to $3.45/4.2% (live-status $85.23 vs canonical ~$81.78). Consistent with stale-pull mechanism on directional move. No ops-attention claim."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Mode-cycling pattern at n=3 transitions in 40min: is the immediate-transition discipline tracking real info density correctly, OR is the ontology missing a 'transitional / event-resolution' mode that would absorb these brief cycles into a single sustained posture? Frozen until 2026-06-25 per Phase B.1; tracking only. If 6+ transitions accumulate in <2h without resolving into a single sustained mode by 2026-06-25, surface to founder as candidate ontology-review issue.",
-          "Will Regime Uncertain stick this time (>= 60min sustained) or revert quickly to Expansion/Compression? Previous Regime Uncertain at 14:14:55 lasted 22min before transitioning to Compression. If this RU instance also lasts <30min, the 'sustained Regime Uncertain might be the correct framing' hypothesis weakens.",
-          "Symmetric chase-vs-retest discipline test PENDING. Best resolution: retest to $82.30-$82.45 forms in next 1-2 bars (discipline rewarded n=2 symmetric); worst: continuation past $81.50 without retest (discipline punished, very mild given trivial PnL window). Will judge at 19:45-20:00 UTC.",
-          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4, 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-v2.43 chain per state narrative. Zero pending.",
-          "Hypothesis-CONFIRMED promotion gate (>=4 consecutive 15min bars / 1h survival) proposed in v2.50 has no field-test yet. Will field-test on next cycle candidate that reaches promotion criteria. Deferred until next material cycle event."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 999,
+    "holds_since_framework": 2,
+    "avg_chars": 933,
     "since_iso": "2026-05-30T00:55:11-04:00",
     "since_framework_version": "v2.60",
-    "latest_fire_iso": "2026-05-30T00:56:00-04:00"
+    "latest_fire_iso": "2026-05-30T01:13:34-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2277,28 +2290,28 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780116940.0246851,
-    "updated_iso": "2026-05-30T00:55:40-0400",
-    "updated_by_fire_iso": "2026-05-30T00:55:40-0400",
+    "updated_ts": 1780117992.90334,
+    "updated_iso": "2026-05-30T01:13:12-0400",
+    "updated_by_fire_iso": "2026-05-30T01:13:12-0400",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0.0,
     "range_low_usd": 81.77,
     "range_high_usd": 82.4,
     "range_active_since_iso": "2026-05-30T04:30:00+00:00",
-    "sweeps_attempted": 16,
-    "last_displacement_iso": "2026-05-30T04:30:00+00:00",
+    "sweeps_attempted": 17,
+    "last_displacement_iso": "2026-05-30T05:00:00+00:00",
     "funding_state": "OKX 1.00e-4 (mild positive; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "00:51 EDT fire ~425. CANONICAL: 04:30 UTC closed O=$82.09 H=$82.09 L=$81.77 C=$82.06 V=9430 (1.81x baseline 5197) \u2014 vol-confirmed sweep-of-$81.77-and-reclaim, close in upper-third = v2.10 FULL PASS for LONG direction. 04:45 UTC forming O=$82.06 currently $82.20 (40% bar maturity, drift north sub-baseline so far). Sequence post-v2.58-target-hit ($82.10 at 04:15 close): 04:30 swept further south to $81.77 then reclaimed strongly. Bidirectional v2.10 full-passes in 1.5h (SHORT 03:00 UTC \u2192 LONG 04:30 UTC) = contested range $81.77-$82.40, cognition_mode transitioned Expansion \u2192 Regime Uncertain. Decision THIS fire: HOLD. v0.9 inputs LONG: cohort YES (down+long n=4 +$12.74 WR 75%), asymmetry NO (regime-against; R:R fails \u2014 structural SL $81.70 below swept low gives 0.61% stop; TP $82.40 gives 0.24% target = R:R 0.4:1; TP $82.91 gives R:R 1.4:1, still under 1.5:1 threshold), vol YES (1.81x on reclaim bar), structural YES (vol-confirmed sweep+reclaim) = 3/4 v0.9 but NEW v2.60_RR_REGIME_ALIGNMENT gate blocks. Hypothetical entry record: LONG at $82.20, SL $81.70, TP $82.40, predicted_2h drift_toward_tp / 8h unclear. Counterfactual: also a LONG at the cleaner retest of $82.06-$82.10 would carry better R:R but not given at current 04:45 north drift. Holds_in_a_row 8 -> 9. Hours_since_last_enter 1.1. Budget $7.58 remaining. forced_exploration_due False. threshold_state normal. Indicator-pipe P0 day 25: live-status $85.23 vs canonical $82.20 = $3.03 / 3.7% gap (narrowed slightly as canonical drifted up). Reflection v2.60 written this fire (surprise: opposite-direction v2.10 full-pass + R:R gate ships).",
+    "narrative": "01:12 EDT fire. CANONICAL fresh: 04:45 UTC closed C=$82.22 (drift north sub-baseline), 05:00 UTC closed O=$82.21 H=$82.62 L=$82.11 C=$82.39 V=11664 (2.24x baseline 5197). Vol-confirmed wick to $82.62 above range_high_usd $82.40 + close $82.39 below the range top = v2.10 SPLIT-GATE FAIL for LONG (vol-pass + close-fail; upper-third boundary $82.45, close $82.39 in mid-third). sweeps_attempted 16->17 (N-test failed-acceptance). Range $81.77-$82.40 intact, contested. Decision THIS fire: HOLD. v0.9 LONG inputs: cohort YES (down+long n=4 +$12.74 WR 75%), asymmetry NO (regime-against; R:R structural SL $81.70 / TP $82.91 = 0.75 fails 1.5 threshold), vol YES (2.24x), structural PARTIAL (vol-pass but close-fail). v2.10 SPLIT-GATE = HOLD by lineage (n=1 prior 21:30 EDT HOLD-vindicated). v2.60_RR_REGIME_ALIGNMENT gate would block independently. v2.59_POST_TARGET_HOLD discipline still binding (1.7h post target hit). Hypothetical counterfactual: regime-aligned SHORT C-grade probe @ $82.39 SL $82.62 (0.28%) TP $81.77 (0.75%) R:R 2.68, 2/4 v0.9 inputs (cohort + asymmetry yes; vol/structural partial-SHORT). Not taken: v2.10 SHORT also not full-pass on this bar (mid-third close, no directional commitment either side), and v2.59_POST_TARGET_HOLD discipline binding. Holds_in_a_row 9->10. Budget $7.58 remaining. forced_exploration_due False. threshold_state normal. Indicator-pipe live-status $85.23 vs canonical $82.39 = $2.84/3.4% gap. cognition_mode Regime Uncertain reinforced \u2014 third HOLD in mode, bidirectional v2.10 firings continuing.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
     "cognition_mode_rationale": "Bidirectional v2.10 full-passes in 1.5h (SHORT 03:00 UTC, LONG 04:30 UTC) within contested $81.77-$82.40 range. No decisive directional bias on 15m/1h/4h alignment. Failed-extension-south reclaimed; failed-acceptance-north earlier rejected. Holds until next vol-confirmed range break.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 3,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T04:55:40+00:00",
-    "canonical_pull_iso": "2026-05-30T04:55:40+00:00",
+    "last_gate_check_iso": "2026-05-30T05:06:08.937574+00:00",
+    "canonical_pull_iso": "2026-05-30T05:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 5197,
     "baseline_v96_ts": 1780112835.03409,
@@ -2309,9 +2322,9 @@
     "since_iso": "2026-05-30T00:55:40-0400",
     "rationale": "Bidirectional v2.10 full-passes in 1.5h (SHORT 03:00 UTC, LONG 04:30 UTC) within contested $81.77-$82.40 range. No decisive directional bias on 15m/1h/4h alignment. Failed-extension-south reclaimed; failed-acceptance-north earlier rejected. Holds until next vol-confirmed range break.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 3,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T04:55:40+00:00"
+    "last_gate_check_iso": "2026-05-30T05:06:08.937574+00:00"
   },
   "framework_origins": [
     {
@@ -2356,14 +2369,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 8,
+    "holds_in_a_row": 9,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 1.1,
+    "hours_since_last_enter": 1.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-30T04:52:04.777654+00:00",
+    "last_updated_iso": "2026-05-30T05:11:29.528942+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
