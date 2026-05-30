@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780139550,
-  "generated_iso": "2026-05-30T07:12:30-0400",
+  "generated_at": 1780140540,
+  "generated_iso": "2026-05-30T07:29:00-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 448,
+    "decisions_total": 449,
     "actions": {
-      "HOLD": 430,
+      "HOLD": 431,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 247,
+      "HOLD_with_counterfactual": 248,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 172,
-      "medium": 229,
+      "medium": 230,
       "low": 47
     },
-    "reasoning_chars_avg_all": 987,
-    "reasoning_chars_avg_last10": 512,
+    "reasoning_chars_avg_all": 986,
+    "reasoning_chars_avg_last10": 524,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T07:12:26-0400",
+    "last_fire_iso": "2026-05-30T07:28:56-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,8 +38,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780139546.530533,
-    "fire_iso": "2026-05-30T07:12:26-0400",
+    "fire_ts": 1780140536.7689111,
+    "fire_iso": "2026-05-30T07:28:56-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -61,19 +61,23 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Same baseline as fire 06:53 EDT (~18min ago). State materially unchanged: canonical $82.35 mid-to-upper of range $81.77-$82.40, sweep #21 at 06:15 UTC failed acceptance at $82.40 on vol 0.27x baseline (sub-1.5x threshold). Continued drift $82.17->$82.35 over 2h on sub-baseline vol. No v2.10 full-pass confirmation since the 04:30 UTC LONG. cognition_mode Regime Uncertain stable ~6h. No reflection this fire (v2.61 1h54m ago, <4h cadence, no surprise). Budget relaxed (30 holds_in_a_row, hours_since_last_enter 7.4, forced_exploration_due False, remaining $7.58) \u2014 no exploration mandate. HOLD with C-grade SHORT range-top-fade counterfactual: v2.60_RR_REGIME_ALIGNMENT structurally passes (range-aligned + regime-aligned), but v2.10 full-pass confirmation absent at this fire = no live grade. Live-status indicator panel ignored (price-pipe stale $85.23 vs canonical $82.35, 3.5% gap, day-25 of tooling artifact tracked across v2.55+ lineage).",
+    "reasoning": "Same baseline as 07:12 fire. Canonical $82.35 mid-to-upper range $81.77-$82.40. No v2.10 full-pass since 04:30 UTC; vol 0.56x median-96 (sub-1.5x threshold), StochRSI 0.55 neutral, BB position mid. cognition_mode Regime Uncertain stable (~6.5h). No structural trigger, no cadence reflection due (v2.61 2h28m ago). HOLD with C-grade range-top-fade SHORT counterfactual: v2.60_RR gate passes (tight structural SL just above $82.40, TP at $81.77 floor) but v2.10 confirmation absent = structurally below live grade.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "vol-confirmed (>=1.5x median-96) close in lower-third within 4 bars of any counter-displacement = v2.10 full-pass SHORT, would re-evaluate to B-grade ENTER",
+      "vol-confirmed sweep-and-reclaim of $81.77 floor with upper-third close = v2.10 full-pass LONG, would apply v2.60_RR gate (regime-against, likely HOLD)",
+      "decisive break of $82.40 with vol acceptance OR break of $81.77 with vol acceptance = range broken, transition out of Regime Uncertain"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
       "entry_price": 82.35,
-      "sl_pct": 0.007,
+      "sl_pct": 0.003,
       "tp_pct": 0.007,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Down regime + price at upper range $82.35 + sweep #21 just failed $82.40 on vol 0.27x = range-fade SHORT lean; no v2.10 confirmation keeps it C-grade counterfactual not live."
+      "reasoning_30_words": "Range-top fade at $82.35, structural fail-line just above $82.40 ceiling, target the range floor $81.77. Regime down + cohort down+short historically positive favor lean if forced."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1492,11 +1496,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 9,
-    "avg_chars": 526,
+    "holds_since_framework": 10,
+    "avg_chars": 524,
     "since_iso": "2026-05-30T04:59:04-0400",
     "since_framework_version": "v2.61",
-    "latest_fire_iso": "2026-05-30T07:12:26-0400"
+    "latest_fire_iso": "2026-05-30T07:28:56-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2291,9 +2295,9 @@
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
     "cognition_mode_rationale": "Contested range $81.77-$82.40 with bidirectional v2.10 episode 1.5h ago + 5h of sub-baseline vol chop since. Descriptively: contested range low-info chop. Holds until next vol-confirmed range break.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 52,
+    "skipped_fires_in_mode": 54,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T11:06:08.667895+00:00",
+    "last_gate_check_iso": "2026-05-30T11:22:33.156019+00:00",
     "canonical_pull_iso": "2026-05-30T09:30:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 4994,
@@ -2305,9 +2309,9 @@
     "since_iso": "2026-05-30T00:55:40-0400",
     "rationale": "Contested range $81.77-$82.40 with bidirectional v2.10 episode 1.5h ago + 5h of sub-baseline vol chop since. Descriptively: contested range low-info chop. Holds until next vol-confirmed range break.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 52,
+    "skipped_fires_in_mode": 54,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T11:06:08.667895+00:00"
+    "last_gate_check_iso": "2026-05-30T11:22:33.156019+00:00"
   },
   "framework_origins": [
     {
@@ -2352,14 +2356,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 30,
+    "holds_in_a_row": 31,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 7.4,
+    "hours_since_last_enter": 7.7,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-30T11:11:23.630271+00:00",
+    "last_updated_iso": "2026-05-30T11:27:49.317638+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
