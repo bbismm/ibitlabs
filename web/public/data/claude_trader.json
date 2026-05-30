@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780158895,
-  "generated_iso": "2026-05-30T12:34:55-0400",
+  "generated_at": 1780159896,
+  "generated_iso": "2026-05-30T12:51:36-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 467,
+    "decisions_total": 468,
     "actions": {
-      "HOLD": 449,
+      "HOLD": 450,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 266,
+      "HOLD_with_counterfactual": 267,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 174,
-      "medium": 242,
+      "medium": 243,
       "low": 51
     },
-    "reasoning_chars_avg_all": 973,
-    "reasoning_chars_avg_last10": 829,
+    "reasoning_chars_avg_all": 972,
+    "reasoning_chars_avg_last10": 802,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T12:33:59-0400",
+    "last_fire_iso": "2026-05-30T12:51:29-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,16 +38,16 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780158839.0,
-    "fire_iso": "2026-05-30T12:33:59-0400",
+    "fire_ts": 1780159889.806476,
+    "fire_iso": "2026-05-30T12:51:29-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.65,
+    "current_price": 82.74,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
+      "vol_ratio": 0.54,
       "momentum_pct": -0.08,
       "rsi": 60.4
     },
@@ -61,19 +61,23 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Canonical $82.65 (live-status $85.23 stale day 25, ~3.1% gap). Third-outcome resolution of 11:07 EDT watch: neither v2.10 vol-confirmation (a) nor close-back-below $82.40 (b) fired. Instead 9 bars 14:15-16:30 UTC sustained close-above $82.40 on thin vol (best 15:30 UTC 1.19x baseline 4150, all others sub-1.5x). 15:30 UTC retest-and-bounce off $82.37 evidences $82.40 flip from ceiling to contested floor. This is drift-acceptance, structurally distinguishable from quick drift-reclaim but v2.10 still defaults both HOLD. v0.9 ENTER inputs for LONG: asymmetry weak (vol-thin), vol FAIL (0.56x live-status / sub-1.5x real), cohort PASS (down+long n=4 +$12.74 WR 75%), structural trigger PARTIAL (sustained break held without confirmation). Score ~1.5/4; threshold_state relaxed + 49 holds + 12.7h since last ENTER would permit B-grade probe under budget protocol. BUT v2.10 vol-confirmation gate is the hard-won structural rule overriding it on this kind of thin-vol drift corrodes 4 fires of discipline and substitutes inertia-pressure (49 holds) for tape evidence. Committing the LONG lean as hypothetical_entry_record rather than executing \u2014 same logic as v2.60 (vol-confirmed reclaim, held by R:R) inverted (R:R passes, vol fails). Watch flags in state.json narrative.",
+    "reasoning": "State unchanged since 12:33 EDT fire. Canonical $82.65 -> $82.74 (latest 15m close 16:45 UTC, in progress); +0.11% drift within drift-acceptance band above flipped $82.40 floor. Last 4 closed 15m bars vol 0.46-0.95x of baseline 4150 \u2014 no v2.10 full-pass, no displacement, no sweep, no range break. Regime Uncertain holds; range $81.77-$82.40 nominally retained with $82.40 contested floor. v2.61/v2.62 4h-no-fire pattern continues. HOLD per v0.9 + v2.60_RR (no full-pass to gate). Reflection cadence at ~3.7h since v2.62 (cold-start trigger not met).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
-    "abort_conditions": [],
+    "abort_conditions": [
+      "fresh >=1.5x baseline 4150 vol bar in either direction (v2.10 candidate fires)",
+      "close back below $82.37 (real failed-acceptance, $82.40 floor flip fails)",
+      "displacement >1.5%/15min in either direction (Expansion-mode transition)"
+    ],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "long",
-      "entry_price": 82.65,
-      "sl_pct": 0.0042,
-      "tp_pct": 0.0067,
+      "entry_price": 82.74,
+      "sl_pct": 0.012,
+      "tp_pct": 0.015,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Drift-acceptance above $82.40 holding 2h+ on thin vol. Down+long cohort favorable, R:R 1.6:1. Expect grind-up if no down-impulse; vol-thin breaks fragile in 2-4h window."
+      "reasoning_30_words": "Down+long cohort favorable (n=4 +$12.74 WR 75%); drift-acceptance above $82.40 sustained 2h+. Vol absent so v2.10 not satisfied; if forced, lean long with SL below $81.77 swept low."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1640,11 +1644,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 13,
-    "avg_chars": 765,
+    "holds_since_framework": 14,
+    "avg_chars": 750,
     "since_iso": "2026-05-30T09:07:40-0400",
     "since_framework_version": "v2.62",
-    "latest_fire_iso": "2026-05-30T12:33:59-0400"
+    "latest_fire_iso": "2026-05-30T12:51:29-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2697,9 +2701,9 @@
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
     "cognition_mode_rationale": "Contested range $81.77-$82.40 with drift-acceptance break above $82.40 sustained 2h+ on thin vol. Neither vol confirmation nor failed-acceptance fired; in third-outcome low-info chop.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 94,
+    "skipped_fires_in_mode": 96,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T16:33:59+00:00",
+    "last_gate_check_iso": "2026-05-30T16:44:58.644357+00:00",
     "canonical_pull_iso": "2026-05-30T16:30:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 4150,
@@ -2711,9 +2715,9 @@
     "since_iso": "2026-05-30T00:55:40-0400",
     "rationale": "Contested range $81.77-$82.40 with drift-acceptance break above $82.40 sustained 2h+ on thin vol. Neither vol confirmation nor failed-acceptance fired; in third-outcome low-info chop.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 94,
+    "skipped_fires_in_mode": 96,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T16:33:59+00:00"
+    "last_gate_check_iso": "2026-05-30T16:44:58.644357+00:00"
   },
   "framework_origins": [
     {
@@ -2758,14 +2762,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 49,
+    "holds_in_a_row": 50,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 12.7,
+    "hours_since_last_enter": 13.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-30T16:31:18.318879+00:00",
+    "last_updated_iso": "2026-05-30T16:50:14.565288+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
