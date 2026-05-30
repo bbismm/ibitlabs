@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780112868,
-  "generated_iso": "2026-05-29T23:47:48-0400",
+  "generated_at": 1780113685,
+  "generated_iso": "2026-05-30T00:01:25-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 417,
+    "decisions_total": 419,
     "actions": {
-      "HOLD": 399,
+      "HOLD": 401,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 216,
+      "HOLD_with_counterfactual": 218,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 170,
-      "medium": 201,
-      "low": 46
+      "medium": 202,
+      "low": 47
     },
-    "reasoning_chars_avg_all": 1005,
-    "reasoning_chars_avg_last10": 1091,
+    "reasoning_chars_avg_all": 1004,
+    "reasoning_chars_avg_last10": 1063,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-29T23:47:37-0400",
+    "last_fire_iso": "2026-05-30T00:01:01-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,12 +38,12 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780112857.515305,
-    "fire_iso": "2026-05-29T23:47:37-0400",
+    "fire_ts": 1780113661.0,
+    "fire_iso": "2026-05-30T00:01:01-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.64,
+    "current_price": 82.56,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
@@ -51,35 +51,133 @@
       "momentum_pct": -0.08,
       "rsi": 60.4
     },
-    "decision": "ENTER",
-    "grade": "B",
-    "size_multiplier": 0.35,
-    "setup_type": "failed_acceptance_short_v2_10_full_pass",
-    "direction": "short",
+    "decision": "HOLD",
+    "grade": null,
+    "size_multiplier": null,
+    "setup_type": null,
+    "direction": null,
     "symbol": "SOL-PERP",
-    "quantity": 1,
-    "leverage": 1,
-    "sl_pct": 0.0033,
+    "quantity": null,
+    "leverage": null,
+    "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "v2.10 first clean FULL PASS for SHORT: 03:00 UTC bar O=$82.86 H=$82.98 L=$82.83 C=$82.86 V=12484 = 2.40x median-96 baseline 5197 + close in bar's lower third ($82.83-$82.88) = vol-confirmed wick-rejection at prior range_high $82.91 (poked $82.98 then rejected). Follow-through 03:15 close $82.75, 03:30 in-prog $82.64. Pre-commit branch #4 (v2.57) fired. v0.9 inputs SHORT 3/4 (cohort down+short n=6 +$1.39 WR 83.3% YES; vol YES 2.40x; structural YES; asymmetry tape-PARTIAL since live-status stale 5/8 symmetric on $85.23). B-grade chosen over A because entry $82.64 is shallow chase (~0.27% below 03:00 close, branch #4 spec was retest $82.70-$82.80) + asymmetry input live-status-blocked + \u626d\u4e8f\u4e3a\u8d62 PRIMARY mandate intact. SL $82.91 above prior wick high; target $82.10 below $82.40 corridor floor; R:R ~2:1; at-risk ~$2.65 well under $8.94 daily budget. cognition_mode transitions Compression -> Expansion; Inventory Discovery overlays once position fills. NEW rule v2.58_RECLAIM_FULL_PASS_FIRST_INSTANCE ships (provisional, n=1).",
-    "expected_holding_hours": 8,
-    "expected_pnl_pct_target": 0.0065,
-    "abort_conditions": [
-      "Closed 15m bar reclaims above $82.91 with vol >=1.5x baseline (~7800+) = failed-acceptance thesis refuted",
-      "Two consecutive closed bars >$82.86 (rejection bar's close) on increasing volume",
-      "Live-status regime flips from down to up",
-      "8h+ holding with PnL<0 AND MFE<0.4% (Lever 5-mod soft EXIT analog at decision level)"
-    ],
-    "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": null,
-    "exploration_attribution": {
-      "reason": "v_2_10_first_full_pass_short",
-      "info_hypothesis": "tests whether v2.10 first full-pass (vol >=1.5x baseline + directional-close-in-lower-third) on a failed-N-acceptance shape produces positive expectancy at down+short cohort vs cohort-average baseline of +$0.23/trade",
-      "predicted_information_value": "high"
+    "reasoning": "Continuation of v2.58 SHORT thesis from fire 23:47 (ENTER B-grade @ $82.64 SL $82.91 TP $82.10). Canonical price $82.64 -> $82.65 -> $82.56 = ~0.10% in-favor drift since ENTER. Last two 15m bars C=$82.60 (V=4143) and C=$82.56 (V=2071, in-prog) = follow-through south on sub-baseline vol \u2014 initiative spent in the 04:00 UTC wick-rejection bar, now drift-extension phase. State unchanged from snapshot 23:47:15: range $82.40-$82.98 intact, Expansion mode south-directional, position_at_fire null (DRY_RUN \u2014 executor doesn't fill; decision-stream tracks the implied short). No EXIT trigger: TP $82.10 not hit, SL $82.91 not threatened, no abort condition fired (no displacement-up, no failed-south-with-volume-reclaim). No re-ENTER: chase pricing at $82.56 vs ENTER reference $82.64 = -0.10% slippage on the same thesis, no fresh structural trigger. HOLD per v2.58 abort_conditions.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
+    "abort_conditions": [],
+    "hypothetical_entry_record": {
+      "implied_grade": "C",
+      "direction": "short",
+      "entry_price": 82.56,
+      "sl_pct": 0.005,
+      "tp_pct": 0.006,
+      "predicted_2h_outcome": "drift_toward_tp",
+      "predicted_8h_outcome": "tp",
+      "reasoning_30_words": "If forced to lean, continue SHORT \u2014 vol-confirmed 04:00 UTC wick rejection + 3 follow-through south bars + intact down-regime cohort. But this is chase pricing on the same thesis, not a fresh trigger."
     },
+    "no_plausible_counterfactual": null,
+    "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780113661.0,
+      "iso": "2026-05-30T00:01:01-0400",
+      "fire_count": 419,
+      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780113661.0,
+        "fire_iso": "2026-05-30T00:01:01-0400",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.56,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Continuation of v2.58 SHORT thesis from fire 23:47 (ENTER B-grade @ $82.64 SL $82.91 TP $82.10). Canonical price $82.64 -> $82.65 -> $82.56 = ~0.10% in-favor drift since ENTER. Last two 15m bars C=$82.60 (V=4143) and C=$82.56 (V=2071, in-prog) = follow-through south on sub-baseline vol \u2014 initiative spent in the 04:00 UTC wick-rejection bar, now drift-extension phase. State unchanged from snapshot 23:47:15: range $82.40-$82.98 intact, Expansion mode south-directional, position_at_fire null (DRY_RUN \u2014 executor doesn't fill; decision-stream tracks the implied short). No EXIT trigger: TP $82.10 not hit, SL $82.91 not threatened, no abort condition fired (no displacement-up, no failed-south-with-volume-reclaim). No re-ENTER: chase pricing at $82.56 vs ENTER reference $82.64 = -0.10% slippage on the same thesis, no fresh structural trigger. HOLD per v2.58 abort_conditions.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 82.56,
+          "sl_pct": 0.005,
+          "tp_pct": 0.006,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "tp",
+          "reasoning_30_words": "If forced to lean, continue SHORT \u2014 vol-confirmed 04:00 UTC wick rejection + 3 follow-through south bars + intact down-regime cohort. But this is chase pricing on the same thesis, not a fresh trigger."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1780113266.637456,
+      "iso": "2026-05-29T23:54:26-0400",
+      "fire_count": 418,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780113266.637456,
+        "fire_iso": "2026-05-29T23:54:26-0400",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.65,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as fire 2026-05-29T23:47:37-0400. Canonical $82.64 -> $82.65 immaterial. 03:30 bar matured C=$82.60 (was in-prog $82.64) confirming south follow-through from the 03:00 v2.10 FULL PASS short-side displacement. 03:45 in-prog $82.65 mild bounce off $82.58 low; still within range $82.40-$82.98, does NOT invalidate prior B-grade SHORT thesis. Live-status position null (DRY_RUN executor unchanged). No regime flip, no range break, no fresh displacement, no new founder note. Per skill 'sameness IS the read' \u2014 declining to re-narrate the v2.10 FULL PASS short thesis from 6min ago; the operative hypothetical short tracks it directly. Budget $7.58 remaining; not loading a second exploratory probe on identical state.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "short",
+          "entry_price": 82.65,
+          "sl_pct": 0.0032,
+          "tp_pct": 0.0067,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "tp",
+          "reasoning_30_words": "Forced lean = SHORT, mirroring 23:47 thesis. 03:00 vol-confirmed wick rejection + 2 follow-through closes south. 03:45 bounce is corrective inside range, not reclaim."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1780112857.515305,
@@ -1399,99 +1497,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780079810.956714,
-      "iso": "2026-05-29T14:36:00-04:00",
-      "fire_count": 402,
-      "summary": "Framework v2.49 written (trigger: surprise:mode_transition_regime_uncertain_to_compression_AND_v2.48_branch_18_15_resolved_breakdown)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780079810.956714,
-        "iso": "2026-05-29T14:36:00-04:00",
-        "fire_count": 402,
-        "balance_usd": 894.08,
-        "version_tag": "v2.49",
-        "trigger": "surprise:mode_transition_regime_uncertain_to_compression_AND_v2.48_branch_18_15_resolved_breakdown",
-        "what_im_trying": "v2.48 pre-commit branch RESOLVED on 18:15 UTC bar close: C=$82.52 V=9915 (1.14x baseline) landed exactly in predicted [$82.45, $82.65] reclaim-breakdown branch. v2.48's directional lean for this branch was hypothetical SHORT with mode toward Compression \u2014 both criteria now confirmed. 18:30 UTC bar in progress: 1min sequence 18:15-18:31 drifted within $82.45-$82.79 narrow corridor, current $82.59 just below mid-range pivot $82.63. The failed-Wyckoff-acceptance-reclaim 2-axis hypothesis: cycle-completion n=2-CONFIRMED holds; extension-magnitude n=0/2-FAILED holds; current breakdown into mid-range does not demote cycle to n=1.5 (which required <$82.45 close), but it does END the active structural drama. Decision this fire: HOLD with hypothetical SHORT per v2.48 pre-commit. COGNITION_MODE TRANSITION: Regime Uncertain -> Compression.",
-        "whats_working": "(a) Pre-commit lineage clean resolution count advances to 11/11 (v2.41 forward). v2.48's 4-branch decomposition for 18:15 UTC bar correctly predicted both price-zone AND vol-state AND mode-implication. Branch quality remains the most reliable epistemic surface I've built. (b) Mode transition called transparently in real-time at the trigger condition (v2.48 said 'IF 18:15 closes in [$82.45, $82.65] -> mode toward Compression'; that condition fired exactly). No mode-persistence anchoring; no retroactive narration. (c) Anti-lean-anchoring rule (v2.46) doing real work: v2.48 wrote bilateral hypotheticals for the mid-range branch ('long if drift up, short if drift down'); 18:15 close at $82.52 + 18:30 drift $82.52->$82.59 has the structural shape pointing to drift_sideways with a mild short-lean, NOT a directional long-rebuild as the chase-lean of an earlier framework would have anchored.",
-        "whats_failing": "(a) Wick-as-data bias counter restated: 5 instances across last ~9 reflections. v2.46/v2.47/v2.48 commitment was 'if 6th instance appears in next 3 reflections, surface explicitly to founder as systematic pattern.' This fire is 3rd-after-commitment; counter remains at 5; pattern did NOT compound. Will continue tracking; if no 6th instance by v2.51-v2.52, downgrade from systematic-pattern claim back to spot-observation. (b) Cohort math discipline: down+long n=5 +$14.74 still favorable cohort, but current breakdown into mid-range removes the structural justification for a long entry. Long-on-pullback would be the right cohort but lacks the structural trigger. Discipline holds: cohort favorable + structural absent = HOLD, not 'cohort-justified entry'. (c) Budget tactical cost continued: $2.10 remaining + threshold_state normal + forced_exploration_due False = no B/C entries possible. Only A/S can fire. The Wyckoff-cycle structural drama has now drifted into a low-info aftermath; A-grade conviction is not available here. UTC rollover ~5h25m.",
-        "what_im_iterating": "(a) failed-Wyckoff-acceptance-reclaim hypothesis 2-axis state: cycle-completion n=2-CONFIRMED-FULL-CYCLE (sweep -> reclaim -> retest -> bounce); extension-magnitude n=0/2-FAILED. Status unchanged from v2.48. Promotion gates: cycle n>=3 + extension n>=2 within 1h. Current breakdown is the AFTERMATH of cycle #2, not a new n. (b) COGNITION_MODE TRANSITION: Regime Uncertain (since 14:14:55 EDT, ~20min) -> Compression (this fire). Rationale: vol sub-baseline persistent across last 90min (17:30 1.51x -> 17:45 1.22x -> 18:00 0.68x -> 18:15 1.14x); active structural cycle has resolved into mid-range drift; reclaim cycle structure still present (range $82.20-$83.07 active) but motion has died; info density genuinely low. Compression cadence: 1h heartbeat + transition-triggered. Wrapper invariant-safety triggers (position open/close, regime field flip, range break, displacement >1.5%/15min) bypass. Will revert to Regime Uncertain if 18:30/18:45 UTC bar produces vol >=1.5x baseline OR range break. (c) NEW pre-commit lineage for next material event (not next bar \u2014 Compression mode is event-triggered): IF range breaks above $82.79 close vol>=1.5x baseline -> reclaim re-attempt #3, A-grade LONG candidate at $82.65-$82.75 retest if confirmed, SL $82.05, target $83.40 (entry+0.5% extension gate per v2.48). IF range breaks below $82.20 close vol>=1.5x baseline -> cycle-completion hypothesis demoted to n=1.5 (downside acceptance), structural read becomes downside continuation, A-grade SHORT candidate at $82.30-$82.45 retest with SL $82.85, target $81.60. IF drift continues in $82.45-$82.79 corridor vol sub-baseline -> Compression deepens, HOLD with bilateral hypothetical, 1h heartbeat. (d) Anti-mode-persistence-anchoring check: I'm transitioning to Compression at the FIRST signal (mid-range breakdown + 90min sub-baseline vol), not waiting for additional confirmation. This is the right direction \u2014 Compression mode is the epistemic stance of 'low info density, fire on transitions, not on the clock.' Sustaining Regime Uncertain past the trigger would itself be lean-anchoring on the prior structural drama.",
-        "edits_from_prior": [
-          "COGNITION_MODE TRANSITION: Regime Uncertain -> Compression. Triggered exactly at v2.48's pre-committed condition. 1h heartbeat + transition-triggered cadence; wrapper invariant-safety still bypasses.",
-          "Pre-commit lineage: 10/10 (v2.48) -> 11/11 (this fire). v2.48's [$82.45, $82.65] breakdown branch confirmed at 18:15 UTC close $82.52 V=1.14x.",
-          "failed-Wyckoff-acceptance-reclaim 2-axis hypothesis state unchanged: cycle n=2-CONFIRMED; extension n=0/2-FAILED. Current breakdown is aftermath, not new n.",
-          "Range maintained: $82.20-$83.07 active. Mid-range pivot $82.63 now relevant (current $82.59 just below). Sweeps_attempted held at 8.",
-          "Wick-as-data bias counter unchanged at 5 instances; no compounding this fire. Reverting commit-tracking to spot-observation if no 6th by v2.51-v2.52.",
-          "Pre-commit lineage shifts from per-bar to event-triggered per Compression mode: 3 new branches keyed on range-break / drift-continuation rather than next-bar resolution.",
-          "Indicator-pipe gap actual: live-status $85.23 vs canonical $82.59 = $2.64/3.2%. Noise band: v2.45 $2.66 -> v2.46 $2.40 -> v2.47 $2.29 -> v2.48 $2.44 -> now $2.64. Slight widening. No claim about ops attention.",
-          "Cohort down+long n=5 +$14.74 WR 80% restated unchanged; preserved as option for upside range-break A-grade candidate."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "Compression mode transition at the first signal vs after additional confirmation: is the immediate-transition discipline correctly avoiding mode-persistence-anchoring, or is it the symmetric error (mode-transition-anchoring on prior trigger)? Will judge by whether Compression sticks or reverts within next 60-90min.",
-          "Per-bar pre-commit lineage was the dominant epistemic device through Regime Uncertain. In Compression, event-triggered branches replace it. Does the lineage quality survive the cadence shift, or does the longer time between firings make branches stale? n=0 in Compression with this discipline so far; will judge after first material event in this mode.",
-          "Tail check founder_notes.jsonl: last note ts 1779977169.64 (note-4, 10:06 EDT 2026-05-28). All 6 note-4 claims addressed in v2.40-v2.43 chain per state narrative. Zero pending.",
-          "Indicator-pipe staleness P0 day 25 / fire 50+. Gap actual $2.64. Slight widening (v2.48 $2.44 -> now $2.64). Within noise band; no structural claim. Flagging continues."
-        ]
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780078665.856153,
-      "iso": "2026-05-29T14:14:55-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.48: HOLD",
-      "payload": {
-        "fire_ts": 1780078665.856153,
-        "fire_iso": "2026-05-29T14:14:55-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 82.79,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "v2.47 pre-commit branches resolved on canonical pull: 18:00 UTC closed C=$82.77 V=5880 (~0.68x baseline). Reclaim EXTENSION hypothesis FAILED at 1h mark \u2014 vol sequence 2.92x->2.77x->1.51x->1.22x->0.68x across 17:00-18:00 = decisive expansion-decay; bar-close peak $82.99 at 17:00 never reclaimed $83 on close basis. 18:15 UTC partial drifts to $82.79 still sub-baseline. v0.9 inputs 1/4 (cohort down+long n=5 +$14.74 PASS; vol/asymmetry/structural FAIL \u2014 drift-reclaim shape per note-4/C4). Mode transitions Expansion -> Regime Uncertain on 75min vol decay; HOLD; hypothetical long-lean recorded pending 18:15+ vol confirmation.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 82.79,
-          "sl_pct": 0.009,
-          "tp_pct": 0.0095,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Drift bounce off $82.55 wick floor; cohort down+long favorable n=5. Lean is long IF 18:15 closes >$82.85 on vol; currently sub-baseline = no entry, hypothetical only."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.48"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 0,
-    "avg_chars": 0,
-    "since_iso": null
+    "holds_since_framework": 2,
+    "avg_chars": 803,
+    "since_iso": "2026-05-29T23:46:48-0400",
+    "since_framework_version": "v2.58",
+    "latest_fire_iso": "2026-05-30T00:01:01-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2363,27 +2376,44 @@
       "aggressive_threshold_holds": 100,
       "default_sl_pct_for_at_risk_estimate": 0.02
     },
-    "last_enter_ts": 1780066787.001375,
-    "last_enter_iso": "2026-05-29T10:59:47-04:00",
-    "holds_in_a_row": 28,
-    "exploratory_at_risk_usd_today": 0.0,
-    "exploratory_entries_today": 0,
-    "hours_since_last_enter": 12.7,
+    "last_enter_ts": 1780112857.515305,
+    "last_enter_iso": "2026-05-29T23:47:37-0400",
+    "holds_in_a_row": 1,
+    "exploratory_at_risk_usd_today": 1.36,
+    "exploratory_entries_today": 1,
+    "hours_since_last_enter": 0.2,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-30T03:42:38.024762+00:00",
+    "last_updated_iso": "2026-05-30T03:59:48.511283+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
     "starting_cash": 1000.0,
-    "cash": 980.2526799999999,
+    "cash": 980.0047599999999,
     "cumulative_net_pnl": -19.747319999999927,
     "cumulative_gross_pnl": -16.799999999999926,
-    "cumulative_fees": 2.9473199999999995,
-    "opened_count": 6,
+    "cumulative_fees": 3.1952399999999996,
+    "opened_count": 7,
     "closed_count": 6,
-    "position": null,
+    "position": {
+      "symbol": "SOL-PERP",
+      "symbol_base": "SOL",
+      "direction": "short",
+      "qty": 1.0,
+      "leverage": 1.0,
+      "contract_size": 5.0,
+      "entry_price": 82.64,
+      "entry_ts": 1780113101.367032,
+      "entry_iso": "2026-05-29T23:51:41-0400",
+      "entry_fire_ts": 1780112857.515305,
+      "entry_fire_iso": "2026-05-29T23:47:37-0400",
+      "entry_notional": 413.2,
+      "entry_fee": 0.24791999999999997,
+      "entry_regime": "down",
+      "entry_confidence": "medium",
+      "entry_reasoning": "v2.10 first clean FULL PASS for SHORT: 03:00 UTC bar O=$82.86 H=$82.98 L=$82.83 C=$82.86 V=12484 = 2.40x median-96 baseline 5197 + close in bar's lower third ($82.83-$82.88) = vol-confirmed wick-rejection at prior range_high $82.91 (poked $82.98 then rejected). Follow-through 03:15 close $82.75, 03:30 in-prog $82.64. Pre-commit branch #4 (v2.57) fired. v0.9 inputs SHORT 3/4 (cohort down+short n=6 +$1.39 WR 83.3% YES; vol YES 2.40x; structural YES; asymmetry tape-PARTIAL since live-status stale 5/8 symmetric on $85.23). B-grade chosen over A because entry $82.64 is shallow chase (~0.27% below 0\u2026"
+    },
     "trades_recent": [
       {
         "entry_fire_ts": 1780056512.81317,
@@ -2544,6 +2574,6 @@
       "short_losses": 3
     },
     "started_iso": "2026-05-27T12:19:02-0400",
-    "updated_iso": "2026-05-29T11:30:35-0400"
+    "updated_iso": "2026-05-29T23:51:41-0400"
   }
 }
