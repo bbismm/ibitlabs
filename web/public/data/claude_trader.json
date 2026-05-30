@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780181815,
-  "generated_iso": "2026-05-30T18:56:55-0400",
+  "generated_at": 1780182904,
+  "generated_iso": "2026-05-30T19:15:04-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 490,
+    "decisions_total": 491,
     "actions": {
-      "HOLD": 472,
+      "HOLD": 473,
       "ENTER": 11,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 289,
+      "HOLD_with_counterfactual": 290,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 176,
-      "medium": 259,
+      "medium": 260,
       "low": 55
     },
     "reasoning_chars_avg_all": 955,
-    "reasoning_chars_avg_last10": 568,
+    "reasoning_chars_avg_last10": 629,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-30T18:54:42-04:00",
+    "last_fire_iso": "2026-05-30T19:14:03-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,17 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780181682.0,
-    "fire_iso": "2026-05-30T18:54:42-04:00",
+    "fire_ts": 1780183443.0,
+    "fire_iso": "2026-05-30T19:14:03-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 82.47,
+    "current_price": 82.45,
     "regime": "down",
     "market_snapshot": {
       "stoch_rsi": 0.5506,
-      "vol_ratio": 0.56,
-      "momentum_pct": -0.08,
+      "vol_ratio_canonical": 1.68,
+      "vol_ratio_live_status": 0.56,
+      "momentum_pct": -0.0008,
       "rsi": 60.4
     },
     "decision": "HOLD",
@@ -60,26 +61,76 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "low",
-    "reasoning": "State essentially unchanged since fire 18:39 EDT. New datapoint: 22:30 UTC bar wicked low $82.34 (first sub-$82.40 since 14:15 floor flip) but closed $82.41 \u2014 sweep attempt counted (26\u219227), no clean close-back-below. 22:30 bar vol 2351 \u2248 0.84x baseline 2789 \u2014 sub-v2.10 threshold both bars. v2.63 drift-acceptance regime holds: no vol-confirmed v2.10 fire on either side, no clean failed-acceptance close. 0-1 v0.9 inputs (symmetric 5/8, vol fail, mild wick-structural). HOLD per discipline.",
+    "confidence": "medium",
+    "reasoning": "Same baseline as fire @18:54 EDT. 22:30 UTC bar wick L=$82.34 C=$82.41 (narrow miss on clean close-back-below $82.40 floor); 22:45 C=$82.53; 23:00 UTC in-progress L=$82.45 C=$82.45 V=4696 ~1.68x baseline 2789 \u2014 vol crosses v2.10 1.5x threshold but ~35 bars post-14:15 UTC displacement (FAR outside 4-bar reclaim window) AND closing at bar low (upward rejection signature). 3rd post-window vol expansion within this single drift-acceptance episode \u2014 adds instance to v2.64 open question; trigger threshold (3+ across 2+ episodes) NOT met, no framework mutation this fire. v2.10 correctly does not fire by timing. v2.63_DRIFT_ACCEPTANCE third-outcome holds. 0-1 v0.9 inputs (asymmetry: 5/8 symmetric; vol: canonical 1.68 passes but structurally void by v2.10 window; cohort: down regime favorable both sides; structural: vol+rejection slightly bearish but v2.10 window fails). Threshold_state relaxed (73 holds) doesnt override v2.10 framework \u2014 manufacturing B-grade on a vol spike that v2.10 was built to filter is exactly the trap. Indicator-pipe live-status stale ($85.23 vs canonical $82.45 = $2.80 / 3.39%, within established band). HOLD.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
       "direction": "short",
-      "entry_price": 82.47,
-      "sl_pct": 0.009,
-      "tp_pct": 0.005,
+      "entry_price": 82.45,
+      "sl_pct": 0.012,
+      "tp_pct": 0.008,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "unclear",
-      "reasoning_30_words": "Down+short cohort favorable; 22:30 wick-test marginally strengthens drift-exhaustion read. But vol fails v2.10 and R:R 0.51 fails v2.60_RR \u2014 committed lean only if forced."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "23:00 UTC vol expansion rejecting upward (close at bar low) + drift-acceptance ~9h sustained = exhaustion signal; favorable down+short cohort; v2.10 window fails so HOLD, C-grade short if forced."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780183443.0,
+      "iso": "2026-05-30T19:14:03-0400",
+      "fire_count": 491,
+      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780183443.0,
+        "fire_iso": "2026-05-30T19:14:03-0400",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 82.45,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio_canonical": 1.68,
+          "vol_ratio_live_status": 0.56,
+          "momentum_pct": -0.0008,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Same baseline as fire @18:54 EDT. 22:30 UTC bar wick L=$82.34 C=$82.41 (narrow miss on clean close-back-below $82.40 floor); 22:45 C=$82.53; 23:00 UTC in-progress L=$82.45 C=$82.45 V=4696 ~1.68x baseline 2789 \u2014 vol crosses v2.10 1.5x threshold but ~35 bars post-14:15 UTC displacement (FAR outside 4-bar reclaim window) AND closing at bar low (upward rejection signature). 3rd post-window vol expansion within this single drift-acceptance episode \u2014 adds instance to v2.64 open question; trigger threshold (3+ across 2+ episodes) NOT met, no framework mutation this fire. v2.10 correctly does not fire by timing. v2.63_DRIFT_ACCEPTANCE third-outcome holds. 0-1 v0.9 inputs (asymmetry: 5/8 symmetric; vol: canonical 1.68 passes but structurally void by v2.10 window; cohort: down regime favorable both sides; structural: vol+rejection slightly bearish but v2.10 window fails). Threshold_state relaxed (73 holds) doesnt override v2.10 framework \u2014 manufacturing B-grade on a vol spike that v2.10 was built to filter is exactly the trap. Indicator-pipe live-status stale ($85.23 vs canonical $82.45 = $2.80 / 3.39%, within established band). HOLD.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 82.45,
+          "sl_pct": 0.012,
+          "tp_pct": 0.008,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "23:00 UTC vol expansion rejecting upward (close at bar low) + drift-acceptance ~9h sustained = exhaustion signal; favorable down+short cohort; v2.10 window fails so HOLD, C-grade short if forced."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780181682.0,
@@ -1596,50 +1647,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780116911.96813,
-      "iso": "2026-05-30T00:55:11-04:00",
-      "fire_count": 425,
-      "summary": "Framework v2.60 written (trigger: surprise:v2_10_full_pass_LONG_opposite_direction_within_15min_AND_v259_post_target_discipline_live_test)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780116911.96813,
-        "iso": "2026-05-30T00:55:11-04:00",
-        "fire_count": 425,
-        "balance_usd": 894.08,
-        "version_tag": "v2.60",
-        "trigger": "surprise:v2_10_full_pass_LONG_opposite_direction_within_15min_AND_v259_post_target_discipline_live_test",
-        "what_im_trying": "v2.59 closed asking 'what is correct post-target discipline?' codified v2.59_POST_TARGET_HOLD as candidate. 14min later, the 04:30 UTC bar (O=$82.09 H=$82.09 L=$81.77 C=$82.06 V=9430) completed as a vol-confirmed (1.81x baseline 5197) sweep-of-$81.77-and-reclaim with close in upper-third = v2.10 FULL PASS for LONG direction. This is the SECOND v2.10 full-pass in 1.5h, on the OPPOSITE direction. v2.58_RECLAIM_FULL_PASS_FIRST_INSTANCE rule could justify B-grade LONG here. But applying it forces a live test of v2.59_POST_TARGET_HOLD. Verdict: HOLD. Reasoning: in a sustained down regime (since 5-25), LONG entry at $82.20 with structurally-meaningful SL at $81.70 (below swept low) requires R:R of at least 1.5:1 to be EV-positive; conservative TP $82.40 (broken-corridor-top-now-resistance) gives R:R 0.4:1, aggressive TP $82.91 gives R:R 1.4:1. R:R asymmetry in regime-against direction fails the implicit asymmetry input despite v0.9 nominal 3/4 (cohort/vol/structural YES, asymmetry NO at regime level). v2.58 SHORT carried 2:1 R:R because down regime aligned with direction. v2.10 full-pass is a NECESSARY but not SUFFICIENT condition \u2014 regime-alignment of R:R is the gating layer above.",
-        "whats_working": "(a) v2.10 full-pass categorical is producing repeated structurally-clean signals across both directions \u2014 bidirectional n=2 instances in 1.5h. The rule discriminates real expansion events from drift, validating its design. (b) v2.59_POST_TARGET_HOLD candidate rule is getting its first live test in <30min of being articulated; the discipline is being applied before being formally promoted. Speed of rule \u2192 live-application is the right gradient. (c) Identifying R:R asymmetry as a SEPARATE gating layer above v2.10 full-pass prevents over-applying the rule. v2.58's success was a CONJUNCTION of v2.10 + regime-aligned R:R, not v2.10 alone.",
-        "whats_failing": "(a) v2.58_RECLAIM_FULL_PASS_FIRST_INSTANCE rule as written says 'first clean full-pass qualifies for B-grade ENTER'. Did not specify direction-of-rule scope: is 'first' indexed per expansion-phase (single), per direction (so SHORT and LONG have independent 'first'), or per regime-cycle? This fire forces the distinction. Provisional interpretation: 'first' is per-direction-within-current-expansion-phase. Down-expansion has had n=1 SHORT (qualifying) and n=1 LONG (this fire), so by per-direction reading the LONG would qualify. But the R:R-regime-asymmetry gate kills it independent of v2.58 eligibility. (b) The bidirectional v2.10 firing in 1.5h is consistent with a 'regime transition candidate' state (range $81.77-$82.40 contested, no decisive directional bias). The cognition_mode ontology was frozen to 4 modes pre-2026-06-25; this state maps to 'Regime Uncertain' (mixed signals across timeframes). Transitioning Expansion -> Regime Uncertain this fire.",
-        "what_im_iterating": "(a) NEW gating layer v2.60_RR_REGIME_ALIGNMENT: v2.10 full-pass is a necessary but not sufficient condition for B-grade ENTER. Additional gate: structurally-meaningful SL distance (below swept low or above wick high, NOT closer) combined with TP target inside next structural level (prior range bound or first untested level) must produce R:R >= 1.5:1. Regime-aligned R:R (direction matches dominant regime trend) typically delivers this; regime-against R:R often does not. If R:R < 1.5, downgrade to HOLD with hypothetical_entry_record. (b) cognition_mode TRANSITION: Expansion (down, since 23:47:15 EDT) -> Regime Uncertain. Trigger: bidirectional v2.10 full-passes within 1.5h indicate contested range $81.77-$82.40, no decisive direction. Cadence: fire 15min on transitions per ontology. (c) v2.58 rule scoping clarification: 'first clean full-pass' is indexed per-direction-within-current-expansion-phase. Subsequent same-direction full-passes do not auto-qualify; first opposite-direction full-pass DOES qualify on v2.58 grounds but is then subject to v2.60_RR_REGIME_ALIGNMENT gate. (d) Range narrows: $82.40 stays as top (broken-corridor-resistance), $81.77 becomes new structurally-tested floor (was swept then reclaimed). Range $81.77-$82.40 / span $0.63 (~0.77% width). (e) sweeps_attempted increments 15 -> 16 (sweep-of-$81.77 attempt resolved with reclaim).",
-        "edits_from_prior": [
-          "cognition_mode TRANSITION: Expansion (down, since 23:47:15 EDT, sustained ~64min) -> Regime Uncertain. Trigger: vol-confirmed sweep-and-reclaim at 04:30 UTC produced bidirectional v2.10 full-pass within 1.5h \u2014 no decisive direction.",
-          "v2.10 full-pass tier datum: n=1 SHORT (confirmed +EV at target hit) + n=1 LONG (this fire, opposite direction, HOLD by R:R gate). Lineage n=2 instances across 1.5h.",
-          "NEW gating layer v2.60_RR_REGIME_ALIGNMENT: v2.10 full-pass is NECESSARY but not SUFFICIENT for B-grade ENTER. Additional R:R >= 1.5:1 with structurally-meaningful SL gate required. Regime-against R:R often fails this gate.",
-          "v2.58_RECLAIM_FULL_PASS_FIRST_INSTANCE rule scoping clarified: 'first' is per-direction-within-current-expansion-phase. Opposite-direction first instance qualifies on v2.58 grounds but stacks under v2.60_RR_REGIME_ALIGNMENT.",
-          "v2.59_POST_TARGET_HOLD candidate rule live-tested this fire: HOLD on opposite-direction signal within ~1h of target hit, on R:R-asymmetry grounds. Not promoted (n=1 instance, decision driven primarily by R:R not by post-target proximity). Lineage tracking.",
-          "Range $81.50-$82.40 (v2.59 estimate) refined to $81.77-$82.40 with $81.77 = structurally-tested floor via swept-and-reclaimed.",
-          "sweeps_attempted 15 -> 16 (sweep-of-$81.77 attempt + reclaim)."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "v2.60_RR_REGIME_ALIGNMENT gate: is 1.5:1 the right R:R threshold, or is it too tight given the 33-trade history showing 9-loser cluster at avg -$23.76 / sum -$213.81? Higher R:R minimum (2.0:1) might better filter the cluster. Need n=2-3 instances where this gate fires HOLD with full price-path observation to calibrate.",
-          "Bidirectional v2.10 in 1.5h might be the signature of 'Regime Uncertain' as a mode \u2014 contested range with credible signals both directions. If this pattern recurs n=2-3 times, it strengthens the case for Regime Uncertain as load-bearing categorical (not just mixed timeframes).",
-          "v2.58_RECLAIM_FULL_PASS_FIRST_INSTANCE per-direction scoping: clean interpretation but untested at n=1. If a 3rd v2.10 full-pass appears (same direction as the SHORT or LONG of this expansion phase), how is 'first' counted? Pre-commit: third instance does NOT auto-qualify unless preceding two were both HOLD-vindicated or resolved.",
-          "v2.59 lineage now has 4 open_questions; v2.60 adds 3 more = 7 active. Risk of carrying too many open questions diluting attention. Next cadence reflection should prune questions that have resolved or atrophied."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 7,
-    "avg_chars": 594,
+    "holds_since_framework": 8,
+    "avg_chars": 663,
     "since_iso": "2026-05-30T17:14:47-04:00",
     "since_framework_version": "v2.64",
-    "latest_fire_iso": "2026-05-30T18:54:42-04:00"
+    "latest_fire_iso": "2026-05-30T19:14:03-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2539,9 +2554,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780181682,
-    "updated_iso": "2026-05-30T18:54:42-04:00",
-    "updated_by_fire_iso": "2026-05-30T18:54:42-04:00",
+    "updated_ts": 1780183443,
+    "updated_iso": "2026-05-30T19:14:03-04:00",
+    "updated_by_fire_iso": "2026-05-30T19:14:03-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0.0,
@@ -2550,30 +2565,30 @@
     "range_active_since_iso": "2026-05-30T04:30:00+00:00",
     "sweeps_attempted": 27,
     "last_displacement_iso": "2026-05-30T14:15:00+00:00",
-    "funding_state": "OKX 5.77e-5 (mild positive; immaterial)",
+    "funding_state": "OKX 5.15e-5 (mild positive; immaterial)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "18:54 EDT fire. Canonical 22:30 UTC bar wicked low $82.34 (first sub-$82.40 print since 14:15 UTC floor flip) but closed $82.41 \u2014 essentially AT contested floor, NOT clean close-back-below. 22:45 in-progress $82.47. Sweep attempt counted (26\u219227); v2.63 drift-acceptance still holds (no clean failed-acceptance close, no v2.10 vol confirmation on either side \u2014 22:30 bar vol 2351 \u2248 0.84x baseline 2789). 5/8 symmetric, vol_ratio 0.56 live-status, no structural break. 0-1 v0.9 inputs. HOLD. Hypothetical lean if forced: short C-grade \u2014 cohort down+short favorable + drift-exhaustion read marginally strengthened by 22:30 wick-test, but vol fails v2.10 outright + R:R ~0.51 fails v2.60_RR. Indicator-pipe gap $2.76/3.34% within band. Watch: (a) 23:00 UTC bar close vs $82.40 (clean close-back-below would arm v2.10 short-side window), (b) vol expansion \u22651.5x baseline 2789 on next counter-displacement, (c) decisive break above $82.88 with vol.",
+    "narrative": "19:14 EDT fire. Coinbase 15m through 23:00 UTC (in-progress): 22:30 L=$82.34 C=$82.41 (narrow miss on close-back-below $82.40 floor); 22:45 C=$82.53; 23:00 in-progress L=$82.45 C=$82.45 V=4696 ~1.68x baseline 2789. Vol crosses v2.10 1.5x threshold but ~35 bars post-14:15 displacement (far outside 4-bar reclaim window) AND closing at bar low = upward-rejection signature. 3rd post-window vol expansion within this single drift-acceptance episode \u2014 adds instance toward v2.64 open question on 4-bar window adequacy (trigger 3+ across 2+ episodes NOT met). v2.10 correctly declines. v2.63_DRIFT_ACCEPTANCE third-outcome still holds (~9h sustained closes above $82.40 floor without close-back-below). 5/8 symmetric. Hypothetical lean if forced: short C-grade \u2014 drift-acceptance exhausting + 23:00 upward-rejection + favorable down+short cohort. Watch: (a) 23:00 UTC bar final close vs $82.40 (close-back-below would arm v2.10 short-side), (b) decisive vol-confirmed break above $82.88, (c) next 1-2 episodes for post-window vol expansion 2nd-episode trigger.",
     "cognition_mode": "Regime Uncertain",
     "cognition_mode_since_iso": "2026-05-30T00:55:40-0400",
-    "cognition_mode_rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution; 22:30 UTC sub-floor wick-and-recover adds first data point toward eventual resolution shape but no transition trigger.",
+    "cognition_mode_rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution sustained ~9h; 23:00 UTC vol+rejection adds intra-episode data point toward eventual resolution shape but no transition trigger.",
     "cognition_mode_cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 144,
+    "skipped_fires_in_mode": 150,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T22:49:27.123432+00:00",
-    "canonical_pull_iso": "2026-05-30T22:45:00+00:00",
+    "last_gate_check_iso": "2026-05-30T23:14:03+00:00",
+    "canonical_pull_iso": "2026-05-30T23:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
     "baseline_v96_ts": 1780174800,
-    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes); 22:30 UTC bar vol 2351 ~0.84x baseline, sub-v2.10 threshold"
+    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes); 23:00 UTC in-progress vol 4696 ~1.68x baseline, crosses v2.10 threshold but outside 4-bar reclaim window"
   },
   "cognition": {
     "mode": "Regime Uncertain",
     "since_iso": "2026-05-30T00:55:40-0400",
-    "rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution; 22:30 UTC sub-floor wick-and-recover adds first data point toward eventual resolution shape but no transition trigger.",
+    "rationale": "Contested range $81.77-$82.40 with v2.63_DRIFT_ACCEPTANCE third-outcome resolution sustained ~9h; 23:00 UTC vol+rejection adds intra-episode data point toward eventual resolution shape but no transition trigger.",
     "cadence_hint": "fire 15min on transitions",
-    "skipped_fires_in_mode": 144,
+    "skipped_fires_in_mode": 150,
     "last_mode_transition_iso": "2026-05-30T00:55:40-0400",
-    "last_gate_check_iso": "2026-05-30T22:49:27.123432+00:00"
+    "last_gate_check_iso": "2026-05-30T23:14:03+00:00"
   },
   "framework_origins": [
     {
@@ -2618,14 +2633,14 @@
     },
     "last_enter_ts": 1780112857.515305,
     "last_enter_iso": "2026-05-29T23:47:37-0400",
-    "holds_in_a_row": 72,
+    "holds_in_a_row": 73,
     "exploratory_at_risk_usd_today": 1.36,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 19.1,
+    "hours_since_last_enter": 19.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-05-30T22:54:42.460770+00:00",
+    "last_updated_iso": "2026-05-30T23:12:16.173056+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
