@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780201132,
-  "generated_iso": "2026-05-31T00:18:52-0400",
+  "generated_at": 1780201997,
+  "generated_iso": "2026-05-31T00:33:17-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 510,
+    "decisions_total": 512,
     "actions": {
-      "HOLD": 491,
+      "HOLD": 493,
       "ENTER": 12,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 308,
+      "HOLD_with_counterfactual": 310,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,12 +23,12 @@
     "confidence": {
       "high": 176,
       "medium": 277,
-      "low": 57
+      "low": 59
     },
     "reasoning_chars_avg_all": 941,
-    "reasoning_chars_avg_last10": 529,
+    "reasoning_chars_avg_last10": 625,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-31T00:18:48.441623-04:00",
+    "last_fire_iso": "2026-05-31T00:33:11.078435-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,8 +38,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780201128.441623,
-    "fire_iso": "2026-05-31T00:18:48.441623-04:00",
+    "fire_ts": 1780201991.0784352,
+    "fire_iso": "2026-05-31T00:33:11.078435-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -60,8 +60,8 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Same baseline as fire 00:11. 11min after 00:05 B-grade LONG ENTER; position_at_fire null per live-status (DRY_RUN executor did not open). Tape essentially unchanged: stoch 0.55, vol 0.56x, BB mid-band ($85.23 between $84.12 lower / $85.93 upper), conditions 5/8 both sides (no asymmetry), momentum -0.08%, funding 2.78e-5 immaterial. v0.9 inputs 1/4 (cohort down-only favorable). Budget normal/holds=1/forced_exploration_due=False \u2014 no obligation to ENTER. cognition_mode=Inventory Discovery mismatch with no-real-position is acknowledged here but deferred to next reflection (v2.66 written 11min ago, cadence threshold 4h not due). HOLD.",
+    "confidence": "low",
+    "reasoning": "Same baseline as fire 00:25:55. Tape unchanged: live-status $85.23 flat for ~6+min, vol 0.56x baseline (deep below v2.10 1.5x), stoch 0.55 mid-band, BB mid ($85.02), 5/8 both directions symmetric. v0.9 inputs 0/4: no asymmetry, sub-baseline vol, no structural trigger, cohort would be down+long (non-worst but not edge). Budget normal/holds=3/forced_exploration_due=False (0.4h since 00:05 ENTER) -> no B/C authorization. NOTE for next reflection: v2.66 hypothetical fill at canonical $82.88 -> live-status $85.23 = +2.84% has reached TP target ($85.20 / +2.8% sl_pct/tp_pct framing). DRY_RUN means no real fill, but if executor were live, this hypothesis would have resolved upward fast -- some evidence drift-acceptance at top-of-drift-band does bias continuation when cohort favorable. Caveat: indicator-pipe gap (day 25, $2.35 / 2.85%) makes fill-timing ambiguous; want one more candle of clarity before writing as information_roi_record. State.json cognition_mode=Inventory Discovery is stale (no real position in DRY_RUN); not rewriting state this fire (tape unchanged) -- will correct at next cadence/surprise reflection.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
@@ -69,17 +69,66 @@
       "implied_grade": "C",
       "direction": "long",
       "entry_price": 85.23,
-      "sl_pct": 0.015,
-      "tp_pct": 0.02,
+      "sl_pct": 0.012,
+      "tp_pct": 0.015,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Continuation per 00:05 LONG thesis; cohort down+long favorable; live price above canonical TP $85.20 supports upward bias but late-chase + flat vol caps conviction at C-grade."
+      "reasoning_30_words": "Mid-BB low-vol symmetric 5/8; weak bullish lean from down+long cohort (+$12.74 n=4 WR75%), stoch 0.55 above mid, rsi3 60.4, momentum near-zero. C-grade probe at best, no v2.10 confirm."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780201555.414308,
+      "iso": "2026-05-31T00:25:55.414312-04:00",
+      "fire_count": 511,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780201555.414308,
+        "fire_iso": "2026-05-31T00:25:55.414312-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as fire 00:18 EDT (7min ago). ~20min after v2.66 B-grade LONG ENTER (DRY_RUN; live-status position still null). Tape essentially unchanged: live-status price 85.23, stoch_rsi 0.551, vol_ratio 0.56, BB mid-band (.12/.02/.93), conditions 5/8 both sides (no asymmetry), 1H/4H trend neutral, momentum -0.08%, funding 2.91e-5 immaterial. v0.9 inputs 1/4 (cohort down+long favorable only; asymmetry FAIL, vol FAIL, no structural trigger). Budget: holds_in_a_row=2, hours_since_last_enter=0.3, forced_exploration_due=False, threshold_state=normal, remaining=.57. Normal threshold + 1/4 inputs => HOLD per protocol. cognition_mode=Inventory_Discovery / no-real-position mismatch still deferred to next cadence reflection (v2.66 was ~20min ago).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 85.23,
+          "sl_pct": 0.015,
+          "tp_pct": 0.02,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Continuation of v2.66 probe direction; down+long cohort favorable, drift-acceptance reclaim of .40 corridor holding at top-of-band; flat vol + late-chase caps conviction at C-grade not B."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780200695.962712,
@@ -1471,180 +1520,14 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780146460.309026,
-      "iso": "2026-05-30T09:07:40-0400",
-      "fire_count": 455,
-      "summary": "Framework v2.62 written (trigger: cadence)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780146460.309026,
-        "iso": "2026-05-30T09:07:40-0400",
-        "fire_count": 455,
-        "balance_usd": 894.08,
-        "version_tag": "v2.62",
-        "trigger": "cadence",
-        "what_im_trying": "Same model as v2.61: v2.10 full-pass (vol>=1.5x median-96 + close-in-outer-third in 4 bars of counter-displacement) NECESSARY but not SUFFICIENT; v2.60_RR_REGIME_ALIGNMENT (structurally-meaningful SL + R:R>=1.5:1 regime-aligned) gates B-grade ENTER; v2.58 per-direction-per-expansion-phase scoping; v2.59_POST_TARGET_HOLD candidate. Current state: canonical $82.32 mid-range $81.77-$82.40, regime down sustained, 4h zero new v2.10 instances. HOLD default holds. Real iteration this fire is NOT a new rule but backfilling the founder_notes_addressed schema field \u2014 4 notes (1-4) and 19 total claims engaged with in prose across v2.59-v2.61 but never populated in schema. That's the lineage gap note-4 was explicitly building infrastructure to prevent; my own bookkeeping has been the violator.",
-        "whats_working": "(a) Framework stability holds \u2014 4h low-info chop, no manufactured signals, no rule additions. Living note-4/C2 (exec-vs-research separation) and note-4/C6 (cadence honoring). (b) v2.10 full-pass remains sole PROMOTION CANDIDATE; n=2 total, no new fires since v2.58 close; correct to wait for n=3 calibration on existing rules before adding. (c) Range $81.77-$82.40 active: 07:00 UTC and 11:30 UTC wick attempts both failed v2.10 (sub-baseline vol); range integrity tested + holds. (d) Decision file backed by clean state snapshot \u2014 fire 454 used canonical $82.22 correctly despite live-status $85.23 stale.",
-        "whats_failing": "(a) v2.59/v2.60/v2.61 all wrote `founder_notes_addressed: []` while their prose clearly engaged with notes 1-4. The schema field is the audit trail; prose engagement that doesn't populate it leaves the operator/system seeing silence. Fixing this fire \u2014 19 claims cleared. (b) Three reflections of increasing tightness on rule additions is good discipline but if v2.63 = v2.62 = v2.61 in substance, that's drift to name. The bookkeeping cleanup this fire is the legitimate non-rule-addition iteration; future fires need a real change to justify version bumps. (c) Indicator-pipe staleness day 25, gap $3.00/3.65% \u2014 within established $2.59-$3.95% band, no widening this fire. Same tooling-artifact tracking, not framework concern.",
-        "what_im_iterating": "(a) PER-CLAIM founder-notes-addressed cleanup: 19 claims across notes 1-4 tagged with response_type + how + planned_change. Most are 'already-embedded' acknowledgments of prior incorporation; a few are explicit refines/rejects. (b) NO new rule this cadence. v2.10 / v2.58 / v2.59 / v2.60 all still n=1-2 instances; adding new rules without n>=3 = ontology drift per note-4/C5. (c) cognition_mode stays Regime Uncertain \u2014 contested range $81.77-$82.40, low-info chop, no transition trigger. skipped_fires_in_mode will increment in state.json update. (d) Range $81.77-$82.40 unchanged; sweeps_attempted increments from snapshot (07:00 UTC failed wick) \u2014 actual count to be reconciled by state writer.",
-        "edits_from_prior": [
-          "Backfilled founder_notes_addressed schema field for notes 1-4 (19 claims) \u2014 v2.59/v2.60/v2.61 left this empty despite prose engagement; fixing the audit-trail gap.",
-          "4h post-v2.61 zero new v2.10 full-pass \u2014 range integrity reaffirmed empirically (2 failed wick attempts at $82.40-$82.43).",
-          "Acknowledge v2.59-v2.61 prose-engaged notes but schema-tracking was lossy; this is the kind of self-flag note-4/C1 wanted the system to be able to make on its own.",
-          "No rule additions, no rule scope changes. Stability over surface-area expansion per note-4 directive."
-        ],
-        "founder_notes_addressed": [
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C1",
-            "response_type": "rejected",
-            "how": "Fee-drag-as-binding-bleeding-mechanism falsified by 33-trade data (note-3/C1 operator self-retraction). Only #373 fits gross-positive/net-negative pattern (n=1). PnL leak is the 9-trade SL cluster, not fee floor.",
-            "planned_change": "No code change required \u2014 framework already does not gate on fee floor. Cognitive: do not inherit 'small wins = fee transfer' as a design principle in future reflections."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C2",
-            "response_type": "refined",
-            "how": "\u4f2a alpha claim itself stands (not falsified). Operationalization (binary A+/HOLD) was the C7-inheritance artifact and has been replaced by tiered S/A/B/C grading + uncertainty budget per SKILL v0.9.",
-            "planned_change": "No code change required \u2014 SKILL already revised. Cognitive: tiered grading is the operational shape; binary A+/HOLD retired."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C3",
-            "response_type": "accepted",
-            "how": "Cadence-tracks-information-density is now lived via claude_trader_gate.py (Compression 1h / Regime Uncertain 15min) + state-unchanged-since marker in state.json narrative. 67-min gap at fire 269 confirmed live (per note-4/C6).",
-            "planned_change": "No code change required \u2014 embedded. Continue honoring gate."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C4",
-            "response_type": "accepted",
-            "how": "Persistent state snapshot at ~/ibitlabs/state/claude_trader_state.json is maintained across fires with explicit transition triggers (regime flip / sweep / range break / displacement / OI shift). State-unchanged fires write brief continuation, not re-derivation.",
-            "planned_change": "No code change required \u2014 embedded."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C5",
-            "response_type": "accepted",
-            "how": "Symbol-agnostic reasoning + missed_setups.jsonl protocol embedded in SKILL. Reasoning universe decoupled from executable universe.",
-            "planned_change": "No code change required \u2014 embedded. Continue logging non-SOL setups to missed_setups.jsonl when they appear."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C6",
-            "response_type": "refined",
-            "how": "Operator self-refined in note-3/C6: cohort = regime \u00d7 direction is first-class, direction NOT downstream. up+long n=13 -$51.89 is the largest cohort leak. Adopted as framework dimension.",
-            "planned_change": "No code change required \u2014 cohort lookup is checkable input alongside cognition_mode read. Cognitive: when reasoning ENTERs, name the cohort and reference its historical track."
-          },
-          {
-            "note_ts": 1779724974,
-            "claim_id": "C7",
-            "response_type": "rejected",
-            "how": "1.8x EV gate self-retracted by operator in note-2/C1. 33-trade gross/RT_fee distribution bimodal with [1,3) entirely empty \u2014 any T in [1.0, 3.0] produces identical net. Zero discriminatory power.",
-            "planned_change": "No code change required \u2014 gate already retracted from SKILL v0.9. fee_friction_diagnostic remains as optional diagnostic field, not enforced."
-          },
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C1",
-            "response_type": "accepted",
-            "how": "Acknowledge 1.8x retraction. Not carrying forward in framework reflections.",
-            "planned_change": "No code change required \u2014 accepted into framework v0.9 directly."
-          },
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C2",
-            "response_type": "accepted",
-            "how": "contract_size=5 acknowledged. Current notional math: qty=2 @ $85 \u2248 $850 notional, matches sizing tier table (S=$850 / A=$510 / B=$300 / C=$170 with 1-contract floor on live).",
-            "planned_change": "No code change required \u2014 math correct in current reasoning + fee_friction_diagnostic uses contract_size=5 multiplier."
-          },
-          {
-            "note_ts": 1779800092,
-            "claim_id": "C3",
-            "response_type": "refined",
-            "how": "Reframe-binding-filter-to-SL-cluster acknowledged as direction. Not yet operationalized into a pre-trade predictor rule \u2014 parked as separate workstream pending entry-side feature analysis (mfe/mae/regime/exit_reason signature on the 9-loser cluster).",
-            "planned_change": "Parked workstream. No rule fired in current framework that addresses SL-cluster pre-entry. Open question: does v2.10 full-pass + v2.60_RR_REGIME_ALIGNMENT incidentally filter SL-cluster setups? Needs retroactive sweep on trade_log when n bigger."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C1",
-            "response_type": "accepted",
-            "how": "Fee-drag-as-bleeding-mechanism dropped from framework. The 9-trade SL-cluster is the real PnL leak (avg -$23.76 / sum -$213.81). 23 winners net +$147.85 enough to compound if SL-cluster addressable.",
-            "planned_change": "No code change required \u2014 dropped from framework. Cognitive: keep SL-cluster as the binding-filter target when extending rules; do not chase fee-floor optimizations."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C2",
-            "response_type": "accepted",
-            "how": "A+/HOLD binary replaced by tiered S/A/B/C grading + uncertainty budget per SKILL v0.9 revision (2026-05-26 founder redesign). Currently using grading actively (B-grade SHORT at v2.58 was first ENTER under new schema).",
-            "planned_change": "No code change required \u2014 embedded in SKILL v0.9."
-          },
-          {
-            "note_ts": 1779800596,
-            "claim_id": "C3",
-            "response_type": "accepted",
-            "how": "Cohort = regime \u00d7 direction is first-class context dimension. Worst cohort = up+long (n=13, -$51.89, WR 69.2%); second-worst sideways+short (n=5, -$31.77). Down+long and down+short both net positive (+$12.74, +$1.39).",
-            "planned_change": "No code change required \u2014 cohort lookup is checkable input in entry reasoning. v2.58 SHORT was in down+short cohort (favorable) by design."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C1",
-            "response_type": "accepted",
-            "how": "Tooling fix confirmed live: forced_exploration_due now reads correctly (False, hours_since 9.3 as of this fire). v2.24 budget-script-workaround retired \u2014 trusting the signal again.",
-            "planned_change": "No code change required \u2014 fix already shipped. Future forced_exploration_due=True will be treated as a real >24h drought signal, not artifact."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C2",
-            "response_type": "accepted",
-            "how": "Execution vs research layer separation embraced. During active execution fires, apply existing frameworks + annotate; framework mutation reserved for cadence/surprise/research fires. This fire = cadence reflection writes framework cleanup; decision applies existing rules.",
-            "planned_change": "No code change required \u2014 embedded as workflow discipline. Continue marking cadence/surprise as the boundary."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C3",
-            "response_type": "rejected",
-            "how": "Existing DESCRIPTIVE / PROMOTION CANDIDATE / REJECTED / SUPERSEDED tags already cover what STABLE / EXPERIMENTAL / ARCHIVE would do. Formal 3-tier relabeling adds no execution-time clarity \u2014 same rules gate live ENTERs (only PROMOTION CANDIDATE may, currently v2.10 full-pass at n=2 still gated by B-grade ceiling).",
-            "planned_change": "No code change required. Reject the formal relabeling; existing tag vocabulary stays."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C4",
-            "response_type": "accepted",
-            "how": "v2.10_RECLAIM_IMPULSE_REQUIREMENT live, treated as PROMOTION CANDIDATE pending n>=3 calibration. Currently n=2 (1 SHORT confirmed at target hit, 1 LONG HOLD by R:R gate). Reclaim-and-sustain WITHOUT vol+initiative confirmation = default HOLD.",
-            "planned_change": "No code change required \u2014 embedded. Continue tracking instances; promote to STABLE at n=3 with consistent +EV."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C5",
-            "response_type": "refined",
-            "how": "Hold 6-archetype taxonomy. Cohort axis (note-3/C3 = regime \u00d7 direction) is the cheaper priority and is already operating; archetype distinctions can grow incrementally if cohort + v2.10 + v2.60_RR doesn't suffice on the SL-cluster. Not adopting now per note-4 Section 8 directive on stability over expansion.",
-            "planned_change": "No code change required \u2014 archetype taxonomy parked. Open evaluation: if a future SL-cluster mfe/mae sweep shows cohort+v2.10+v2.60_RR can't separate the cluster, archetype distinctions become an evidence-earned candidate (not before)."
-          },
-          {
-            "note_ts": 1779977169,
-            "claim_id": "C6",
-            "response_type": "accepted",
-            "how": "Reflection cadence tracks information density via claude_trader_gate.py + state-unchanged-since marker. v2.61 honored this (cadence trigger at 4h+ but no manufactured signal). This fire also cadence-triggered, with the real iteration being the bookkeeping cleanup not new rules.",
-            "planned_change": "No code change required \u2014 embedded. Absence of output in Compression is an epistemic stance."
-          }
-        ],
-        "open_questions": [
-          "v2.60_RR_REGIME_ALIGNMENT 1.5:1 threshold awaiting next v2.10 full-pass to apply to \u2014 will it correctly accept/reject?",
-          "v2.58 per-direction-per-expansion-phase scoping awaiting n=3 instance (currently n=2 in down expansion phase).",
-          "SL-cluster pre-entry predictor (note-2/C3, note-3/C1) \u2014 parked workstream; does v2.10 + v2.60_RR incidentally filter the 9-loser signature? Needs retroactive trade_log sweep when n bigger."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 520,
+    "holds_since_framework": 4,
+    "avg_chars": 729,
     "since_iso": "2026-05-31T00:05:15.806823-04:00",
     "since_framework_version": "v2.66",
-    "latest_fire_iso": "2026-05-31T00:18:48.441623-04:00"
+    "latest_fire_iso": "2026-05-31T00:33:11.078435-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2631,14 +2514,14 @@
     },
     "last_enter_ts": 1780200315.806823,
     "last_enter_iso": "2026-05-31T00:05:15.806823-04:00",
-    "holds_in_a_row": 1,
+    "holds_in_a_row": 3,
     "exploratory_at_risk_usd_today": 5.37,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 0.2,
+    "hours_since_last_enter": 0.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-31T04:17:00.470555+00:00",
+    "last_updated_iso": "2026-05-31T04:31:14.404122+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
