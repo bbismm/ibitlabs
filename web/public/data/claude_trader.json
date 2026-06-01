@@ -1,14 +1,14 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780284815,
-  "generated_iso": "2026-05-31T23:33:35-0400",
+  "generated_at": 1780288790,
+  "generated_iso": "2026-06-01T00:39:50-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 540,
+    "decisions_total": 541,
     "actions": {
       "HOLD": 521,
-      "ENTER": 12,
+      "ENTER": 13,
       "EXIT": 7
     },
     "grades": {
@@ -17,29 +17,29 @@
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
-      "ENTER_B": 9,
+      "ENTER_B": 10,
       "ENTER_A": 1
     },
     "confidence": {
       "high": 178,
       "medium": 290,
-      "low": 72
+      "low": 73
     },
-    "reasoning_chars_avg_all": 924,
-    "reasoning_chars_avg_last10": 632,
+    "reasoning_chars_avg_all": 925,
+    "reasoning_chars_avg_last10": 682,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-31T23:33:32-04:00",
+    "last_fire_iso": "2026-06-01T00:36:01-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 93,
+    "framework_reflections_total": 94,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780284812.322388,
-    "fire_iso": "2026-05-31T23:33:32-04:00",
+    "fire_ts": 1780288561.5,
+    "fire_iso": "2026-06-01T00:36:01-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -51,35 +51,173 @@
       "momentum_pct": -0.08,
       "rsi": 60.4
     },
-    "decision": "HOLD",
-    "grade": null,
-    "size_multiplier": null,
-    "setup_type": null,
-    "direction": null,
+    "decision": "ENTER",
+    "grade": "B",
+    "size_multiplier": 0.35,
+    "setup_type": "compression_cohort_lean_forced",
+    "direction": "short",
     "symbol": "SOL-PERP",
-    "quantity": null,
-    "leverage": null,
-    "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Same baseline as fire 22:32 EDT. State unchanged since v2.72 snapshot 21:20 EDT \u2014 price 85.23 mid-band, vol_ratio 0.56, symmetric 5/8 long = 5/8 short, regime down, funding 1.0e-4 (still ~33% below 1.5e-4 pre-named short-tailwind trigger), no position. Threshold_state just crossed normal\u2192relaxed (31 holds_in_a_row); under relaxed, B-grade requires 2/4 v0.9 inputs but only 1/4 pass (cohort favorable both sides; asymmetry, vol, structural all fail). C-grade short lean carried from v2.69-v2.72 funding-accumulation chain; sub-1:1 R:R still fails v2.60. Forced_exploration_due False (23.5h, threshold 24h). HOLD-with-lean.",
-    "expected_holding_hours": null,
-    "expected_pnl_pct_target": null,
-    "abort_conditions": [],
-    "hypothetical_entry_record": {
-      "implied_grade": "C",
-      "direction": "short",
-      "entry_price": 85.23,
-      "sl_pct": 0.0082,
-      "tp_pct": 0.0025,
-      "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Mid-band pin under continued compression. Funding 1.0e-4 mild short tailwind, BB mid 85.02 natural reversion target. SL above BB upper. Compressed tape favors drift over directional resolution short-window."
-    },
+    "quantity": 1,
+    "leverage": 1,
+    "sl_pct": 0.012,
+    "confidence": "low",
+    "reasoning": "Forced exploration override executes a 4-reflection-documented short lean. budget script forced_exploration_due=True (24.5h since last ENTER), threshold_state=relaxed (32 holds_in_a_row), fresh $8.94 daily budget. SKILL mandates B-grade ENTER unless no_plausible_counterfactual exists \u2014 and a plausible counterfactual EXISTS: the C-grade short lean monotonically nudged across v2.69-v2.72 from funding accumulation (3.45e-5 -> 1.0e-4) + down regime + cohort historical (down+short n=6 +$1.39 WR 83.3%) + price slightly closer to BB upper than mid. Direction is not invented here; it is execution of a documented sub-threshold lean now SKILL-authorized to act on. v2.60 R:R 1.5:1 EXPERIMENTAL gate bypassed (R:R ~1.08:1 with SL above BB upper ~$86.25 / TP at BB lower $84.12); procedural compliance with SKILL wins. v2.10 STABLE not applicable (not a reclaim setup). Structural trigger absent (vol 0.56x, no displacement, symmetric 5/8); this is exploration-grade, not conviction-grade.",
+    "expected_holding_hours": 6,
+    "expected_pnl_pct_target": 0.013,
+    "abort_conditions": [
+      "price closes above $85.93 BB upper for 2 consecutive 15m bars (failed mean-reversion, bullish breakout)",
+      "vol_ratio expansion >=1.5x with bullish 15m close in upper third (initiative-buying displacement)",
+      "regime flips down -> up or sideways (cohort context invalidated)",
+      "funding rate flips negative or breaches 2.0e-4 in either direction (funding-cohort assumption broken)"
+    ],
+    "hypothetical_entry_record": null,
     "no_plausible_counterfactual": null,
-    "exploration_attribution": null,
+    "exploration_attribution": {
+      "reason": "regime_transition_candidate",
+      "info_hypothesis": "tests whether down+short cohort (n=6, +$1.39, WR 83.3% historical) + mild funding tailwind (1.0e-4) produces positive expectancy under compressed-tape (vol_ratio 0.56x) absent structural trigger \u2014 sample is for 'down' regime which is the current regime, but historical sample is non-compressed; outcome discriminates whether cohort-WR generalizes across vol regimes",
+      "predicted_information_value": "medium"
+    },
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780288561.5,
+      "iso": "2026-06-01T00:36:01-04:00",
+      "fire_count": 541,
+      "summary": "Framework v2.73 written (trigger: surprise:forced_exploration_override_first_enter_in_24.5h)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780288561.5,
+        "iso": "2026-06-01T00:36:01-04:00",
+        "fire_count": 541,
+        "balance_usd": 894.08,
+        "version_tag": "v2.73",
+        "trigger": "surprise:forced_exploration_override_first_enter_in_24.5h",
+        "what_im_trying": "Framework largely unchanged from v2.72 (v2.10_RECLAIM_IMPULSE_REQUIREMENT STABLE; v2.60_RR_REGIME_ALIGNMENT EXPERIMENTAL; v2.58 EXPERIMENTAL n=2; v2.59 EXPERIMENTAL n=0; v2.63 EXPERIMENTAL n=1 counterfactual; cohort first-class; grade-tiered ENTER S/A/B/C with 1.0/0.6/0.35/0.2 multipliers; 1%/day budget; cognition_mode Compression 1h heartbeat). Substantive iteration THIS fire is the FIRST real test of the SKILL's forced_exploration_due override mechanism. Budget script flipped forced_exploration_due True (24.5h since last ENTER, threshold 24h), threshold_state relaxed (32 holds_in_a_row), fresh $8.94 daily budget. Per SKILL: 'forced_exploration_due: true \u2192 B-grade ENTER required regardless of input count' unless no_plausible_counterfactual exists. A plausible counterfactual exists \u2014 the C-grade short lean has been documented in v2.69-v2.72 monotonically across funding accumulation, parked sub-1.5:1 R:R per v2.60. The SKILL forced_exploration mandate beats the framework-derived v2.60 threshold here; that is exactly the conflict the override mechanism was designed for. ENTER B-grade short on the v2.69-v2.72 documented lean.",
+        "whats_working": "(a) Pre-naming discipline n=4: v2.69->v2.72 chain executed cleanly; v2.72 pre-named v2.73 'skip if funding-only same-shape micro-shift with no other movement' \u2014 but THIS fire has a real surprise (forced_exploration flip + first ENTER in 25h), so the surprise-trigger rule supersedes the skip-criterion. Pre-naming worked because the override condition was made explicit. (b) Hypothetical-lean continuity across v2.69-v2.72 paid off here \u2014 direction is not invented this fire, it carries 4 reflections of accumulated argument (down regime + cohort WR 83.3% / +$1.39 n=6 + funding 3.45e-5 -> 1.0e-4 monotonic + price slightly closer to BB upper than mid). The lean was always THERE; what changed is the SKILL authorization to act on it under forced_exploration. (c) Budget script honest: forced_exploration_due correctly flipped at exactly 24.5h drought; threshold_state correctly relaxed at 32 holds; fresh $8.94 daily budget. The post-v2.24 budget-script-tooling-artifact fix (note-4/C1 audit) is now trustable signal. (d) Cohort-first-class framing (note-3/C3 derived) doing real work: down+short n=6 +$1.39 WR 83.3% IS the historical context that supports this B-grade probe; without cohort framing this would be a structurally-blind forced trade. (e) Per-trade at-risk under budget: SL_pct 0.012 x notional ~$426 (1 contract clamp) = ~$5.11. Well within $8.94 fresh budget; B-grade exploratory exposure as designed.",
+        "whats_failing": "(a) v2.60 R:R 1.5:1 EXPERIMENTAL gate is BYPASSED this fire. SL above BB upper ~$86.05 (0.96-1.2% range, using 1.2%) vs TP at BB lower $84.12 (~1.30%) = R:R ~1.08:1, well below v2.60 threshold. The SKILL's forced_exploration override is explicit, but this is the first time the framework has authorized an ENTER its own EXPERIMENTAL rule would reject. Two interpretations: (i) v2.60 is structurally incompatible with forced_exploration_due under sustained compressed tape and needs a sub-threshold-under-forced-exploration carveout, OR (ii) the SKILL mandate is the right answer and v2.60 should be downgraded or made advisory-only. Resolution requires this trade's outcome \u2014 if it closes net positive, v2.60 was over-tight; if it closes in the 9-loser cluster signature, v2.60 was correct and SKILL forced_exploration may need refinement. Cannot resolve in advance. (b) v2.10_RECLAIM_IMPULSE_REQUIREMENT not applicable here (not a reclaim setup \u2014 no displacement to reclaim from), so v2.10 STABLE rule is not bypassed, just irrelevant. Distinction matters for promotion-evidence accounting. (c) Structural trigger is absent: no displacement, vol 0.56x (not 1.5x expansion), symmetric 5/8 long/short conditions. The ENTER is justified by SKILL mandate + cohort historical + funding tailwind + lean continuity, NOT by tape structure. This is precisely the kind of trade v2.69-v2.72 documented as sub-threshold. The framework's normal HOLD logic says HOLD; SKILL forced_exploration says ENTER. The conflict is real and procedural compliance with SKILL wins. (d) Rules-without-fires under Phase 0 DRY_RUN still structural: even this ENTER is logged-not-executed, so the resolution data may be lossy (no real fill, no real exit pricing, only theoretical PnL). Phase 1 plumbing milestone remains the gating constraint for genuine framework promotion.",
+        "what_im_iterating": "(a) ENTER B-grade short SOL-PERP at $85.23. Direction = short per v2.69-v2.72 documented lean + funding tailwind + cohort historical. Quantity = 1 contract (B-grade 0.35 x baseline 2 = 0.7, clamps up to exchange minimum 1). SL 1.2% (~$86.25 trigger, above BB upper $85.93 + buffer). TP target 1.30% (~$84.12 BB lower). R:R ~1.08:1 (below v2.60 1.5:1, SKILL forced_exploration overrides). Expected holding 4-8h (compressed-tape probabilistic resolution). At-risk ~$5.11 / $8.94 daily budget. (b) Exploration attribution: reason regime_transition_candidate (compressed mid-band tape may be late-Compression with funding accumulation foreshadowing transition); info_hypothesis 'tests whether down+short cohort + mild funding tailwind produces positive expectancy under compressed-tape vol_ratio 0.56x absent structural trigger'; predicted_information_value medium. (c) Pre-name v2.74 (post-trade-resolution): when this B-grade probe closes, write information_roi_record on next fire AND v2.74 reflection. If close positive -> v2.60 evidence weakens (R:R 1.5:1 was over-tight in compressed regime). If close negative AND fits 9-loser SL-cluster signature -> v2.60 evidence strengthens (SKILL forced_exploration may need refinement). If close negative but small/within budget -> ambiguous, n=1 doesn't resolve. (d) NO new rule. NO new descriptive category. NO scope change beyond the ENTER itself. v2.60/v2.10/v2.58/v2.59/v2.63 carry forward unchanged. (e) State writer this fire updates updated_iso, narrative reflects v2.73 first-forced-exploration-ENTER; cognition_mode stays Compression (no position will physically open under DRY_RUN; flip to Inventory Discovery deferred until live execution wires up); skipped_fires_in_mode increment continues.",
+        "edits_from_prior": [
+          "First real test of SKILL forced_exploration_due override. v2.69-v2.72 documented hypothetical short lean is now an executed B-grade short ENTER. The 4-reflection accumulation was structurally a setup for this moment.",
+          "v2.60 R:R 1.5:1 EXPERIMENTAL gate BYPASSED for the first time (~1.08:1 R:R). Procedural compliance with SKILL wins over framework-derived threshold. Resolution-of-this-trade will weigh on whether v2.60 keeps EXPERIMENTAL status or needs refinement.",
+          "v2.72 pre-named 'skip cadence reflection if funding-only same-shape micro-shift with no other movement' \u2014 superseded by surprise-trigger rule (forced_exploration flip + first ENTER in 25h is a genuine surprise). The pre-named skip-criterion was correctly designed; the actual condition this fire is something else.",
+          "Direction continuity matters: this is not a fresh judgment, it is execution of a 4-reflection-documented lean. Without that lineage, an under-forced-exploration ENTER would be closer to gambling than exploration.",
+          "Budget accounting: at-risk ~$5.11 logged against fresh $8.94 daily budget. exploratory_entries_today will increment to 1 on next budget script read."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "Outcome of this B-grade short. Information_roi_record write on the next fire after EXIT/close. If positive: v2.60 R:R 1.5:1 evidence weakens. If negative and SL-cluster shaped: v2.60 strengthens, SKILL forced_exploration may need refinement.",
+          "Operator cadence-proposal from v2.71 (extend Compression 1h heartbeat -> 2h) still unaddressed; not implementing unilaterally. Carries.",
+          "Funding-trajectory monitor (v2.71): 1.0e-4 still, hasn't progressed since v2.72 observation 4h ago; 1.5e-4 trigger still ~50% away. Mild deceleration vs the v2.71 ~19%/4h pace. Not flipping conviction.",
+          "Indicator-pipe staleness day 27 (carry, tooling artifact, stable ~$2.35 / 2.85% gap).",
+          "Two-channel range staleness state.json canonical vs live-status (carry, documented).",
+          "v2.63 DRIFT_ACCEPTANCE resolution shape (carry, Phase 0 counterfactual only).",
+          "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
+          "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review.",
+          "Should DRY_RUN-logged ENTERs that 'would have happened' carry the same information_roi weight as real fills? Pre-Phase-1 plumbing, theoretical PnL may diverge from real fills (slippage, fee, fill timing). Carry as methodology question."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780288561.5,
+      "iso": "2026-06-01T00:36:01-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.73: ENTER",
+      "payload": {
+        "fire_ts": 1780288561.5,
+        "fire_iso": "2026-06-01T00:36:01-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "ENTER",
+        "grade": "B",
+        "size_multiplier": 0.35,
+        "setup_type": "compression_cohort_lean_forced",
+        "direction": "short",
+        "symbol": "SOL-PERP",
+        "quantity": 1,
+        "leverage": 1,
+        "sl_pct": 0.012,
+        "confidence": "low",
+        "reasoning": "Forced exploration override executes a 4-reflection-documented short lean. budget script forced_exploration_due=True (24.5h since last ENTER), threshold_state=relaxed (32 holds_in_a_row), fresh $8.94 daily budget. SKILL mandates B-grade ENTER unless no_plausible_counterfactual exists \u2014 and a plausible counterfactual EXISTS: the C-grade short lean monotonically nudged across v2.69-v2.72 from funding accumulation (3.45e-5 -> 1.0e-4) + down regime + cohort historical (down+short n=6 +$1.39 WR 83.3%) + price slightly closer to BB upper than mid. Direction is not invented here; it is execution of a documented sub-threshold lean now SKILL-authorized to act on. v2.60 R:R 1.5:1 EXPERIMENTAL gate bypassed (R:R ~1.08:1 with SL above BB upper ~$86.25 / TP at BB lower $84.12); procedural compliance with SKILL wins. v2.10 STABLE not applicable (not a reclaim setup). Structural trigger absent (vol 0.56x, no displacement, symmetric 5/8); this is exploration-grade, not conviction-grade.",
+        "expected_holding_hours": 6,
+        "expected_pnl_pct_target": 0.013,
+        "abort_conditions": [
+          "price closes above $85.93 BB upper for 2 consecutive 15m bars (failed mean-reversion, bullish breakout)",
+          "vol_ratio expansion >=1.5x with bullish 15m close in upper third (initiative-buying displacement)",
+          "regime flips down -> up or sideways (cohort context invalidated)",
+          "funding rate flips negative or breaches 2.0e-4 in either direction (funding-cohort assumption broken)"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": {
+          "reason": "regime_transition_candidate",
+          "info_hypothesis": "tests whether down+short cohort (n=6, +$1.39, WR 83.3% historical) + mild funding tailwind (1.0e-4) produces positive expectancy under compressed-tape (vol_ratio 0.56x) absent structural trigger \u2014 sample is for 'down' regime which is the current regime, but historical sample is non-compressed; outcome discriminates whether cohort-WR generalizes across vol regimes",
+          "predicted_information_value": "medium"
+        },
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.73"
+    },
+    {
+      "type": "enter",
+      "ts": 1780288561.5,
+      "iso": "2026-06-01T00:36:01-04:00",
+      "fire_count": 541,
+      "summary": "ENTER short SOL-PERP @ $85.23 qty=1 lev=1",
+      "payload": {
+        "fire_ts": 1780288561.5,
+        "fire_iso": "2026-06-01T00:36:01-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "ENTER",
+        "grade": "B",
+        "size_multiplier": 0.35,
+        "setup_type": "compression_cohort_lean_forced",
+        "direction": "short",
+        "symbol": "SOL-PERP",
+        "quantity": 1,
+        "leverage": 1,
+        "sl_pct": 0.012,
+        "confidence": "low",
+        "reasoning": "Forced exploration override executes a 4-reflection-documented short lean. budget script forced_exploration_due=True (24.5h since last ENTER), threshold_state=relaxed (32 holds_in_a_row), fresh $8.94 daily budget. SKILL mandates B-grade ENTER unless no_plausible_counterfactual exists \u2014 and a plausible counterfactual EXISTS: the C-grade short lean monotonically nudged across v2.69-v2.72 from funding accumulation (3.45e-5 -> 1.0e-4) + down regime + cohort historical (down+short n=6 +$1.39 WR 83.3%) + price slightly closer to BB upper than mid. Direction is not invented here; it is execution of a documented sub-threshold lean now SKILL-authorized to act on. v2.60 R:R 1.5:1 EXPERIMENTAL gate bypassed (R:R ~1.08:1 with SL above BB upper ~$86.25 / TP at BB lower $84.12); procedural compliance with SKILL wins. v2.10 STABLE not applicable (not a reclaim setup). Structural trigger absent (vol 0.56x, no displacement, symmetric 5/8); this is exploration-grade, not conviction-grade.",
+        "expected_holding_hours": 6,
+        "expected_pnl_pct_target": 0.013,
+        "abort_conditions": [
+          "price closes above $85.93 BB upper for 2 consecutive 15m bars (failed mean-reversion, bullish breakout)",
+          "vol_ratio expansion >=1.5x with bullish 15m close in upper third (initiative-buying displacement)",
+          "regime flips down -> up or sideways (cohort context invalidated)",
+          "funding rate flips negative or breaches 2.0e-4 in either direction (funding-cohort assumption broken)"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": {
+          "reason": "regime_transition_candidate",
+          "info_hypothesis": "tests whether down+short cohort (n=6, +$1.39, WR 83.3% historical) + mild funding tailwind (1.0e-4) produces positive expectancy under compressed-tape (vol_ratio 0.56x) absent structural trigger \u2014 sample is for 'down' regime which is the current regime, but historical sample is non-compressed; outcome discriminates whether cohort-WR generalizes across vol regimes",
+          "predicted_information_value": "medium"
+        },
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780284812.322388,
@@ -1452,183 +1590,78 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780200695.962712,
-      "iso": "2026-05-31T00:11:35.962712-04:00",
-      "fire_count": 509,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780200695.962712,
-        "fire_iso": "2026-05-31T00:11:35.962712-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 00:05 EDT (v2.66 B-grade LONG probe). Price 85.23, stoch_rsi 0.551, vol_ratio 0.56, momentum -0.08% \u2014 all identical to prior fire. v2.66 ENTER fired 5min ago; DRY_RUN executor means position_at_fire reads null but the virtual probe is in evaluation (cognition_mode=Inventory Discovery per state). No new tape; nothing to act on; budget remaining .57. HOLD pending probe resolution.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "B",
-          "direction": "long",
-          "entry_price": 85.23,
-          "sl_pct": 0.018,
-          "tp_pct": 0.028,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Same v2.66 thesis: drift-acceptance at top-of-band biases upward continuation when cohort favorable (down+long n=4 +$12.74 WR75%); would re-fire identically if forced now."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780200315.806823,
-      "iso": "2026-05-31T00:05:15.806823-04:00",
-      "fire_count": 87,
-      "summary": "Framework v2.66 written (trigger: surprise:first_enter_after_24h_drought_and_forced_exploration_flip)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780200315.806823,
-        "iso": "2026-05-31T00:05:15.806823-04:00",
-        "fire_count": 87,
-        "balance_usd": 894.08,
-        "version_tag": "v2.66",
-        "trigger": "surprise:first_enter_after_24h_drought_and_forced_exploration_flip",
-        "what_im_trying": "Same operating model as v2.65: v2.10_RECLAIM_IMPULSE_REQUIREMENT (vol>=1.5x median-96 + close-in-outer-third within 4 bars) NECESSARY but not SUFFICIENT; v2.60_RR_REGIME_ALIGNMENT gates B-grade ENTER; v2.58 per-direction-per-expansion-phase scoping; v2.59_POST_TARGET_HOLD candidate; v2.63_DRIFT_ACCEPTANCE descriptive third-outcome. Substantive iteration THIS fire is the action change: forced_exploration_due flipped True (24.2h > 24h threshold) \u2014 first such trigger since the budget-script fix in note-4 era. State.json 23:30 EDT explicitly pre-cued 'hypothetical lean if forced: weak C-grade LONG' (down+long cohort +$12.74 n=4 WR 75%; drift-acceptance reclaim sustained 9+ bars to $82.88 top-of-drift-band). Per SKILL \u00a7 Uncertainty budget, forced_exploration_due=True requires B-grade ENTER unless no plausible counterfactual exists \u2014 counterfactual exists, pre-cued by my own state writer 2.5h ago. Upgrading the C-grade hypothetical to a B-grade live probe. This is the first ENTER in 24.2h; it is also the first B-grade application of the post-note-4 budget protocol; it is also the first live test of v2.63_DRIFT_ACCEPTANCE resolution at top-of-drift-band.",
-        "whats_working": "(a) Discipline held through 90 consecutive HOLDs \u2014 none manufactured, all referenced unchanged state per the anti-narrative pattern. The 5-min cadence inside Regime Uncertain mode produced ~3 substantive reflections in 12h (v2.63 surprise / v2.64 cadence / v2.65 surprise) and ~85 brief continuations, exactly the design. (b) Budget script tooling integrity (note-4/C1) holds \u2014 the True flip is honest (last_enter resolved cleanly from full decisions.jsonl replay). I trust the signal and act on it; this is the first time the post-fix budget has demanded a B-grade ENTER without me overriding for tooling-artifact reasons. (c) State.json pre-cued this fire's lean 2.5h ago in writing ('Hypothetical lean if forced: weak C-grade LONG... watch (c) forced_exploration_due flip True next cycle'). The cross-fire research-handoff layer is performing its job \u2014 I am not reasoning from scratch under time pressure. (d) v2.65's SHORT-lean disconfirmation is a useful prior: the failure mode was 'manufactured short on first vol+rejection' \u2014 the symmetric warning here is 'manufactured long on first forced-exploration tick'. Mitigated by attributing the probe to a SPECIFIC testable hypothesis (v2.63 resolution shape), not 'time to take a trade'.",
-        "whats_failing": "(a) This ENTER fires on the WEAKEST v0.9 input set the framework has ever permitted \u2014 1/4 inputs (cohort favorable only; asymmetry 5/8 both sides FAIL; vol 0.56x FAIL; no structural trigger except soft drift-acceptance reclaim). It is exactly the kind of trade that v0.9's binary A+/HOLD ancestor was designed to refuse. The forced_exploration_due + relaxed-threshold + budget-permitted combination is the system's safety floor against perpetual HOLD-equilibrium (note-3/C2 deadlock), and it is now firing for the first time. Correct by protocol; uncomfortable by conviction. If this probe loses money cleanly, that is INFORMATION about the floor's calibration \u2014 not a critique of the protocol. If 3+ such floor-fires in 2 weeks all lose money with no learning extracted, the floor is too low. n=1 starts now. (b) Indicator-pipe staleness day 25 unchanged: live-status $85.23 vs canonical $82.88 = $2.35 / 2.85%. I am writing decision-level current_price from live-status (per schema) but reasoning, SL, and TP-pct off canonical $82.88. The asymmetry is documented but the gap itself remains unresolved tooling artifact. (c) Rules-without-fires deadlock partially relieved: v2.60_RR_REGIME_ALIGNMENT will get n=1 application this trade (1.56:1 R:R from sl_pct 0.018 / tp_pct 0.028). v2.58 scoping unchanged. v2.10 still silent (no vol confirmation). v2.63_DRIFT_ACCEPTANCE gets first live resolution test.",
-        "what_im_iterating": "(a) NO new rule. NO new descriptive category. NO scope change. The substantive iteration is ACTION: executing the forced-exploration B-grade ENTER as designed instead of finding a third counterfactual to delay it. (b) Setting concrete exit gates this fire so the resolution is unambiguous: SL at $81.40 canonical (just below range floor $81.77 with buffer; sl_pct 0.018 off $82.88 entry assumption); TP at $85.20 canonical (tp_pct 0.028 above entry; R:R 1.56:1 meets v2.60_RR threshold); abort conditions include close-back-below $82.40 with vol >= 1.5x baseline (v2.63 failed-acceptance transition signal) and 8h Lever 5 MFE-floor cut. (c) Info-hypothesis is explicit: 'does drift-acceptance third-outcome at top-of-drift-band ($82.88) with 9-bar sustained reclaim of broken-corridor-top bias continuation-upward when cohort favorable and vol has not yet confirmed'. If TP hits or trailing accumulates: drift-acceptance has bullish-asymmetric resolution shape at the top-of-band. If SL or failed-acceptance hits: continuation requires vol confirmation (v2.10 stays load-bearing). If time-cut at 8h with marginal PnL: drift-acceptance resolution is path-dependent / range-bound; v2.59_POST_TARGET_HOLD framing strengthens. (d) cognition_mode transitions Regime Uncertain \u2192 Inventory Discovery (position will be open). cognition_mode_since_iso bumps; cadence_hint changes to 'fire 5min \u2014 position open'; skipped_fires_in_mode resets to 0.",
-        "edits_from_prior": [
-          "ACTION CHANGE: first ENTER in 24.2h. Upgrading state.json's pre-cued C-grade LONG hypothetical to a live B-grade probe per forced_exploration_due=True + relaxed threshold + plausible counterfactual.",
-          "v2.63_DRIFT_ACCEPTANCE gets first live resolution test. Prior framing (v2.63/v2.64/v2.65) was descriptive; now it is testable against $-outcome.",
-          "v2.60_RR_REGIME_ALIGNMENT gets n=1 application: sl_pct 0.018 / tp_pct 0.028 = R:R 1.56:1, just clears 1.5:1 threshold. This is the first live application of v2.60 since articulation.",
-          "v2.65's 'narrative-lean-lifecycle' open question now gets a tape resolution: the state.json LONG lean is materialized into a decision-level record with explicit hypothesis and abort conditions. Whether to promote 'hypothetical_lean_if_forced' to structured state-field depends partly on this outcome.",
-          "cognition_mode transitions Regime Uncertain \u2192 Inventory Discovery. First such transition since cognition_mode protocol Phase B.1.",
-          "Explicit self-flag: 1/4 v0.9 inputs is the weakest input-set an ENTER has fired on. This is the safety-floor working as designed against the HOLD-equilibrium deadlock; it is NOT a quality A-grade conviction trade. Sized accordingly (qty 0.7, executor will clamp to 1-contract floor)."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "v2.63_DRIFT_ACCEPTANCE resolution shape at top-of-drift-band: continuation-upward / failed-acceptance close-back / decay into Compression. THIS trade gets n=1.",
-          "v2.60_RR_REGIME_ALIGNMENT 1.5:1 threshold gets first live application this trade (1.56:1).",
-          "v2.58 per-direction-per-expansion-phase scoping awaiting n=3 (currently n=2 down expansion; this trade adds n=3 down+long).",
-          "v2.10 4-bar reclaim window adequacy unchanged; this trade does NOT bear on it (no v2.10 fire).",
-          "Floor-fire calibration: is 1/4 v0.9 inputs + forced_exploration_due the right safety-floor? n=1 starts; trigger for revisit = 3+ floor-fires in 2 weeks with consistent loss + no learning extracted.",
-          "Narrative-lean-lifecycle (v2.65 open question) now materialized to decision-level; whether to promote to structured state-field depends on this trade's outcome plus pattern across next 2-3 forced-exploration cycles."
-        ]
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780200315.806823,
-      "iso": "2026-05-31T00:05:15.806823-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.66: ENTER",
-      "payload": {
-        "fire_ts": 1780200315.806823,
-        "fire_iso": "2026-05-31T00:05:15.806823-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "ENTER",
-        "grade": "B",
-        "size_multiplier": 0.35,
-        "setup_type": "drift_acceptance_resolution_long_probe",
-        "direction": "long",
-        "symbol": "SOL-PERP",
-        "quantity": 0.7,
-        "leverage": 3,
-        "sl_pct": 0.018,
-        "confidence": "low",
-        "reasoning": "Forced-exploration B-grade LONG probe per state.json pre-cue (23:30 EDT) and budget script flip to forced_exploration_due=True (24.2h since last ENTER). v0.9 inputs 1/4 (cohort down+long favorable +$12.74 n=4 WR 75%; asymmetry FAIL 5/8 both sides; vol FAIL 0.56x; soft structural via v2.63_DRIFT_ACCEPTANCE 9-bar reclaim to $82.88 top-of-drift-band). Hypothesis: drift-acceptance third-outcome at top-of-band biases continuation-upward when cohort favorable and vol has not yet confirmed. This is the safety-floor firing (not A-grade conviction). canonical price $82.88 used for sl/tp math (live-status $85.23 stale day 25); SL $81.40 below range-floor $81.77; TP $85.20 = R:R 1.56:1 meets v2.60_RR.",
-        "expected_holding_hours": 8,
-        "expected_pnl_pct_target": 0.028,
-        "abort_conditions": [
-          "canonical close back below $82.40 with vol >= 1.5x baseline-96 (v2.63 failed-acceptance transition)",
-          "8h Lever 5 MFE-floor cut if pnl<0 AND MFE<0.4%",
-          "v2.10 short-direction trigger: vol >= 1.5x baseline + close in lower third"
-        ],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": {
-          "reason": "setup_archetype_underrepresented",
-          "info_hypothesis": "tests whether v2.63_DRIFT_ACCEPTANCE resolution at top-of-drift-band ($82.88) with 9-bar sustained reclaim of broken-corridor-top biases continuation-upward when cohort (down+long) is historically favorable and vol has not yet confirmed via v2.10",
-          "predicted_information_value": "high"
-        },
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.66"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 785,
-    "since_iso": "2026-05-31T21:20:52-04:00",
-    "since_framework_version": "v2.72",
-    "latest_fire_iso": "2026-05-31T23:33:32-04:00"
+    "holds_since_framework": 0,
+    "avg_chars": 0,
+    "since_iso": null
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780276852.633966,
-    "iso": "2026-05-31T21:20:52-04:00",
-    "fire_count": 537,
+    "ts": 1780288561.5,
+    "iso": "2026-06-01T00:36:01-04:00",
+    "fire_count": 541,
     "balance_usd": 894.08,
-    "version_tag": "v2.72",
-    "trigger": "cadence:4h_heartbeat_funding_continued_climb_below_v271_trigger",
-    "what_im_trying": "Unchanged framework from v2.71: v2.10_RECLAIM_IMPULSE_REQUIREMENT STABLE (NECESSARY but not SUFFICIENT, eligible to gate live ENTER); v2.60_RR_REGIME_ALIGNMENT EXPERIMENTAL gates B-grade ENTER at 1.5:1 R:R; v2.58 per-direction-per-expansion-phase EXPERIMENTAL (n=2); v2.59_POST_TARGET_HOLD EXPERIMENTAL (n=0); v2.63_DRIFT_ACCEPTANCE EXPERIMENTAL (n=1 counterfactual). Cohort = regime x direction first-class. Grade-tiered ENTER S/A/B/C with size_multiplier 1.0/0.6/0.35/0.2 + 1%/day uncertainty budget. cognition_mode Compression 1h heartbeat. Substantive iteration THIS fire: (a) record funding continued upward climb 8.39e-5 (v2.71 snapshot) -> 1.0e-4 live-status (~+19%, ~4h); (b) confirm 1.0e-4 remains below v2.71's pre-named 1.5e-4 short-tailwind trigger (~33% gap remaining); (c) honor v2.71's pre-named substance criterion (funding shift IS 'evidence', so reflection fires per spec) but explicitly name that this is 5-in-a-row Compression heartbeat at minimum-acceptable substance.",
-    "whats_working": "(a) Pre-naming discipline n=3 clean: v2.69->v2.70 (drift acknowledgement), v2.70->v2.71 (cadence question), v2.71->v2.72 (funding trigger test) \u2014 each pre-named test procedurally simple to execute, removing inertia pressure on the subsequent fire. (b) Compression-mode cadence gate continues correct: state.json skipped_fires_in_mode 392 at 17:04 EDT; between then and now (4h 16min) wrapper passed ~2 fires (21:14:30 + this one) and suppressed ~49 5-min ticks. Working as designed. (c) Decision-level discipline holding: 28 holds_in_a_row per budget, all referencing unchanged state per anti-narrative pattern. Hypothetical-lean C-grade short consistent across v2.69-v2.72 cycle, monotonically nudged stronger by continued funding climb but never misrepresented as B-grade. (d) Funding-trajectory monitor (v2.71 explicit) doing its job: observing trajectory, applying pre-named threshold test, NOT manufacturing premature ENTER on mild evidence. (e) Budget script honest: forced_exploration_due False (21.2h since last ENTER, threshold 24h), remaining $8.94 (UTC day rolled over to 06-01, fresh budget). v2.67 narrative-discipline rule (no future-tense in state.json) survives n=5 enforcement cycles.",
-    "whats_failing": "(a) Rules-without-fires structural unchanged under Phase 0 DRY_RUN: v2.59 n=0, v2.58 n=2, v2.10 n=2 since fire 269, v2.60 n=1 counterfactual, v2.63 n=1 counterfactual. EXPERIMENTAL tier cannot promote to STABLE without Phase 1 plumbing milestone. (b) Indicator-pipe staleness day 26 unchanged: live-status $85.23 vs canonical $82.88 = $2.35 / 2.85%. State.json range_low/high ($81.77-$82.40) references canonical channel; current_price uses live-status channel. Two-channel staleness documented; tooling artifact, stable not widening. (c) **5-in-a-row reflection pattern is now the observed reality** (v2.68 bookkeeping + v2.69 no-change + v2.70 explicit-acknowledgement + v2.71 cadence-question + v2.72 funding-microshift). Funding-microshift IS genuinely new evidence each cycle, but it's the SAME kind of evidence \u2014 a slow-climbing rate that hasn't yet hit the pre-named decision threshold. The SKILL warns: 'three reflections in a row say the same thing... that's drift \u2014 name it.' I am at 5, naming it explicitly. If v2.73 is ALSO funding-only-trajectory below trigger, the cadence ceiling is hit and the reflection should not fire as routine cadence \u2014 only on threshold breach, regime flip, displacement, or position event. (d) Operator cadence-proposal from v2.71 (extend Compression heartbeat 1h -> 2h) not yet acknowledged. Last operator note 2026-05-28. Proposal carries in open_questions; not implementing unilaterally.",
-    "what_im_iterating": "(a) NO new rule. NO new descriptive category. NO scope change. NO promotion/demotion. NO new founder_notes_addressed (last note 2026-05-28, fully audited v2.68). (b) Funding-trajectory accounting: 3.45e-5 (snapshot baseline) -> 8.39e-5 (v2.71 observation) -> 1.0e-4 (v2.72) = ~2.9x cumulative since baseline, ~19% v2.71 -> v2.72. Trigger 1.5e-4 = ~50% above current, ~4.3x above snapshot baseline. At current trajectory rate (~19%/4h), trigger reached in ~8h IF rate sustains. NOT predicting \u2014 flagging the timeline so the next funding observation can be properly contextualized against this monotonic trend. If trigger breaches in v2.73, hypothetical-lean upgrades to B-grade ENTER candidate within budget ($8.94 fresh today). (c) Hypothetical-lean refinement: C-grade short, marginally stronger than v2.71 due to continued funding tailwind, but R:R still sub-1:1 in compressed tape (SL above BB upper $85.93 = ~0.0082, TP at BB mid $85.02 = ~0.0025). Still fails v2.60 1.5:1 threshold, still HOLD-with-lean. Direction unchanged, conviction monotonically nudged across v2.69 -> v2.70 -> v2.71 -> v2.72 by funding accumulation. (d) Pre-name v2.73 (~01:20 EDT next heartbeat) decision criterion \u2014 SHARPER than v2.71's: even WITH funding-evidence, if next observation is same-shape micro-shift only AND still below 1.5e-4 trigger AND no other movement (regime, range, displacement, position), DO NOT write a cadence reflection. The 5-in-a-row pattern is the natural ceiling; 6-in-a-row of the same shape would be drift even with technically-new evidence. Reflection fires only on: trigger breach, regime flip, displacement >1.5%/15min, position open/close, founder note arrival. (e) State writer this fire updates updated_iso, narrative reflects v2.72 funding-continued-climb + 5-in-a-row naming + v2.73 sharper ceiling, increments skipped_fires_in_mode 392 -> ~442, updates funding_state.",
+    "version_tag": "v2.73",
+    "trigger": "surprise:forced_exploration_override_first_enter_in_24.5h",
+    "what_im_trying": "Framework largely unchanged from v2.72 (v2.10_RECLAIM_IMPULSE_REQUIREMENT STABLE; v2.60_RR_REGIME_ALIGNMENT EXPERIMENTAL; v2.58 EXPERIMENTAL n=2; v2.59 EXPERIMENTAL n=0; v2.63 EXPERIMENTAL n=1 counterfactual; cohort first-class; grade-tiered ENTER S/A/B/C with 1.0/0.6/0.35/0.2 multipliers; 1%/day budget; cognition_mode Compression 1h heartbeat). Substantive iteration THIS fire is the FIRST real test of the SKILL's forced_exploration_due override mechanism. Budget script flipped forced_exploration_due True (24.5h since last ENTER, threshold 24h), threshold_state relaxed (32 holds_in_a_row), fresh $8.94 daily budget. Per SKILL: 'forced_exploration_due: true \u2192 B-grade ENTER required regardless of input count' unless no_plausible_counterfactual exists. A plausible counterfactual exists \u2014 the C-grade short lean has been documented in v2.69-v2.72 monotonically across funding accumulation, parked sub-1.5:1 R:R per v2.60. The SKILL forced_exploration mandate beats the framework-derived v2.60 threshold here; that is exactly the conflict the override mechanism was designed for. ENTER B-grade short on the v2.69-v2.72 documented lean.",
+    "whats_working": "(a) Pre-naming discipline n=4: v2.69->v2.72 chain executed cleanly; v2.72 pre-named v2.73 'skip if funding-only same-shape micro-shift with no other movement' \u2014 but THIS fire has a real surprise (forced_exploration flip + first ENTER in 25h), so the surprise-trigger rule supersedes the skip-criterion. Pre-naming worked because the override condition was made explicit. (b) Hypothetical-lean continuity across v2.69-v2.72 paid off here \u2014 direction is not invented this fire, it carries 4 reflections of accumulated argument (down regime + cohort WR 83.3% / +$1.39 n=6 + funding 3.45e-5 -> 1.0e-4 monotonic + price slightly closer to BB upper than mid). The lean was always THERE; what changed is the SKILL authorization to act on it under forced_exploration. (c) Budget script honest: forced_exploration_due correctly flipped at exactly 24.5h drought; threshold_state correctly relaxed at 32 holds; fresh $8.94 daily budget. The post-v2.24 budget-script-tooling-artifact fix (note-4/C1 audit) is now trustable signal. (d) Cohort-first-class framing (note-3/C3 derived) doing real work: down+short n=6 +$1.39 WR 83.3% IS the historical context that supports this B-grade probe; without cohort framing this would be a structurally-blind forced trade. (e) Per-trade at-risk under budget: SL_pct 0.012 x notional ~$426 (1 contract clamp) = ~$5.11. Well within $8.94 fresh budget; B-grade exploratory exposure as designed.",
+    "whats_failing": "(a) v2.60 R:R 1.5:1 EXPERIMENTAL gate is BYPASSED this fire. SL above BB upper ~$86.05 (0.96-1.2% range, using 1.2%) vs TP at BB lower $84.12 (~1.30%) = R:R ~1.08:1, well below v2.60 threshold. The SKILL's forced_exploration override is explicit, but this is the first time the framework has authorized an ENTER its own EXPERIMENTAL rule would reject. Two interpretations: (i) v2.60 is structurally incompatible with forced_exploration_due under sustained compressed tape and needs a sub-threshold-under-forced-exploration carveout, OR (ii) the SKILL mandate is the right answer and v2.60 should be downgraded or made advisory-only. Resolution requires this trade's outcome \u2014 if it closes net positive, v2.60 was over-tight; if it closes in the 9-loser cluster signature, v2.60 was correct and SKILL forced_exploration may need refinement. Cannot resolve in advance. (b) v2.10_RECLAIM_IMPULSE_REQUIREMENT not applicable here (not a reclaim setup \u2014 no displacement to reclaim from), so v2.10 STABLE rule is not bypassed, just irrelevant. Distinction matters for promotion-evidence accounting. (c) Structural trigger is absent: no displacement, vol 0.56x (not 1.5x expansion), symmetric 5/8 long/short conditions. The ENTER is justified by SKILL mandate + cohort historical + funding tailwind + lean continuity, NOT by tape structure. This is precisely the kind of trade v2.69-v2.72 documented as sub-threshold. The framework's normal HOLD logic says HOLD; SKILL forced_exploration says ENTER. The conflict is real and procedural compliance with SKILL wins. (d) Rules-without-fires under Phase 0 DRY_RUN still structural: even this ENTER is logged-not-executed, so the resolution data may be lossy (no real fill, no real exit pricing, only theoretical PnL). Phase 1 plumbing milestone remains the gating constraint for genuine framework promotion.",
+    "what_im_iterating": "(a) ENTER B-grade short SOL-PERP at $85.23. Direction = short per v2.69-v2.72 documented lean + funding tailwind + cohort historical. Quantity = 1 contract (B-grade 0.35 x baseline 2 = 0.7, clamps up to exchange minimum 1). SL 1.2% (~$86.25 trigger, above BB upper $85.93 + buffer). TP target 1.30% (~$84.12 BB lower). R:R ~1.08:1 (below v2.60 1.5:1, SKILL forced_exploration overrides). Expected holding 4-8h (compressed-tape probabilistic resolution). At-risk ~$5.11 / $8.94 daily budget. (b) Exploration attribution: reason regime_transition_candidate (compressed mid-band tape may be late-Compression with funding accumulation foreshadowing transition); info_hypothesis 'tests whether down+short cohort + mild funding tailwind produces positive expectancy under compressed-tape vol_ratio 0.56x absent structural trigger'; predicted_information_value medium. (c) Pre-name v2.74 (post-trade-resolution): when this B-grade probe closes, write information_roi_record on next fire AND v2.74 reflection. If close positive -> v2.60 evidence weakens (R:R 1.5:1 was over-tight in compressed regime). If close negative AND fits 9-loser SL-cluster signature -> v2.60 evidence strengthens (SKILL forced_exploration may need refinement). If close negative but small/within budget -> ambiguous, n=1 doesn't resolve. (d) NO new rule. NO new descriptive category. NO scope change beyond the ENTER itself. v2.60/v2.10/v2.58/v2.59/v2.63 carry forward unchanged. (e) State writer this fire updates updated_iso, narrative reflects v2.73 first-forced-exploration-ENTER; cognition_mode stays Compression (no position will physically open under DRY_RUN; flip to Inventory Discovery deferred until live execution wires up); skipped_fires_in_mode increment continues.",
     "edits_from_prior": [
-      "Funding evidence v2.71 -> v2.72: 8.39e-5 -> 1.0e-4 (+19%, ~4h). Continues v2.71's monotonic trajectory; still ~33% below 1.5e-4 trigger.",
-      "Sharper v2.73 cadence ceiling: v2.71 pre-named 'skip if no evidence at all'; v2.72 pre-names 'skip if funding-only same-shape micro-shift below trigger with no other movement'. 5-in-a-row IS the ceiling; technically-new same-shape evidence does not automatically warrant 6-in-a-row.",
-      "Hypothetical-lean refinement: C-grade short marginally stronger than v2.71 (monotonic across v2.69-v2.72 from funding accumulation). Direction unchanged, sub-1:1 R:R unchanged, HOLD-with-lean unchanged.",
-      "Funding-trigger timeline projection: at current rate, 1.5e-4 reached in ~8h IF rate sustains. NOT a prediction; a timeline marker for properly contextualizing the next observation.",
-      "No rule changes, no scope changes, no founder_notes additions, no promotions/demotions. Bookkeeping discipline only."
+      "First real test of SKILL forced_exploration_due override. v2.69-v2.72 documented hypothetical short lean is now an executed B-grade short ENTER. The 4-reflection accumulation was structurally a setup for this moment.",
+      "v2.60 R:R 1.5:1 EXPERIMENTAL gate BYPASSED for the first time (~1.08:1 R:R). Procedural compliance with SKILL wins over framework-derived threshold. Resolution-of-this-trade will weigh on whether v2.60 keeps EXPERIMENTAL status or needs refinement.",
+      "v2.72 pre-named 'skip cadence reflection if funding-only same-shape micro-shift with no other movement' \u2014 superseded by surprise-trigger rule (forced_exploration flip + first ENTER in 25h is a genuine surprise). The pre-named skip-criterion was correctly designed; the actual condition this fire is something else.",
+      "Direction continuity matters: this is not a fresh judgment, it is execution of a 4-reflection-documented lean. Without that lineage, an under-forced-exploration ENTER would be closer to gambling than exploration.",
+      "Budget accounting: at-risk ~$5.11 logged against fresh $8.94 daily budget. exploratory_entries_today will increment to 1 on next budget script read."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "PROPOSAL to operator (carry from v2.71, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression (>=3 consecutive heartbeat fires with no material state change). Safety coverage unchanged (invariant floor bypasses cadence). Subscription-quota reduced ~50% during these windows.",
-      "v2.73 pre-named criterion (sharpened): if next heartbeat has funding-only same-shape micro-shift below 1.5e-4 trigger AND no other movement, SKIP writing the cadence reflection. 5-in-a-row IS the natural ceiling.",
-      "Funding-trigger timeline: 1.0e-4 now, 1.5e-4 trigger. At current ~19%/4h rate, trigger reached in ~8h (~05:00 EDT) IF rate sustains. If breached, hypothetical-lean upgrades to B-grade ENTER candidate.",
-      "v2.63_DRIFT_ACCEPTANCE resolution shape \u2014 carry, Phase 0 counterfactual only.",
-      "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-      "v2.10 4-bar reclaim window adequacy carry (no new instance this cycle, vol 0.56x sustained).",
-      "Indicator-pipe staleness day 26 (carry, tooling artifact, stable $2.35 / 2.85% gap).",
+      "Outcome of this B-grade short. Information_roi_record write on the next fire after EXIT/close. If positive: v2.60 R:R 1.5:1 evidence weakens. If negative and SL-cluster shaped: v2.60 strengthens, SKILL forced_exploration may need refinement.",
+      "Operator cadence-proposal from v2.71 (extend Compression 1h heartbeat -> 2h) still unaddressed; not implementing unilaterally. Carries.",
+      "Funding-trajectory monitor (v2.71): 1.0e-4 still, hasn't progressed since v2.72 observation 4h ago; 1.5e-4 trigger still ~50% away. Mild deceleration vs the v2.71 ~19%/4h pace. Not flipping conviction.",
+      "Indicator-pipe staleness day 27 (carry, tooling artifact, stable ~$2.35 / 2.85% gap).",
       "Two-channel range staleness state.json canonical vs live-status (carry, documented).",
-      "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review."
+      "v2.63 DRIFT_ACCEPTANCE resolution shape (carry, Phase 0 counterfactual only).",
+      "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
+      "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review.",
+      "Should DRY_RUN-logged ENTERs that 'would have happened' carry the same information_roi weight as real fills? Pre-Phase-1 plumbing, theoretical PnL may diverge from real fills (slippage, fee, fill timing). Carry as methodology question."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780288561.5,
+      "iso": "2026-06-01T00:36:01-04:00",
+      "fire_count": 541,
+      "balance_usd": 894.08,
+      "version_tag": "v2.73",
+      "trigger": "surprise:forced_exploration_override_first_enter_in_24.5h",
+      "what_im_trying": "Framework largely unchanged from v2.72 (v2.10_RECLAIM_IMPULSE_REQUIREMENT STABLE; v2.60_RR_REGIME_ALIGNMENT EXPERIMENTAL; v2.58 EXPERIMENTAL n=2; v2.59 EXPERIMENTAL n=0; v2.63 EXPERIMENTAL n=1 counterfactual; cohort first-class; grade-tiered ENTER S/A/B/C with 1.0/0.6/0.35/0.2 multipliers; 1%/day budget; cognition_mode Compression 1h heartbeat). Substantive iteration THIS fire is the FIRST real test of the SKILL's forced_exploration_due override mechanism. Budget script flipped forced_exploration_due True (24.5h since last ENTER, threshold 24h), threshold_state relaxed (32 holds_in_a_row), fresh $8.94 daily budget. Per SKILL: 'forced_exploration_due: true \u2192 B-grade ENTER required regardless of input count' unless no_plausible_counterfactual exists. A plausible counterfactual exists \u2014 the C-grade short lean has been documented in v2.69-v2.72 monotonically across funding accumulation, parked sub-1.5:1 R:R per v2.60. The SKILL forced_exploration mandate beats the framework-derived v2.60 threshold here; that is exactly the conflict the override mechanism was designed for. ENTER B-grade short on the v2.69-v2.72 documented lean.",
+      "whats_working": "(a) Pre-naming discipline n=4: v2.69->v2.72 chain executed cleanly; v2.72 pre-named v2.73 'skip if funding-only same-shape micro-shift with no other movement' \u2014 but THIS fire has a real surprise (forced_exploration flip + first ENTER in 25h), so the surprise-trigger rule supersedes the skip-criterion. Pre-naming worked because the override condition was made explicit. (b) Hypothetical-lean continuity across v2.69-v2.72 paid off here \u2014 direction is not invented this fire, it carries 4 reflections of accumulated argument (down regime + cohort WR 83.3% / +$1.39 n=6 + funding 3.45e-5 -> 1.0e-4 monotonic + price slightly closer to BB upper than mid). The lean was always THERE; what changed is the SKILL authorization to act on it under forced_exploration. (c) Budget script honest: forced_exploration_due correctly flipped at exactly 24.5h drought; threshold_state correctly relaxed at 32 holds; fresh $8.94 daily budget. The post-v2.24 budget-script-tooling-artifact fix (note-4/C1 audit) is now trustable signal. (d) Cohort-first-class framing (note-3/C3 derived) doing real work: down+short n=6 +$1.39 WR 83.3% IS the historical context that supports this B-grade probe; without cohort framing this would be a structurally-blind forced trade. (e) Per-trade at-risk under budget: SL_pct 0.012 x notional ~$426 (1 contract clamp) = ~$5.11. Well within $8.94 fresh budget; B-grade exploratory exposure as designed.",
+      "whats_failing": "(a) v2.60 R:R 1.5:1 EXPERIMENTAL gate is BYPASSED this fire. SL above BB upper ~$86.05 (0.96-1.2% range, using 1.2%) vs TP at BB lower $84.12 (~1.30%) = R:R ~1.08:1, well below v2.60 threshold. The SKILL's forced_exploration override is explicit, but this is the first time the framework has authorized an ENTER its own EXPERIMENTAL rule would reject. Two interpretations: (i) v2.60 is structurally incompatible with forced_exploration_due under sustained compressed tape and needs a sub-threshold-under-forced-exploration carveout, OR (ii) the SKILL mandate is the right answer and v2.60 should be downgraded or made advisory-only. Resolution requires this trade's outcome \u2014 if it closes net positive, v2.60 was over-tight; if it closes in the 9-loser cluster signature, v2.60 was correct and SKILL forced_exploration may need refinement. Cannot resolve in advance. (b) v2.10_RECLAIM_IMPULSE_REQUIREMENT not applicable here (not a reclaim setup \u2014 no displacement to reclaim from), so v2.10 STABLE rule is not bypassed, just irrelevant. Distinction matters for promotion-evidence accounting. (c) Structural trigger is absent: no displacement, vol 0.56x (not 1.5x expansion), symmetric 5/8 long/short conditions. The ENTER is justified by SKILL mandate + cohort historical + funding tailwind + lean continuity, NOT by tape structure. This is precisely the kind of trade v2.69-v2.72 documented as sub-threshold. The framework's normal HOLD logic says HOLD; SKILL forced_exploration says ENTER. The conflict is real and procedural compliance with SKILL wins. (d) Rules-without-fires under Phase 0 DRY_RUN still structural: even this ENTER is logged-not-executed, so the resolution data may be lossy (no real fill, no real exit pricing, only theoretical PnL). Phase 1 plumbing milestone remains the gating constraint for genuine framework promotion.",
+      "what_im_iterating": "(a) ENTER B-grade short SOL-PERP at $85.23. Direction = short per v2.69-v2.72 documented lean + funding tailwind + cohort historical. Quantity = 1 contract (B-grade 0.35 x baseline 2 = 0.7, clamps up to exchange minimum 1). SL 1.2% (~$86.25 trigger, above BB upper $85.93 + buffer). TP target 1.30% (~$84.12 BB lower). R:R ~1.08:1 (below v2.60 1.5:1, SKILL forced_exploration overrides). Expected holding 4-8h (compressed-tape probabilistic resolution). At-risk ~$5.11 / $8.94 daily budget. (b) Exploration attribution: reason regime_transition_candidate (compressed mid-band tape may be late-Compression with funding accumulation foreshadowing transition); info_hypothesis 'tests whether down+short cohort + mild funding tailwind produces positive expectancy under compressed-tape vol_ratio 0.56x absent structural trigger'; predicted_information_value medium. (c) Pre-name v2.74 (post-trade-resolution): when this B-grade probe closes, write information_roi_record on next fire AND v2.74 reflection. If close positive -> v2.60 evidence weakens (R:R 1.5:1 was over-tight in compressed regime). If close negative AND fits 9-loser SL-cluster signature -> v2.60 evidence strengthens (SKILL forced_exploration may need refinement). If close negative but small/within budget -> ambiguous, n=1 doesn't resolve. (d) NO new rule. NO new descriptive category. NO scope change beyond the ENTER itself. v2.60/v2.10/v2.58/v2.59/v2.63 carry forward unchanged. (e) State writer this fire updates updated_iso, narrative reflects v2.73 first-forced-exploration-ENTER; cognition_mode stays Compression (no position will physically open under DRY_RUN; flip to Inventory Discovery deferred until live execution wires up); skipped_fires_in_mode increment continues.",
+      "edits_from_prior": [
+        "First real test of SKILL forced_exploration_due override. v2.69-v2.72 documented hypothetical short lean is now an executed B-grade short ENTER. The 4-reflection accumulation was structurally a setup for this moment.",
+        "v2.60 R:R 1.5:1 EXPERIMENTAL gate BYPASSED for the first time (~1.08:1 R:R). Procedural compliance with SKILL wins over framework-derived threshold. Resolution-of-this-trade will weigh on whether v2.60 keeps EXPERIMENTAL status or needs refinement.",
+        "v2.72 pre-named 'skip cadence reflection if funding-only same-shape micro-shift with no other movement' \u2014 superseded by surprise-trigger rule (forced_exploration flip + first ENTER in 25h is a genuine surprise). The pre-named skip-criterion was correctly designed; the actual condition this fire is something else.",
+        "Direction continuity matters: this is not a fresh judgment, it is execution of a 4-reflection-documented lean. Without that lineage, an under-forced-exploration ENTER would be closer to gambling than exploration.",
+        "Budget accounting: at-risk ~$5.11 logged against fresh $8.94 daily budget. exploratory_entries_today will increment to 1 on next budget script read."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "Outcome of this B-grade short. Information_roi_record write on the next fire after EXIT/close. If positive: v2.60 R:R 1.5:1 evidence weakens. If negative and SL-cluster shaped: v2.60 strengthens, SKILL forced_exploration may need refinement.",
+        "Operator cadence-proposal from v2.71 (extend Compression 1h heartbeat -> 2h) still unaddressed; not implementing unilaterally. Carries.",
+        "Funding-trajectory monitor (v2.71): 1.0e-4 still, hasn't progressed since v2.72 observation 4h ago; 1.5e-4 trigger still ~50% away. Mild deceleration vs the v2.71 ~19%/4h pace. Not flipping conviction.",
+        "Indicator-pipe staleness day 27 (carry, tooling artifact, stable ~$2.35 / 2.85% gap).",
+        "Two-channel range staleness state.json canonical vs live-status (carry, documented).",
+        "v2.63 DRIFT_ACCEPTANCE resolution shape (carry, Phase 0 counterfactual only).",
+        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
+        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review.",
+        "Should DRY_RUN-logged ENTERs that 'would have happened' carry the same information_roi weight as real fills? Pre-Phase-1 plumbing, theoretical PnL may diverge from real fills (slippage, fee, fill timing). Carry as methodology question."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780276852.633966,
@@ -1999,34 +2032,6 @@
         "v2.58 per-direction-per-expansion-phase scoping awaiting n=3 instance (currently n=2 down expansion).",
         "v2.10 4-bar reclaim window adequacy: are post-window in-direction vol expansions informational? Trigger for revisit = 3+ instances across 2+ separate drift-acceptance episodes.",
         "SL-cluster pre-entry predictor (note-2/C3, note-3/C1) \u2014 still parked workstream; does v2.10 + v2.60_RR incidentally filter the 9-loser signature? Needs retroactive trade_log sweep when n bigger."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780160992.7926242,
-      "iso": "2026-05-30T13:09:52-0400",
-      "fire_count": 469,
-      "balance_usd": 894.08,
-      "version_tag": "v2.63",
-      "trigger": "surprise:sustained_drift_acceptance_third_outcome_resolution",
-      "what_im_trying": "Same operating model as v2.62: v2.10_RECLAIM_IMPULSE_REQUIREMENT (vol>=1.5x median-96 + close-in-outer-third within 4 bars of counter-displacement) NECESSARY but not SUFFICIENT; v2.60_RR_REGIME_ALIGNMENT (structurally-meaningful SL + R:R>=1.5:1 regime-aligned) gates B-grade ENTER; v2.58 per-direction-per-expansion-phase scoping; v2.59_POST_TARGET_HOLD candidate. Substantive iteration this fire is naming the 'sustained drift-acceptance' state as a THIRD-OUTCOME descriptive category. State snapshot at 12:33 EDT explicitly pre-cued v2.63 to name this if drift continued >4 more bars after the initial 9 \u2014 Coinbase 15m bars through 17:00 UTC confirm 12+ bars sustained closes above the $82.40 broken-corridor-top since 14:15 UTC, all on sub-1.5x vol (max 1.19x baseline 4150 at 15:30 UTC retest). v2.10 correctly hasn't fired (no vol confirmation); price hasn't closed back below $82.40 (no failed-acceptance). This is a real third state \u2014 not transition, not pending.",
-      "whats_working": "(a) Discipline holds \u2014 13.3h since last ENTER, holds_in_a_row 51, threshold_state relaxed, budget remaining $7.58 of $8.94 \u2014 but no v2.10 has fired so no entry trigger. Process working as designed: framework gates not budget gates are binding. (b) State snapshot at 12:33 EDT correctly pre-cued this reflection by name (narrative explicitly said 'continued drift-acceptance >4 more bars = candidate new framework category sustained drift-acceptance worth a v2.63 reflection'). The persistent-state mechanism is working as a cross-fire research-handoff layer. (c) 15:30 UTC retest of flipped $82.40 (low $82.37 / close $82.42) bounced and resumed drift-up \u2014 empirical confirmation that $82.40 is operationally a contested FLOOR, not just a former ceiling. (d) Coinbase 15m data through 17:00 UTC: 8 of last 8 closes above $82.40 (lowest $82.42), max vol 1.19x baseline. v2.10 correctly declined.",
-      "whats_failing": "(a) Live-status `price` reads $85.23 vs Coinbase canonical $82.85 \u2014 staleness gap $2.38 / 2.79% (was $3.10 / 3.78% earlier this morning). Narrowing trajectory but still day-25 anomaly. Tooling-artifact tracking, not framework concern; I continue reading Coinbase 15m as canonical and treating live-status conditions as directional flavor only. (b) Three reflections in a row (v2.61, v2.62, v2.63) without a new ENTER. v2.62 was bookkeeping (founder_notes backfill). v2.63 IS a substantive iteration (third-outcome category named) but the cumulative shape is still 'no live ENTER application' \u2014 meaning v2.10/v2.58/v2.59/v2.60 are all defined but only v2.10 and v2.58 have any live n; v2.59 and v2.60 are 0-shot. The rule architecture is growing faster than the live-application n. Discipline (don't manufacture trades) is correct given the tape, but I should flag this drift-risk: rules that don't fire don't get calibrated. (c) Drift-acceptance itself is information-poor for direction. Naming it as a category compresses the cognitive surface (stops manufactured 'feels bullish' leans) but doesn't unlock new ENTER paths \u2014 same HOLD output, just better-grounded HOLD.",
-      "what_im_iterating": "(a) NEW DESCRIPTIVE category v2.63_DRIFT_ACCEPTANCE: when after a counter-displacement break of a prior corridor, BOTH (i) v2.10 doesn't fire within 4 bars (no vol confirmation of acceptance) AND (ii) price doesn't close back into the pre-break corridor (no failed-acceptance) for >=4 sustained bars \u2014 that combined state IS its own descriptive resolution, not a transition phase. Operational reads: the broken-corridor-bound flips to a contested FLOOR (this case: $82.40); v2.10 declining means no ENTER on the breakout-side; failed-acceptance not firing means no SHORT-on-reversion. Both directions default HOLD. Drift-acceptance is information-poor about future direction. Per note-4/C5 directive: a new label must COMPRESS by changing sizing/exit/expectancy. v2.63 compresses by REMOVING a phantom 'feels-bullish-because-sustained-above' directional lean that retail-TA priors would invite. NO new rule firing logic. DESCRIPTIVE not PROMOTION CANDIDATE. (b) NO change to v2.10 / v2.58 / v2.59 / v2.60 \u2014 all still defined, all still gating live logic. v2.10 remains the only PROMOTION CANDIDATE (n=2). (c) cognition_mode stays Regime Uncertain \u2014 drift-acceptance is exactly the 'contested range with low-info chop' content the mode now operationally means (per v2.61 re-frame). No transition. (d) Range $81.77-$82.40 retained nominally; $82.40 operationally a contested floor; $82.65-$82.88 the current drift-acceptance band above it. sweeps_attempted unchanged from snapshot at 25.",
-      "edits_from_prior": [
-        "NEW DESCRIPTIVE category v2.63_DRIFT_ACCEPTANCE: third-outcome state when v2.10 doesn't fire within 4 bars AND no failed-acceptance close-back within >=4 sustained bars. DESCRIPTIVE only, not a new rule \u2014 same HOLD output, removes manufactured 'feels-bullish' lean.",
-        "Drift-acceptance is information-poor for direction; both LONG and SHORT default HOLD without v2.10 vol confirmation.",
-        "Coinbase 15m data confirms 12+ bars sustained closes above $82.40 since 14:15 UTC; max vol 1.19x baseline 4150 (15:30 UTC retest at $82.37 low / $82.42 close); v2.10 correctly declined.",
-        "$82.40 operationally a contested FLOOR (was prior ceiling); 15:30 UTC retest bounced \u2014 empirical role-flip confirmation.",
-        "Indicator-pipe staleness narrowed $3.10 / 3.78% \u2192 $2.38 / 2.79% over ~1h; tooling-artifact only.",
-        "Flagged drift-risk: rule architecture (v2.59/v2.60 at n=0, v2.58 at n=2 with one HOLD-by-R:R, v2.10 at n=2 with one confirmed) growing faster than live-application n. Discipline correct given tape, but rules-without-fires don't get calibrated."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "v2.63_DRIFT_ACCEPTANCE resolution shape: how does drift-acceptance typically end \u2014 (a) delayed v2.10 fire as vol catches up to price, (b) failed-acceptance close-back-below as drift exhausts, (c) just decays into Compression as range tightens. n=1 episode insufficient. Track THIS resolution to set baseline.",
-        "v2.60_RR_REGIME_ALIGNMENT 1.5:1 still untested post-articulation; needs next v2.10 full-pass to apply.",
-        "v2.58 per-direction-per-expansion-phase scoping: n=2 in this down expansion (SHORT confirmed, LONG HOLD-by-R:R). Need n=3 instance to test pre-committed scoping.",
-        "Rules-without-fires drift-risk: v2.59 and v2.60 at n=0 live applications. If still n=0 after another 24h, reflection should consider whether the rule architecture is over-engineered relative to the tape's actual expansion frequency."
       ]
     }
   ],
@@ -2482,27 +2487,27 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780276852.633966,
-    "updated_iso": "2026-05-31T21:20:52-04:00",
-    "updated_by_fire_iso": "2026-05-31T21:20:52-04:00",
+    "updated_ts": 1780288561.5,
+    "updated_iso": "2026-06-01T00:36:01-04:00",
+    "updated_by_fire_iso": "2026-06-01T00:36:01-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
-    "compression_hours": 4.05,
+    "compression_hours": 7.3,
     "range_low_usd": 81.77,
     "range_high_usd": 82.4,
     "range_active_since_iso": "2026-05-30T04:30:00+00:00",
     "sweeps_attempted": 27,
     "last_displacement_iso": "2026-05-30T14:15:00+00:00",
-    "funding_state": "OKX 1.0e-4 (continued mild climb from 8.39e-5 at v2.71, ~+19% in ~4h; cumulative ~2.9x since snapshot baseline 3.45e-5; still ~33% below pre-named 1.5e-4 short-tailwind trigger; monotonic upward trajectory v2.69 -> v2.72)",
+    "funding_state": "OKX 1.0e-4 (unchanged from v2.72 observation 3h 16min ago; trajectory decelerated vs v2.71's ~19%/4h pace; still ~33% below pre-named 1.5e-4 short-tailwind trigger; cumulative ~2.9x since snapshot baseline 3.45e-5)",
     "oi_state": "not maintained this cycle; not material",
-    "narrative": "21:20 EDT - v2.72 reflection written (cadence trigger 4h 16min after v2.71). Substantive content: (a) funding continued upward climb 8.39e-5 -> 1.0e-4 (+19%, ~4h), still ~33% below pre-named 1.5e-4 short-tailwind trigger; (b) explicit naming of 5-in-a-row Compression heartbeat pattern (v2.68 bookkeeping + v2.69 no-change + v2.70 explicit-acknowledgement + v2.71 cadence-question + v2.72 funding-microshift) \u2014 at the SKILL drift ceiling; (c) sharpened v2.73 pre-name: even WITH funding-evidence, if next heartbeat is same-shape micro-shift below trigger with no other movement, SKIP the cadence reflection. Reflection fires only on trigger breach / regime flip / displacement / position event / founder note. Tape unchanged: position=null, total_trades=33, balance $894.08, vol_ratio 0.56 (compressed), BB $84.12-$85.93 ($1.81 wide), live-status price $85.23 mid-band (BB mid $85.02), stoch 0.55 mid-zone. Symmetric long 5/8 = short 5/8 (C1-C3 fail both sides). v2.10 silent. cognition_mode Compression retained. Hypothetical lean C-grade short monotonically nudged stronger across v2.69-v2.72 from funding accumulation but sub-1:1 R:R still fails v2.60 threshold; HOLD-with-lean per established pattern. Funding-trigger timeline: at current ~19%/4h rate, 1.5e-4 reached in ~8h IF sustains. Canonical pipe day 26 stale at $82.88; two-channel staleness documented. Operator cadence proposal (v2.71) still in open_questions, last note 2026-05-28.",
+    "narrative": "00:36 EDT - v2.73 reflection written under surprise-trigger (forced_exploration_due flipped True at 24.5h drought + first ENTER decision in 25h, materially different from v2.72's pre-named skip-criterion). Substantive content: (a) FIRST real test of SKILL forced_exploration_due override mechanism - the C-grade short lean monotonically documented across v2.69-v2.72 is now executed as B-grade short SOL-PERP at $85.23, SL 1.2% (~$86.25), TP target 1.30% (~$84.12), R:R ~1.08:1, quantity 1 contract (B-grade 0.35x baseline 2 = 0.7 -> exchange-minimum 1 clamp), at-risk ~$5.11/$8.94 daily budget. (b) v2.60 R:R 1.5:1 EXPERIMENTAL gate BYPASSED for the first time - procedural compliance with SKILL beats framework-derived threshold; resolution-of-this-trade will inform whether v2.60 keeps EXPERIMENTAL status or needs refinement. (c) v2.10 STABLE not applicable (not a reclaim setup). (d) Exploration attribution: regime_transition_candidate, info_hypothesis tests cohort generalization across vol regimes (down+short historical n=6 sample is non-compressed; outcome discriminates whether WR 83.3% survives in vol_ratio 0.56x compressed tape). (e) cognition_mode stays Compression (no position will physically open under DRY_RUN; flip to Inventory Discovery deferred until live execution wires up). (f) Pre-name v2.74: on next fire after this trade resolves, write information_roi_record + v2.74 reflection; positive close weakens v2.60 evidence, SL-cluster-shaped negative strengthens v2.60. Tape unchanged: total_trades 33 still, balance $894.08, vol_ratio 0.56, BB $84.12-$85.93, live-status price $85.23 mid-band, stoch 0.55 mid-zone, symmetric long 5/8 = short 5/8. Funding 1.0e-4 unchanged from v2.72. Canonical pipe day 27 stale at $82.88; two-channel staleness documented stable. Operator cadence-proposal v2.71 unaddressed; carries. Last founder note 2026-05-28.",
     "cognition_mode": "Compression",
     "cognition_mode_since_iso": "2026-05-31T00:47:56-04:00",
-    "cognition_mode_rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.71.",
+    "cognition_mode_rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. ENTER decision is forced_exploration under Compression, not a mode transition (no position physically opens in DRY_RUN). Unchanged from v2.67-v2.72.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 464,
+    "skipped_fires_in_mode": 514,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-01T03:27:26.520585+00:00",
+    "last_gate_check_iso": "2026-06-01T04:34:08.196303+00:00",
     "canonical_pull_iso": "2026-05-30T23:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
@@ -2512,11 +2517,11 @@
   "cognition": {
     "mode": "Compression",
     "since_iso": "2026-05-31T00:47:56-04:00",
-    "rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.71.",
+    "rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. ENTER decision is forced_exploration under Compression, not a mode transition (no position physically opens in DRY_RUN). Unchanged from v2.67-v2.72.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 464,
+    "skipped_fires_in_mode": 514,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-01T03:27:26.520585+00:00"
+    "last_gate_check_iso": "2026-06-01T04:34:08.196303+00:00"
   },
   "framework_origins": [
     {
@@ -2561,14 +2566,14 @@
     },
     "last_enter_ts": 1780200315.806823,
     "last_enter_iso": "2026-05-31T00:05:15.806823-04:00",
-    "holds_in_a_row": 31,
+    "holds_in_a_row": 32,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
-    "hours_since_last_enter": 23.5,
-    "forced_exploration_due": false,
-    "forced_exploration_due_reason": null,
+    "hours_since_last_enter": 24.5,
+    "forced_exploration_due": true,
+    "forced_exploration_due_reason": "24.5h since last ENTER (threshold 24h)",
     "threshold_state": "relaxed",
-    "last_updated_iso": "2026-06-01T03:32:43.859474+00:00",
+    "last_updated_iso": "2026-06-01T04:34:08.196303+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
