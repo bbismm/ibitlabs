@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780271033,
-  "generated_iso": "2026-05-31T19:43:53-0400",
+  "generated_at": 1780274740,
+  "generated_iso": "2026-05-31T20:45:40-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 533,
+    "decisions_total": 534,
     "actions": {
-      "HOLD": 514,
+      "HOLD": 515,
       "ENTER": 12,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 331,
+      "HOLD_with_counterfactual": 332,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,12 +23,12 @@
     "confidence": {
       "high": 178,
       "medium": 285,
-      "low": 70
+      "low": 71
     },
-    "reasoning_chars_avg_all": 928,
-    "reasoning_chars_avg_last10": 603,
+    "reasoning_chars_avg_all": 927,
+    "reasoning_chars_avg_last10": 588,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-31T19:43:49-0400",
+    "last_fire_iso": "2026-05-31T20:45:35-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,8 +38,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780271029.617203,
-    "fire_iso": "2026-05-31T19:43:49-0400",
+    "fire_ts": 1780274735.732925,
+    "fire_iso": "2026-05-31T20:45:35-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -60,8 +60,8 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Same baseline as v2.71 anchor (fire 530, 17:04 EDT). Symmetric 5/8 long = 5/8 short (c1/c2/c3 fail both sides on stoch 0.5506 mid-zone + mid-band .23 vs BB mid .02 + vol 0.56x). No structural trigger. Funding ticked 8.39e-5 -> 7.60e-5 (~10% softer, not material). 0/4 v0.9 inputs (asymmetry FAIL, vol<1.0 FAIL, cohort down+short marginally favorable n=6 +.39 WR 83.3% but 1/4 = HOLD). Budget threshold_state normal, holds_in_a_row 24, forced_exploration_due False. Not heartbeat-cadence (last reflection 2h 38min ago < 4h target). HOLD.",
+    "confidence": "low",
+    "reasoning": "Same baseline as fire 19:43 EDT. Funding micro-uptick 8.39e-5 -> 1e-4 (~1.19x) at noise threshold; below v2.71 substance bar (2.43x). Mid-band .23 vs BB mid .02, vol 0.56x, symmetric 5/8=5/8, no displacement, no structural trigger. HOLD per v2.71 framework; no reflection (under 4h cadence + v2.71 pre-named v2.72 skip criterion satisfied).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
@@ -73,13 +73,62 @@
       "tp_pct": 0.0025,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "If forced lean: short. Mid-band fade with mild positive funding (7.60e-5 paying shorts) + favorable down+short cohort. SL above BB upper, TP at BB mid retest. R:R sub-1:1 fails v2.60."
+      "reasoning_30_words": "Mid-band compression; mild positive funding 1e-4 pays shorts marginally; if forced lean short toward BB mid retest, but sub-1:1 R:R fails v2.60 threshold, HOLD-with-lean."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780274735.732925,
+      "iso": "2026-05-31T20:45:35-04:00",
+      "fire_count": 534,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780274735.732925,
+        "fire_iso": "2026-05-31T20:45:35-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as fire 19:43 EDT. Funding micro-uptick 8.39e-5 -> 1e-4 (~1.19x) at noise threshold; below v2.71 substance bar (2.43x). Mid-band .23 vs BB mid .02, vol 0.56x, symmetric 5/8=5/8, no displacement, no structural trigger. HOLD per v2.71 framework; no reflection (under 4h cadence + v2.71 pre-named v2.72 skip criterion satisfied).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 85.23,
+          "sl_pct": 0.008,
+          "tp_pct": 0.0025,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Mid-band compression; mild positive funding 1e-4 pays shorts marginally; if forced lean short toward BB mid retest, but sub-1:1 R:R fails v2.60 threshold, HOLD-with-lean."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780265150.90327,
@@ -1538,64 +1587,14 @@
           "SL-cluster pre-entry predictor (note-2/C3, note-3/C1) \u2014 still parked workstream."
         ]
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780183443.0,
-      "iso": "2026-05-30T19:14:03-0400",
-      "fire_count": 491,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780183443.0,
-        "fire_iso": "2026-05-30T19:14:03-0400",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 82.45,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio_canonical": 1.68,
-          "vol_ratio_live_status": 0.56,
-          "momentum_pct": -0.0008,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire @18:54 EDT. 22:30 UTC bar wick L=$82.34 C=$82.41 (narrow miss on clean close-back-below $82.40 floor); 22:45 C=$82.53; 23:00 UTC in-progress L=$82.45 C=$82.45 V=4696 ~1.68x baseline 2789 \u2014 vol crosses v2.10 1.5x threshold but ~35 bars post-14:15 UTC displacement (FAR outside 4-bar reclaim window) AND closing at bar low (upward rejection signature). 3rd post-window vol expansion within this single drift-acceptance episode \u2014 adds instance to v2.64 open question; trigger threshold (3+ across 2+ episodes) NOT met, no framework mutation this fire. v2.10 correctly does not fire by timing. v2.63_DRIFT_ACCEPTANCE third-outcome holds. 0-1 v0.9 inputs (asymmetry: 5/8 symmetric; vol: canonical 1.68 passes but structurally void by v2.10 window; cohort: down regime favorable both sides; structural: vol+rejection slightly bearish but v2.10 window fails). Threshold_state relaxed (73 holds) doesnt override v2.10 framework \u2014 manufacturing B-grade on a vol spike that v2.10 was built to filter is exactly the trap. Indicator-pipe live-status stale ($85.23 vs canonical $82.45 = $2.80 / 3.39%, within established band). HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 82.45,
-          "sl_pct": 0.012,
-          "tp_pct": 0.008,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "23:00 UTC vol expansion rejecting upward (close at bar low) + drift-acceptance ~9h sustained = exhaustion signal; favorable down+short cohort; v2.10 window fails so HOLD, C-grade short if forced."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 514,
+    "holds_since_framework": 5,
+    "avg_chars": 479,
     "since_iso": "2026-05-31T17:04:12-04:00",
     "since_framework_version": "v2.71",
-    "latest_fire_iso": "2026-05-31T19:43:49-0400"
+    "latest_fire_iso": "2026-05-31T20:45:35-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2627,9 +2626,9 @@
     "cognition_mode_since_iso": "2026-05-31T00:47:56-04:00",
     "cognition_mode_rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.70.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 378,
+    "skipped_fires_in_mode": 389,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-05-31T23:37:44.281061+00:00",
+    "last_gate_check_iso": "2026-06-01T00:39:09.257714+00:00",
     "canonical_pull_iso": "2026-05-30T23:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
@@ -2641,9 +2640,9 @@
     "since_iso": "2026-05-31T00:47:56-04:00",
     "rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.70.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 378,
+    "skipped_fires_in_mode": 389,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-05-31T23:37:44.281061+00:00"
+    "last_gate_check_iso": "2026-06-01T00:39:09.257714+00:00"
   },
   "framework_origins": [
     {
@@ -2676,7 +2675,7 @@
   ],
   "uncertainty_budget": {
     "schema_version": 1,
-    "date_utc": "2026-05-31",
+    "date_utc": "2026-06-01",
     "daily_budget_pct": 0.01,
     "daily_budget_usd": 8.94,
     "balance_at_reset_usd": 894.08,
@@ -2688,14 +2687,14 @@
     },
     "last_enter_ts": 1780200315.806823,
     "last_enter_iso": "2026-05-31T00:05:15.806823-04:00",
-    "holds_in_a_row": 24,
-    "exploratory_at_risk_usd_today": 5.37,
-    "exploratory_entries_today": 1,
-    "hours_since_last_enter": 19.6,
+    "holds_in_a_row": 25,
+    "exploratory_at_risk_usd_today": 0.0,
+    "exploratory_entries_today": 0,
+    "hours_since_last_enter": 20.7,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-05-31T23:43:04.724225+00:00",
+    "last_updated_iso": "2026-06-01T00:44:26.614103+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
