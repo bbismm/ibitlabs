@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780277420,
-  "generated_iso": "2026-05-31T21:30:20-0400",
+  "generated_at": 1780281130,
+  "generated_iso": "2026-05-31T22:32:10-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 538,
+    "decisions_total": 539,
     "actions": {
-      "HOLD": 519,
+      "HOLD": 520,
       "ENTER": 12,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 336,
+      "HOLD_with_counterfactual": 337,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,12 +23,12 @@
     "confidence": {
       "high": 178,
       "medium": 289,
-      "low": 71
+      "low": 72
     },
     "reasoning_chars_avg_all": 925,
-    "reasoning_chars_avg_last10": 629,
+    "reasoning_chars_avg_last10": 623,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-05-31T21:30:16-04:00",
+    "last_fire_iso": "2026-05-31T22:32:06-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,8 +38,8 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780277416.257847,
-    "fire_iso": "2026-05-31T21:30:16-04:00",
+    "fire_ts": 1780281126.560382,
+    "fire_iso": "2026-05-31T22:32:06-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -49,7 +49,7 @@
       "stoch_rsi": 0.5506,
       "vol_ratio": 0.56,
       "momentum_pct": -0.08,
-      "rsi": null
+      "rsi": 60.4
     },
     "decision": "HOLD",
     "grade": null,
@@ -60,8 +60,8 @@
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Same baseline as fire 537 / v2.72 reflection (21:20 EDT, ~8min ago). No material state change: price $85.23 mid-band ($85.02 mid), regime down, vol_ratio 0.56, BB $84.12-$85.93, stoch 0.55, funding 1.0e-4 (matches v2.72 snapshot exactly \u2014 no funding-trajectory shift this tick). Symmetric 5/8 long = 5/8 short (C1-C3 fail both sides). Hypothetical lean unchanged: C-grade short SL $85.93 / TP $85.02 = sub-1:1 R:R, fails v2.60 1.5:1 threshold. HOLD with lean. No reflection: 8min since v2.72 < 4h cadence and zero new evidence per v2.72 pre-named criterion. No state.json update: narrative current at 21:20 EDT covers this tick.",
+    "confidence": "low",
+    "reasoning": "Same baseline as fire 21:30:16 EDT. Tape essentially identical to v2.72 snapshot ~70min ago: vol 0.56x, BB 84.12-85.93, mid-band 85.23 (BB mid 85.02), stoch 0.55 mid-zone, funding 1.0e-4 unchanged (still ~33% below 1.5e-4 short-tailwind trigger), regime down, symmetric long 5/8 = short 5/8 (C1-C3 fail both sides). v0.9 inputs 1/4 (cohort PASS down+short n=6 WR 83.3% non-worst; asymmetry FAIL symmetric; vol FAIL 0.56x; structural FAIL no extreme/displacement/range-break). Threshold_state relaxed + 1 input + sub-1:1 R:R short lean failing v2.60 = HOLD per relaxed table (needs clean directional lean; lean is monotonically-strengthening-but-still-fails-RR-gate per v2.69-v2.72). No reflection trigger: 70min since v2.72, no surprise event, no founder note, no displacement, no regime flip, no position event. State.json material triggers negative; snapshot left intact.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
@@ -72,14 +72,63 @@
       "sl_pct": 0.0082,
       "tp_pct": 0.0025,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Funding 1.0e-4 mild short tailwind, compressed vol 0.56x, mid-band $85.23 lean toward BB mid $85.02; sub-1:1 R:R; predicted 2h/8h drift_sideways in tight $1.81 band."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "Funding 1.0e-4 mild short tailwind plus mid-band price above BB mid 85.02. Sub-1:1 R:R fails v2.60. Compressed vol 0.56x favors drift to mid not displacement."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780281126.560382,
+      "iso": "2026-05-31T22:32:06-04:00",
+      "fire_count": 539,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780281126.560382,
+        "fire_iso": "2026-05-31T22:32:06-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as fire 21:30:16 EDT. Tape essentially identical to v2.72 snapshot ~70min ago: vol 0.56x, BB 84.12-85.93, mid-band 85.23 (BB mid 85.02), stoch 0.55 mid-zone, funding 1.0e-4 unchanged (still ~33% below 1.5e-4 short-tailwind trigger), regime down, symmetric long 5/8 = short 5/8 (C1-C3 fail both sides). v0.9 inputs 1/4 (cohort PASS down+short n=6 WR 83.3% non-worst; asymmetry FAIL symmetric; vol FAIL 0.56x; structural FAIL no extreme/displacement/range-break). Threshold_state relaxed + 1 input + sub-1:1 R:R short lean failing v2.60 = HOLD per relaxed table (needs clean directional lean; lean is monotonically-strengthening-but-still-fails-RR-gate per v2.69-v2.72). No reflection trigger: 70min since v2.72, no surprise event, no founder note, no displacement, no regime flip, no position event. State.json material triggers negative; snapshot left intact.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 85.23,
+          "sl_pct": 0.0082,
+          "tp_pct": 0.0025,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Funding 1.0e-4 mild short tailwind plus mid-band price above BB mid 85.02. Sub-1:1 R:R fails v2.60. Compressed vol 0.56x favors drift to mid not displacement."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1780276852.633966,
@@ -1537,63 +1586,14 @@
         },
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780197228.55333,
-      "iso": "2026-05-30T23:13:48-04:00",
-      "fire_count": 505,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780197228.55333,
-        "fire_iso": "2026-05-30T23:13:48-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 22:57. Tape essentially unchanged from v2.65 (21:17 EDT) frame: live-status price .23 (canonical ~.88, day-25 pipe gap ~2.85%), 5/8 long & 5/8 short symmetric (c1/c2/c3 all fail both sides \u2014 no StochRSI extreme, no BB touch, no vol expansion), vol_ratio 0.56x sub-baseline, StochRSI 0.55 mid-band, momentum -0.08%, BB mid. No v2.10 trigger possible (vol way below 1.5x threshold 4184 on baseline 2789). No structural displacement, no range break, no failed-acceptance close-back below .40. Drift-acceptance state per v2.63 still binding. forced_exploration_due False (23.4h < 24h, will flip ~23:47 EDT). HOLD by binding v0.9 criteria (0/4 inputs cleared); budget not yet authorizing a forced B regardless.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "long",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.012,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime, slow drift up from canonical .40 floor, down+long cohort historically +.74 n=4 WR 75% favorable. Low-conviction continuation lean \u2014 drift-acceptance information-poor for direction but cohort tilts long."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 2,
-    "avg_chars": 822,
+    "holds_since_framework": 3,
+    "avg_chars": 839,
     "since_iso": "2026-05-31T21:20:52-04:00",
     "since_framework_version": "v2.72",
-    "latest_fire_iso": "2026-05-31T21:30:16-04:00"
+    "latest_fire_iso": "2026-05-31T22:32:06-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2499,9 +2499,9 @@
     "cognition_mode_since_iso": "2026-05-31T00:47:56-04:00",
     "cognition_mode_rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.71.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 442,
+    "skipped_fires_in_mode": 453,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-01T01:20:52.633966+00:00",
+    "last_gate_check_iso": "2026-06-01T02:25:36.758579+00:00",
     "canonical_pull_iso": "2026-05-30T23:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
@@ -2513,9 +2513,9 @@
     "since_iso": "2026-05-31T00:47:56-04:00",
     "rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep activity + symmetric 5/8 = Compression. Unchanged from v2.67-v2.71.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 442,
+    "skipped_fires_in_mode": 453,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-01T01:20:52.633966+00:00"
+    "last_gate_check_iso": "2026-06-01T02:25:36.758579+00:00"
   },
   "framework_origins": [
     {
@@ -2560,14 +2560,14 @@
     },
     "last_enter_ts": 1780200315.806823,
     "last_enter_iso": "2026-05-31T00:05:15.806823-04:00",
-    "holds_in_a_row": 29,
+    "holds_in_a_row": 30,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
-    "hours_since_last_enter": 21.4,
+    "hours_since_last_enter": 22.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
-    "threshold_state": "normal",
-    "last_updated_iso": "2026-06-01T01:29:16.635340+00:00",
+    "threshold_state": "relaxed",
+    "last_updated_iso": "2026-06-01T02:30:52.015529+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
