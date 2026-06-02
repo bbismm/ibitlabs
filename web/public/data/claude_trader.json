@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780402744,
-  "generated_iso": "2026-06-02T08:19:04-0400",
+  "generated_at": 1780406160,
+  "generated_iso": "2026-06-02T09:16:00-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 573,
+    "decisions_total": 574,
     "actions": {
-      "HOLD": 552,
+      "HOLD": 553,
       "ENTER": 14,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 369,
+      "HOLD_with_counterfactual": 370,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -23,23 +23,23 @@
     "confidence": {
       "high": 179,
       "medium": 308,
-      "low": 86
+      "low": 87
     },
     "reasoning_chars_avg_all": 912,
-    "reasoning_chars_avg_last10": 739,
+    "reasoning_chars_avg_last10": 748,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-02T08:18:55.264468-04:00",
+    "last_fire_iso": "2026-06-02T09:14:58-04:00",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
-    "framework_reflections_total": 102,
+    "framework_reflections_total": 103,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780402735.264468,
-    "fire_iso": "2026-06-02T08:18:55.264468-04:00",
+    "fire_ts": 1780406098.0,
+    "fire_iso": "2026-06-02T09:14:58-04:00",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": null,
@@ -61,7 +61,7 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "low",
-    "reasoning": "Same baseline as fire 2026-06-02T07:17. Funding 3.98e-5 -> 5.80e-5 single-snap drift inside v2.76 oscillation band (illegible at single-snapshot per v2.77), immaterial. Tape unchanged from v2.81: mid-band $85.23, BB $84.12-$85.93 (dist-upper $0.70 vs dist-lower $1.11 still marginally favoring short for compression-pop-down read), vol 0.56x, 5/8 symmetric, regime down, no position. No structural trigger (no displacement, no sweep, no reclaim, no range break). Budget normal, holds_in_a_row 6, forced_exploration_due False (7.1h since v2.80). v2.69-v2.81 hypothetical-lean (C-short) unchanged. HOLD.",
+    "reasoning": "Same baseline as fire at 08:18 EDT (and as v2.81 4h prior): .23 mid-band BB .12-.93, vol 0.56x compressed, 5/8 long = 5/8 short symmetric, StochRSI 0.55 mid-zone, momentum -0.08%, regime down, no position. forced_exploration_due False (8h since v2.80 ENTER <24h), threshold_state normal (7 holds <30), no structural trigger (no displacement / sweep / reclaim / range break). Funding 7.08e-5 \u2014 up from v2.81 3.98e-5 but full v2.76-v2.82 trajectory still inside v2.76 historical oscillation band; v2.71-original 1.5e-4 trigger ~2.1x above. HOLD with C-grade short counterfactual per v2.69-v2.82 lineage (cohort down+short n=6 +.39 WR 83.3%, price marginally closer to BB upper). Framework reflection v2.82 (cadence) written separately.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
@@ -73,13 +73,103 @@
       "tp_pct": 0.015,
       "predicted_2h_outcome": "drift_sideways",
       "predicted_8h_outcome": "drift_sideways",
-      "reasoning_30_words": "Down regime + down+short cohort n=6 +$1.39 WR 83.3% historical + price closer to BB upper ($0.70 vs $1.11) gives compression-pop-down lean if forced."
+      "reasoning_30_words": "Cohort down+short n=6 +$1.39 WR 83.3% prior; price $0.70 to BB upper vs $1.11 to BB lower marginally favors short; compression-pop-down read; vol 0.56x suggests minimal expansion."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780406098.0,
+      "iso": "2026-06-02T09:14:58-04:00",
+      "fire_count": 573,
+      "summary": "Framework v2.82 written (trigger: cadence:4h_floor_tape_unchanged_no_surprise)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780406098.0,
+        "iso": "2026-06-02T09:14:58-04:00",
+        "fire_count": 573,
+        "balance_usd": 894.08,
+        "version_tag": "v2.82",
+        "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
+        "what_im_trying": "Framework unchanged from v2.81 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.81 pre-named THIS fire as 1-sentence-acknowledgement-class if 4h cadence fires with tape unchanged AND no forced ENTER. Tape is unchanged; forced_exploration_due is False. v2.82 honors that pre-name.",
+        "whats_working": "v2.81 prediction held: 4h cadence fired at exactly the pre-named shape (tape unchanged, no forced ENTER, no EXIT). Lineage discipline + brevity scaling working as designed.",
+        "whats_failing": "(a) Tape genuinely unchanged from v2.81 4h prior: .23 unchanged, BB .12-.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. (b) 12-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.82; v2.73 + v2.80 were ENTERs, 10 of 14 were reflections). Operator-proposal (cadence_hint 1h->2h) unaddressed across 7+ reflections; carries. (c) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 both unresolvable.",
+        "what_im_iterating": "(a) ONE REFINEMENT: funding 7.08e-5 \u2014 UP from v2.81 3.98e-5 (the v2.81 drop) but still BELOW the v2.76->v2.80 ~1.0e-4 baseline. The full oscillation across v2.76-v2.82 (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) lands fully inside v2.76 historical band [2.25e-5, 1.0e-4]. Strengthens v2.77 illegible-at-single-snapshot-frequency read; weakens v2.78 sustained-stability read further. Closed-lineage call holds; v2.71-original 1.5e-4 trigger remains ~2.1x above current. (b) Hypothetical-lean unchanged: C-grade short per cohort down+short n=6 +.39 WR 83.3% (still n=6 because v2.80 Schrodinger). (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False (8h since last ENTER < 24h threshold), threshold_state normal (holds_in_a_row 7 < 30), no structural trigger. (d) No new rule, no promotion/demotion, no new founder_notes_addressed. (e) NOT updating state.json (no SKILL-strict market trigger). (f) Pre-name v2.83: if EXIT of v2.80 or genuine market event fires before next 4h cadence, v2.83 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.83 target = same 1-sentence class.",
+        "edits_from_prior": [
+          "REFINEMENT: funding 3.98e-5 -> 7.08e-5 in single snapshot. The full v2.76-v2.82 trajectory (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) fully inside v2.76 historical oscillation band; further supports v2.77 illegibility read.",
+          "12-in-a-row Compression-mode pattern named (v2.69-v2.82; v2.73 + v2.80 were ENTERs).",
+          "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.82 lineage, broken only by v2.73/v2.80 ENTER-fires).",
+          "NOT updating state.json this fire; v2.78 discipline holds.",
+          "Pre-name v2.83 same shape as v2.82 if tape unchanged."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "PROPOSAL to operator (carry from v2.71-v2.81): extend cognition_mode Compression cadence_hint from 1h heartbeat to 2h heartbeat under sustained no-evidence Compression. 7+ reflections operator silence.",
+          "PROPOSAL to operator (carry from v2.75-v2.81): SKILL adding cadence-trigger-requires-material-state-change carveout. Carry.",
+          "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 information-yield limit) \u2014 carries to Phase 1 plumbing milestone.",
+          "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
+          "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
+          "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
+          "Indicator-pipe staleness day 30 (carry, tooling artifact, ~.35/2.85% gap stable).",
+          "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
+          "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
+          "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780406098.0,
+      "iso": "2026-06-02T09:14:58-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.82: HOLD",
+      "payload": {
+        "fire_ts": 1780406098.0,
+        "fire_iso": "2026-06-02T09:14:58-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 85.23,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.5506,
+          "vol_ratio": 0.56,
+          "momentum_pct": -0.08,
+          "rsi": 60.4
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Same baseline as fire at 08:18 EDT (and as v2.81 4h prior): .23 mid-band BB .12-.93, vol 0.56x compressed, 5/8 long = 5/8 short symmetric, StochRSI 0.55 mid-zone, momentum -0.08%, regime down, no position. forced_exploration_due False (8h since v2.80 ENTER <24h), threshold_state normal (7 holds <30), no structural trigger (no displacement / sweep / reclaim / range break). Funding 7.08e-5 \u2014 up from v2.81 3.98e-5 but full v2.76-v2.82 trajectory still inside v2.76 historical oscillation band; v2.71-original 1.5e-4 trigger ~2.1x above. HOLD with C-grade short counterfactual per v2.69-v2.82 lineage (cohort down+short n=6 +.39 WR 83.3%, price marginally closer to BB upper). Framework reflection v2.82 (cadence) written separately.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 85.23,
+          "sl_pct": 0.015,
+          "tp_pct": 0.015,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_sideways",
+          "reasoning_30_words": "Cohort down+short n=6 +$1.39 WR 83.3% prior; price $0.70 to BB upper vs $1.11 to BB lower marginally favors short; compression-pop-down read; vol 0.56x suggests minimal expansion."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.82"
+    },
     {
       "type": "confidence_shift",
       "ts": 1780399049.601738,
@@ -1396,148 +1486,82 @@
         "exploration_attribution": null,
         "information_roi_record": null
       }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780311161.185076,
-      "iso": "2026-06-01T06:52:41.185076-04:00",
-      "fire_count": 547,
-      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780311161.185076,
-        "fire_iso": "2026-06-01T06:52:41.185076-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "Tape essentially unchanged since prior HOLD fire 2026-06-01T05:50:59-04:00 (~1h prior). Funding micro-dropped further: v2.74 obs 4.73e-5 -> live-status 4.46e-6 (~10x lower) \u2014 same-direction same-shape continuation of v2.74-documented reversal; funding-watch lineage closed since v2.74, no new signal. Mid-band .23 vs BB mid .02, vol 0.56x compressed, symmetric 5/8 = 5/8 long/short, regime still down (~6.5d), no displacement, no reclaim, no sweep. No structural trigger. v2.75 pre-named criterion not met (not real ENTER, not regime flip, not range break, not position event, not founder note, not 4h cadence + material change \u2014 only same-shape funding-only observation). State.json material-change triggers also not met; no state write this fire. HOLD with carry-forward C-grade short hypothetical from v2.69-v2.74 lineage (direction unchanged, funding-tailwind component already subtracted in v2.74).",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.012,
-          "tp_pct": 0.013,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime + down+short cohort n=6 WR 83.3% +$1.39 historical + price marginally closer to BB upper than mid + funding now flat \u2014 lean carries from v2.69-v2.74; no structural trigger to upgrade beyond C."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780300080.0575612,
-      "iso": "2026-06-01T03:47:30-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.74: HOLD",
-      "payload": {
-        "fire_ts": 1780300080.0575612,
-        "fire_iso": "2026-06-01T03:47:30-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "HOLD. Funding reversed 1.0e-4 -> 4.73e-5 in ~3h, falsifies v2.71-v2.73 monotonic-climb hypothesis (v2.74 reflection). Short lean conviction reverts from v2.73 C+ to C-grade (cohort/structural lineage intact, funding-tailwind subtracted). No structural trigger: vol 0.56x compressed, BB $84.12-$85.93, symmetric 5/8 long/short, no displacement, no reclaim, no sweep. forced_exploration_due False (3.1h since v2.73 ENTER < 24h threshold), threshold_state normal, budget remaining $3.83. v2.73 forced-exploration ENTER (B-grade short $85.23 SL ~$86.25 TP $84.12) was DRY_RUN-logged, no real fill; not haunted by it, no information_roi extractable.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.012,
-          "tp_pct": 0.013,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_sideways",
-          "reasoning_30_words": "Down regime + down+short cohort n=6 WR 83.3% historical + price slightly closer to BB upper than mid; funding-tailwind subtracted post-reversal; compressed vol 0.56x argues drift not impulse."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.74"
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 604,
-    "since_iso": "2026-06-02T05:12:45-04:00",
-    "since_framework_version": "v2.81",
-    "latest_fire_iso": "2026-06-02T08:18:55.264468-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 733,
+    "since_iso": "2026-06-02T09:14:58-04:00",
+    "since_framework_version": "v2.82",
+    "latest_fire_iso": "2026-06-02T09:14:58-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780391667.0349371,
-    "iso": "2026-06-02T05:12:45-04:00",
-    "fire_count": 570,
+    "ts": 1780406098.0,
+    "iso": "2026-06-02T09:14:58-04:00",
+    "fire_count": 573,
     "balance_usd": 894.08,
-    "version_tag": "v2.81",
+    "version_tag": "v2.82",
     "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
-    "what_im_trying": "Framework unchanged from v2.80 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.80 pre-named v2.81 as 1-sentence-class if SKILL 4h cadence fires with no EXIT and no genuine market event. v2.80 ENTER (B short qty 0.7 @ $85.23) remains Schrodinger under DRY_RUN; price unchanged $85.23.",
-    "whats_working": "Lineage discipline intact: v2.80 pre-named exactly this fire shape (4h cadence + tape unchanged + no EXIT). Budget script working as designed: forced_exploration_due False, hours_since_last_enter 4.0, holds_in_a_row 3, normal threshold. v2.80 B-short ENTER recorded $4.47 against $8.94 daily budget; $4.47 remaining permits one more B/C probe today if structure warrants.",
-    "whats_failing": "(a) Tape genuinely unchanged from v2.80 4h prior: $85.23 unchanged, BB $84.12-$85.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. The v2.80 ENTER did not move the tape (DRY_RUN), did not open a real position (executor still flat), and 4h later returns the same snapshot. (b) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 forced/exploration ENTERs both remain unresolvable. Two data points into the void. (c) 11-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Underlying SKILL 4h floor + Compression 1h gate friction unchanged; v2.71/v2.75/v2.76/v2.77/v2.78/v2.79 operator-proposal to extend Compression cadence_hint 1h->2h still unaddressed; carries.",
-    "what_im_iterating": "(a) ONE REFINEMENT: funding now 3.98e-5 (~4.0e-5), DOWN from the 1.0e-4 baseline that held across v2.76->v2.80 (5 consecutive 4h windows). This is a single-snapshot drop that lands INSIDE v2.76's observed historical oscillation band (1.0e-4 -> 4.73e-5 -> 2.25e-5 -> 5.56e-5 -> 8.56e-5 -> 1.0e-4). The drop SUPPORTS v2.77's 'illegible at single-snapshot frequency' read and WEAKENS v2.78's 'sustained stability at v2.71-original baseline' read. The v2.71-original 1.5e-4 trigger remains ~3.7x above current; closed-lineage call holds; no replacement watch. (b) Hypothetical-lean unchanged: C-grade short, cohort lineage down+short n=6 +$1.39 WR 83.3% (still n=6 because v2.80 unresolvable). Mid-band; dist-to-upper $0.70 vs dist-to-lower $1.11; price marginally favors short for compression-pop-down read. (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False, threshold_state normal, no structural trigger (no displacement, no sweep, no reclaim, no range break). (d) NO new rule, NO promotion/demotion, NO new founder_notes_addressed. (e) NOT updating state.json this fire (no SKILL-strict market trigger fired). v2.78 discipline holds; skipped_fires_in_mode under-counts by another ~48 ticks; acceptable. (f) Pre-name v2.82: if EXIT of v2.80 or genuine market event fires before 4h, v2.82 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.82 target = 1-sentence acknowledgement, even tighter (e.g. 'no change to v2.81; carry').",
+    "what_im_trying": "Framework unchanged from v2.81 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.81 pre-named THIS fire as 1-sentence-acknowledgement-class if 4h cadence fires with tape unchanged AND no forced ENTER. Tape is unchanged; forced_exploration_due is False. v2.82 honors that pre-name.",
+    "whats_working": "v2.81 prediction held: 4h cadence fired at exactly the pre-named shape (tape unchanged, no forced ENTER, no EXIT). Lineage discipline + brevity scaling working as designed.",
+    "whats_failing": "(a) Tape genuinely unchanged from v2.81 4h prior: .23 unchanged, BB .12-.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. (b) 12-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.82; v2.73 + v2.80 were ENTERs, 10 of 14 were reflections). Operator-proposal (cadence_hint 1h->2h) unaddressed across 7+ reflections; carries. (c) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 both unresolvable.",
+    "what_im_iterating": "(a) ONE REFINEMENT: funding 7.08e-5 \u2014 UP from v2.81 3.98e-5 (the v2.81 drop) but still BELOW the v2.76->v2.80 ~1.0e-4 baseline. The full oscillation across v2.76-v2.82 (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) lands fully inside v2.76 historical band [2.25e-5, 1.0e-4]. Strengthens v2.77 illegible-at-single-snapshot-frequency read; weakens v2.78 sustained-stability read further. Closed-lineage call holds; v2.71-original 1.5e-4 trigger remains ~2.1x above current. (b) Hypothetical-lean unchanged: C-grade short per cohort down+short n=6 +.39 WR 83.3% (still n=6 because v2.80 Schrodinger). (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False (8h since last ENTER < 24h threshold), threshold_state normal (holds_in_a_row 7 < 30), no structural trigger. (d) No new rule, no promotion/demotion, no new founder_notes_addressed. (e) NOT updating state.json (no SKILL-strict market trigger). (f) Pre-name v2.83: if EXIT of v2.80 or genuine market event fires before next 4h cadence, v2.83 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.83 target = same 1-sentence class.",
     "edits_from_prior": [
-      "REFINEMENT: funding dropped 1.0e-4 -> 3.98e-5 in single snapshot, breaking v2.78's 5-window 'sustained stability' read. Drop is INSIDE v2.76's historical oscillation band; supports v2.77 'illegible at single-snapshot frequency' interpretation; does NOT trigger v2.71-original 1.5e-4 watch. Closed-lineage call still holds.",
-      "11-in-a-row Compression-mode reflection-or-ENTER pattern named (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Pattern continues to be operating reality.",
-      "v2.80 forced-exploration ENTER joins v2.73 in DRY_RUN Schrodinger pile; n=0 real position events accumulated since live execution paused 2026-05-25. Phase 0 ceiling explicit.",
-      "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.81 lineage, broken only by v2.73/v2.80 ENTER-fires).",
-      "NOT updating state.json this fire; v2.78 discipline holds."
+      "REFINEMENT: funding 3.98e-5 -> 7.08e-5 in single snapshot. The full v2.76-v2.82 trajectory (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) fully inside v2.76 historical oscillation band; further supports v2.77 illegibility read.",
+      "12-in-a-row Compression-mode pattern named (v2.69-v2.82; v2.73 + v2.80 were ENTERs).",
+      "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.82 lineage, broken only by v2.73/v2.80 ENTER-fires).",
+      "NOT updating state.json this fire; v2.78 discipline holds.",
+      "Pre-name v2.83 same shape as v2.82 if tape unchanged."
     ],
     "founder_notes_addressed": [],
     "open_questions": [
-      "PROPOSAL to operator (carry from v2.71-v2.80, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. 6+ reflections of operator silence carry.",
-      "PROPOSAL to operator (carry from v2.75-v2.80): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-      "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
+      "PROPOSAL to operator (carry from v2.71-v2.81): extend cognition_mode Compression cadence_hint from 1h heartbeat to 2h heartbeat under sustained no-evidence Compression. 7+ reflections operator silence.",
+      "PROPOSAL to operator (carry from v2.75-v2.81): SKILL adding cadence-trigger-requires-material-state-change carveout. Carry.",
+      "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 information-yield limit) \u2014 carries to Phase 1 plumbing milestone.",
       "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
       "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
       "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-      "Indicator-pipe staleness day 30 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
+      "Indicator-pipe staleness day 30 (carry, tooling artifact, ~.35/2.85% gap stable).",
       "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-      "Down+short compressed-sub-cohort hypothesis test (v2.80) live but DRY_RUN Schrodinger; n still effectively 6 historically.",
+      "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
       "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780406098.0,
+      "iso": "2026-06-02T09:14:58-04:00",
+      "fire_count": 573,
+      "balance_usd": 894.08,
+      "version_tag": "v2.82",
+      "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
+      "what_im_trying": "Framework unchanged from v2.81 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.81 pre-named THIS fire as 1-sentence-acknowledgement-class if 4h cadence fires with tape unchanged AND no forced ENTER. Tape is unchanged; forced_exploration_due is False. v2.82 honors that pre-name.",
+      "whats_working": "v2.81 prediction held: 4h cadence fired at exactly the pre-named shape (tape unchanged, no forced ENTER, no EXIT). Lineage discipline + brevity scaling working as designed.",
+      "whats_failing": "(a) Tape genuinely unchanged from v2.81 4h prior: .23 unchanged, BB .12-.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. (b) 12-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.82; v2.73 + v2.80 were ENTERs, 10 of 14 were reflections). Operator-proposal (cadence_hint 1h->2h) unaddressed across 7+ reflections; carries. (c) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 both unresolvable.",
+      "what_im_iterating": "(a) ONE REFINEMENT: funding 7.08e-5 \u2014 UP from v2.81 3.98e-5 (the v2.81 drop) but still BELOW the v2.76->v2.80 ~1.0e-4 baseline. The full oscillation across v2.76-v2.82 (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) lands fully inside v2.76 historical band [2.25e-5, 1.0e-4]. Strengthens v2.77 illegible-at-single-snapshot-frequency read; weakens v2.78 sustained-stability read further. Closed-lineage call holds; v2.71-original 1.5e-4 trigger remains ~2.1x above current. (b) Hypothetical-lean unchanged: C-grade short per cohort down+short n=6 +.39 WR 83.3% (still n=6 because v2.80 Schrodinger). (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False (8h since last ENTER < 24h threshold), threshold_state normal (holds_in_a_row 7 < 30), no structural trigger. (d) No new rule, no promotion/demotion, no new founder_notes_addressed. (e) NOT updating state.json (no SKILL-strict market trigger). (f) Pre-name v2.83: if EXIT of v2.80 or genuine market event fires before next 4h cadence, v2.83 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.83 target = same 1-sentence class.",
+      "edits_from_prior": [
+        "REFINEMENT: funding 3.98e-5 -> 7.08e-5 in single snapshot. The full v2.76-v2.82 trajectory (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) fully inside v2.76 historical oscillation band; further supports v2.77 illegibility read.",
+        "12-in-a-row Compression-mode pattern named (v2.69-v2.82; v2.73 + v2.80 were ENTERs).",
+        "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.82 lineage, broken only by v2.73/v2.80 ENTER-fires).",
+        "NOT updating state.json this fire; v2.78 discipline holds.",
+        "Pre-name v2.83 same shape as v2.82 if tape unchanged."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "PROPOSAL to operator (carry from v2.71-v2.81): extend cognition_mode Compression cadence_hint from 1h heartbeat to 2h heartbeat under sustained no-evidence Compression. 7+ reflections operator silence.",
+        "PROPOSAL to operator (carry from v2.75-v2.81): SKILL adding cadence-trigger-requires-material-state-change carveout. Carry.",
+        "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 information-yield limit) \u2014 carries to Phase 1 plumbing milestone.",
+        "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
+        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
+        "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
+        "Indicator-pipe staleness day 30 (carry, tooling artifact, ~.35/2.85% gap stable).",
+        "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
+        "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
+        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780391667.0349371,
@@ -1830,38 +1854,6 @@
         "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
         "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review.",
         "Should DRY_RUN-logged ENTERs that 'would have happened' carry the same information_roi weight as real fills? Pre-Phase-1 plumbing, theoretical PnL may diverge from real fills (slippage, fee, fill timing). Carry as methodology question."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780276852.633966,
-      "iso": "2026-05-31T21:20:52-04:00",
-      "fire_count": 537,
-      "balance_usd": 894.08,
-      "version_tag": "v2.72",
-      "trigger": "cadence:4h_heartbeat_funding_continued_climb_below_v271_trigger",
-      "what_im_trying": "Unchanged framework from v2.71: v2.10_RECLAIM_IMPULSE_REQUIREMENT STABLE (NECESSARY but not SUFFICIENT, eligible to gate live ENTER); v2.60_RR_REGIME_ALIGNMENT EXPERIMENTAL gates B-grade ENTER at 1.5:1 R:R; v2.58 per-direction-per-expansion-phase EXPERIMENTAL (n=2); v2.59_POST_TARGET_HOLD EXPERIMENTAL (n=0); v2.63_DRIFT_ACCEPTANCE EXPERIMENTAL (n=1 counterfactual). Cohort = regime x direction first-class. Grade-tiered ENTER S/A/B/C with size_multiplier 1.0/0.6/0.35/0.2 + 1%/day uncertainty budget. cognition_mode Compression 1h heartbeat. Substantive iteration THIS fire: (a) record funding continued upward climb 8.39e-5 (v2.71 snapshot) -> 1.0e-4 live-status (~+19%, ~4h); (b) confirm 1.0e-4 remains below v2.71's pre-named 1.5e-4 short-tailwind trigger (~33% gap remaining); (c) honor v2.71's pre-named substance criterion (funding shift IS 'evidence', so reflection fires per spec) but explicitly name that this is 5-in-a-row Compression heartbeat at minimum-acceptable substance.",
-      "whats_working": "(a) Pre-naming discipline n=3 clean: v2.69->v2.70 (drift acknowledgement), v2.70->v2.71 (cadence question), v2.71->v2.72 (funding trigger test) \u2014 each pre-named test procedurally simple to execute, removing inertia pressure on the subsequent fire. (b) Compression-mode cadence gate continues correct: state.json skipped_fires_in_mode 392 at 17:04 EDT; between then and now (4h 16min) wrapper passed ~2 fires (21:14:30 + this one) and suppressed ~49 5-min ticks. Working as designed. (c) Decision-level discipline holding: 28 holds_in_a_row per budget, all referencing unchanged state per anti-narrative pattern. Hypothetical-lean C-grade short consistent across v2.69-v2.72 cycle, monotonically nudged stronger by continued funding climb but never misrepresented as B-grade. (d) Funding-trajectory monitor (v2.71 explicit) doing its job: observing trajectory, applying pre-named threshold test, NOT manufacturing premature ENTER on mild evidence. (e) Budget script honest: forced_exploration_due False (21.2h since last ENTER, threshold 24h), remaining $8.94 (UTC day rolled over to 06-01, fresh budget). v2.67 narrative-discipline rule (no future-tense in state.json) survives n=5 enforcement cycles.",
-      "whats_failing": "(a) Rules-without-fires structural unchanged under Phase 0 DRY_RUN: v2.59 n=0, v2.58 n=2, v2.10 n=2 since fire 269, v2.60 n=1 counterfactual, v2.63 n=1 counterfactual. EXPERIMENTAL tier cannot promote to STABLE without Phase 1 plumbing milestone. (b) Indicator-pipe staleness day 26 unchanged: live-status $85.23 vs canonical $82.88 = $2.35 / 2.85%. State.json range_low/high ($81.77-$82.40) references canonical channel; current_price uses live-status channel. Two-channel staleness documented; tooling artifact, stable not widening. (c) **5-in-a-row reflection pattern is now the observed reality** (v2.68 bookkeeping + v2.69 no-change + v2.70 explicit-acknowledgement + v2.71 cadence-question + v2.72 funding-microshift). Funding-microshift IS genuinely new evidence each cycle, but it's the SAME kind of evidence \u2014 a slow-climbing rate that hasn't yet hit the pre-named decision threshold. The SKILL warns: 'three reflections in a row say the same thing... that's drift \u2014 name it.' I am at 5, naming it explicitly. If v2.73 is ALSO funding-only-trajectory below trigger, the cadence ceiling is hit and the reflection should not fire as routine cadence \u2014 only on threshold breach, regime flip, displacement, or position event. (d) Operator cadence-proposal from v2.71 (extend Compression heartbeat 1h -> 2h) not yet acknowledged. Last operator note 2026-05-28. Proposal carries in open_questions; not implementing unilaterally.",
-      "what_im_iterating": "(a) NO new rule. NO new descriptive category. NO scope change. NO promotion/demotion. NO new founder_notes_addressed (last note 2026-05-28, fully audited v2.68). (b) Funding-trajectory accounting: 3.45e-5 (snapshot baseline) -> 8.39e-5 (v2.71 observation) -> 1.0e-4 (v2.72) = ~2.9x cumulative since baseline, ~19% v2.71 -> v2.72. Trigger 1.5e-4 = ~50% above current, ~4.3x above snapshot baseline. At current trajectory rate (~19%/4h), trigger reached in ~8h IF rate sustains. NOT predicting \u2014 flagging the timeline so the next funding observation can be properly contextualized against this monotonic trend. If trigger breaches in v2.73, hypothetical-lean upgrades to B-grade ENTER candidate within budget ($8.94 fresh today). (c) Hypothetical-lean refinement: C-grade short, marginally stronger than v2.71 due to continued funding tailwind, but R:R still sub-1:1 in compressed tape (SL above BB upper $85.93 = ~0.0082, TP at BB mid $85.02 = ~0.0025). Still fails v2.60 1.5:1 threshold, still HOLD-with-lean. Direction unchanged, conviction monotonically nudged across v2.69 -> v2.70 -> v2.71 -> v2.72 by funding accumulation. (d) Pre-name v2.73 (~01:20 EDT next heartbeat) decision criterion \u2014 SHARPER than v2.71's: even WITH funding-evidence, if next observation is same-shape micro-shift only AND still below 1.5e-4 trigger AND no other movement (regime, range, displacement, position), DO NOT write a cadence reflection. The 5-in-a-row pattern is the natural ceiling; 6-in-a-row of the same shape would be drift even with technically-new evidence. Reflection fires only on: trigger breach, regime flip, displacement >1.5%/15min, position open/close, founder note arrival. (e) State writer this fire updates updated_iso, narrative reflects v2.72 funding-continued-climb + 5-in-a-row naming + v2.73 sharper ceiling, increments skipped_fires_in_mode 392 -> ~442, updates funding_state.",
-      "edits_from_prior": [
-        "Funding evidence v2.71 -> v2.72: 8.39e-5 -> 1.0e-4 (+19%, ~4h). Continues v2.71's monotonic trajectory; still ~33% below 1.5e-4 trigger.",
-        "Sharper v2.73 cadence ceiling: v2.71 pre-named 'skip if no evidence at all'; v2.72 pre-names 'skip if funding-only same-shape micro-shift below trigger with no other movement'. 5-in-a-row IS the ceiling; technically-new same-shape evidence does not automatically warrant 6-in-a-row.",
-        "Hypothetical-lean refinement: C-grade short marginally stronger than v2.71 (monotonic across v2.69-v2.72 from funding accumulation). Direction unchanged, sub-1:1 R:R unchanged, HOLD-with-lean unchanged.",
-        "Funding-trigger timeline projection: at current rate, 1.5e-4 reached in ~8h IF rate sustains. NOT a prediction; a timeline marker for properly contextualizing the next observation.",
-        "No rule changes, no scope changes, no founder_notes additions, no promotions/demotions. Bookkeeping discipline only."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "PROPOSAL to operator (carry from v2.71, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression (>=3 consecutive heartbeat fires with no material state change). Safety coverage unchanged (invariant floor bypasses cadence). Subscription-quota reduced ~50% during these windows.",
-        "v2.73 pre-named criterion (sharpened): if next heartbeat has funding-only same-shape micro-shift below 1.5e-4 trigger AND no other movement, SKIP writing the cadence reflection. 5-in-a-row IS the natural ceiling.",
-        "Funding-trigger timeline: 1.0e-4 now, 1.5e-4 trigger. At current ~19%/4h rate, trigger reached in ~8h (~05:00 EDT) IF rate sustains. If breached, hypothetical-lean upgrades to B-grade ENTER candidate.",
-        "v2.63_DRIFT_ACCEPTANCE resolution shape \u2014 carry, Phase 0 counterfactual only.",
-        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-        "v2.10 4-bar reclaim window adequacy carry (no new instance this cycle, vol 0.56x sustained).",
-        "Indicator-pipe staleness day 26 (carry, tooling artifact, stable $2.35 / 2.85% gap).",
-        "Two-channel range staleness state.json canonical vs live-status (carry, documented).",
-        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review."
       ]
     }
   ],
@@ -2335,9 +2327,9 @@
     "cognition_mode_since_iso": "2026-05-31T00:47:56-04:00",
     "cognition_mode_rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep + symmetric 5/8 + no position = Compression. v2.77 substance-brevity exercise is meta (about reflection-economics + funding-illegibility refinement), not structural - does not warrant mode transition. v2.73 DRY_RUN ENTER did not physically open a position so Inventory Discovery flip not triggered. Unchanged from v2.67-v2.76.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 1025,
+    "skipped_fires_in_mode": 1035,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-02T12:12:49.662740+00:00",
+    "last_gate_check_iso": "2026-06-02T13:09:18.663538+00:00",
     "canonical_pull_iso": "2026-05-30T23:00:00+00:00",
     "canonical_pull_source": "coinbase exchange candles granularity=900",
     "baseline_v96": 2789,
@@ -2349,9 +2341,9 @@
     "since_iso": "2026-05-31T00:47:56-04:00",
     "rationale": "vol_ratio 0.56 + BB range $1.81 + no displacement + no sweep + symmetric 5/8 + no position = Compression. v2.77 substance-brevity exercise is meta (about reflection-economics + funding-illegibility refinement), not structural - does not warrant mode transition. v2.73 DRY_RUN ENTER did not physically open a position so Inventory Discovery flip not triggered. Unchanged from v2.67-v2.76.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 1025,
+    "skipped_fires_in_mode": 1035,
     "last_mode_transition_iso": "2026-05-31T00:47:56-04:00",
-    "last_gate_check_iso": "2026-06-02T12:12:49.662740+00:00"
+    "last_gate_check_iso": "2026-06-02T13:09:18.663538+00:00"
   },
   "framework_origins": [
     {
@@ -2396,14 +2388,14 @@
     },
     "last_enter_ts": 1780377109.970521,
     "last_enter_iso": "2026-06-02T01:11:49.970521-04:00",
-    "holds_in_a_row": 6,
+    "holds_in_a_row": 7,
     "exploratory_at_risk_usd_today": 4.47,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 7.1,
+    "hours_since_last_enter": 8.0,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-02T12:18:06.008050+00:00",
+    "last_updated_iso": "2026-06-02T13:14:32.369278+00:00",
     "last_known_balance_usd": 894.08
   },
   "paper": {
