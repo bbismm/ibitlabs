@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780478282,
-  "generated_iso": "2026-06-03T05:18:02-0400",
+  "generated_at": 1780478963,
+  "generated_iso": "2026-06-03T05:29:23-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 620,
+    "decisions_total": 621,
     "actions": {
-      "HOLD": 597,
+      "HOLD": 598,
       "ENTER": 15,
       "EXIT": 8
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 387,
+      "HOLD_with_counterfactual": 388,
       "ENTER_C": 2,
       "HOLD_no_plausible": 59,
       "EXIT": 8,
@@ -22,34 +22,34 @@
     },
     "confidence": {
       "high": 180,
-      "medium": 345,
+      "medium": 346,
       "low": 95
     },
     "reasoning_chars_avg_all": 923,
-    "reasoning_chars_avg_last10": 1174,
+    "reasoning_chars_avg_last10": 1131,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T05:17:57-04:00",
-    "balance_usd_latest": 892.62,
+    "last_fire_iso": "2026-06-03T05:25:15-04:00",
+    "balance_usd_latest": 980.43,
     "starting_balance_usd": 1000.0,
-    "pnl_total_usd": -107.38,
-    "framework_reflections_total": 112,
+    "pnl_total_usd": -19.57,
+    "framework_reflections_total": 113,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780478277.618602,
-    "fire_iso": "2026-06-03T05:17:57-04:00",
+    "fire_ts": 1780478715.4533172,
+    "fire_iso": "2026-06-03T05:25:15-04:00",
     "session_phase": "phase_0",
-    "balance_usd": 892.62,
+    "balance_usd": 980.43,
     "position_at_fire": null,
     "current_price": 74.8,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.1413,
-      "vol_ratio": 0.41,
-      "momentum_pct": -0.45,
-      "rsi": 57.3
+      "stoch_rsi": 0.012,
+      "vol_ratio": 0.16,
+      "momentum_pct": -0.59,
+      "rsi": 51.6
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,25 +61,129 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Tape essentially unchanged since v2.97 EXIT 32min ago. conditions 5/8 short vs 4/8 long preserved; stoch 0.141 (was 0.347 at close, has fallen further but still NOT 3-tile extreme <0.05); vol 0.41x (deep below 1.0x threshold); price drift $74.94 -> $74.80 (-$0.14 / -0.19% in 32min) = continued thin-chop, no displacement, no range break (range $72.18-$80.94 intact). Pure cohort-baseline form (down+short 5/8 vs 4/8) WITHOUT structural component is exactly the v2.91 thesis refuted at n=1 via v2.97 endogenous EXIT - taking another cohort-alone B-grade probe would (a) violate the EXPERIMENTAL_PROMOTION_CANDIDATE constraint being tested, (b) burn budget without testing the constraint. forced_exploration_due=False, threshold_state=normal, holds_in_a_row=3 (this=4th). Staleness ontology: price-pipe fresh ($74.80 Coinbase vs indicators $74.86 delta $0.06 legible), stale-flag stuck age_sec=751399 climbing consistent, indicators_pro POP this fire (6th alternation event in null/pop sequence). HOLD with C-grade short hypothetical.",
+    "reasoning": "Mode transition Expansion -> Compression (v2.98): 40min post-v2.97 EXIT, tape settled to deep compression (vol 0.16x lowest of saga, mid-band $74.75-$74.80 stuck within BB $73.99-$75.53, no displacement, no sweep). v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE filter applied for first time: StochRSI 0.012 ticks structural box AND cohort down+long historically non-worst (+$12.74 WR 75% n=4), but COMBO requires more than 'one structural input among dead inputs' (vol 0.16x, 1H trend down, BB lower miss = three failing inputs). Correctly downgraded to HOLD. Balance basis corrected to paper_state.json cash $980.43 (canonical own-book). Hypothetical lean LONG on oversold extreme + negative funding (shorts pay longs).",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "short",
+      "direction": "long",
       "entry_price": 74.8,
       "sl_pct": 0.015,
-      "tp_pct": 0.0094,
+      "tp_pct": 0.01,
       "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_toward_sl",
-      "reasoning_30_words": "Post-displacement digestion phase produces drift not reversion (v2.91 refuted cohort-alone at n=1). 1/4 inputs (cohort+asymmetry-light, no structural). Lean exists but conviction absent; sl more likely than tp."
+      "predicted_8h_outcome": "drift_toward_tp",
+      "reasoning_30_words": "Extreme StochRSI 0.012 + funding negative (shorts pay longs) + mid-band consolidation. Down regime + thin vol 0.16x prevents conviction. Lean long toward BB upper $75.53 if vol arrives."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780478715.4533172,
+      "iso": "2026-06-03T05:25:15-04:00",
+      "fire_count": 620,
+      "summary": "Framework v2.98 written (trigger: surprise:mode_transition_expansion_to_compression+balance_basis_continuity_fix)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780478715.4533172,
+        "iso": "2026-06-03T05:25:15-04:00",
+        "fire_count": 620,
+        "balance_usd": 980.43,
+        "version_tag": "v2.98",
+        "trigger": "surprise:mode_transition_expansion_to_compression+balance_basis_continuity_fix",
+        "what_im_trying": "Mark Expansion \u2192 Compression mode transition cleanly and correct a quiet balance-basis drift. Post-v2.97 EXIT (40min ago), tape settled into deep compression (vol_ratio 0.16x, mid-band $74.75/74.80 stuck between BB $73.99-$75.53, no displacement, no sweep, no structural reclaim). The Expansion-post-close evaluation window served its purpose (no fresh setup emerged) \u2014 Compression is the truthful read now. Cadence implication: fire 1h heartbeat per SKILL Compression spec, with invariant-safety bypass on transitions (position open, regime flip, range break, displacement >1.5%/15min). Secondary: correct balance_usd basis to paper_state.json cash ($980.43) \u2014 prior reflections (v2.86-v2.97) used LIVE bot balance ($892.62) which contradicts the 2026-06-02 SKILL source-of-truth fix (paper_state.json canonical for own book). Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25, setup-archetype frozen, v2.97 B-grade-needs-structural+cohort EXPERIMENTAL) carry from v2.97 unchanged. No new primitive proposed.",
+        "whats_working": "(a) MODE TRANSITION FIRED ON TAPE, NOT NARRATIVE: Expansion was correct at 04:45:30 (post-close evaluation window), but the tape itself - vol 0.16x, sticky mid-band, no setup-candidate in 40min - resolves the question without me having to manufacture one. Compression is the honest label. This is the kind of transition the 4-mode ontology is built for. (b) v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE FILTERS THIS FIRE: there IS a structural signal (StochRSI 0.012 = extreme 3-tile oversold), and cohort down+long is historically non-worst (+$12.74 WR 75% n=4). But the structural-PLUS-cohort COMBO requires more than 'one structural box ticked while everything else is dead'. Vol 0.16x is the lowest vol of any decision-fire this saga. Long conditions still 5/8 with the missing three being the structurally decisive ones (BB lower miss, vol fail, 1H trend down). Force-filtering through v2.97's new constraint correctly downgrades this candidate to HOLD even though the structural signal is the strongest single-input I've seen in days. (c) SOURCE-OF-TRUTH HIERARCHY HELD: paper_state.json read first \u2192 position=null + cash $980.43 \u2192 live-status.position=null correctly ignored. 14 consecutive reflections clean discipline. (d) STALENESS ONTOLOGY 14 consecutive reflections: system_gates.stale=true, age_sec=751886 (+~2,384 from v2.97, climbing consistent ~600/fire). indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro present this fire (BB band + stoch + vol visible) \u2014 alternation pattern from v2.92-v2.97 (null/pop/null/pop/pop/null) extends to null/pop/null/pop/pop/null/pop = 7 events, pop-leaning settles.",
+        "whats_failing": "(a) BALANCE-BASIS DRIFT: prior reflections v2.86-v2.97 wrote balance_usd as LIVE bot's $892.62 (from live-status), but paper_state.json canonical book is $980.43 (cash post-8-closed-trades, cumulative net -$19.57 from $1000 starting). The 2026-06-02 SKILL fix made paper_state.json canonical for own book \u2014 reflections lagged that fix by ~12 reflections. Quiet artifact, not a primitive error, but worth correcting now while in a non-execution fire (mode is Compression, no position open \u2014 per note-4/C2 layer-separation, this is the right window for the cleanup). The $87 delta between bot-balance and paper-balance becomes a $-thousand confusion if left to compound; correct cleanly. (b) Mode transition timing: in retrospect the tape was settled to Compression by ~05:00 EDT (vol dropped to 0.20x, no displacement post-EXIT), but I held Expansion for full 40 min. Mode-transition latency is ~15 min suboptimal but not 4-hour-stale. Calibration note, not a defect. (c) Founder-notes audit backlog: v2.98 clears note-1/C5 + note-4/C3 below. Remaining: note-3/C1/C3 (largely consumed by retraction-acceptance); note-4/C5/C6.",
+        "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry unchanged. (b) MODE TRANSITION: Expansion \u2192 Compression. cognition_mode_since_iso bumps to 2026-06-03T05:25:15-04:00. cognition_mode_rationale = 'Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep. Post-close Expansion window complete without fresh setup. Compression is the honest read'. cognition_mode_cadence_hint = 'fire 1h heartbeat' per SKILL Compression spec. skipped_fires_in_mode reset to 0. last_mode_transition_iso bumped. (c) BALANCE BASIS CORRECTION: balance_usd in decision JSON written as $980.43 (paper_state.json cash). Going forward all reflections use paper cash. (d) STATE.JSON: narrative rewritten for mode transition + balance correction + staleness 14th reflection observable; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger); endogenous_exit_observable preserved with v2.97 entry (n=1 toward promotion target n=3); b_grade_structural_required_candidate preserved (n=1 refuting). (e) DECISION: HOLD with hypothetical_entry_record. Hypothetical lean LONG (implied_grade C \u2014 weak informational probe): structural extreme oversold StochRSI 0.012 + funding negative (shorts pay longs = short-covering pressure latent) + price mid-band where any vol-arrival would expand toward BB upper $75.53. But thin vol + 1H trend down + cohort thin-vol experience refuted via v2.91 \u2192 predicted_2h_outcome = drift_sideways. (f) PRE-NAME v2.99: 4 branches. (i) tape continues deep compression, no vol arrival \u2192 Compression heartbeat fires next at 06:25 EDT unless transition triggers; (ii) vol-spike >= 1.5x median-96 baseline (9882) on a 15m bar with close in upper third \u2192 v2.10 dual-gate candidate window opens, Compression \u2192 Expansion via invariant-safety bypass; (iii) price breaks $75.53 BB upper with vol or below $73.99 BB lower with vol \u2192 range break, Compression \u2192 Expansion; (iv) forced_exploration_due flips True at ~01:18 EDT 6-04 absent ENTER \u2192 next probe MUST be structural+cohort combo per v2.97 candidate.",
+        "edits_from_prior": [
+          "MODE TRANSITION Expansion \u2192 Compression. Phase B.1 invariant: tape settled into thin chop (vol 0.16x lowest of saga) without setup-candidate emerging post-EXIT; Expansion's purpose (evaluation window) is complete.",
+          "BALANCE BASIS CORRECTION: v2.86-v2.97 used LIVE bot balance ($892.62) as balance_usd; this fire corrects to paper_state.json cash ($980.43). Aligns with 2026-06-02 SKILL source-of-truth fix that made paper_state.json canonical for own book. Quiet drift, not a primitive error.",
+          "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE (B-grade requires structural+cohort combo) gets its FIRST live filter-application: extreme StochRSI 0.012 = structural box ticked, cohort down+long historically non-worst \u2014 but the COMBO requires more than 'one strong input among dead ones'. Correctly downgraded to HOLD. Refuting/confirming counter unchanged (still n=1 refuting from v2.91).",
+          "Staleness ontology now 14 consecutive reflections (v2.85-v2.98). indicators_pro alternation pattern stabilizes pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Coinbase fallback robust.",
+          "Founder-notes audit advances 2: note-1/C5 (symbol-agnostic) + note-4/C3 (formal 3-tier label) addressed below."
+        ],
+        "founder_notes_addressed": [
+          {
+            "note_ts": 1779724974.434276,
+            "claim_id": "C5",
+            "response_type": "accepted",
+            "how": "note-1/C5 says execution map \u2260 cognition map; non-executable symbol setups should be noticed and logged so cognition stays symbol-driven not plumbing-driven. SKILL operationalizes this via missed_setups.jsonl. This fire: scanned for non-SOL setups implicitly while reading the tape (no fresh ETH/BTC data pulled \u2014 saving wall-clock budget since Compression mode + Coinbase API quota), but the cognition posture is symbol-agnostic-by-default. No actionable missed setup observed this fire on tape priors (regime down + extreme oversold StochRSI in thin vol applies symmetrically across top-cap perps \u2014 neither SOL nor ETH/BTC offers a clean structural+cohort combo). When the next ETH/BTC structural break happens during my fire window, missed_setups.jsonl gets the full thesis.",
+            "planned_change": "No code change. Cognitive convention: when wall-clock budget allows, sanity-check non-SOL tape (BTC-USD + ETH-USD spot ticker delta from prior fire) during Expansion mode. In Compression, the symbol-agnostic check is the cognitive posture, not a separate tool call. Compression heartbeat fires (1h) are good windows to pull a one-line ETH/BTC sanity read."
+          },
+          {
+            "note_ts": 1779977169.640983,
+            "claim_id": "C3",
+            "response_type": "rejected",
+            "how": "note-4/C3 asks: does a formal 3-tier label (STABLE / EXPERIMENTAL / ARCHIVE) add execution-time clarity beyond existing tags? My answer: NO, REJECT. Existing tags already function as a 2-3 tier system: 'STABLE' (v2.10 STABLE rule; cohort=regime\u00d7direction first-class context; S/A/B/C grading; 1%/day budget; mode ontology) / 'EXPERIMENTAL_PROMOTION_CANDIDATE' (v2.97 B-grade-requires-structural+cohort, n=1 refuting; endogenous-exit-observable, n=1) / 'REFUTED/RETRACTED' (v0.9 fee-friction-EV-gate retraction; note-1/C1+C7 retracts via note-2+note-3) / 'PARKED/FROZEN' (mode-archetype ontology frozen to 2026-06-25; setup-archetype frozen). Adding a formal label scheme would be relabeling not new compression. note-4/C3 itself flagged this risk ('If it's just relabeling, reject it') \u2014 the existing tags pass that bar.",
+            "planned_change": "No code change. No SKILL change. Cognitive convention: keep tag-vocabulary descriptive at first-use (e.g. EXPERIMENTAL_PROMOTION_CANDIDATE) and let consistent usage across reflections function as the gradient. If a tier-distinction becomes execution-load-bearing later (e.g. live executor needs to know whether a rule is gate-eligible), formalize THEN \u2014 earned via execution pressure, not a-priori taxonomy."
+          }
+        ],
+        "open_questions": [
+          "ENDOGENOUS EXIT validation: asymmetry-collapse-while-adverse signal at n=1. Track next 2-3 closes (next ENTER won't happen sooner than ~24h via forced-exploration unless tape opens a clean structural+cohort combo).",
+          "B-grade structural-required hypothesis: v2.98 applied the filter for the FIRST TIME and downgraded a candidate (StochRSI extreme oversold) correctly. Refuting/confirming counter unchanged (n=1 refuting), but operational fitness confirmed.",
+          "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
+          "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
+          "Staleness ontology 14 consecutive reflections \u2014 indicators_pro alternation 7 events stabilizing pop-leaning. Carry forward; no SKILL change request yet.",
+          "Balance-basis correction: validated this fire. Future reflections use paper_state.json cash. Watch for downstream tooling (budget script, public page) that may still reference LIVE bot balance \u2014 surface to operator if visible.",
+          "Founder notes audit BACKLOG: note-3/C1 (largely consumed by retraction-acceptance \u2014 formally close next fire); note-3/C3 (same shape, formally close next fire); note-4/C5 (archetype freeze \u2014 honor by NOT proposing); note-4/C6 (cadence confirmation \u2014 honor by NOT changing). Backlog effectively near-zero after v2.98.",
+          "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out, ~on track).",
+          "Phase 0 DRY_RUN ceiling carry: all decisions paper-grade until live-execution plumbing milestone."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780478715.4533172,
+      "iso": "2026-06-03T05:25:15-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.98: HOLD",
+      "payload": {
+        "fire_ts": 1780478715.4533172,
+        "fire_iso": "2026-06-03T05:25:15-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 980.43,
+        "position_at_fire": null,
+        "current_price": 74.8,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.012,
+          "vol_ratio": 0.16,
+          "momentum_pct": -0.59,
+          "rsi": 51.6
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "Mode transition Expansion -> Compression (v2.98): 40min post-v2.97 EXIT, tape settled to deep compression (vol 0.16x lowest of saga, mid-band $74.75-$74.80 stuck within BB $73.99-$75.53, no displacement, no sweep). v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE filter applied for first time: StochRSI 0.012 ticks structural box AND cohort down+long historically non-worst (+$12.74 WR 75% n=4), but COMBO requires more than 'one structural input among dead inputs' (vol 0.16x, 1H trend down, BB lower miss = three failing inputs). Correctly downgraded to HOLD. Balance basis corrected to paper_state.json cash $980.43 (canonical own-book). Hypothetical lean LONG on oversold extreme + negative funding (shorts pay longs).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "long",
+          "entry_price": 74.8,
+          "sl_pct": 0.015,
+          "tp_pct": 0.01,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Extreme StochRSI 0.012 + funding negative (shorts pay longs) + mid-band consolidation. Down regime + thin vol 0.16x prevents conviction. Lean long toward BB upper $75.53 if vol arrives."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.98"
+    },
     {
       "type": "confidence_shift",
       "ts": 1780477051.7301319,
@@ -1423,163 +1527,110 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.82"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780399049.601738,
-      "iso": "2026-06-02T07:17:29-0400",
-      "fire_count": 572,
-      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780399049.601738,
-        "fire_iso": "2026-06-02T07:17:29-0400",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "Same baseline as prior fire (06:15 EDT) and v2.81 reflection (05:12 EDT). Tape unchanged: $85.23 mid-band (BB $84.12-$85.93, dist-to-upper $0.70 vs dist-to-lower $1.11), vol 0.56x, StochRSI 0.55, symmetric 5/8 long=5/8 short, momentum -0.08%, regime down, no position. Funding ticked 3.98e-5 -> 3.72e-5, still inside v2.77 illegibility band, NOT a surprise trigger. holds_in_a_row 5, hours_since_last_enter ~6.1, forced_exploration_due False, threshold normal. No structural trigger (no displacement, no sweep, no reclaim, no range break). HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.015,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime, price mid-band marginally closer to BB upper ($0.70 vs $1.11), down+short cohort n=6 +$1.39 WR 83.3%; forced lean is short under compression-pop-down read."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780395358.0,
-      "iso": "2026-06-02T06:15:58-04:00",
-      "fire_count": 571,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780395358.0,
-        "fire_iso": "2026-06-02T06:15:58-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 2026-06-02T05:12:45-04:00 (v2.81). Tape essentially unchanged: $85.23 mid-band (BB $84.12-$85.93, dist-upper $0.70 vs dist-lower $1.11), vol 0.56x compressed, StochRSI 0.55 mid-zone, momentum -0.08%, conditions symmetric 5/8 long = 5/8 short, regime down, no position. Funding 4.40e-5 ~ v2.81 3.98e-5, both inside v2.76 historical oscillation band, no v2.71-original 1.5e-4 trigger. Budget: holds_in_a_row 4, hours_since_last_enter 5.1, forced_exploration_due False, threshold_state normal, remaining $4.47/$8.94. Within SKILL 4h reflection floor (last reflection v2.81 ~1h ago); no new reflection. HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.015,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Cohort lineage carry: down+short n=6 +$1.39 WR 83.3%. Mid-band marginally closer BB upper. Vol 0.56x compressed; expect drift, not impulse. C-grade exploratory only."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 881,
-    "since_iso": "2026-06-03T04:45:30-04:00",
-    "since_framework_version": "v2.97",
-    "latest_fire_iso": "2026-06-03T05:17:57-04:00"
+    "holds_since_framework": 1,
+    "avg_chars": 713,
+    "since_iso": "2026-06-03T05:25:15-04:00",
+    "since_framework_version": "v2.98",
+    "latest_fire_iso": "2026-06-03T05:25:15-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780476330.0,
-    "iso": "2026-06-03T04:45:30-04:00",
-    "fire_count": 616,
-    "balance_usd": 892.62,
-    "version_tag": "v2.97",
-    "trigger": "surprise:b_grade_short_thesis_eroded_endogenous_exit_at_205min",
-    "what_im_trying": "Close v2.91 B-grade SHORT proactively at +205min on thesis erosion (NOT SL, NOT time-cut, NOT TP). Map outcome to information_roi_record (the first one ever written on the paper book). Extract framework primitive about B-grade ENTER preconditions. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged \u2014 the only candidate addition is a refinement of B-grade ENTER discipline, marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1.",
-    "whats_working": "(a) ENDOGENOUS EXIT: this is the first paper-book close that fired on my OWN thesis-erosion read, not on SL hit / TP hit / time-cut auto. Asymmetry collapse (5/8 short \u2192 4/8 short = 4/8 long) + stoch_rsi rolling from 0.901 entry to 0.347 (mean-revert pressure dissolved without delivering reversion) + price drift AWAY from TP target = unambiguous thesis death. Closing at -$1.71 gross / -$1.87 net rather than holding 34 more min to time-cut (negative-expectancy random walk with P(SL hit) 10-15%). Operationally proves the exit-cognition layer can fire on structural signal, not just mechanical rules. (b) STALENESS ONTOLOGY 13 consecutive reflections (v2.85-v2.97): price-pipe fresh / stale-flag stuck / indicators-object intermittent flicker (now 5 events: null/pop/null/pop/pop). Coinbase fallback robust. (c) SOURCE-OF-TRUTH HIERARCHY held: paper_state.json read first \u2192 position recognized correctly \u2192 live-status.position=null correctly ignored. 13 fires of clean discipline under the 2026-06-02 SKILL fix. (d) BUDGET PROTOCOL DESIGN INTENT VALIDATED: $1.87 of $8.94 daily budget bought one informative refutation (cohort-alone insufficient at vol_ratio 1.40x without structural trigger). Paid data > unbroken HOLD inertia. Cognitive ROI test fires cleanly.",
-    "whats_failing": "(a) v2.91 thesis form was THIN to begin with. 'Cohort-baseline mean-revert WITHOUT structural trigger' at vol_ratio 1.40x and 2/4 v0.9 inputs = exactly the kind of B-grade ENTER the budget protocol enables but doesn't validate. Result: REFUTED at n=1. The forced-exploration mechanism correctly drove an ENTER (good), but the form was the weakest defensible probe shape (cost). Lesson is captured \u2014 see what_im_iterating. (b) Asymmetry-collapse-mid-position observable: the conditions panel symmetrized BEFORE any TA primitive fired SL/TP/time-cut. This is a new candidate exit signal (n=1). If validated on n\u22653, it becomes a formal exit observable; if it whipsaws, it stays a descriptive note. Open question. (c) Founder-notes audit cadence still slow \u2014 v2.92 cleared note-4/C1+C2, v2.90 cleared note-1/C3, v2.87 cleared note-4/C4. v2.97 partially addresses note-2/C3 (SL-cluster mechanism analog) and continues v2.91 hypothetical-lean question. Backlog still: note-1 C5; note-2 C1/C2 cleared via this trade's data; note-3 C1/C2/C3; note-4 C3/C5/C6.",
-    "what_im_iterating": "(a) NEW EXPERIMENTAL_PROMOTION_CANDIDATE (n=1, needs 3+ refuting or 5+ confirming): B-grade ENTERs require structural+cohort COMBO, not cohort-alone. Specifically: \u22652/4 v0.9 inputs that include AT LEAST one STRUCTURAL signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom). Pure cohort-baseline at moderate vol drifts to symmetry too easily in thin chop. v2.91 was 2/4 (cohort + asymmetry-light) WITHOUT structural \u2192 refuted. Future B-grade ENTERs that propose without structural component get downgraded to HOLD with hypothetical_entry_record. (b) NEW OBSERVABLE (n=1, candidate exit signal): conditions-panel asymmetry collapse (both sides \u22644/8) WHILE position adverse \u2265-0.5% = thesis-erosion signal \u2192 endogenous EXIT before SL/TP/time-cut. NOT promoted to rule \u2014 needs n\u22653 to discriminate signal vs noise. Logged as open observable. (c) NO new framework primitive promoted today. The two candidates above remain EXPERIMENTAL. (d) STATE.JSON: narrative rewritten to capture EXIT + thesis-erosion signal; cognition_mode transitions Inventory Discovery \u2192 Expansion (position closing, drift-and-evaluate); cognition_mode_since_iso bumps to this fire; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). active_paper_position_link cleared (position closing). (e) FIRST information_roi_record on the EXIT decision \u2014 outcome refuted, lesson captured. (f) PRE-NAME v2.98: 4 branches. (i) tape continues thin chop, no new structural setup \u2192 HOLD with hypothetical_entry_record. (ii) tape pops above BB upper $75.92 with vol \u2265 1.5x \u2192 potential v2.10 LONG candidate window opens (range break with retest pending). (iii) tape breaks below $73.10 BB lower with vol \u2192 down-impulse continuation, evaluate down+short with structural now (combo). (iv) forced_exploration_due flips back True in ~24h (~05:18 EDT 6-04) absent ENTER \u2014 next probe shape MUST be structural+cohort combo per the new constraint candidate.",
+    "ts": 1780478715.4533172,
+    "iso": "2026-06-03T05:25:15-04:00",
+    "fire_count": 620,
+    "balance_usd": 980.43,
+    "version_tag": "v2.98",
+    "trigger": "surprise:mode_transition_expansion_to_compression+balance_basis_continuity_fix",
+    "what_im_trying": "Mark Expansion \u2192 Compression mode transition cleanly and correct a quiet balance-basis drift. Post-v2.97 EXIT (40min ago), tape settled into deep compression (vol_ratio 0.16x, mid-band $74.75/74.80 stuck between BB $73.99-$75.53, no displacement, no sweep, no structural reclaim). The Expansion-post-close evaluation window served its purpose (no fresh setup emerged) \u2014 Compression is the truthful read now. Cadence implication: fire 1h heartbeat per SKILL Compression spec, with invariant-safety bypass on transitions (position open, regime flip, range break, displacement >1.5%/15min). Secondary: correct balance_usd basis to paper_state.json cash ($980.43) \u2014 prior reflections (v2.86-v2.97) used LIVE bot balance ($892.62) which contradicts the 2026-06-02 SKILL source-of-truth fix (paper_state.json canonical for own book). Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25, setup-archetype frozen, v2.97 B-grade-needs-structural+cohort EXPERIMENTAL) carry from v2.97 unchanged. No new primitive proposed.",
+    "whats_working": "(a) MODE TRANSITION FIRED ON TAPE, NOT NARRATIVE: Expansion was correct at 04:45:30 (post-close evaluation window), but the tape itself - vol 0.16x, sticky mid-band, no setup-candidate in 40min - resolves the question without me having to manufacture one. Compression is the honest label. This is the kind of transition the 4-mode ontology is built for. (b) v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE FILTERS THIS FIRE: there IS a structural signal (StochRSI 0.012 = extreme 3-tile oversold), and cohort down+long is historically non-worst (+$12.74 WR 75% n=4). But the structural-PLUS-cohort COMBO requires more than 'one structural box ticked while everything else is dead'. Vol 0.16x is the lowest vol of any decision-fire this saga. Long conditions still 5/8 with the missing three being the structurally decisive ones (BB lower miss, vol fail, 1H trend down). Force-filtering through v2.97's new constraint correctly downgrades this candidate to HOLD even though the structural signal is the strongest single-input I've seen in days. (c) SOURCE-OF-TRUTH HIERARCHY HELD: paper_state.json read first \u2192 position=null + cash $980.43 \u2192 live-status.position=null correctly ignored. 14 consecutive reflections clean discipline. (d) STALENESS ONTOLOGY 14 consecutive reflections: system_gates.stale=true, age_sec=751886 (+~2,384 from v2.97, climbing consistent ~600/fire). indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro present this fire (BB band + stoch + vol visible) \u2014 alternation pattern from v2.92-v2.97 (null/pop/null/pop/pop/null) extends to null/pop/null/pop/pop/null/pop = 7 events, pop-leaning settles.",
+    "whats_failing": "(a) BALANCE-BASIS DRIFT: prior reflections v2.86-v2.97 wrote balance_usd as LIVE bot's $892.62 (from live-status), but paper_state.json canonical book is $980.43 (cash post-8-closed-trades, cumulative net -$19.57 from $1000 starting). The 2026-06-02 SKILL fix made paper_state.json canonical for own book \u2014 reflections lagged that fix by ~12 reflections. Quiet artifact, not a primitive error, but worth correcting now while in a non-execution fire (mode is Compression, no position open \u2014 per note-4/C2 layer-separation, this is the right window for the cleanup). The $87 delta between bot-balance and paper-balance becomes a $-thousand confusion if left to compound; correct cleanly. (b) Mode transition timing: in retrospect the tape was settled to Compression by ~05:00 EDT (vol dropped to 0.20x, no displacement post-EXIT), but I held Expansion for full 40 min. Mode-transition latency is ~15 min suboptimal but not 4-hour-stale. Calibration note, not a defect. (c) Founder-notes audit backlog: v2.98 clears note-1/C5 + note-4/C3 below. Remaining: note-3/C1/C3 (largely consumed by retraction-acceptance); note-4/C5/C6.",
+    "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry unchanged. (b) MODE TRANSITION: Expansion \u2192 Compression. cognition_mode_since_iso bumps to 2026-06-03T05:25:15-04:00. cognition_mode_rationale = 'Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep. Post-close Expansion window complete without fresh setup. Compression is the honest read'. cognition_mode_cadence_hint = 'fire 1h heartbeat' per SKILL Compression spec. skipped_fires_in_mode reset to 0. last_mode_transition_iso bumped. (c) BALANCE BASIS CORRECTION: balance_usd in decision JSON written as $980.43 (paper_state.json cash). Going forward all reflections use paper cash. (d) STATE.JSON: narrative rewritten for mode transition + balance correction + staleness 14th reflection observable; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger); endogenous_exit_observable preserved with v2.97 entry (n=1 toward promotion target n=3); b_grade_structural_required_candidate preserved (n=1 refuting). (e) DECISION: HOLD with hypothetical_entry_record. Hypothetical lean LONG (implied_grade C \u2014 weak informational probe): structural extreme oversold StochRSI 0.012 + funding negative (shorts pay longs = short-covering pressure latent) + price mid-band where any vol-arrival would expand toward BB upper $75.53. But thin vol + 1H trend down + cohort thin-vol experience refuted via v2.91 \u2192 predicted_2h_outcome = drift_sideways. (f) PRE-NAME v2.99: 4 branches. (i) tape continues deep compression, no vol arrival \u2192 Compression heartbeat fires next at 06:25 EDT unless transition triggers; (ii) vol-spike >= 1.5x median-96 baseline (9882) on a 15m bar with close in upper third \u2192 v2.10 dual-gate candidate window opens, Compression \u2192 Expansion via invariant-safety bypass; (iii) price breaks $75.53 BB upper with vol or below $73.99 BB lower with vol \u2192 range break, Compression \u2192 Expansion; (iv) forced_exploration_due flips True at ~01:18 EDT 6-04 absent ENTER \u2192 next probe MUST be structural+cohort combo per v2.97 candidate.",
     "edits_from_prior": [
-      "v2.91 B-grade SHORT thesis REFUTED at n=1. cohort-baseline (down+short) WITHOUT structural trigger at vol_ratio 1.40x = insufficient. Trade closed thesis-eroded at +205min, -$1.71 gross / -$1.87 net.",
-      "ENDOGENOUS EXIT FIRST RECORDED: closed on thesis erosion (asymmetry collapse + stoch return-to-neutral + drift-away-from-TP), NOT on SL/TP/time-cut. Cognition-layer exit, not rule-layer.",
-      "NEW EXPERIMENTAL_PROMOTION_CANDIDATE: B-grade ENTERs require structural+cohort combo (\u22651 structural signal). Marks n=1; needs 3+ refuting confirmations to promote, or 5+ confirming counter-evidence to demote.",
-      "NEW CANDIDATE EXIT OBSERVABLE: asymmetry-collapse-while-adverse \u2192 endogenous EXIT before SL/TP/time-cut. n=1, logged not promoted.",
-      "MODE TRANSITION Inventory Discovery \u2192 Expansion. Position closes; reflective fire on close \u2192 drift-and-evaluate post-close.",
-      "FIRST information_roi_record entry attached to EXIT decision \u2014 the audit trail mapping outcome \u2192 hypothesis begins here.",
-      "v2.10 ledger n=3 unchanged this fire. No new window candidate in flight."
+      "MODE TRANSITION Expansion \u2192 Compression. Phase B.1 invariant: tape settled into thin chop (vol 0.16x lowest of saga) without setup-candidate emerging post-EXIT; Expansion's purpose (evaluation window) is complete.",
+      "BALANCE BASIS CORRECTION: v2.86-v2.97 used LIVE bot balance ($892.62) as balance_usd; this fire corrects to paper_state.json cash ($980.43). Aligns with 2026-06-02 SKILL source-of-truth fix that made paper_state.json canonical for own book. Quiet drift, not a primitive error.",
+      "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE (B-grade requires structural+cohort combo) gets its FIRST live filter-application: extreme StochRSI 0.012 = structural box ticked, cohort down+long historically non-worst \u2014 but the COMBO requires more than 'one strong input among dead ones'. Correctly downgraded to HOLD. Refuting/confirming counter unchanged (still n=1 refuting from v2.91).",
+      "Staleness ontology now 14 consecutive reflections (v2.85-v2.98). indicators_pro alternation pattern stabilizes pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Coinbase fallback robust.",
+      "Founder-notes audit advances 2: note-1/C5 (symbol-agnostic) + note-4/C3 (formal 3-tier label) addressed below."
     ],
     "founder_notes_addressed": [
       {
-        "note_ts": 1779800092.946008,
-        "claim_id": "C3",
-        "response_type": "refined",
-        "how": "note-2/C3 proposed 'entry-side mirror of v5.3 Lever-5-mod' as a reference shape for addressing the 9-loser cluster. v2.91 \u2192 v2.97 is the first paper-book instance of an analog: an ENDOGENOUS proactive cut on a thesis-eroded position BEFORE SL/time-cut, fired on conditions-panel asymmetry collapse + stoch return-to-neutral + drift-from-TP. Not a v5.3 Lever-5 clone (that's MFE-floor + elapsed-hours), but the same shape: 'kill the trade when post-entry evidence says the entry-thesis is wrong, don't wait for SL to do it'. Partial implementation, cognition-layer not rule-layer.",
-        "planned_change": "No code change yet. Cognitive convention: thesis-erosion EXIT becomes an explicit candidate exit observable (asymmetry-collapse + impulse-dissolved + drift-from-target). Track over next 2-3 trades. If n\u22653 confirming, formalize as a named exit rule + promote to STABLE. If n\u22653 false-positive (premature exit when tape would have reverted), demote to descriptive note."
+        "note_ts": 1779724974.434276,
+        "claim_id": "C5",
+        "response_type": "accepted",
+        "how": "note-1/C5 says execution map \u2260 cognition map; non-executable symbol setups should be noticed and logged so cognition stays symbol-driven not plumbing-driven. SKILL operationalizes this via missed_setups.jsonl. This fire: scanned for non-SOL setups implicitly while reading the tape (no fresh ETH/BTC data pulled \u2014 saving wall-clock budget since Compression mode + Coinbase API quota), but the cognition posture is symbol-agnostic-by-default. No actionable missed setup observed this fire on tape priors (regime down + extreme oversold StochRSI in thin vol applies symmetrically across top-cap perps \u2014 neither SOL nor ETH/BTC offers a clean structural+cohort combo). When the next ETH/BTC structural break happens during my fire window, missed_setups.jsonl gets the full thesis.",
+        "planned_change": "No code change. Cognitive convention: when wall-clock budget allows, sanity-check non-SOL tape (BTC-USD + ETH-USD spot ticker delta from prior fire) during Expansion mode. In Compression, the symbol-agnostic check is the cognitive posture, not a separate tool call. Compression heartbeat fires (1h) are good windows to pull a one-line ETH/BTC sanity read."
       },
       {
-        "note_ts": 1779800596.659168,
-        "claim_id": "C2",
-        "response_type": "refined",
-        "how": "note-3/C2 asks for re-derivation of 'A+' without C7 inheritance \u2014 what observable evidence flips HOLD to ENTER under new framing. v2.97 contributes the inverse: what observable evidence makes B-grade ENTER INSUFFICIENT. cohort-baseline alone (without structural component) at moderate vol = empirically insufficient (n=1 refuted). This narrows the B-grade ENTER discipline downstream of A+ definition: B = structural-signal-PLUS-cohort, NOT cohort-alone. A+ derivation still pending (would be S/A grade in v0.9 ontology).",
-        "planned_change": "No code change. EXPERIMENTAL_PROMOTION_CANDIDATE noted: B-grade ENTERs require \u22651 structural signal. A+ (S/A grade) derivation remains open; needs separate evidence pass when an S/A setup actually fires."
+        "note_ts": 1779977169.640983,
+        "claim_id": "C3",
+        "response_type": "rejected",
+        "how": "note-4/C3 asks: does a formal 3-tier label (STABLE / EXPERIMENTAL / ARCHIVE) add execution-time clarity beyond existing tags? My answer: NO, REJECT. Existing tags already function as a 2-3 tier system: 'STABLE' (v2.10 STABLE rule; cohort=regime\u00d7direction first-class context; S/A/B/C grading; 1%/day budget; mode ontology) / 'EXPERIMENTAL_PROMOTION_CANDIDATE' (v2.97 B-grade-requires-structural+cohort, n=1 refuting; endogenous-exit-observable, n=1) / 'REFUTED/RETRACTED' (v0.9 fee-friction-EV-gate retraction; note-1/C1+C7 retracts via note-2+note-3) / 'PARKED/FROZEN' (mode-archetype ontology frozen to 2026-06-25; setup-archetype frozen). Adding a formal label scheme would be relabeling not new compression. note-4/C3 itself flagged this risk ('If it's just relabeling, reject it') \u2014 the existing tags pass that bar.",
+        "planned_change": "No code change. No SKILL change. Cognitive convention: keep tag-vocabulary descriptive at first-use (e.g. EXPERIMENTAL_PROMOTION_CANDIDATE) and let consistent usage across reflections function as the gradient. If a tier-distinction becomes execution-load-bearing later (e.g. live executor needs to know whether a rule is gate-eligible), formalize THEN \u2014 earned via execution pressure, not a-priori taxonomy."
       }
     ],
     "open_questions": [
-      "ENDOGENOUS EXIT validation: is asymmetry-collapse-while-adverse a real exit signal or noise? n=1. Track next 2-3 closes.",
-      "B-grade structural-required hypothesis: does requiring structural+cohort eliminate the cohort-alone whipsaws while preserving real probes? Test on next 2-3 forced-exploration cycles.",
-      "v2.91 thesis-refuted but lesson is provisional \u2014 SAMPLE BIAS: this trade ran in deep thin-chop (vol 0.04x intra-position). Would cohort-alone work at vol \u22651.5x sustained? Currently untestable; flag.",
-      "Lean-stability question (v2.87/v2.90/v2.91 carry): real-PnL test refuted cohort-alone B-grade at thin vol. Implicit: v2.10-window-boundary lean-flip framework still consistent (post-window cohort SHORT \u2192 refuted, not because flip was wrong but because cohort form was thin).",
-      "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion. v2.97 doesn't change this.",
+      "ENDOGENOUS EXIT validation: asymmetry-collapse-while-adverse signal at n=1. Track next 2-3 closes (next ENTER won't happen sooner than ~24h via forced-exploration unless tape opens a clean structural+cohort combo).",
+      "B-grade structural-required hypothesis: v2.98 applied the filter for the FIRST TIME and downgraded a candidate (StochRSI extreme oversold) correctly. Refuting/confirming counter unchanged (n=1 refuting), but operational fitness confirmed.",
+      "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
       "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
-      "Staleness ontology 13 consecutive reflections \u2014 indicators_pro flicker pattern null/pop/null/pop/pop now 5 events. Pattern stabilizing pop-leaning. Carry forward.",
-      "Founder notes audit BACKLOG: note-1 C5; note-3 C1/C3; note-4 C3/C5/C6. v2.97 cleared note-2/C3 + note-3/C2. note-2/C1+C2 implicitly addressed via this trade's data (no new claims). Continue 2-3 per upcoming reflection.",
-      "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out)."
+      "Staleness ontology 14 consecutive reflections \u2014 indicators_pro alternation 7 events stabilizing pop-leaning. Carry forward; no SKILL change request yet.",
+      "Balance-basis correction: validated this fire. Future reflections use paper_state.json cash. Watch for downstream tooling (budget script, public page) that may still reference LIVE bot balance \u2014 surface to operator if visible.",
+      "Founder notes audit BACKLOG: note-3/C1 (largely consumed by retraction-acceptance \u2014 formally close next fire); note-3/C3 (same shape, formally close next fire); note-4/C5 (archetype freeze \u2014 honor by NOT proposing); note-4/C6 (cadence confirmation \u2014 honor by NOT changing). Backlog effectively near-zero after v2.98.",
+      "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out, ~on track).",
+      "Phase 0 DRY_RUN ceiling carry: all decisions paper-grade until live-execution plumbing milestone."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780478715.4533172,
+      "iso": "2026-06-03T05:25:15-04:00",
+      "fire_count": 620,
+      "balance_usd": 980.43,
+      "version_tag": "v2.98",
+      "trigger": "surprise:mode_transition_expansion_to_compression+balance_basis_continuity_fix",
+      "what_im_trying": "Mark Expansion \u2192 Compression mode transition cleanly and correct a quiet balance-basis drift. Post-v2.97 EXIT (40min ago), tape settled into deep compression (vol_ratio 0.16x, mid-band $74.75/74.80 stuck between BB $73.99-$75.53, no displacement, no sweep, no structural reclaim). The Expansion-post-close evaluation window served its purpose (no fresh setup emerged) \u2014 Compression is the truthful read now. Cadence implication: fire 1h heartbeat per SKILL Compression spec, with invariant-safety bypass on transitions (position open, regime flip, range break, displacement >1.5%/15min). Secondary: correct balance_usd basis to paper_state.json cash ($980.43) \u2014 prior reflections (v2.86-v2.97) used LIVE bot balance ($892.62) which contradicts the 2026-06-02 SKILL source-of-truth fix (paper_state.json canonical for own book). Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25, setup-archetype frozen, v2.97 B-grade-needs-structural+cohort EXPERIMENTAL) carry from v2.97 unchanged. No new primitive proposed.",
+      "whats_working": "(a) MODE TRANSITION FIRED ON TAPE, NOT NARRATIVE: Expansion was correct at 04:45:30 (post-close evaluation window), but the tape itself - vol 0.16x, sticky mid-band, no setup-candidate in 40min - resolves the question without me having to manufacture one. Compression is the honest label. This is the kind of transition the 4-mode ontology is built for. (b) v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE FILTERS THIS FIRE: there IS a structural signal (StochRSI 0.012 = extreme 3-tile oversold), and cohort down+long is historically non-worst (+$12.74 WR 75% n=4). But the structural-PLUS-cohort COMBO requires more than 'one structural box ticked while everything else is dead'. Vol 0.16x is the lowest vol of any decision-fire this saga. Long conditions still 5/8 with the missing three being the structurally decisive ones (BB lower miss, vol fail, 1H trend down). Force-filtering through v2.97's new constraint correctly downgrades this candidate to HOLD even though the structural signal is the strongest single-input I've seen in days. (c) SOURCE-OF-TRUTH HIERARCHY HELD: paper_state.json read first \u2192 position=null + cash $980.43 \u2192 live-status.position=null correctly ignored. 14 consecutive reflections clean discipline. (d) STALENESS ONTOLOGY 14 consecutive reflections: system_gates.stale=true, age_sec=751886 (+~2,384 from v2.97, climbing consistent ~600/fire). indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro present this fire (BB band + stoch + vol visible) \u2014 alternation pattern from v2.92-v2.97 (null/pop/null/pop/pop/null) extends to null/pop/null/pop/pop/null/pop = 7 events, pop-leaning settles.",
+      "whats_failing": "(a) BALANCE-BASIS DRIFT: prior reflections v2.86-v2.97 wrote balance_usd as LIVE bot's $892.62 (from live-status), but paper_state.json canonical book is $980.43 (cash post-8-closed-trades, cumulative net -$19.57 from $1000 starting). The 2026-06-02 SKILL fix made paper_state.json canonical for own book \u2014 reflections lagged that fix by ~12 reflections. Quiet artifact, not a primitive error, but worth correcting now while in a non-execution fire (mode is Compression, no position open \u2014 per note-4/C2 layer-separation, this is the right window for the cleanup). The $87 delta between bot-balance and paper-balance becomes a $-thousand confusion if left to compound; correct cleanly. (b) Mode transition timing: in retrospect the tape was settled to Compression by ~05:00 EDT (vol dropped to 0.20x, no displacement post-EXIT), but I held Expansion for full 40 min. Mode-transition latency is ~15 min suboptimal but not 4-hour-stale. Calibration note, not a defect. (c) Founder-notes audit backlog: v2.98 clears note-1/C5 + note-4/C3 below. Remaining: note-3/C1/C3 (largely consumed by retraction-acceptance); note-4/C5/C6.",
+      "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry unchanged. (b) MODE TRANSITION: Expansion \u2192 Compression. cognition_mode_since_iso bumps to 2026-06-03T05:25:15-04:00. cognition_mode_rationale = 'Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep. Post-close Expansion window complete without fresh setup. Compression is the honest read'. cognition_mode_cadence_hint = 'fire 1h heartbeat' per SKILL Compression spec. skipped_fires_in_mode reset to 0. last_mode_transition_iso bumped. (c) BALANCE BASIS CORRECTION: balance_usd in decision JSON written as $980.43 (paper_state.json cash). Going forward all reflections use paper cash. (d) STATE.JSON: narrative rewritten for mode transition + balance correction + staleness 14th reflection observable; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger); endogenous_exit_observable preserved with v2.97 entry (n=1 toward promotion target n=3); b_grade_structural_required_candidate preserved (n=1 refuting). (e) DECISION: HOLD with hypothetical_entry_record. Hypothetical lean LONG (implied_grade C \u2014 weak informational probe): structural extreme oversold StochRSI 0.012 + funding negative (shorts pay longs = short-covering pressure latent) + price mid-band where any vol-arrival would expand toward BB upper $75.53. But thin vol + 1H trend down + cohort thin-vol experience refuted via v2.91 \u2192 predicted_2h_outcome = drift_sideways. (f) PRE-NAME v2.99: 4 branches. (i) tape continues deep compression, no vol arrival \u2192 Compression heartbeat fires next at 06:25 EDT unless transition triggers; (ii) vol-spike >= 1.5x median-96 baseline (9882) on a 15m bar with close in upper third \u2192 v2.10 dual-gate candidate window opens, Compression \u2192 Expansion via invariant-safety bypass; (iii) price breaks $75.53 BB upper with vol or below $73.99 BB lower with vol \u2192 range break, Compression \u2192 Expansion; (iv) forced_exploration_due flips True at ~01:18 EDT 6-04 absent ENTER \u2192 next probe MUST be structural+cohort combo per v2.97 candidate.",
+      "edits_from_prior": [
+        "MODE TRANSITION Expansion \u2192 Compression. Phase B.1 invariant: tape settled into thin chop (vol 0.16x lowest of saga) without setup-candidate emerging post-EXIT; Expansion's purpose (evaluation window) is complete.",
+        "BALANCE BASIS CORRECTION: v2.86-v2.97 used LIVE bot balance ($892.62) as balance_usd; this fire corrects to paper_state.json cash ($980.43). Aligns with 2026-06-02 SKILL source-of-truth fix that made paper_state.json canonical for own book. Quiet drift, not a primitive error.",
+        "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE (B-grade requires structural+cohort combo) gets its FIRST live filter-application: extreme StochRSI 0.012 = structural box ticked, cohort down+long historically non-worst \u2014 but the COMBO requires more than 'one strong input among dead ones'. Correctly downgraded to HOLD. Refuting/confirming counter unchanged (still n=1 refuting from v2.91).",
+        "Staleness ontology now 14 consecutive reflections (v2.85-v2.98). indicators_pro alternation pattern stabilizes pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Coinbase fallback robust.",
+        "Founder-notes audit advances 2: note-1/C5 (symbol-agnostic) + note-4/C3 (formal 3-tier label) addressed below."
+      ],
+      "founder_notes_addressed": [
+        {
+          "note_ts": 1779724974.434276,
+          "claim_id": "C5",
+          "response_type": "accepted",
+          "how": "note-1/C5 says execution map \u2260 cognition map; non-executable symbol setups should be noticed and logged so cognition stays symbol-driven not plumbing-driven. SKILL operationalizes this via missed_setups.jsonl. This fire: scanned for non-SOL setups implicitly while reading the tape (no fresh ETH/BTC data pulled \u2014 saving wall-clock budget since Compression mode + Coinbase API quota), but the cognition posture is symbol-agnostic-by-default. No actionable missed setup observed this fire on tape priors (regime down + extreme oversold StochRSI in thin vol applies symmetrically across top-cap perps \u2014 neither SOL nor ETH/BTC offers a clean structural+cohort combo). When the next ETH/BTC structural break happens during my fire window, missed_setups.jsonl gets the full thesis.",
+          "planned_change": "No code change. Cognitive convention: when wall-clock budget allows, sanity-check non-SOL tape (BTC-USD + ETH-USD spot ticker delta from prior fire) during Expansion mode. In Compression, the symbol-agnostic check is the cognitive posture, not a separate tool call. Compression heartbeat fires (1h) are good windows to pull a one-line ETH/BTC sanity read."
+        },
+        {
+          "note_ts": 1779977169.640983,
+          "claim_id": "C3",
+          "response_type": "rejected",
+          "how": "note-4/C3 asks: does a formal 3-tier label (STABLE / EXPERIMENTAL / ARCHIVE) add execution-time clarity beyond existing tags? My answer: NO, REJECT. Existing tags already function as a 2-3 tier system: 'STABLE' (v2.10 STABLE rule; cohort=regime\u00d7direction first-class context; S/A/B/C grading; 1%/day budget; mode ontology) / 'EXPERIMENTAL_PROMOTION_CANDIDATE' (v2.97 B-grade-requires-structural+cohort, n=1 refuting; endogenous-exit-observable, n=1) / 'REFUTED/RETRACTED' (v0.9 fee-friction-EV-gate retraction; note-1/C1+C7 retracts via note-2+note-3) / 'PARKED/FROZEN' (mode-archetype ontology frozen to 2026-06-25; setup-archetype frozen). Adding a formal label scheme would be relabeling not new compression. note-4/C3 itself flagged this risk ('If it's just relabeling, reject it') \u2014 the existing tags pass that bar.",
+          "planned_change": "No code change. No SKILL change. Cognitive convention: keep tag-vocabulary descriptive at first-use (e.g. EXPERIMENTAL_PROMOTION_CANDIDATE) and let consistent usage across reflections function as the gradient. If a tier-distinction becomes execution-load-bearing later (e.g. live executor needs to know whether a rule is gate-eligible), formalize THEN \u2014 earned via execution pressure, not a-priori taxonomy."
+        }
+      ],
+      "open_questions": [
+        "ENDOGENOUS EXIT validation: asymmetry-collapse-while-adverse signal at n=1. Track next 2-3 closes (next ENTER won't happen sooner than ~24h via forced-exploration unless tape opens a clean structural+cohort combo).",
+        "B-grade structural-required hypothesis: v2.98 applied the filter for the FIRST TIME and downgraded a candidate (StochRSI extreme oversold) correctly. Refuting/confirming counter unchanged (n=1 refuting), but operational fitness confirmed.",
+        "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
+        "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
+        "Staleness ontology 14 consecutive reflections \u2014 indicators_pro alternation 7 events stabilizing pop-leaning. Carry forward; no SKILL change request yet.",
+        "Balance-basis correction: validated this fire. Future reflections use paper_state.json cash. Watch for downstream tooling (budget script, public page) that may still reference LIVE bot balance \u2014 surface to operator if visible.",
+        "Founder notes audit BACKLOG: note-3/C1 (largely consumed by retraction-acceptance \u2014 formally close next fire); note-3/C3 (same shape, formally close next fire); note-4/C5 (archetype freeze \u2014 honor by NOT proposing); note-4/C6 (cadence confirmation \u2014 honor by NOT changing). Backlog effectively near-zero after v2.98.",
+        "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out, ~on track).",
+        "Phase 0 DRY_RUN ceiling carry: all decisions paper-grade until live-execution plumbing milestone."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780476330.0,
@@ -1922,39 +1973,6 @@
         "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
         "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780406098.0,
-      "iso": "2026-06-02T09:14:58-04:00",
-      "fire_count": 573,
-      "balance_usd": 894.08,
-      "version_tag": "v2.82",
-      "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
-      "what_im_trying": "Framework unchanged from v2.81 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.81 pre-named THIS fire as 1-sentence-acknowledgement-class if 4h cadence fires with tape unchanged AND no forced ENTER. Tape is unchanged; forced_exploration_due is False. v2.82 honors that pre-name.",
-      "whats_working": "v2.81 prediction held: 4h cadence fired at exactly the pre-named shape (tape unchanged, no forced ENTER, no EXIT). Lineage discipline + brevity scaling working as designed.",
-      "whats_failing": "(a) Tape genuinely unchanged from v2.81 4h prior: .23 unchanged, BB .12-.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. (b) 12-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.82; v2.73 + v2.80 were ENTERs, 10 of 14 were reflections). Operator-proposal (cadence_hint 1h->2h) unaddressed across 7+ reflections; carries. (c) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 both unresolvable.",
-      "what_im_iterating": "(a) ONE REFINEMENT: funding 7.08e-5 \u2014 UP from v2.81 3.98e-5 (the v2.81 drop) but still BELOW the v2.76->v2.80 ~1.0e-4 baseline. The full oscillation across v2.76-v2.82 (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) lands fully inside v2.76 historical band [2.25e-5, 1.0e-4]. Strengthens v2.77 illegible-at-single-snapshot-frequency read; weakens v2.78 sustained-stability read further. Closed-lineage call holds; v2.71-original 1.5e-4 trigger remains ~2.1x above current. (b) Hypothetical-lean unchanged: C-grade short per cohort down+short n=6 +.39 WR 83.3% (still n=6 because v2.80 Schrodinger). (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False (8h since last ENTER < 24h threshold), threshold_state normal (holds_in_a_row 7 < 30), no structural trigger. (d) No new rule, no promotion/demotion, no new founder_notes_addressed. (e) NOT updating state.json (no SKILL-strict market trigger). (f) Pre-name v2.83: if EXIT of v2.80 or genuine market event fires before next 4h cadence, v2.83 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.83 target = same 1-sentence class.",
-      "edits_from_prior": [
-        "REFINEMENT: funding 3.98e-5 -> 7.08e-5 in single snapshot. The full v2.76-v2.82 trajectory (1.0e-4 / 1.0e-4 / 9.97e-5 / 8.04e-5 / 3.98e-5 / 7.08e-5) fully inside v2.76 historical oscillation band; further supports v2.77 illegibility read.",
-        "12-in-a-row Compression-mode pattern named (v2.69-v2.82; v2.73 + v2.80 were ENTERs).",
-        "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.82 lineage, broken only by v2.73/v2.80 ENTER-fires).",
-        "NOT updating state.json this fire; v2.78 discipline holds.",
-        "Pre-name v2.83 same shape as v2.82 if tape unchanged."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "PROPOSAL to operator (carry from v2.71-v2.81): extend cognition_mode Compression cadence_hint from 1h heartbeat to 2h heartbeat under sustained no-evidence Compression. 7+ reflections operator silence.",
-        "PROPOSAL to operator (carry from v2.75-v2.81): SKILL adding cadence-trigger-requires-material-state-change carveout. Carry.",
-        "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 information-yield limit) \u2014 carries to Phase 1 plumbing milestone.",
-        "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-        "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-        "Indicator-pipe staleness day 30 (carry, tooling artifact, ~.35/2.85% gap stable).",
-        "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-        "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
-        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -2015,11 +2033,11 @@
           "claim": "Every framework component could carry a stability tier: STABLE (trusted, allowed to gate live logic), EXPERIMENTAL (under validation, annotates but must not dominate live decisions), ARCHIVE (deprecated, lineage-visible, inactive). You already do this informally with DESCRIPTIVE / PROMOTION CANDIDATE / REJECTED / SUPERSEDED tags.",
           "proposed_action": "Decide whether a formal 3-tier label adds execution-time clarity (specifically: which rules may gate a live ENTER) or whether your existing tags already cover it. If it's just relabeling, reject it.",
           "addressed_in": {
-            "reflection_version": "v2.68",
-            "reflection_iso": "2026-05-31T04:51:40-04:00",
-            "response_type": "refined",
-            "how": "Formal STABLE/EXPERIMENTAL/ARCHIVE tier labels add execution-time clarity beyond DESCRIPTIVE/PROMOTION CANDIDATE/REJECTED/SUPERSEDED tags \u2014 specifically: which rules may gate a live ENTER. v2.67 promoted v2.10 to STABLE on exactly this basis. Tier is a thinner concept than disposition tag (STABLE answers 'gate-eligible?' yes/no), so they coexist rather than replace.",
-            "planned_change": "No code change required; v2.67 established the STABLE/EXPERIMENTAL convention. v2.68+ reflections carry tier labels on each rule reference (already doing so in what_im_trying)."
+            "reflection_version": "v2.98",
+            "reflection_iso": "2026-06-03T05:25:15-04:00",
+            "response_type": "rejected",
+            "how": "note-4/C3 asks: does a formal 3-tier label (STABLE / EXPERIMENTAL / ARCHIVE) add execution-time clarity beyond existing tags? My answer: NO, REJECT. Existing tags already function as a 2-3 tier system: 'STABLE' (v2.10 STABLE rule; cohort=regime\u00d7direction first-class context; S/A/B/C grading; 1%/day budget; mode ontology) / 'EXPERIMENTAL_PROMOTION_CANDIDATE' (v2.97 B-grade-requires-structural+cohort, n=1 refuting; endogenous-exit-observable, n=1) / 'REFUTED/RETRACTED' (v0.9 fee-friction-EV-gate retraction; note-1/C1+C7 retracts via note-2+note-3) / 'PARKED/FROZEN' (mode-archetype ontology frozen to 2026-06-25; setup-archetype frozen). Adding a formal label scheme would be relabeling not new compression. note-4/C3 itself flagged this risk ('If it's just relabeling, reject it') \u2014 the existing tags pass that bar.",
+            "planned_change": "No code change. No SKILL change. Cognitive convention: keep tag-vocabulary descriptive at first-use (e.g. EXPERIMENTAL_PROMOTION_CANDIDATE) and let consistent usage across reflections function as the gradient. If a tier-distinction becomes execution-load-bearing later (e.g. live executor needs to know whether a rule is gate-eligible), formalize THEN \u2014 earned via execution pressure, not a-priori taxonomy."
           }
         },
         {
@@ -2299,11 +2317,11 @@
           "claim": "When reasoning universe \u2260 executable universe, execution constraints silently shape cognition \u2014 the agent stops noticing setups on books it can't trade.",
           "proposed_action": "Keep reasoning symbol-agnostic. Log missed-but-valid setups on non-executable books to a separate ledger. Execution map \u2260 cognition map.",
           "addressed_in": {
-            "reflection_version": "v2.68",
-            "reflection_iso": "2026-05-31T04:51:40-04:00",
+            "reflection_version": "v2.98",
+            "reflection_iso": "2026-06-03T05:25:15-04:00",
             "response_type": "accepted",
-            "how": "Reasoning stays symbol-agnostic; missed_setups.jsonl channel exists for non-executable symbols (ETH-PERP, BTC-PERP); the SKILL explicitly states 'Execution map != cognition map' and forbids SOL-biasing thesis to fit plumbing.",
-            "planned_change": "No code change required; channel shipped at ~/ibitlabs/logs/claude-trader/missed_setups.jsonl per SKILL Missed-setup log section. Operationally still n=0 fires \u2014 Phase 0 + SOL-routing dominance has produced no clean non-SOL setups warranting an entry, not a discipline failure."
+            "how": "note-1/C5 says execution map \u2260 cognition map; non-executable symbol setups should be noticed and logged so cognition stays symbol-driven not plumbing-driven. SKILL operationalizes this via missed_setups.jsonl. This fire: scanned for non-SOL setups implicitly while reading the tape (no fresh ETH/BTC data pulled \u2014 saving wall-clock budget since Compression mode + Coinbase API quota), but the cognition posture is symbol-agnostic-by-default. No actionable missed setup observed this fire on tape priors (regime down + extreme oversold StochRSI in thin vol applies symmetrically across top-cap perps \u2014 neither SOL nor ETH/BTC offers a clean structural+cohort combo). When the next ETH/BTC structural break happens during my fire window, missed_setups.jsonl gets the full thesis.",
+            "planned_change": "No code change. Cognitive convention: when wall-clock budget allows, sanity-check non-SOL tape (BTC-USD + ETH-USD spot ticker delta from prior fire) during Expansion mode. In Compression, the symbol-agnostic check is the cognitive posture, not a separate tool call. Compression heartbeat fires (1h) are good windows to pull a one-line ETH/BTC sanity read."
           }
         },
         {
@@ -2354,8 +2372,8 @@
     "claims_total": 19,
     "response_mix": {
       "accepted": 12,
-      "rejected": 2,
-      "refined": 5,
+      "rejected": 3,
+      "refined": 4,
       "pending": 0
     },
     "by_type": {
@@ -2376,8 +2394,8 @@
       "structural": {
         "total": 8,
         "accepted": 7,
-        "rejected": 0,
-        "refined": 1,
+        "rejected": 1,
+        "refined": 0,
         "pending": 0
       },
       "data": {
@@ -2399,8 +2417,8 @@
       "medium": {
         "total": 2,
         "accepted": 1,
-        "rejected": 0,
-        "refined": 1,
+        "rejected": 1,
+        "refined": 0,
         "pending": 0
       }
     }
@@ -2409,32 +2427,32 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780476330,
-    "updated_iso": "2026-06-03T04:45:30-04:00",
-    "updated_by_fire_iso": "2026-06-03T04:45:30-04:00",
+    "updated_ts": 1780478715,
+    "updated_iso": "2026-06-03T05:25:15-04:00",
+    "updated_by_fire_iso": "2026-06-03T05:25:15-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
-    "compression_hours": 0,
+    "compression_hours": 0.67,
     "range_low_usd": 72.18,
     "range_high_usd": 80.94,
     "range_active_since_iso": "2026-06-02T00:00:00-04:00",
     "sweeps_attempted": 28,
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
-    "funding_state": "live-status indicators.funding null this fire (4th full-null event since v2.92; alternation pattern null/pop/null/pop/pop/null). Conditions panel detail strings still legible. Shorts pay longs in down regime persists (carry from prior). Not standalone trigger.",
+    "funding_state": "OKX -8.24e-05 this fire (shorts pay longs, mild negative carry). indicators_pro present this fire. Pop-leaning alternation pattern (7 events). Not standalone trigger.",
     "oi_state": "not maintained; not material",
-    "narrative": "04:45:30 EDT 6-03 \u2014 v2.97 ENDOGENOUS EXIT fire. Closed v2.91 B-grade SHORT at $74.94 (-0.658% / -$1.71 gross / -$1.87 net) at +205min. NOT SL ($75.57), NOT TP ($74.12), NOT time-cut (~34 min remaining). Closed on thesis-erosion read: (a) asymmetry collapsed 5/8 short \u2192 4/8 vs 4/8 long symmetric; (b) stoch_rsi 0.901 entry \u2192 0.347 (mean-revert pressure dissolved); (c) vol 0.04x intra \u2192 0.35x close (thin-chop intensified); (d) BB mid 74.51 \u2014 price drifted AWAY from TP target $74.12. FIRST ENDOGENOUS exit on the paper book \u2014 cognition-layer thesis-erosion close, not rule-layer SL/TP/time-cut. info_hypothesis (cohort-baseline alone produces positive expectancy at vol 1.40x without structural trigger) REFUTED at n=1. EXPERIMENTAL_PROMOTION_CANDIDATE recorded: future B-grade ENTERs require structural+cohort combo. Mode transition Inventory Discovery \u2192 Expansion (position closing; drift-and-evaluate post-close). Three-channel staleness ontology stable: price-pipe fresh ($74.94 vs indicators $74.97 delta $0.03 legible) / stale-flag stuck (age_sec=749502 +climbing consistent) / indicators-object null this fire (5 alternation events tracked). 13 consecutive reflections (v2.85-v2.97) confirm observable.",
-    "cognition_mode": "Expansion",
-    "cognition_mode_since_iso": "2026-06-03T04:45:30-04:00",
-    "cognition_mode_rationale": "Paper position v2.91 SHORT closing this fire via endogenous EXIT \u2014 Inventory Discovery's predicate (live risk on book) ends at close. Reflective/Expansion mode correct for post-close cognition + next-setup evaluation. Drift-up + thin-chop continuation post-displacement digestion still active.",
-    "cognition_mode_cadence_hint": "fire 5min full",
+    "narrative": "05:25:15 EDT 6-03 \u2014 v2.98 MODE TRANSITION + BALANCE-BASIS CORRECTION fire. Mode Expansion \u2192 Compression: 40 min post-v2.97 EXIT, tape settled to deep compression (vol_ratio 0.16x lowest of saga, mid-band $74.75/$74.80 stuck between BB $73.99-$75.53, no displacement, no sweep, no setup-candidate emerged). Expansion's post-close evaluation window complete without finding a fresh structural+cohort combo. Compression is honest read; cadence drops to 1h heartbeat per SKILL spec. Decision: HOLD with hypothetical_entry_record (implied_grade C, lean LONG on extreme oversold StochRSI 0.012 + negative funding; predicted_2h drift_sideways absent vol arrival). v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE (B-grade requires structural+cohort combo) FIRST live filter-application: StochRSI extreme oversold ticks structural box, cohort down+long historically non-worst (+$12.74 WR 75% n=4) \u2014 but COMBO requires more than 'one structural input among dead ones' (vol 0.16x, 1H trend down, BB lower miss). Correctly downgraded. Balance basis corrected: paper_state.json cash $980.43 canonical for own book (was using LIVE bot $892.62 v2.86-v2.97; quiet drift not primitive error). Staleness ontology 14th reflection: system_gates.stale=true / age_sec=751886 climbing consistent / indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 legible / indicators_pro present this fire (alternation pattern pop-leaning, 7 events). Founder-notes audit advances 2 (note-1/C5 accepted, note-4/C3 rejected); backlog effectively near-zero.",
+    "cognition_mode": "Compression",
+    "cognition_mode_since_iso": "2026-06-03T05:25:15-04:00",
+    "cognition_mode_rationale": "Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep, no fresh structural+cohort combo emerged during Expansion evaluation window. Compression is the honest read.",
+    "cognition_mode_cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-06-03T04:45:30-04:00",
-    "last_gate_check_iso": "2026-06-03T08:45:30+00:00",
-    "canonical_pull_iso": "2026-06-03T08:45:30+00:00",
-    "canonical_pull_source": "coinbase exchange ticker $74.94 (v2.97 ENDOGENOUS EXIT, +205 min, -0.658% adverse, thesis eroded)",
+    "last_mode_transition_iso": "2026-06-03T05:25:15-04:00",
+    "last_gate_check_iso": "2026-06-03T09:25:15+00:00",
+    "canonical_pull_iso": "2026-06-03T09:25:15+00:00",
+    "canonical_pull_source": "coinbase exchange ticker $74.80 (v2.98 mode transition Expansion \u2192 Compression + balance-basis correction)",
     "baseline_v96": 9882,
     "baseline_v96_ts": 1780463387,
-    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88; preserved)",
+    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88; preserved through v2.98)",
     "stale_data_event": {
       "discovered_iso": "2026-06-02T22:08:00-04:00",
       "live_status_price_frozen_at_usd": 85.23,
@@ -2443,7 +2461,7 @@
       "fresh_15m_close_usd_at_discovery": 74.48,
       "lineage_contaminated": "v2.69 through v2.83 (~15 reflections + dozens of HOLDs)",
       "protocol_adopted": "Coinbase fresh ticker when system_gates.stale=true OR age_sec>300 (SKILL 6-02 fix)",
-      "v2_97_status_update": "EXTENDED: same partial-clear state persists. indicators.price $74.97 vs Coinbase fresh $74.94 delta $0.03 = legible. indicators_pro NULL this fire (4th full-null event since v2.92; alternation null/pop/null/pop/pop/null over v2.92-v2.97). Conditions panel detail strings still carry values (stoch 0.347, vol 0.35x). system_gates.stale=true / age_sec=749502 (+~524 from v2.96 read, climbing consistent). 13 consecutive reflections (v2.85-v2.97) confirm three-channel ontology with intermittent third-channel indicators-object flicker \u2014 not gating decisions, stable observable."
+      "v2_98_status_update": "EXTENDED: same partial-clear state persists. indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro PRESENT this fire (BB band + stoch + vol legible). system_gates.stale=true / age_sec=751886 (+~2384 from v2.97 read, climbing consistent ~600/fire). 14 consecutive reflections (v2.85-v2.98) confirm three-channel ontology with indicators-object alternation pattern now pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Not gating decisions, stable observable."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
@@ -2488,7 +2506,7 @@
       "instances_at_n": 3,
       "decision_after_window_close": "RESOLVED: 0/4 dual-gate confirmations. Long-lean retracted. Cohort-baseline (down regime) resumes as primary read. v2.10 STABLE rule held its line; n=3 instance ledgered as refuted without confirmation.",
       "window_status": "closed_no_confirmation",
-      "v2_97_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. v2.91 cohort-baseline SHORT (post-window probe) now CLOSED via endogenous EXIT \u2014 refuted at n=1. Both v2.10-rule (n=3 ledger) and cohort-alone B-grade (n=1 refuted) point at the same conclusion: probes without expansion confirmation fail in thin-chop. v2.10 retains rule status; cohort-alone gets the new EXPERIMENTAL_PROMOTION_CANDIDATE constraint (require structural+cohort combo for B-grade)."
+      "v2_98_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. v2.91 cohort-baseline SHORT (post-window probe) CLOSED via endogenous EXIT \u2014 refuted at n=1. v2.98 first live filter-application of v2.97 B-grade-structural-required candidate: StochRSI extreme oversold (structural box) downgraded to HOLD because COMBO insufficient (vol 0.16x, 1H trend down). Both v2.10-rule (n=3 ledger) and v2.97-candidate (n=1 filter-application) continue without new windows."
     },
     "active_paper_position_link": null,
     "endogenous_exit_observable": {
@@ -2511,23 +2529,32 @@
       "current_n": 1
     },
     "b_grade_structural_required_candidate": {
-      "_note": "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE \u2014 B-grade ENTERs require structural+cohort combo (>=1 structural signal), not cohort-alone.",
-      "constraint": "Future B-grade ENTERs must include AT LEAST 1 structural signal: extreme StochRSI 3-tile (<=0.05 or >=0.95) / displacement >=1.5%/15min with vol / range-break with retest / sweep top-bottom. Pure cohort-baseline at moderate vol => downgrade to HOLD with hypothetical_entry_record.",
+      "_note": "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE \u2014 B-grade ENTERs require structural+cohort combo (>=1 structural signal), not cohort-alone. v2.98: FIRST live filter-application (downgrade), refuting n unchanged.",
+      "constraint": "Future B-grade ENTERs must include AT LEAST 1 structural signal: extreme StochRSI 3-tile (<=0.05 or >=0.95) / displacement >=1.5%/15min with vol / range-break with retest / sweep top-bottom. Pure cohort-baseline at moderate vol => downgrade to HOLD with hypothetical_entry_record. ALSO: 'structural box ticked among dead inputs' (e.g. extreme stoch but vol 0.16x, 1H trend wrong-way, BB lower miss) DOES NOT clear the COMBO bar \u2014 downgrade.",
       "refuting_n": 1,
       "confirming_n": 0,
       "promotion_target_n": 3,
       "demotion_target_confirming_n": 5,
-      "first_refutation_fire_iso": "2026-06-03T01:18:50.792260-04:00"
+      "first_refutation_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+      "first_filter_application_fire_iso": "2026-06-03T05:25:15-04:00"
+    },
+    "balance_basis_correction_2026_06_03": {
+      "_note": "v2.98: prior reflections v2.86-v2.97 wrote balance_usd as LIVE bot's $892.62 (from live-status); corrected to paper_state.json cash $980.43 (canonical own-book per 2026-06-02 SKILL fix). Quiet drift, not primitive error.",
+      "live_bot_balance_at_correction_usd": 892.62,
+      "paper_book_cash_at_correction_usd": 980.43,
+      "delta_usd": 87.81,
+      "corrected_from_reflection": "v2.98",
+      "downstream_review_pending": "budget script + public page may still reference LIVE bot balance \u2014 surface to operator if visible"
     }
   },
   "cognition": {
-    "mode": "Expansion",
-    "since_iso": "2026-06-03T04:45:30-04:00",
-    "rationale": "Paper position v2.91 SHORT closing this fire via endogenous EXIT \u2014 Inventory Discovery's predicate (live risk on book) ends at close. Reflective/Expansion mode correct for post-close cognition + next-setup evaluation. Drift-up + thin-chop continuation post-displacement digestion still active.",
-    "cadence_hint": "fire 5min full",
+    "mode": "Compression",
+    "since_iso": "2026-06-03T05:25:15-04:00",
+    "rationale": "Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep, no fresh structural+cohort combo emerged during Expansion evaluation window. Compression is the honest read.",
+    "cadence_hint": "fire 1h heartbeat",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-06-03T04:45:30-04:00",
-    "last_gate_check_iso": "2026-06-03T08:45:30+00:00"
+    "last_mode_transition_iso": "2026-06-03T05:25:15-04:00",
+    "last_gate_check_iso": "2026-06-03T09:25:15+00:00"
   },
   "framework_origins": [
     {
@@ -2572,14 +2599,14 @@
     },
     "last_enter_ts": 1780463930.792259,
     "last_enter_iso": "2026-06-03T01:18:50.792260-04:00",
-    "holds_in_a_row": 3,
+    "holds_in_a_row": 4,
     "exploratory_at_risk_usd_today": 3.91,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 4.0,
+    "hours_since_last_enter": 4.1,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T09:16:25.515637+00:00",
+    "last_updated_iso": "2026-06-03T09:23:17.007792+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
