@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780478963,
-  "generated_iso": "2026-06-03T05:29:23-0400",
+  "generated_at": 1780482770,
+  "generated_iso": "2026-06-03T06:32:50-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 621,
+    "decisions_total": 622,
     "actions": {
-      "HOLD": 598,
+      "HOLD": 599,
       "ENTER": 15,
       "EXIT": 8
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 388,
+      "HOLD_with_counterfactual": 389,
       "ENTER_C": 2,
       "HOLD_no_plausible": 59,
       "EXIT": 8,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 180,
-      "medium": 346,
+      "medium": 347,
       "low": 95
     },
     "reasoning_chars_avg_all": 923,
-    "reasoning_chars_avg_last10": 1131,
+    "reasoning_chars_avg_last10": 1091,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T05:25:15-04:00",
+    "last_fire_iso": "2026-06-03T06:32:44-04:00",
     "balance_usd_latest": 980.43,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -19.57,
@@ -38,18 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780478715.4533172,
-    "fire_iso": "2026-06-03T05:25:15-04:00",
+    "fire_ts": 1780482764.3595462,
+    "fire_iso": "2026-06-03T06:32:44-04:00",
     "session_phase": "phase_0",
     "balance_usd": 980.43,
     "position_at_fire": null,
-    "current_price": 74.8,
+    "current_price": 75.44,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.012,
-      "vol_ratio": 0.16,
-      "momentum_pct": -0.59,
-      "rsi": 51.6
+      "stoch_rsi": 0.7834,
+      "vol_ratio": 0.25,
+      "momentum_pct": 0.0069,
+      "rsi": 76.1
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,19 +61,19 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Mode transition Expansion -> Compression (v2.98): 40min post-v2.97 EXIT, tape settled to deep compression (vol 0.16x lowest of saga, mid-band $74.75-$74.80 stuck within BB $73.99-$75.53, no displacement, no sweep). v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE filter applied for first time: StochRSI 0.012 ticks structural box AND cohort down+long historically non-worst (+$12.74 WR 75% n=4), but COMBO requires more than 'one structural input among dead inputs' (vol 0.16x, 1H trend down, BB lower miss = three failing inputs). Correctly downgraded to HOLD. Balance basis corrected to paper_state.json cash $980.43 (canonical own-book). Hypothetical lean LONG on oversold extreme + negative funding (shorts pay longs).",
+    "reasoning": "65min post-v2.98 Compression entry. Tape produced first real structural input since mode transition: 06:00 EDT 15m bar pushed $74.89\u2192$75.49 with vol_ratio 1.49x (vol 14707 vs baseline 9882), kissed BB upper $75.42 then retraced to close $75.20. Fresh price $75.44 (Coinbase). StochRSI flipped 0.012\u21920.78 in 65min \u2014 full overbought rotation. Short conditions 7/8 (only c3 vol fail at 0.25x on in-progress 06:15 bar); long 4/8. Cohort down+short = historically non-worst (+$1.39 WR 83% n=6). v2.97 EXPERIMENTAL filter SECOND application: one structural box (BB upper touch) + cohort positive, but vol-burst-then-collapse (1 bar 1.49x \u2192 0.25x) is exactly the noise shape v2.97 filters. Insufficient COMBO \u2192 downgrade to HOLD. Mode stays Compression: no Phase B.1 invariant (displacement <1.5%/15min, range $72.18-$80.94 intact, regime down unchanged, flat). Hypothetical SHORT lean at $75.44 (BB upper kiss in down regime + cohort positive + overbought StochRSI), SL $76.00 / TP $74.60.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "C",
-      "direction": "long",
-      "entry_price": 74.8,
-      "sl_pct": 0.015,
-      "tp_pct": 0.01,
-      "predicted_2h_outcome": "drift_sideways",
-      "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Extreme StochRSI 0.012 + funding negative (shorts pay longs) + mid-band consolidation. Down regime + thin vol 0.16x prevents conviction. Lean long toward BB upper $75.53 if vol arrives."
+      "direction": "short",
+      "entry_price": 75.44,
+      "sl_pct": 0.0074,
+      "tp_pct": 0.0111,
+      "predicted_2h_outcome": "drift_toward_tp",
+      "predicted_8h_outcome": "tp",
+      "reasoning_30_words": "BB upper kiss in down regime, StochRSI overbought 0.78, cohort down+short historically positive. Vol-burst-then-collapse shape (1 bar 1.49x \u2192 0.25x) keeps grade at C not B. Short lean if forced."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
@@ -1530,11 +1530,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 713,
+    "holds_since_framework": 2,
+    "avg_chars": 848,
     "since_iso": "2026-06-03T05:25:15-04:00",
     "since_framework_version": "v2.98",
-    "latest_fire_iso": "2026-06-03T05:25:15-04:00"
+    "latest_fire_iso": "2026-06-03T06:32:44-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2427,29 +2427,29 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780478715,
-    "updated_iso": "2026-06-03T05:25:15-04:00",
-    "updated_by_fire_iso": "2026-06-03T05:25:15-04:00",
+    "updated_ts": 1780482746,
+    "updated_iso": "2026-06-03T06:32:26-04:00",
+    "updated_by_fire_iso": "2026-06-03T06:32:26-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
-    "compression_hours": 0.67,
+    "compression_hours": 1.08,
     "range_low_usd": 72.18,
     "range_high_usd": 80.94,
     "range_active_since_iso": "2026-06-02T00:00:00-04:00",
     "sweeps_attempted": 28,
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
-    "funding_state": "OKX -8.24e-05 this fire (shorts pay longs, mild negative carry). indicators_pro present this fire. Pop-leaning alternation pattern (7 events). Not standalone trigger.",
+    "funding_state": "OKX -7.14e-05 this fire (shorts pay longs, mild negative carry). Stable.",
     "oi_state": "not maintained; not material",
-    "narrative": "05:25:15 EDT 6-03 \u2014 v2.98 MODE TRANSITION + BALANCE-BASIS CORRECTION fire. Mode Expansion \u2192 Compression: 40 min post-v2.97 EXIT, tape settled to deep compression (vol_ratio 0.16x lowest of saga, mid-band $74.75/$74.80 stuck between BB $73.99-$75.53, no displacement, no sweep, no setup-candidate emerged). Expansion's post-close evaluation window complete without finding a fresh structural+cohort combo. Compression is honest read; cadence drops to 1h heartbeat per SKILL spec. Decision: HOLD with hypothetical_entry_record (implied_grade C, lean LONG on extreme oversold StochRSI 0.012 + negative funding; predicted_2h drift_sideways absent vol arrival). v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE (B-grade requires structural+cohort combo) FIRST live filter-application: StochRSI extreme oversold ticks structural box, cohort down+long historically non-worst (+$12.74 WR 75% n=4) \u2014 but COMBO requires more than 'one structural input among dead ones' (vol 0.16x, 1H trend down, BB lower miss). Correctly downgraded. Balance basis corrected: paper_state.json cash $980.43 canonical for own book (was using LIVE bot $892.62 v2.86-v2.97; quiet drift not primitive error). Staleness ontology 14th reflection: system_gates.stale=true / age_sec=751886 climbing consistent / indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 legible / indicators_pro present this fire (alternation pattern pop-leaning, 7 events). Founder-notes audit advances 2 (note-1/C5 accepted, note-4/C3 rejected); backlog effectively near-zero.",
+    "narrative": "2026-06-03T06:32:26-04:00 \u2014 v2.99 setup-candidate fire (NO mode transition, NO framework reflection). 65min post-v2.98 Compression-mode entry, tape produced first real structural input since transition: 06:00 EDT 15m bar pushed $74.89\u2192$75.49 with vol_ratio 1.49x (vol 14707 vs baseline 9882), touching BB upper $75.42 then retracing to close $75.20. StochRSI flipped 0.012 (extreme oversold at v2.98) \u2192 0.78 (overbought) in 65min \u2014 full sentiment cycle. Short conditions panel now 7/8 (only c3 vol fails at 0.25x on in-progress 06:15 bar). Long conditions 4/8. Cohort down+short = historically non-worst (+$1.39 WR 83% n=6). v2.97 EXPERIMENTAL filter applied (SECOND live filter-application): one structural box (BB upper touch) ticked + cohort positive \u2014 but COMBO requires more than 'one structural input among dead ones'. The vol-burst-then-collapse shape (1 bar 1.49x then back to 0.25x) is exactly the noise pattern v2.97 filters against. Downgrade to HOLD with hypothetical_entry_record (implied_grade C, lean SHORT at $75.44, SL $76.00 TP $74.60). Phase B.1 invariants checked: no displacement >1.5%/15min (max bar move +0.41%), no range break ($72.18-$80.94 intact), regime down unchanged, no position open. Mode stays Compression \u2014 single-bar burst doesn't clear Expansion threshold. Staleness ontology 15th consecutive: system_gates.stale=true, age_sec=755818 (+~4000 from v2.98), indicators.price $75.47 vs Coinbase fresh $75.44 delta $0.03 legible. Balance-basis correction holding (paper_state.json cash $980.43 canonical).",
     "cognition_mode": "Compression",
     "cognition_mode_since_iso": "2026-06-03T05:25:15-04:00",
     "cognition_mode_rationale": "Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep, no fresh structural+cohort combo emerged during Expansion evaluation window. Compression is the honest read.",
     "cognition_mode_cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 12,
     "last_mode_transition_iso": "2026-06-03T05:25:15-04:00",
-    "last_gate_check_iso": "2026-06-03T09:25:15+00:00",
-    "canonical_pull_iso": "2026-06-03T09:25:15+00:00",
-    "canonical_pull_source": "coinbase exchange ticker $74.80 (v2.98 mode transition Expansion \u2192 Compression + balance-basis correction)",
+    "last_gate_check_iso": "2026-06-03T10:32:26+00:00",
+    "canonical_pull_iso": "2026-06-03T10:32:26+00:00",
+    "canonical_pull_source": "coinbase exchange ticker $75.44 (v2.99 setup-candidate emerged but vol collapsed)",
     "baseline_v96": 9882,
     "baseline_v96_ts": 1780463387,
     "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88; preserved through v2.98)",
@@ -2461,7 +2461,8 @@
       "fresh_15m_close_usd_at_discovery": 74.48,
       "lineage_contaminated": "v2.69 through v2.83 (~15 reflections + dozens of HOLDs)",
       "protocol_adopted": "Coinbase fresh ticker when system_gates.stale=true OR age_sec>300 (SKILL 6-02 fix)",
-      "v2_98_status_update": "EXTENDED: same partial-clear state persists. indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro PRESENT this fire (BB band + stoch + vol legible). system_gates.stale=true / age_sec=751886 (+~2384 from v2.97 read, climbing consistent ~600/fire). 14 consecutive reflections (v2.85-v2.98) confirm three-channel ontology with indicators-object alternation pattern now pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Not gating decisions, stable observable."
+      "v2_98_status_update": "EXTENDED: same partial-clear state persists. indicators.price $74.75 vs Coinbase fresh $74.80 delta $0.05 = legible. indicators_pro PRESENT this fire (BB band + stoch + vol legible). system_gates.stale=true / age_sec=751886 (+~2384 from v2.97 read, climbing consistent ~600/fire). 14 consecutive reflections (v2.85-v2.98) confirm three-channel ontology with indicators-object alternation pattern now pop-leaning (7 events: null/pop/null/pop/pop/null/pop). Not gating decisions, stable observable.",
+      "v2_99_status_update": "EXTENDED: same partial-clear state persists. indicators.price $75.47 vs Coinbase fresh $75.44 delta $0.03 = legible. system_gates.stale=true / age_sec=755818 (+~4000 from v2.98 read). 15 consecutive reflections (v2.85-v2.98) + v2.99 decision-fire confirm three-channel ontology. Stable observable, not gating decisions."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
@@ -2529,14 +2530,15 @@
       "current_n": 1
     },
     "b_grade_structural_required_candidate": {
-      "_note": "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE \u2014 B-grade ENTERs require structural+cohort combo (>=1 structural signal), not cohort-alone. v2.98: FIRST live filter-application (downgrade), refuting n unchanged.",
+      "_note": "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE \u2014 B-grade ENTERs require structural+cohort combo. v2.98 first live filter-application (downgrade); v2.99 second live filter-application (downgrade, BB upper touch + cohort positive but vol-burst-then-collapse fails COMBO). Refuting n unchanged.",
       "constraint": "Future B-grade ENTERs must include AT LEAST 1 structural signal: extreme StochRSI 3-tile (<=0.05 or >=0.95) / displacement >=1.5%/15min with vol / range-break with retest / sweep top-bottom. Pure cohort-baseline at moderate vol => downgrade to HOLD with hypothetical_entry_record. ALSO: 'structural box ticked among dead inputs' (e.g. extreme stoch but vol 0.16x, 1H trend wrong-way, BB lower miss) DOES NOT clear the COMBO bar \u2014 downgrade.",
       "refuting_n": 1,
       "confirming_n": 0,
       "promotion_target_n": 3,
       "demotion_target_confirming_n": 5,
       "first_refutation_fire_iso": "2026-06-03T01:18:50.792260-04:00",
-      "first_filter_application_fire_iso": "2026-06-03T05:25:15-04:00"
+      "first_filter_application_fire_iso": "2026-06-03T05:25:15-04:00",
+      "second_filter_application_fire_iso": "2026-06-03T06:32:26-04:00"
     },
     "balance_basis_correction_2026_06_03": {
       "_note": "v2.98: prior reflections v2.86-v2.97 wrote balance_usd as LIVE bot's $892.62 (from live-status); corrected to paper_state.json cash $980.43 (canonical own-book per 2026-06-02 SKILL fix). Quiet drift, not primitive error.",
@@ -2552,9 +2554,9 @@
     "since_iso": "2026-06-03T05:25:15-04:00",
     "rationale": "Tape settled to deep compression 40min post-v2.97 EXIT: vol_ratio 0.16x (lowest of saga), mid-band stuck $74.75-$74.80, no displacement, no sweep, no fresh structural+cohort combo emerged during Expansion evaluation window. Compression is the honest read.",
     "cadence_hint": "fire 1h heartbeat",
-    "skipped_fires_in_mode": 0,
+    "skipped_fires_in_mode": 12,
     "last_mode_transition_iso": "2026-06-03T05:25:15-04:00",
-    "last_gate_check_iso": "2026-06-03T09:25:15+00:00"
+    "last_gate_check_iso": "2026-06-03T10:32:26+00:00"
   },
   "framework_origins": [
     {
@@ -2599,14 +2601,14 @@
     },
     "last_enter_ts": 1780463930.792259,
     "last_enter_iso": "2026-06-03T01:18:50.792260-04:00",
-    "holds_in_a_row": 4,
+    "holds_in_a_row": 5,
     "exploratory_at_risk_usd_today": 3.91,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 4.1,
+    "hours_since_last_enter": 5.2,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T09:23:17.007792+00:00",
+    "last_updated_iso": "2026-06-03T10:30:03.144399+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
