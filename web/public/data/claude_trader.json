@@ -1,19 +1,19 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780461548,
-  "generated_iso": "2026-06-03T00:39:08-0400",
+  "generated_at": 1780462816,
+  "generated_iso": "2026-06-03T01:00:16-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 584,
+    "decisions_total": 586,
     "actions": {
-      "HOLD": 563,
+      "HOLD": 565,
       "ENTER": 14,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 380,
+      "HOLD_with_counterfactual": 382,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
@@ -22,13 +22,13 @@
     },
     "confidence": {
       "high": 179,
-      "medium": 311,
-      "low": 94
+      "medium": 312,
+      "low": 95
     },
     "reasoning_chars_avg_all": 910,
-    "reasoning_chars_avg_last10": 772,
+    "reasoning_chars_avg_last10": 881,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T00:39:00-04:00",
+    "last_fire_iso": "2026-06-03T00:57:31-04:00",
     "balance_usd_latest": 892.62,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -107.38,
@@ -38,18 +38,18 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780461540.090549,
-    "fire_iso": "2026-06-03T00:39:00-04:00",
+    "fire_ts": 1780462808.053472,
+    "fire_iso": "2026-06-03T00:57:31-04:00",
     "session_phase": "phase_0",
     "balance_usd": 892.62,
     "position_at_fire": null,
-    "current_price": 73.51,
+    "current_price": 73.98,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.609,
-      "vol_ratio": 0.257,
-      "momentum_pct": -1.05,
-      "rsi": 41.4
+      "stoch_rsi": 0.778,
+      "vol_ratio": 0.24,
+      "momentum_pct": 0.002,
+      "rsi": 49.2
     },
     "decision": "HOLD",
     "grade": null,
@@ -61,25 +61,123 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "v2.10 STABLE rule holds. 4-bar reclaim window: bar 1 vol 1.596x MET / third 58.7% MISS, bar 2 vol 0.963x MISS / third 89.7% MET, bar 3 vol 0.257x MISS / third 47.2% MISS. Three closed bars fail dual-gate; bar 4 (00:30-00:45) mid-bar. Bar 2 drift-reclaim shape (directional intent + thin participation) is exactly note-4/C4 fragile-reclaim signature - rule held HOLD correctly. forced_exploration_due=False (23.4h, ~36min out). Lean preserved B-grade LONG with lowered conviction; falsifies on bar 4 dual-gate failure. See framework_log v2.87.",
+    "reasoning": "v2.88 pre-name carries: B-grade LONG counterfactual preserved pending bar-4 formal close at 01:00 EDT. Bar 4 in-progress (open 00:45 EDT) mid-bar evidence: open $73.71 / high $73.98 / low $73.64, partial vol 4034 = 0.41x baseline_v96 9882 with ~2.5 min remaining. Vol gate near-mathematically locked at fail (would need ~3.7x participation acceleration in 2.5 min). Fresh ticker $73.98 vs candle running close $73.64 = late bar-4 upward push to bar-high; third gate MAY pass on close BUT dual-gate still fails on vol regardless. Expected resolution: 4-of-4 dual-gate misses = v2.10 n=3 window closes without confirmation (per v2.86 branch ii). Long-lean retracts in v2.89 reflection after formal close, not this fire. Staleness check: system_gates.stale=true age_sec 735829s, indicators.price $73.87 vs Coinbase fresh ticker $73.98 (delta $0.11, legible drift). Two-channel partial-clear persists 5th reflection. Paper book flat (paper_state.json position=null, cash $982.46, last updated 14:30:28 unchanged). forced_exploration_due=False (23.8h, ~12 min out). holds_in_a_row=19. threshold_state=normal. Budget $8.94 fresh. Reasoning length kept moderate: bar-4 evolution is incremental from v2.88 (12 min ago) \u2014 fresh upward push is the new signal but doesn't alter the dual-gate outcome.",
     "expected_holding_hours": null,
     "expected_pnl_pct_target": null,
     "abort_conditions": [],
     "hypothetical_entry_record": {
       "implied_grade": "B",
       "direction": "long",
-      "entry_price": 73.51,
-      "sl_pct": 0.018,
-      "tp_pct": 0.022,
-      "predicted_2h_outcome": "drift_sideways",
+      "entry_price": 73.98,
+      "sl_pct": 0.012,
+      "tp_pct": 0.02,
+      "predicted_2h_outcome": "drift_toward_tp",
       "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Failed-sweep-reclaim long thesis alive but unconfirmed - bar 2 had upper-third without vol, drift-reclaim shape. Cohort down+long n=4 +$12.74 WR 75% supports lean if bar 4 dual-gate confirms."
+      "reasoning_30_words": "Failed-sweep-reclaim structure intact: $72.18 swept-and-reclaimed; late bar-4 push 73.64->73.98 toward upper-third. v2.10 dual-gate vol-fails, but directional structure favors long if pressed."
     },
     "no_plausible_counterfactual": null,
     "exploration_attribution": null,
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "confidence_shift",
+      "ts": 1780462808.053472,
+      "iso": "2026-06-03T00:57:31-04:00",
+      "fire_count": 586,
+      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780462808.053472,
+        "fire_iso": "2026-06-03T00:57:31-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 892.62,
+        "position_at_fire": null,
+        "current_price": 73.98,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.778,
+          "vol_ratio": 0.24,
+          "momentum_pct": 0.002,
+          "rsi": 49.2
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "v2.88 pre-name carries: B-grade LONG counterfactual preserved pending bar-4 formal close at 01:00 EDT. Bar 4 in-progress (open 00:45 EDT) mid-bar evidence: open $73.71 / high $73.98 / low $73.64, partial vol 4034 = 0.41x baseline_v96 9882 with ~2.5 min remaining. Vol gate near-mathematically locked at fail (would need ~3.7x participation acceleration in 2.5 min). Fresh ticker $73.98 vs candle running close $73.64 = late bar-4 upward push to bar-high; third gate MAY pass on close BUT dual-gate still fails on vol regardless. Expected resolution: 4-of-4 dual-gate misses = v2.10 n=3 window closes without confirmation (per v2.86 branch ii). Long-lean retracts in v2.89 reflection after formal close, not this fire. Staleness check: system_gates.stale=true age_sec 735829s, indicators.price $73.87 vs Coinbase fresh ticker $73.98 (delta $0.11, legible drift). Two-channel partial-clear persists 5th reflection. Paper book flat (paper_state.json position=null, cash $982.46, last updated 14:30:28 unchanged). forced_exploration_due=False (23.8h, ~12 min out). holds_in_a_row=19. threshold_state=normal. Budget $8.94 fresh. Reasoning length kept moderate: bar-4 evolution is incremental from v2.88 (12 min ago) \u2014 fresh upward push is the new signal but doesn't alter the dual-gate outcome.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "long",
+          "entry_price": 73.98,
+          "sl_pct": 0.012,
+          "tp_pct": 0.02,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Failed-sweep-reclaim structure intact: $72.18 swept-and-reclaimed; late bar-4 push 73.64->73.98 toward upper-third. v2.10 dual-gate vol-fails, but directional structure favors long if pressed."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
+    {
+      "type": "confidence_shift",
+      "ts": 1780462277.0568142,
+      "iso": "2026-06-03T00:44:57-04:00",
+      "fire_count": 585,
+      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
+      "payload": {
+        "fire_ts": 1780462277.0568142,
+        "fire_iso": "2026-06-03T00:44:57-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 892.62,
+        "position_at_fire": null,
+        "current_price": 73.75,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.6293,
+          "vol_ratio": 0.29,
+          "momentum_pct": -0.9,
+          "rsi": 43.8
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "low",
+        "reasoning": "Bar 3 of v2.10 4-bar window closed at 00:45 EDT effective (close $73.63, vol 0.542x, third 100.0%) \u2014 dual-gate FAIL (vol miss, third pass = drift-reclaim shape, same as bar 2). Window now 3-of-4 closed, all dual-gate fail. Directional-intent progression rising (third 58.7\u219289.7\u2192100%) WHILE vol decays (1.596\u21920.963\u21920.542x) = light-buying-squeeze signature; bar 4 (04:45 UTC, closes 01:00 EDT) starts seconds from now and is final shot for confirmation. v2.87 pre-named B-grade LONG ENTER if bar 4 confirms / HOLD with retracted long-lean if bar 4 fails. forced_exploration_due=False (23.5h, ~30 min out), threshold normal (18 holds). v2.87 captured bar 3 mid-bar (0.257/47.2%) \u2014 v2.88 final read (0.542/100%) actually slightly better for long thesis than mid-bar suggested. No reflection this fire (v2.87 was 6 min ago, no new framework edit; cadence cap 4h; bar 4 not yet started = no surprise event).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "B",
+          "direction": "long",
+          "entry_price": 73.75,
+          "sl_pct": 0.015,
+          "tp_pct": 0.012,
+          "predicted_2h_outcome": "drift_toward_tp",
+          "predicted_8h_outcome": "unclear",
+          "reasoning_30_words": "Failed-sweep-reclaim long thesis alive: 3 of 3 closed bars show rising directional intent at sweep low ($72.18). Structural buying without participation; bar 4 confirms or falsifies."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      }
+    },
     {
       "type": "first_under_framework",
       "ts": 1780461540.090549,
@@ -1382,113 +1480,14 @@
           "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
         ]
       }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780358703.27,
-      "iso": "2026-06-01T20:05:03-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.78: HOLD",
-      "payload": {
-        "fire_ts": 1780358703.27,
-        "fire_iso": "2026-06-01T20:05:03-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "high",
-        "reasoning": "Tape unchanged from fire 19:08 EDT (price $85.23, BB $84.12-$85.93, vol 0.56x, conditions symmetric 5/8 long = 5/8 short, regime down, no position). v2.78 cadence reflection written (4h after v2.77, SKILL floor). Funding stable 1.0e-4 across 8h. No structural trigger (no displacement, no reclaim, no sweep). holds_in_a_row 19 <30 normal threshold, hours_since_last_enter 19.5 <24 forced threshold. HOLD with C-grade short counterfactual per v2.69-v2.77 lineage (down regime + down+short n=6 +$1.39 WR 83.3% + mid-band slightly closer BB upper).",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.012,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime cohort down+short n=6 +$1.39 WR 83.3%. Price $85.23 slightly above BB mid $85.02, closer to upper $0.70 than lower $1.11. Mean-revert lean. No structural trigger; would not actually enter."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.78"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780358703.27,
-      "iso": "2026-06-01T20:05:03-04:00",
-      "fire_count": 561,
-      "summary": "Confidence: medium \u2192 high (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780358703.27,
-        "fire_iso": "2026-06-01T20:05:03-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "high",
-        "reasoning": "Tape unchanged from fire 19:08 EDT (price $85.23, BB $84.12-$85.93, vol 0.56x, conditions symmetric 5/8 long = 5/8 short, regime down, no position). v2.78 cadence reflection written (4h after v2.77, SKILL floor). Funding stable 1.0e-4 across 8h. No structural trigger (no displacement, no reclaim, no sweep). holds_in_a_row 19 <30 normal threshold, hours_since_last_enter 19.5 <24 forced threshold. HOLD with C-grade short counterfactual per v2.69-v2.77 lineage (down regime + down+short n=6 +$1.39 WR 83.3% + mid-band slightly closer BB upper).",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.012,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime cohort down+short n=6 +$1.39 WR 83.3%. Price $85.23 slightly above BB mid $85.02, closer to upper $0.70 than lower $1.11. Mean-revert lean. No structural trigger; would not actually enter."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 1,
-    "avg_chars": 542,
+    "holds_since_framework": 3,
+    "avg_chars": 910,
     "since_iso": "2026-06-03T00:38:20-04:00",
     "since_framework_version": "v2.87",
-    "latest_fire_iso": "2026-06-03T00:39:00-04:00"
+    "latest_fire_iso": "2026-06-03T00:57:31-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2324,9 +2323,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780461522.288625,
-    "updated_iso": "2026-06-03T00:38:42-04:00",
-    "updated_by_fire_iso": "2026-06-03T00:38:42-04:00",
+    "updated_ts": 1780462792.9567528,
+    "updated_iso": "2026-06-03T00:57:31-04:00",
+    "updated_by_fire_iso": "2026-06-03T00:57:31-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2335,21 +2334,21 @@
     "range_active_since_iso": "2026-06-02T00:00:00-04:00",
     "sweeps_attempted": 28,
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
-    "funding_state": "post-stale-window funding readings retracted as noise (v2.84). Funding -9.90e-5 negative (shorts pay longs) \u2014 consistent with down regime but not standalone trigger; closed-lineage carries.",
+    "funding_state": "live-status funding -7.32e-5 (OKX, latest snapshot). Shorts pay longs in down regime persists. Not standalone trigger.",
     "oi_state": "not maintained; not material",
-    "narrative": "00:35 EDT 6-03 \u2014 v2.87 fire. v2.10 4-bar reclaim window from sweep $72.18 evidence update. Bar 1 (00:00 close $73.23): vol 1.596x MET / third 58.7% MISSED -> HOLD. Bar 2 (00:15 close $73.53): vol 0.963x MISSED / third 89.7% MET -> HOLD. Bar 3 (00:30 close $73.40): vol 0.257x MISSED / third 47.2% MISSED -> HOLD. Bar 4 (00:30-00:45) currently mid-bar, Coinbase ticker $73.51. Three closed bars all fail v2.10 dual-gate; window 75% spent. Hypothetical-lean preserved: B-grade LONG (structural failed-sweep-reclaim) with lowered conviction. Falls back to cohort-baseline if bar 4 fails. forced_exploration_due=False (23.4h, ~36 min out). Range $72.18-$80.94 holds. Paper book flat (cash $982.46 / 7 closes net -$17.54). Mode Expansion continues (since v2.86 transition 00:19:59). Staleness state: indicators.price $73.47 matches Coinbase $73.51 fresh (delta $0.04, legible); system_gates.stale=true age_sec=734489s stuck \u2014 partial-clear persists 3rd reflection.",
+    "narrative": "00:57:31 EDT 6-03 \u2014 v2.89 fire (decision-only, no reflection: v2.87 19 min ago, v2.88 13 min ago, bar 4 mid-bar mathematical resolution near-locked but not formally closed yet). Bar 4 of v2.10 window in-progress: open $73.71 / high $73.98 / low $73.64, partial vol 4034 = 0.41x baseline with ~2.5 min remaining. Vol gate near-mathematically locked at fail. Late bar-4 push 73.64\u219273.98 in seconds (reading fresh ticker) suggests last-minute upward bias \u2014 third gate MAY pass on close but dual-gate still fails on vol. Expected resolution at 01:00 EDT: 4-of-4 dual-gate failures = v2.10 n=3 window closes without confirmation. B-grade LONG counterfactual preserved through formal close (v2.89 holds; v2.10-falsification handled by next reflection). Paper book flat (cash $982.46 / 7 closes net -$17.54). Range $72.18-$80.94 holds. Mode Expansion continues (since 00:19:59). Staleness: system_gates.stale=true age_sec 735829s, indicators.price $73.87 vs Coinbase fresh $73.98 (delta $0.11, legible drift). Two-channel partial-clear persists 5th reflection. forced_exploration_due=False (23.8h, ~12 min out). budget $8.94 fresh.",
     "cognition_mode": "Expansion",
     "cognition_mode_since_iso": "2026-06-03T00:19:59-04:00",
     "cognition_mode_rationale": "Fresh range-floor sweep ($72.18 new 24h low broke v2.85 $72.64 floor by $0.46) + 1.525x vol_ratio reclaim candle on top of two prior 3.9x and 2.94x vol displacement candles. Range break + volume conviction match Expansion mode definition. v2.85 Compression posture superseded by real displacement event.",
     "cognition_mode_cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T00:19:59-04:00",
-    "last_gate_check_iso": "2026-06-03T04:38:42+00:00",
-    "canonical_pull_iso": "2026-06-03T04:38:42+00:00",
-    "canonical_pull_source": "coinbase exchange ticker + candles granularity=900 (v2.87 mid-window bar audit)",
+    "last_gate_check_iso": "2026-06-03T04:57:31+00:00",
+    "canonical_pull_iso": "2026-06-03T04:57:31+00:00",
+    "canonical_pull_source": "coinbase exchange ticker + candles granularity=900 (v2.89 bar-4 in-progress audit)",
     "baseline_v96": 9882,
     "baseline_v96_ts": 1780461522,
-    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87",
+    "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88)",
     "stale_data_event": {
       "discovered_iso": "2026-06-02T22:08:00-04:00",
       "live_status_price_frozen_at_usd": 85.23,
@@ -2359,10 +2358,13 @@
       "lineage_contaminated": "v2.69 through v2.83 (~15 reflections + dozens of HOLDs)",
       "protocol_adopted": "Coinbase fresh ticker when system_gates.stale=true OR age_sec>300 (SKILL 6-02 fix)",
       "v2_85_status_update": "indicators.price field self-refreshed to $74.14 matching Coinbase. system_gates.stale=true and age_sec still climbing \u2014 flag stuck-on, price legible. Dashboard partial-clear.",
-      "v2_86_status_update": "Same partial-clear state persists. indicators.price $73.29 matches Coinbase fresh $73.28. age_sec=733464s (+3891s since v2.85). System_gates.stale=true stuck-on. Pipe price-channel is fresh; flag-channel is dead. Operator-facing SKILL question about cross-check ordering carries."
+      "v2_86_status_update": "Same partial-clear state persists. indicators.price $73.29 matches Coinbase fresh $73.28. age_sec=733464s (+3891s since v2.85).",
+      "v2_87_status_update": "Same partial-clear state persists. indicators.price $73.47 vs Coinbase $73.51 delta $0.04. age_sec=734489s.",
+      "v2_88_status_update": "Same partial-clear state persists. indicators.price $73.58 vs Coinbase $73.75 delta $0.17 (legible tape drift). age_sec unchanged from v2.87 read (734489s) \u2014 flag stuck; price/age channels demonstrably independent. 4 consecutive fires confirm: dashboard price-pipe IS fresh, dashboard stale-flag IS broken. Two-channel ontology stable."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
+      "_note_close_iso_semantics": "close_iso field labels the bar's START minute (Coinbase candle convention); bar closes 15 min after close_iso. v2.87 reading captured bar_3 mid-bar; v2.88 captures final-close values.",
       "bar_1": {
         "close_iso": "2026-06-03T00:00:00-04:00",
         "vol_ratio": 1.596,
@@ -2381,17 +2383,33 @@
       },
       "bar_3": {
         "close_iso": "2026-06-03T00:30:00-04:00",
-        "vol_ratio": 0.257,
-        "third_pct": 47.2,
+        "vol_ratio": 0.542,
+        "third_pct": 100.0,
         "vol_pass": false,
-        "third_pass": false,
-        "dual_gate_pass": false
+        "third_pass": true,
+        "dual_gate_pass": false,
+        "_v2_87_captured_mid_bar": "v2.87 read this bar at 00:38 EDT (8 min in): vol_ratio 0.257 third 47.2%. v2.88 captures final-close values at 00:44:57 EDT (3 sec from close, effectively final). Final shape = drift-reclaim (same as bar 2), not the both-miss v2.87 captured."
       },
       "bar_4_status": "in_progress",
       "bar_4_close_iso": "2026-06-03T00:45:00-04:00",
       "current_dual_gate_count": 0,
       "instances_at_n": 3,
-      "decision_after_window_close": "HOLD (no confirmation seen yet); bar 4 outcome decides v2.88"
+      "decision_after_window_close": "If bar 4 fails dual-gate: HOLD with v2.10 n=3-no-confirmation falsified; retract long-lean; cohort-baseline (down regime) returns. If bar 4 confirms: B-grade LONG ENTER candidate.",
+      "bar_4_in_progress_snapshot": {
+        "snapshot_iso": "2026-06-03T00:57:31-04:00",
+        "bar_open_usd": 73.71,
+        "bar_high_usd": 73.98,
+        "bar_low_usd": 73.64,
+        "bar_running_close_per_candle_endpoint_usd": 73.64,
+        "fresh_ticker_usd": 73.98,
+        "partial_vol": 4034.01,
+        "partial_vol_ratio_vs_baseline_9882": 0.408,
+        "minutes_elapsed_in_bar": 12.5,
+        "minutes_remaining_in_bar": 2.5,
+        "vol_gate_lockedfail_assessment": "vol_ratio would need to ~3.7x in 2.5 min to reach 1.5x \u2014 near-mathematical-impossibility based on first-12.5-min participation rate.",
+        "third_gate_running": "0% on candle endpoint but fresh ticker $73.98 vs bar L=73.64 implies running close near bar high = upper-third intra-bar IF close holds",
+        "dual_gate_running_assessment": "fails on vol regardless of third-gate outcome"
+      }
     }
   },
   "cognition": {
@@ -2401,7 +2419,7 @@
     "cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T00:19:59-04:00",
-    "last_gate_check_iso": "2026-06-03T04:38:42+00:00"
+    "last_gate_check_iso": "2026-06-03T04:57:31+00:00"
   },
   "framework_origins": [
     {
@@ -2446,14 +2464,14 @@
     },
     "last_enter_ts": 1780377109.970521,
     "last_enter_iso": "2026-06-02T01:11:49.970521-04:00",
-    "holds_in_a_row": 17,
+    "holds_in_a_row": 19,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
-    "hours_since_last_enter": 23.4,
+    "hours_since_last_enter": 23.8,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T04:34:19.448296+00:00",
+    "last_updated_iso": "2026-06-03T04:57:34.647655+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
