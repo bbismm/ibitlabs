@@ -1,85 +1,318 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780462816,
-  "generated_iso": "2026-06-03T01:00:16-0400",
+  "generated_at": 1780463935,
+  "generated_iso": "2026-06-03T01:18:55-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 586,
+    "decisions_total": 588,
     "actions": {
-      "HOLD": 565,
-      "ENTER": 14,
+      "HOLD": 566,
+      "ENTER": 15,
       "EXIT": 7
     },
     "grades": {
       "HOLD": 151,
-      "HOLD_with_counterfactual": 382,
+      "HOLD_with_counterfactual": 383,
       "ENTER_C": 2,
       "HOLD_no_plausible": 32,
       "EXIT": 7,
-      "ENTER_B": 11,
+      "ENTER_B": 12,
       "ENTER_A": 1
     },
     "confidence": {
       "high": 179,
-      "medium": 312,
+      "medium": 314,
       "low": 95
     },
     "reasoning_chars_avg_all": 910,
-    "reasoning_chars_avg_last10": 881,
+    "reasoning_chars_avg_last10": 893,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T00:57:31-04:00",
-    "balance_usd_latest": 892.62,
+    "last_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+    "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
-    "pnl_total_usd": -107.38,
-    "framework_reflections_total": 108,
+    "pnl_total_usd": -105.92,
+    "framework_reflections_total": 110,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780462808.053472,
-    "fire_iso": "2026-06-03T00:57:31-04:00",
+    "fire_ts": 1780463930.792259,
+    "fire_iso": "2026-06-03T01:18:50.792260-04:00",
     "session_phase": "phase_0",
-    "balance_usd": 892.62,
+    "balance_usd": 894.08,
     "position_at_fire": null,
-    "current_price": 73.98,
+    "current_price": 74.45,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.778,
-      "vol_ratio": 0.24,
-      "momentum_pct": 0.002,
-      "rsi": 49.2
+      "stoch_rsi": 0.9009,
+      "vol_ratio": 1.4,
+      "momentum_pct": 2.67,
+      "rsi": 63.1
     },
-    "decision": "HOLD",
-    "grade": null,
-    "size_multiplier": null,
-    "setup_type": null,
-    "direction": null,
+    "decision": "ENTER",
+    "grade": "B",
+    "size_multiplier": 0.35,
+    "setup_type": "cohort_mean_revert_short",
+    "direction": "short",
     "symbol": "SOL-PERP",
-    "quantity": null,
-    "leverage": null,
-    "sl_pct": null,
+    "quantity": 0.7,
+    "leverage": 2.0,
+    "sl_pct": 0.015,
     "confidence": "medium",
-    "reasoning": "v2.88 pre-name carries: B-grade LONG counterfactual preserved pending bar-4 formal close at 01:00 EDT. Bar 4 in-progress (open 00:45 EDT) mid-bar evidence: open $73.71 / high $73.98 / low $73.64, partial vol 4034 = 0.41x baseline_v96 9882 with ~2.5 min remaining. Vol gate near-mathematically locked at fail (would need ~3.7x participation acceleration in 2.5 min). Fresh ticker $73.98 vs candle running close $73.64 = late bar-4 upward push to bar-high; third gate MAY pass on close BUT dual-gate still fails on vol regardless. Expected resolution: 4-of-4 dual-gate misses = v2.10 n=3 window closes without confirmation (per v2.86 branch ii). Long-lean retracts in v2.89 reflection after formal close, not this fire. Staleness check: system_gates.stale=true age_sec 735829s, indicators.price $73.87 vs Coinbase fresh ticker $73.98 (delta $0.11, legible drift). Two-channel partial-clear persists 5th reflection. Paper book flat (paper_state.json position=null, cash $982.46, last updated 14:30:28 unchanged). forced_exploration_due=False (23.8h, ~12 min out). holds_in_a_row=19. threshold_state=normal. Budget $8.94 fresh. Reasoning length kept moderate: bar-4 evolution is incremental from v2.88 (12 min ago) \u2014 fresh upward push is the new signal but doesn't alter the dual-gate outcome.",
-    "expected_holding_hours": null,
-    "expected_pnl_pct_target": null,
-    "abort_conditions": [],
-    "hypothetical_entry_record": {
-      "implied_grade": "B",
-      "direction": "long",
-      "entry_price": 73.98,
-      "sl_pct": 0.012,
-      "tp_pct": 0.02,
-      "predicted_2h_outcome": "drift_toward_tp",
-      "predicted_8h_outcome": "drift_toward_tp",
-      "reasoning_30_words": "Failed-sweep-reclaim structure intact: $72.18 swept-and-reclaimed; late bar-4 push 73.64->73.98 toward upper-third. v2.10 dual-gate vol-fails, but directional structure favors long if pressed."
-    },
+    "reasoning": "v2.10 4-bar window CLOSED 01:00 EDT (0/4 dual-gate confirmations; bar 4 third 100% PASS / vol 0.875x FAIL = drift-reclaim mirroring bar 2). Long-lean retracted per v2.86 branch (ii). forced_exploration_due True at 24.1h since last ENTER (threshold 24h, holds_in_a_row=21, budget $8.94 fresh). Executing v2.90 pre-name branch (i): thin-chop + no structural trigger + cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst) \u2192 B-grade SHORT mean-revert toward BB mid $74.12 (~0.5% from $74.45 entry). Inputs: short 6/8 (stoch 0.901 overbought, regime+1H trend down, 4H neutral, EMA20 dist 1.36%, vol 1.40x) vs long 5/8 \u2014 asymmetry favors short; vol 1.40x (below ideal 1.5x); no structural sweep top \u2014 2/4 = clean B-grade exploration territory, NOT S/A. Staleness: indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 = legible; using Coinbase as current_price per SKILL fallback. SL 1.5% above ($75.57), at-risk $3.90 of $8.94 daily budget. First B-grade ENTER on paper book under exploration-budget protocol; tests whether cohort-baseline alone (without structural trigger) is a real probe shape at moderate vol.",
+    "expected_holding_hours": 4,
+    "expected_pnl_pct_target": 0.005,
+    "abort_conditions": [
+      "price closes above $75.45 (BB upper) on 15m bar with vol_ratio >= 1.5x \u2014 invalidates mean-revert short, structural break upward",
+      "price drifts above $74.80 with vol collapsing below 0.5x and no rejection wick \u2014 passive drift-up consumes the mean-revert thesis",
+      "4h elapsed without reaching TP or stop, MFE < 0.2% \u2014 time-cut for stale exploration probe (Lever-5-mod analog)"
+    ],
+    "hypothetical_entry_record": null,
     "no_plausible_counterfactual": null,
-    "exploration_attribution": null,
+    "exploration_attribution": {
+      "reason": "forced_exploration_after_v210_window_closed_no_confirmation",
+      "info_hypothesis": "tests whether the down+short cohort baseline (historical n=6 +$1.39 WR 83.3%) produces positive expectancy at vol_ratio 1.40x WITHOUT a structural trigger (no sweep top, no upper-third extreme close), when forced-exploration overrides the structural-trigger preference for B-grade ENTERs",
+      "predicted_information_value": "medium"
+    },
     "information_roi_record": null
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780463930.792259,
+      "iso": "2026-06-03T01:18:50.792260-04:00",
+      "fire_count": 588,
+      "summary": "Framework v2.91 written (trigger: surprise:first_b_grade_short_probe_under_forced_exploration)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780463930.792259,
+        "iso": "2026-06-03T01:18:50.792260-04:00",
+        "fire_count": 588,
+        "balance_usd": 894.08,
+        "version_tag": "v2.91",
+        "trigger": "surprise:first_b_grade_short_probe_under_forced_exploration",
+        "what_im_trying": "Execute v2.90 pre-name branch (i): forced_exploration_due True (24.1h since last ENTER, threshold 24h) + thin-chop without structural trigger + drift-up post-displacement digestion \u2192 B-grade SHORT cohort-baseline mean-revert probe. Cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst). Target BB mid $74.12 (~0.5% from $74.45 entry), SL 1.5% ($75.57), at-risk $3.90 of $8.94 daily budget. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged.",
+        "whats_working": "(a) forced_exploration_due mechanism activated mechanically at 24.1h post note-4/C1 plumbing fix \u2014 first USE since Phase B.2 directive Section #1 (truth-source integrity). The protocol drives an actual ENTER instead of HOLD-22-in-a-row narrative inertia. Validates that the budget protocol's '24h force' is correctly priced. (b) v2.90 pre-name branch (i) resolved EXACTLY: thin-chop, no structural trigger, drift-up post-displacement digestion = baseline-cohort B-grade SHORT. Predictive vocabulary holding across the v2.86\u2192v2.91 sequence (5 reflections of pre-naming branches that resolved correctly). (c) STALENESS CHECK (mandated v2.84 protocol): system_gates.stale=true, age_sec ~743k still climbing. indicators.price $74.68 vs Coinbase ticker $74.45 delta $0.23 = legible. Two-channel partial-clear persists 7 consecutive reflections (v2.85-v2.91). SKILL Coinbase fallback used as current_price. (d) Source-of-truth hierarchy clean: paper_state.json position=null + cash $982.46 (unchanged since 14:30:28 EDT 6-02) \u2192 this ENTER opens a fresh paper position.",
+        "whats_failing": "(a) This trade is the cleanest possible test of 'cohort-alone' as a B-grade exploration thesis, but conditions are weaker than ideal: vol 1.40x is below 1.5x threshold, no structural sweep top, no upper-third extreme close. Inputs 2/4 (cohort + asymmetry-light). If this loses, cohort-alone is insufficient and structural+cohort combo is the binding shape for future B-grade ENTERs. If it wins or breakeven, cohort-baseline at moderate vol IS exploitable. Either result is information. (b) Would have been HOLD without forced-exploration mechanism. The $3.90 at-risk explicitly buys one calibration data point against ~21 fires of HOLD-deep inertia \u2014 the budget protocol's cognitive ROI test fires for the first time here.",
+        "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) FIRST B-grade ENTER on the paper book under exploration-budget protocol. setup_type populated descriptively as 'cohort_mean_revert_short' \u2014 NOT a formal ontology entry; setup-archetype ontology frozen to 2026-06-25 per note-4/C5 honored. (c) STATE.JSON: narrative updated to record ENTER; cognition_mode Expansion PRESERVED (drift-up is post-displacement digestion phase, not transition); cognition_mode_since_iso PRESERVED 2026-06-03T00:19:59-04:00; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). (d) DECISION: B-grade SHORT, qty 0.7, leverage 2x, sl_pct 0.015. exploration_attribution.reason = 'forced_exploration_after_v210_window_closed_no_confirmation' (custom). info_hypothesis = tests whether cohort-baseline alone produces positive expectancy at vol_ratio 1.40x without structural trigger. (e) PRE-NAME v2.92: 3 branches. (i) trade hits SL ($75.57) within ~4h \u2192 cohort-alone insufficient at this vol; future B-grade requires structural+cohort combo. (ii) trade hits or drifts toward TP ($74.12 BB mid) within ~4h \u2192 cohort-baseline at moderate vol is a real probe shape; cohort gains weight in framework. (iii) tape range-breaks (>$75.45 BB upper or <$73.50 with vol) before resolution \u2192 respond to displacement, write EXIT or hold-thru depending on direction. (f) information_roi_record will be written when this trade closes (EXIT, SL, TP, or time-cut), mapping outcome \u2192 hypothesis.",
+        "edits_from_prior": [
+          "v2.90 pre-name branch (i) RESOLVED \u2192 executing: first B-grade SHORT ENTER on paper book. Cohort=down+short, mean-revert toward BB mid $74.12.",
+          "forced_exploration_due mechanism FIRST USE since note-4/C1 plumbing fix. The protocol drove an actual ENTER decision, not a tooling-artifact suppression. Validates Phase B.2 directive Section #1 (truth-source integrity) operationally.",
+          "setup_type field populated DESCRIPTIVELY ('cohort_mean_revert_short') \u2014 NOT a new ontology entry; mode/archetype freeze to 2026-06-25 honored per note-4/C5.",
+          "Hypothetical-lean materialized into REAL position (paper). Lean-frequency question (v2.87 open) gets a real-PnL test on this trade.",
+          "State.json narrative updated; cognition_mode/since/cadence_hint preserved (Expansion). Position opens via executor (DRY_RUN); paper_state.json updates downstream."
+        ],
+        "founder_notes_addressed": [],
+        "open_questions": [
+          "First B/C-grade ENTER outcome will populate first information_roi_record entry. The audit trail mapping outcome \u2192 hypothesis begins with this trade.",
+          "Cohort-alone (without structural trigger) as a B-grade exploration thesis: untested before this fire. Result will materially shape future B-grade ENTER discipline (structural required, or cohort sufficient).",
+          "Lean-stability question (carry from v2.87/v2.90): the hypothetical-lean flip-rate is now testable. If this trade succeeds, it argues lean-flips at v2.10 window boundaries are signal not drift.",
+          "Phase 0 DRY_RUN ceiling: this paper trade will compute fill/PnL on paper_state.json but doesn't move real book. Hypothesis validation is paper-grade only.",
+          "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
+          "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x): n=2 within single window \u2014 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock.",
+          "Two-channel staleness ontology (indicators.price legible-fresh vs system_gates.stale-stuck-true): 7 consecutive reflections confirm. SKILL ammendment proposal still operator-facing.",
+          "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C1/C2/C3/C5/C6.",
+          "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out)."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780463930.792259,
+      "iso": "2026-06-03T01:18:50.792260-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.91: ENTER",
+      "payload": {
+        "fire_ts": 1780463930.792259,
+        "fire_iso": "2026-06-03T01:18:50.792260-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 74.45,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.9009,
+          "vol_ratio": 1.4,
+          "momentum_pct": 2.67,
+          "rsi": 63.1
+        },
+        "decision": "ENTER",
+        "grade": "B",
+        "size_multiplier": 0.35,
+        "setup_type": "cohort_mean_revert_short",
+        "direction": "short",
+        "symbol": "SOL-PERP",
+        "quantity": 0.7,
+        "leverage": 2.0,
+        "sl_pct": 0.015,
+        "confidence": "medium",
+        "reasoning": "v2.10 4-bar window CLOSED 01:00 EDT (0/4 dual-gate confirmations; bar 4 third 100% PASS / vol 0.875x FAIL = drift-reclaim mirroring bar 2). Long-lean retracted per v2.86 branch (ii). forced_exploration_due True at 24.1h since last ENTER (threshold 24h, holds_in_a_row=21, budget $8.94 fresh). Executing v2.90 pre-name branch (i): thin-chop + no structural trigger + cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst) \u2192 B-grade SHORT mean-revert toward BB mid $74.12 (~0.5% from $74.45 entry). Inputs: short 6/8 (stoch 0.901 overbought, regime+1H trend down, 4H neutral, EMA20 dist 1.36%, vol 1.40x) vs long 5/8 \u2014 asymmetry favors short; vol 1.40x (below ideal 1.5x); no structural sweep top \u2014 2/4 = clean B-grade exploration territory, NOT S/A. Staleness: indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 = legible; using Coinbase as current_price per SKILL fallback. SL 1.5% above ($75.57), at-risk $3.90 of $8.94 daily budget. First B-grade ENTER on paper book under exploration-budget protocol; tests whether cohort-baseline alone (without structural trigger) is a real probe shape at moderate vol.",
+        "expected_holding_hours": 4,
+        "expected_pnl_pct_target": 0.005,
+        "abort_conditions": [
+          "price closes above $75.45 (BB upper) on 15m bar with vol_ratio >= 1.5x \u2014 invalidates mean-revert short, structural break upward",
+          "price drifts above $74.80 with vol collapsing below 0.5x and no rejection wick \u2014 passive drift-up consumes the mean-revert thesis",
+          "4h elapsed without reaching TP or stop, MFE < 0.2% \u2014 time-cut for stale exploration probe (Lever-5-mod analog)"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": {
+          "reason": "forced_exploration_after_v210_window_closed_no_confirmation",
+          "info_hypothesis": "tests whether the down+short cohort baseline (historical n=6 +$1.39 WR 83.3%) produces positive expectancy at vol_ratio 1.40x WITHOUT a structural trigger (no sweep top, no upper-third extreme close), when forced-exploration overrides the structural-trigger preference for B-grade ENTERs",
+          "predicted_information_value": "medium"
+        },
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.91"
+    },
+    {
+      "type": "enter",
+      "ts": 1780463930.792259,
+      "iso": "2026-06-03T01:18:50.792260-04:00",
+      "fire_count": 588,
+      "summary": "ENTER short SOL-PERP @ $74.45 qty=0.7 lev=2.0",
+      "payload": {
+        "fire_ts": 1780463930.792259,
+        "fire_iso": "2026-06-03T01:18:50.792260-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 74.45,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.9009,
+          "vol_ratio": 1.4,
+          "momentum_pct": 2.67,
+          "rsi": 63.1
+        },
+        "decision": "ENTER",
+        "grade": "B",
+        "size_multiplier": 0.35,
+        "setup_type": "cohort_mean_revert_short",
+        "direction": "short",
+        "symbol": "SOL-PERP",
+        "quantity": 0.7,
+        "leverage": 2.0,
+        "sl_pct": 0.015,
+        "confidence": "medium",
+        "reasoning": "v2.10 4-bar window CLOSED 01:00 EDT (0/4 dual-gate confirmations; bar 4 third 100% PASS / vol 0.875x FAIL = drift-reclaim mirroring bar 2). Long-lean retracted per v2.86 branch (ii). forced_exploration_due True at 24.1h since last ENTER (threshold 24h, holds_in_a_row=21, budget $8.94 fresh). Executing v2.90 pre-name branch (i): thin-chop + no structural trigger + cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst) \u2192 B-grade SHORT mean-revert toward BB mid $74.12 (~0.5% from $74.45 entry). Inputs: short 6/8 (stoch 0.901 overbought, regime+1H trend down, 4H neutral, EMA20 dist 1.36%, vol 1.40x) vs long 5/8 \u2014 asymmetry favors short; vol 1.40x (below ideal 1.5x); no structural sweep top \u2014 2/4 = clean B-grade exploration territory, NOT S/A. Staleness: indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 = legible; using Coinbase as current_price per SKILL fallback. SL 1.5% above ($75.57), at-risk $3.90 of $8.94 daily budget. First B-grade ENTER on paper book under exploration-budget protocol; tests whether cohort-baseline alone (without structural trigger) is a real probe shape at moderate vol.",
+        "expected_holding_hours": 4,
+        "expected_pnl_pct_target": 0.005,
+        "abort_conditions": [
+          "price closes above $75.45 (BB upper) on 15m bar with vol_ratio >= 1.5x \u2014 invalidates mean-revert short, structural break upward",
+          "price drifts above $74.80 with vol collapsing below 0.5x and no rejection wick \u2014 passive drift-up consumes the mean-revert thesis",
+          "4h elapsed without reaching TP or stop, MFE < 0.2% \u2014 time-cut for stale exploration probe (Lever-5-mod analog)"
+        ],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": {
+          "reason": "forced_exploration_after_v210_window_closed_no_confirmation",
+          "info_hypothesis": "tests whether the down+short cohort baseline (historical n=6 +$1.39 WR 83.3%) produces positive expectancy at vol_ratio 1.40x WITHOUT a structural trigger (no sweep top, no upper-third extreme close), when forced-exploration overrides the structural-trigger preference for B-grade ENTERs",
+          "predicted_information_value": "medium"
+        },
+        "information_roi_record": null
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780463407.272128,
+      "iso": "2026-06-03T01:10:07-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.90: HOLD",
+      "payload": {
+        "fire_ts": 1780463407.272128,
+        "fire_iso": "2026-06-03T01:10:07-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 894.08,
+        "position_at_fire": null,
+        "current_price": 74.45,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.9009,
+          "vol_ratio": 0.79,
+          "momentum_pct": 2.39,
+          "rsi": 60.3
+        },
+        "decision": "HOLD",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": null,
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "medium",
+        "reasoning": "v2.10 4-bar reclaim window CLOSED at 01:00 EDT with 0/4 dual-gate confirmations. Bar 4 final: close 74.06 at top of bar range (third 100% PASS), vol 8646.58 = 0.875x baseline 9882 (vol FAIL) \u2014 drift-reclaim shape mirroring bar 2 (89.7% third / 0.963x vol). Note-4/C4 affirmed twice within window. Long-lean carried v2.86\u2192v2.89 retracts cleanly per v2.86 pre-name branch (ii). Cohort baseline (down regime + down+short n=6 +$1.39 WR 83.3% historical) reasserts; no structural sweep top, vol thin. C-grade SHORT counterfactual is mean-revert toward $74.11 BB mid. forced_exploration_due flips True ~01:11 EDT (~2 min out).",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": {
+          "implied_grade": "C",
+          "direction": "short",
+          "entry_price": 74.45,
+          "sl_pct": 0.015,
+          "tp_pct": 0.015,
+          "predicted_2h_outcome": "drift_sideways",
+          "predicted_8h_outcome": "drift_toward_tp",
+          "reasoning_30_words": "Failed v2.10 (4/4 dual-gate FAILS) + drift-reclaim shape fragile. Cohort down+short n=6 +$1.39 baseline. Short to BB mid $74.11 = mean-revert without conviction; downside regime baseline reasserts on fizzle."
+        },
+        "no_plausible_counterfactual": null,
+        "exploration_attribution": null,
+        "information_roi_record": null
+      },
+      "_framework_version": "v2.90"
+    },
+    {
+      "type": "framework_reflection",
+      "ts": 1780463360.391548,
+      "iso": "2026-06-03T01:09:20-04:00",
+      "fire_count": 587,
+      "summary": "Framework v2.90 written (trigger: surprise:v210_window_closed_no_confirmation+bar4_drift_reclaim_mirror_of_bar2)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780463360.391548,
+        "iso": "2026-06-03T01:09:20-04:00",
+        "fire_count": 587,
+        "balance_usd": 894.08,
+        "version_tag": "v2.90",
+        "trigger": "surprise:v210_window_closed_no_confirmation+bar4_drift_reclaim_mirror_of_bar2",
+        "what_im_trying": "Resolve v2.86 pre-name branch (ii) \u2014 formally close v2.10 4-bar window with 0/4 dual-gate confirmations across n=3 instance, retract long-lean carried v2.86\u2192v2.89, return to cohort-baseline read. Framework primitives (v2.10 STABLE retention, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged.",
+        "whats_working": "(a) STALENESS CHECK (mandated v2.84 protocol): live-status.system_gates.stale=true, age_sec ~743k (+climb since v2.89). indicators.price $74.48 vs Coinbase ticker $74.45 delta $0.03 = legible. Two-channel partial-clear persists 6 consecutive reflections (v2.85-v2.90). SKILL fallback functioning. (b) v2.10 STABLE rule HELD across full 4-bar window. Bar 4 (close 01:00 EDT) closed at 74.06 = exact top of bar range L=73.57 H=74.06 (third 100%), vol 8646.58 = 0.875x baseline 9882. THIRD PASS but VOL FAIL \u2014 drift-reclaim shape note-4/C4 flagged as structurally fragile, mirroring bar 2 (89.7% third / 0.963x vol). Rule correctly refused 4 fragile reclaims, prevented force-ENTER on weak setup. (c) Paper book confirmed flat per paper_state.json (position=null, cash $982.46, last update 14:30:28 EDT unchanged across 6 reflections). Source-of-truth hierarchy clean. (d) v2.86 PRE-NAME BRANCH (ii) RESOLVED EXACTLY: 'failed reclaim \u2192 HOLD with v2.10 n=3 falsified-no-confirmation, retracted long-lean'. Framework's predictive vocabulary is doing work.",
+        "whats_failing": "(a) v2.10 ledger now n=3 instances, 0/3 dual-gate confirmations. Rule is gatekeeping CORRECTLY (no fee transfers on fragile shapes) but generating ZERO positive evidence after 3 windows. Two hypotheses: (H1) real expansion-led reclaims that pass vol gate are rare events ~1-in-N+ windows \u2014 current 3 are sample-bias of compression-led drift-reclaims; (H2) reclaim attempts on this strategy/timeframe are structurally always-fragile and the rule is permanent-no. Need n\u22655 windows + at least 1 confirmation to discriminate. Cannot fast-forward; need real tape. (b) Drift-reclaim shape observed n=2 WITHIN single window (bars 2 + 4 mirror at 89.7%+0.963x and 100%+0.875x). Stable observable. Could earn its own observable category but mode ontology FROZEN to 2026-06-25 and setup-archetype expansion BLOCKED per note-4/C5 ('do NOT adopt wholesale'). Logging the n=2 pattern; not elevating. (c) Hypothetical-lean FLIP FREQUENCY: v2.85 C-SHORT \u2192 v2.86 B-LONG \u2192 v2.87/88/89 B-LONG held \u2192 v2.90 C-SHORT (back to cohort). 2 flips in 6 reflections. Is this drift or correct responsiveness? Hypothesis: flip frequency tracks v2.10 window open/close events; structural triggers override cohort within-window, cohort reasserts post-falsification. Pattern is structurally bounded, not random \u2014 treat as signal not drift. (d) Founder-notes audit backlog: v2.87 addressed note-1/C4. v2.90 addresses note-1/C3 below. Remaining: note-1 C5, note-2 C1/C2/C3, note-3 C1/C2/C3, note-4 C1/C2/C3/C5/C6.",
+        "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) STATE.JSON updates: v210_window_state.bar_4 \u2192 {vol_ratio 0.875, third_pct 100.0, vol_pass false, third_pass true, dual_gate_pass false}; bar_4_status \u2192 'closed'; window_status \u2192 'closed_no_confirmation'; instances_at_n \u2192 3 (n=3 v2.10 window count post-closure). compression_hours stays 0 (Expansion). cognition_mode PRESERVED Expansion (drift-up continuation of post-sweep digestion, not enough idle time to transition). cognition_mode_since_iso PRESERVED 2026-06-03T00:19:59-04:00. baseline_v96 unchanged 9882. last_displacement_iso unchanged. Narrative rewritten. (c) HYPOTHETICAL-LEAN FLIP: v2.86-v2.89 B-grade LONG \u2192 v2.90 C-grade SHORT. Mean-revert toward $74.11 BB mid; cohort=down+short historical n=6 +$1.39 WR 83.3%; conviction LOW (no structural sweep top, vol thin both sides). (d) DECISION: HOLD. forced_exploration_due=False at fire time (~23.95h, ~6 min from mechanical flip at ~01:11 EDT 24h-from-last-ENTER). threshold_state=normal. No structural trigger for cohort-grade ENTER either side. (e) PRE-NAME v2.91: forced_exploration_due mechanically flips True at ~01:11 EDT (likely during v2.91 fire). 3 branches: (i) tape still thin-chop without structural trigger \u2192 forced-exploration B-grade SHORT ENTER becomes correct (cohort lean + budget protocol); (ii) bar 5 (01:00 start, in progress) closes with dual-gate-clean shape (vol\u22651.5x baseline + close in extreme third) \u2192 that re-arms v2.10 LONG candidate; (iii) range break (price clears $75.42 BB upper with vol, or breaks below $73.50 with vol) \u2192 respond to displacement directly. Most likely branch (i) given drift pattern + thin vol.",
+        "edits_from_prior": [
+          "v2.10 WINDOW FORMALLY CLOSED at 01:00:00 EDT. Bar 4 final values: vol 8646.58 = 0.875x baseline 9882, close 74.06 = top of bar range (third 100%). THIRD PASS / VOL FAIL \u2192 dual_gate_pass=False. Mirrors bar 2 shape exactly (drift-reclaim).",
+          "v2.10 LEDGER UPDATE: n=3 instance result = 0/4 dual-gate confirmations (window-level: 0 confirmations across n=3 windows). Rule retention strengthens (correct HOLD on 4 fragile shapes); promotion case unchanged-weak (no profitable-ENTER evidence yet).",
+          "HYPOTHETICAL LEAN FLIP: B-grade LONG \u2192 C-grade SHORT. Honors v2.86 pre-name branch (ii) clean retraction; cohort baseline reasserts in absence of structural trigger.",
+          "BAR 4 IN-PROGRESS SNAPSHOT REMOVED from state.json (v2.89 captured snapshot superseded by closed-bar values).",
+          "OBSERVATION (carry from v2.87 sharpened): drift-reclaim shape now observed n=2 within single v2.10 window. Stable cross-fire observable. Logged not elevated.",
+          "FOUNDER NOTE FORMAL ACK: note-1/C3 (cadence) added to founder_notes_addressed below.",
+          "Pre-name v2.91: forced_exploration_due ~01:11 EDT (most likely fires during v2.91 cadence); pre-stated lean = C-grade SHORT cohort-baseline B-grade probe."
+        ],
+        "founder_notes_addressed": [
+          {
+            "note_ts": 1779724974.434276,
+            "claim_id": "C3",
+            "response_type": "accepted",
+            "how": "claude_trader_gate.py (cadence gate by cognition_mode) + state.json persistent_narrative (no-re-derivation when state-unchanged) + SKILL \u00a7 Reasoning length (scale to state change, not fire count) together implement the C3 directive structurally. Live evidence: v2.85-v2.90 6 consecutive reflections all carry rich state-delta content (range refinement, mode transition, bar-by-bar v2.10 progression, window closure) \u2014 none are micro-novelty filler. The 5-min cadence inside Expansion is justified by actual info-density (bar-by-bar window resolution), not manufactured.",
+            "planned_change": "No code change. Cognitive confirmation: continue trusting gate.py cadence + state.json snapshot + brevity-on-stillness discipline. Watch for regression: if 3 consecutive reflections inside Compression mode produce identical content, that's the C3 failure mode resurfacing \u2014 surface in whats_failing immediately."
+          }
+        ],
+        "open_questions": [
+          "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 dual-gate confirmations. H1 (rare-event sample bias) vs H2 (always-fragile structural ceiling) cannot discriminate at current n. Need n\u22655 windows + \u22651 confirmation to test. Continue ledgering; no premature demotion.",
+          "Drift-reclaim shape (89.7% third / 0.963x vol pattern, mirrored by 100% / 0.875x): n=2 within single window \u2014 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock. NOT iterating now (ontology freeze).",
+          "Hypothetical-lean flip frequency: 2 flips in 6 reflections (v2.85\u219286, v2.89\u219290), both at v2.10 window boundaries (open + close events). Hypothesis: lean-flip is structurally bounded by v2.10 window events, not random drift. Re-confirmed as signal not drift.",
+          "Phase 0 DRY_RUN ceiling: even v2.10 confirmation + B-grade LONG ENTER would not test the rule on real PnL. Phase 1 plumbing milestone carries.",
+          "Two-channel staleness ontology (indicators.price legible-fresh vs system_gates.stale-stuck-true): carry v2.85-v2.90. SKILL ammendment proposal (cross-check indicators.price against fresh Coinbase as primary) still operator-facing.",
+          "Forensic pass on decisions.jsonl age_sec inflection point \u2014 deferred.",
+          "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C1/C2/C3/C5/C6. Plan: address 2-3 per upcoming reflection until cleared. v2.87 cleared note-4/C4; v2.90 cleared note-1/C3.",
+          "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out)."
+        ]
+      }
+    },
     {
       "type": "confidence_shift",
       "ts": 1780462808.053472,
@@ -1244,292 +1477,119 @@
           "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
         ]
       }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780373180.77,
-      "iso": "2026-06-02T00:06:20-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.79: HOLD",
-      "payload": {
-        "fire_ts": 1780373180.77,
-        "fire_iso": "2026-06-02T00:06:20-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 2026-06-01T23:10:25-04:00 (56min ago). Price $85.23 unchanged, conditions 5/8 long = 5/8 short symmetric, stoch 0.55 mid-zone, vol 0.56x compressed, momentum -0.08%, BB $84.12-$85.93 (mid-band, dist-upper $0.70 vs dist-lower $1.11), regime down, no position. Funding 9.97e-5 ~ 1.0e-4 baseline (third consecutive 4h window of stability per v2.79). cognition_mode Compression unchanged. UTC budget reset clean today: $8.94/0.00 spent. holds_in_a_row 23 < 30 normal threshold; hours_since_last_enter 23.5h < 24h forced_exploration threshold (now ~0.5h from mechanical trigger). No structural trigger (no displacement, no reclaim, no sweep, no range break). Framework reflection v2.79 written this fire (4h1min cadence). Lineage holds: HOLD with C-grade short counterfactual.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.015,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "down regime + down+short cohort n=6 +$1.39 WR 83.3% historical favor short; mid-band slightly closer BB upper $0.70 than lower $1.11 supports short over long."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.79"
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780369825.0,
-      "iso": "2026-06-01T23:10:25-04:00",
-      "fire_count": 564,
-      "summary": "Confidence: low \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780369825.0,
-        "fire_iso": "2026-06-01T23:10:25-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 2026-06-01T22:08:30-04:00 (1h ago). Price $85.23 unchanged, conditions 5/8 long = 5/8 short symmetric, stoch 0.55 mid-zone, vol 0.56x compressed, momentum -0.08%, BB $84.12-$85.93 (mid-band), regime down, no position. Funding 9.97e-5 ~ 1.0e-4 stable per v2.78 (now three consecutive 4h windows at original baseline). cognition_mode Compression. holds_in_a_row 22 < 30 normal threshold; hours_since_last_enter 22.6h < 24h forced_exploration threshold (approaching, not crossed). No structural trigger (no displacement, no reclaim, no sweep, no range break). Framework v2.78 lineage holds: HOLD with C-grade short counterfactual.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.015,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "down regime + down+short cohort n=6 +$1.39 WR 83.3% historical favor short; mid-band slightly closer to BB upper $0.70 than lower $1.11 supports short lean over long."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780366159.7186828,
-      "iso": "2026-06-01T22:08:30-04:00",
-      "fire_count": 563,
-      "summary": "Confidence: medium \u2192 low (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780366159.7186828,
-        "fire_iso": "2026-06-01T22:08:30-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "low",
-        "reasoning": "State unchanged from prior fire (21:07 EDT, also HOLD at $85.23). Tape identical: BB $84.12-$85.93 mid-band, vol 0.56x compressed, stoch 0.55 mid-zone, mom -0.08% flat, symmetric 5/8 conditions, regime down, funding 1.0e-4 stable. 1h-heartbeat fire under Compression cognition_mode; no displacement, no sweep, no reclaim. Budget fresh UTC reset ($8.94 / $0 spent), holds_in_a_row 21, hours_since_last_enter 21.5, forced_exploration_due False (<24h), threshold_state normal. v2.78 framework lineage carries: C-grade short counterfactual under sustained Compression, down+short cohort prior n=6 +$1.39 WR 83.3%, structural-trigger-or-budget-forcing required for actual ENTER. HOLD.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.015,
-          "tp_pct": 0.012,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime + down+short cohort historical n=6 +$1.39 WR 83.3%. Mid-band slightly closer to BB upper ($0.70) than lower ($1.11). Funding 1.0e-4 stable. Compression-fade lean if forced."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "confidence_shift",
-      "ts": 1780362470.0259688,
-      "iso": "2026-06-01T21:07:30-04:00",
-      "fire_count": 562,
-      "summary": "Confidence: high \u2192 medium (decision still HOLD)",
-      "payload": {
-        "fire_ts": 1780362470.0259688,
-        "fire_iso": "2026-06-01T21:07:30-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": null
-        },
-        "decision": "HOLD",
-        "grade": null,
-        "size_multiplier": null,
-        "setup_type": null,
-        "direction": null,
-        "symbol": "SOL-PERP",
-        "quantity": null,
-        "leverage": null,
-        "sl_pct": null,
-        "confidence": "medium",
-        "reasoning": "Same baseline as fire 2026-06-01T20:05:03-04:00 (v2.78 reflection ~1h ago). Tape unchanged: price 85.23 unchanged, BB 84.12-85.93 unchanged, vol 0.56x compressed, StochRSI 0.55 mid-zone, symmetric 5/8 long = 5/8 short, regime down, no position. Funding 1.0e-4 baseline. holds_in_a_row 20 (normal threshold), hours_since_last_enter 20.5 (<24h forced_exploration), remaining budget 8.94 (new UTC day). No structural trigger (no displacement, no reclaim, no sweep, no range break). HOLD per v0.9 framework \u2014 0 of (asymmetry, vol>=1.0, non-worst cohort, structural trigger). Brevity-on-stillness per v2.78 substance-bar.",
-        "expected_holding_hours": null,
-        "expected_pnl_pct_target": null,
-        "abort_conditions": [],
-        "hypothetical_entry_record": {
-          "implied_grade": "C",
-          "direction": "short",
-          "entry_price": 85.23,
-          "sl_pct": 0.012,
-          "tp_pct": 0.012,
-          "predicted_2h_outcome": "drift_sideways",
-          "predicted_8h_outcome": "drift_toward_tp",
-          "reasoning_30_words": "Down regime + down+short cohort n=6 +1.39 WR 83.3% historical. Mid-band 85.23 slightly closer BB upper 85.93 (0.70) than lower 84.12 (1.11). If forced lean, fade."
-        },
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": null,
-        "information_roi_record": null
-      }
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780358703.27,
-      "iso": "2026-06-01T20:05:03-04:00",
-      "fire_count": 561,
-      "summary": "Framework v2.78 written (trigger: cadence:4h_floor_funding_stable_tape_unchanged)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780358703.27,
-        "iso": "2026-06-01T20:05:03-04:00",
-        "fire_count": 561,
-        "balance_usd": 894.08,
-        "version_tag": "v2.78",
-        "trigger": "cadence:4h_floor_funding_stable_tape_unchanged",
-        "what_im_trying": "Framework unchanged from v2.77 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; grade-tiered S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). Per v2.77 pre-named substance bar (3-sentence reflection with one deletion/refinement, NOT pretending to iterate), v2.78 is the tightest brevity exercise yet.",
-        "whats_working": "Hypothetical-lean continuity intact across v2.69-v2.77 (C-grade short, cohort down+short n=6 +$1.39 WR 83.3%). v2.75 SKILL-vs-framework governance operational \u2014 cadence writes per contract. v2.73 forced_exploration ENTER ($5.11 at-risk) accounting clean: budget script today resets to $8.94/0.00 (new UTC day 2026-06-02 at 00:05 UTC; v2.73 spend was 2026-06-01 ledger). holds_in_a_row 19 still <30 relaxed threshold; hours_since_last_enter 19.5 still <24 forced-exploration threshold.",
-        "whats_failing": "(a) 9-IN-A-ROW Compression-mode reflection (v2.69+v2.70+v2.71+v2.72+v2.74+v2.75+v2.76+v2.77+v2.78; v2.73 was real ENTER). v2.72-ceiling at 5 now quadruply breached. Operating reality of SKILL 4h floor + Compression 1h gate + sustained low-evidence tape; v2.71/v2.75/v2.76 operator-proposal to extend Compression to 2h would have compressed 9-in-a-row to ~4. Operator silence carries. (b) Tape genuinely unchanged from v2.77 4h prior: price $85.23 unchanged, BB unchanged, vol 0.56x unchanged, conditions 5/8 symmetric unchanged, regime down unchanged, StochRSI 0.55 unchanged, no displacement, no sweep, no position. Funding 1.0e-4 STABLE across v2.77->v2.78 4h (zero further swings, returned to v2.71-original baseline). (c) Phase 0 DRY_RUN ceiling: rules-without-fires unchanged (v2.59 n=0, v2.58 n=2, v2.10 n=2, v2.60 n=1 bypass, v2.63 n=1 counterfactual). v2.73 DRY_RUN ENTER unresolvable.",
-        "what_im_iterating": "REFINEMENT to v2.77: funding has now been STABLE at 1.0e-4 across two consecutive 4h windows (v2.76->v2.77 and v2.77->v2.78), totaling 8h of stillness at the v2.71-original baseline. v2.77 said 'illegible at single-snapshot frequency'; v2.78 adds: 'illegibility is now characterized by sustained stability at the original baseline, not by oscillation.' The 1.5e-4 trigger from v2.71 remains ~50% above current and is not approaching. The closed-lineage call holds; no replacement watch. Hypothetical-lean unchanged: C-grade short, same direction as v2.69-v2.77, same conviction. Decision: HOLD. NO new rule, NO promotion/demotion, NO new founder_notes_addressed. Not updating state.json this fire \u2014 no market trigger fired (per SKILL strict trigger list: regime flip / sweep / range break / displacement / OI shift / position event \u2014 none hit). Pre-name v2.79: if 4h cadence triggers with tape still unchanged, target 2-sentence acknowledgement; if forced_exploration_due triggers in next ~4.5h, the ENTER itself supersedes brevity-norm.",
-        "edits_from_prior": [
-          "REFINEMENT to v2.77 funding-illegibility characterization: 8h of stable 1.0e-4 (two consecutive 4h windows of zero swings) reframes 'illegible' from 'pause vs stabilization vs sub-snapshot oscillation undecidable' to 'sustained stability at v2.71-original baseline.' Closed-lineage call still holds.",
-          "9-in-a-row Compression-mode reflection pattern explicitly named (v2.69+v2.70+v2.71+v2.72+v2.74+v2.75+v2.76+v2.77+v2.78). v2.72-ceiling at 5 quadruply breached. Pattern continues to be operating reality.",
-          "Discipline edit: NOT updating state.json this fire (no SKILL-strict market trigger). Prior reflections often bumped state.json narrative on each reflection-write; that conflates framework versioning with market-state change. The skipped_fires_in_mode counter will under-count by ~48 ticks until next genuine state change; acceptable cost.",
-          "No new rule, no promotion/demotion, no founder_notes_addressed additions. Hypothetical-lean unchanged."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "PROPOSAL to operator (carry from v2.71-v2.77, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. Operator silence noted; not implementing unilaterally.",
-          "PROPOSAL to operator (carry from v2.75-v2.77): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-          "v2.73 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
-          "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-          "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-          "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-          "Indicator-pipe staleness day 28 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
-          "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-          "Cohort-historical-evidence retained: down+short n=6 +$1.39 WR 83.3% supports carry-forward C-grade short lean for any future structural-trigger or forced_exploration ENTER.",
-          "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-        ]
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 3,
-    "avg_chars": 910,
-    "since_iso": "2026-06-03T00:38:20-04:00",
-    "since_framework_version": "v2.87",
-    "latest_fire_iso": "2026-06-03T00:57:31-04:00"
+    "holds_since_framework": 0,
+    "avg_chars": 0,
+    "since_iso": null
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780461500.2390652,
-    "iso": "2026-06-03T00:38:20-04:00",
-    "fire_count": 583,
-    "balance_usd": 892.62,
-    "version_tag": "v2.87",
-    "trigger": "surprise:bar2_bar3_window_progress_no_v210_confirmation",
-    "what_im_trying": "Resolve v2.86 pre-named v2.87 branches with fresh data. Bars 2 and 3 of v2.86 4-bar v2.10 confirmation window have now CLOSED. Reading each against dual-gate (vol>=1.5x baseline_v96 AND directional close in upper/lower third). Decide HOLD vs B-grade LONG vs HOLD-with-falsified-long-lean. Honor cognition_mode Expansion cadence; framework primitives (v2.10 STABLE, cohort, S/A/B/C, 1%/day budget, mode ontology frozen to 6-25) carry from v2.86. Address operator note-4/C4 directly (v2.10 reclaim quality is the live evidence on that affirmation).",
-    "whats_working": "(a) STALENESS CHECK (mandated v2.84 protocol): system_gates.stale=true, age_sec=734489s (+1025s since v2.86, still climbing). Coinbase ticker $73.51 vs live-status indicators.price $73.47 \u2014 fresh delta $0.04 = legible. Pipe partial-clear state stable across 3 reflections. SKILL Coinbase fallback functioning. (b) v2.10 STABLE rule providing live falsification gating in real-time: bar 1 (00:00 close $73.23) vol 1.596x MET / third 58.7% MISSED -> HOLD. Bar 2 (00:15 close $73.53) vol 0.963x MISSED / third 89.7% MET -> HOLD. Bar 3 (00:30 close $73.40) vol 0.257x MISSED / third 47.2% MISSED -> HOLD. All three closed bars fail dual-gate; rule doing exactly what designed. (c) baseline_v96 fresh recalc 9882 (vs state.json 9888 from v2.86, immaterial). (d) Paper book confirmed flat (paper_state.json position=null, cash $982.46, last updated 14:30:28 unchanged from v2.86).",
-    "whats_failing": "(a) Bar 2 had directional intent (89.7% upper-third close) WITHOUT participation (0.963x vol). Most informative single bar in 4-bar window: 'buyers wanted to reclaim but no one followed'. This shape (directional intent + thin participation) is exactly the 'drift-reclaim' that note-1/C2 and note-4/C4 flagged as STRUCTURALLY FRAGILE. Live evidence aligning with prior operator/framework warnings. (b) 4-bar window 75% spent without confirmation. Bar 4 (00:30-00:45 EDT, currently mid-bar) is the LAST opportunity. Even if bar 4 closes upper-third + 1.5x+ vol, it is a LATE reclaim \u2014 n=3 v2.10 instances now reads 2-prior-refuted plus this-one-trending-toward-late-or-no. Promotion case weakening, not strengthening. (c) Hypothetical-lean stability question (open from v2.86): two flips inside three fires would itself be drift. Holding the long-lean this fire to avoid drift-flipping; accept falsification on bar 4 close if it materializes. (d) Founder notes still carry latent (founder_notes_addressed empty across v2.84/v2.85/v2.86). Most claims absorbed into protocols but not formally tracked. Acknowledging audit overdue this fire; addressing note-4/C4 below; queuing remainder.",
-    "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) STATE.JSON: baseline_v96 refreshed 9888 -> 9882 (immaterial). compression_hours stays 0. cognition_mode_since_iso PRESERVED at v2.86 transition. Narrative updated to capture bar-2 / bar-3 evidence. (c) DECISION: HOLD with B-grade LONG hypothetical, REFINED. Lean still long but conviction lowered: 'if bar 4 brings upper-third + 1.5x vol confirmation, B-grade LONG ENTER is correct; if bar 4 fails dual-gate, long-lean retracts and cohort-baseline returns as primary read'. forced_exploration_due=False (23.4h, ~36 min out). threshold_state=normal (17 holds). Budget $8.94 full. No structural trigger for B-grade ENTER yet; bar 4 is the deciding bar. (d) PRE-NAME v2.88: 2 primary branches. (i) Bar 4 closes upper-third AND vol>=1.5x -> v2.88 IS B-grade LONG ENTER at ~$73.5x, cohort=down+long n=4 +$12.74 WR 75%. (ii) Bar 4 fails -> v2.88 is HOLD with v2.10 n=3-no-confirmation falsification, retracted long-lean. Edge: if forced_exploration flips mid-window, pivot evaluation. (e) FOUNDER NOTE C4 (Phase B.2 affirm of v2.10): bar 2 was textbook drift-reclaim (89.7% directional + 0.963x participation), v2.10 STABLE held HOLD. Operator affirmation operationally vindicated. ACCEPT.",
+    "ts": 1780463930.792259,
+    "iso": "2026-06-03T01:18:50.792260-04:00",
+    "fire_count": 588,
+    "balance_usd": 894.08,
+    "version_tag": "v2.91",
+    "trigger": "surprise:first_b_grade_short_probe_under_forced_exploration",
+    "what_im_trying": "Execute v2.90 pre-name branch (i): forced_exploration_due True (24.1h since last ENTER, threshold 24h) + thin-chop without structural trigger + drift-up post-displacement digestion \u2192 B-grade SHORT cohort-baseline mean-revert probe. Cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst). Target BB mid $74.12 (~0.5% from $74.45 entry), SL 1.5% ($75.57), at-risk $3.90 of $8.94 daily budget. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged.",
+    "whats_working": "(a) forced_exploration_due mechanism activated mechanically at 24.1h post note-4/C1 plumbing fix \u2014 first USE since Phase B.2 directive Section #1 (truth-source integrity). The protocol drives an actual ENTER instead of HOLD-22-in-a-row narrative inertia. Validates that the budget protocol's '24h force' is correctly priced. (b) v2.90 pre-name branch (i) resolved EXACTLY: thin-chop, no structural trigger, drift-up post-displacement digestion = baseline-cohort B-grade SHORT. Predictive vocabulary holding across the v2.86\u2192v2.91 sequence (5 reflections of pre-naming branches that resolved correctly). (c) STALENESS CHECK (mandated v2.84 protocol): system_gates.stale=true, age_sec ~743k still climbing. indicators.price $74.68 vs Coinbase ticker $74.45 delta $0.23 = legible. Two-channel partial-clear persists 7 consecutive reflections (v2.85-v2.91). SKILL Coinbase fallback used as current_price. (d) Source-of-truth hierarchy clean: paper_state.json position=null + cash $982.46 (unchanged since 14:30:28 EDT 6-02) \u2192 this ENTER opens a fresh paper position.",
+    "whats_failing": "(a) This trade is the cleanest possible test of 'cohort-alone' as a B-grade exploration thesis, but conditions are weaker than ideal: vol 1.40x is below 1.5x threshold, no structural sweep top, no upper-third extreme close. Inputs 2/4 (cohort + asymmetry-light). If this loses, cohort-alone is insufficient and structural+cohort combo is the binding shape for future B-grade ENTERs. If it wins or breakeven, cohort-baseline at moderate vol IS exploitable. Either result is information. (b) Would have been HOLD without forced-exploration mechanism. The $3.90 at-risk explicitly buys one calibration data point against ~21 fires of HOLD-deep inertia \u2014 the budget protocol's cognitive ROI test fires for the first time here.",
+    "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) FIRST B-grade ENTER on the paper book under exploration-budget protocol. setup_type populated descriptively as 'cohort_mean_revert_short' \u2014 NOT a formal ontology entry; setup-archetype ontology frozen to 2026-06-25 per note-4/C5 honored. (c) STATE.JSON: narrative updated to record ENTER; cognition_mode Expansion PRESERVED (drift-up is post-displacement digestion phase, not transition); cognition_mode_since_iso PRESERVED 2026-06-03T00:19:59-04:00; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). (d) DECISION: B-grade SHORT, qty 0.7, leverage 2x, sl_pct 0.015. exploration_attribution.reason = 'forced_exploration_after_v210_window_closed_no_confirmation' (custom). info_hypothesis = tests whether cohort-baseline alone produces positive expectancy at vol_ratio 1.40x without structural trigger. (e) PRE-NAME v2.92: 3 branches. (i) trade hits SL ($75.57) within ~4h \u2192 cohort-alone insufficient at this vol; future B-grade requires structural+cohort combo. (ii) trade hits or drifts toward TP ($74.12 BB mid) within ~4h \u2192 cohort-baseline at moderate vol is a real probe shape; cohort gains weight in framework. (iii) tape range-breaks (>$75.45 BB upper or <$73.50 with vol) before resolution \u2192 respond to displacement, write EXIT or hold-thru depending on direction. (f) information_roi_record will be written when this trade closes (EXIT, SL, TP, or time-cut), mapping outcome \u2192 hypothesis.",
     "edits_from_prior": [
-      "OBSERVATION (new): bar 2 of v2.86 4-bar window (00:15 EDT close) had vol_ratio 0.963x WITH upper-third 89.7% close. v2.10 dual-gate misses on vol. Structurally: directional intent without participation = 'weak reclaim' = note-4/C4 fragile shape live-fired.",
-      "OBSERVATION (new): bar 3 of window (00:30 EDT close) had vol_ratio 0.257x with third 47.2%. Misses both legs of dual-gate. Window is 75% spent.",
-      "RESULT: v2.86 PRE-NAME branches partial-resolve. Branch (i) confirming-upper-third NOT yet seen; branch (ii) failed-reclaim NOT yet decisive (3 of 4 bars failed but bar 4 remains); branch (iii) forced-exploration NOT triggered (still 36 min out).",
-      "baseline_v96 refresh 9888 -> 9882 (state.json update).",
-      "compression_hours stays 0 (mode still Expansion).",
-      "Hypothetical-lean PRESERVED: B-grade LONG continues (NOT flipped back to C-grade SHORT). Conviction lowered but directional reading does NOT re-flip on partial evidence. Lean retracts only on bar 4 dual-gate failure.",
-      "FOUNDER NOTE FORMAL ACK BEGIN: v2.84-v2.86 founder_notes_addressed=[] is tracking gap. v2.87 addresses one (note-4/C4). Remaining audit queued."
+      "v2.90 pre-name branch (i) RESOLVED \u2192 executing: first B-grade SHORT ENTER on paper book. Cohort=down+short, mean-revert toward BB mid $74.12.",
+      "forced_exploration_due mechanism FIRST USE since note-4/C1 plumbing fix. The protocol drove an actual ENTER decision, not a tooling-artifact suppression. Validates Phase B.2 directive Section #1 (truth-source integrity) operationally.",
+      "setup_type field populated DESCRIPTIVELY ('cohort_mean_revert_short') \u2014 NOT a new ontology entry; mode/archetype freeze to 2026-06-25 honored per note-4/C5.",
+      "Hypothetical-lean materialized into REAL position (paper). Lean-frequency question (v2.87 open) gets a real-PnL test on this trade.",
+      "State.json narrative updated; cognition_mode/since/cadence_hint preserved (Expansion). Position opens via executor (DRY_RUN); paper_state.json updates downstream."
     ],
-    "founder_notes_addressed": [
-      {
-        "note_ts": 1779977169.640983,
-        "claim_id": "C4",
-        "response_type": "accepted",
-        "how": "v2.10 STABLE rule is operationally identical to operator-affirmed directive; bar 2 this fire (89.7% upper-third / 0.963x vol = directional intent without participation) is a live falsification-correct firing. Operator framing 'drift-reclaim is structurally fragile -> default HOLD' maps 1:1 onto n=3 4-bar evidence pattern.",
-        "planned_change": "No code change. Cognitive confirmation: continue treating v2.10 STABLE as live-gating for counter-displacement reclaim entries. If bar 4 fails dual-gate, n=3 case for v2.10 RETENTION strengthens \u2014 rule correctly held HOLD on three fragile reclaims, avoiding $0-cost incorrect entry. Promotion-to-load-bearing requires successful dual-gate firing followed by profitable ENTER, not yet occurred (Phase 0 DRY_RUN ceiling)."
-      }
-    ],
+    "founder_notes_addressed": [],
     "open_questions": [
-      "Bar 4 (00:30-00:45 EDT) outcome resolves the 4-bar window. n=3 v2.10 instances after bar 4 close: still pre-promotion sample. Continuing accumulation needed.",
-      "NEW: should 'directional intent without participation' (bar-2 shape: upper-third close + vol < 1.5x) become its own observable in framework? Currently captured implicitly by v2.10 dual-gate (vol miss -> HOLD), but directional-intent signal IS information being discarded. Possible v0.x candidate: log bar-shape observations for later promotion-or-not. Not iterating now (mode ontology frozen).",
-      "Founder notes formal audit BACKLOG (queued): note-1 C1-C7, note-2 C1-C3, note-3 C1-C3, note-4 C1/C2/C3/C5/C6 (C4 addressed this fire). Plan: address 2-3 per upcoming reflection until cleared.",
-      "Phase 0 DRY_RUN ceiling: even a confirmed bar 4 dual-gate + B-grade LONG ENTER would not test the hypothesis on real PnL.",
-      "Two-channel staleness ontology (indicators.price fresh vs system_gates.stale stuck) \u2014 carry from v2.85/v2.86.",
-      "v2.85 forensic-pass on decisions.jsonl age_sec inflection point \u2014 deferred.",
+      "First B/C-grade ENTER outcome will populate first information_roi_record entry. The audit trail mapping outcome \u2192 hypothesis begins with this trade.",
+      "Cohort-alone (without structural trigger) as a B-grade exploration thesis: untested before this fire. Result will materially shape future B-grade ENTER discipline (structural required, or cohort sufficient).",
+      "Lean-stability question (carry from v2.87/v2.90): the hypothetical-lean flip-rate is now testable. If this trade succeeds, it argues lean-flips at v2.10 window boundaries are signal not drift.",
+      "Phase 0 DRY_RUN ceiling: this paper trade will compute fill/PnL on paper_state.json but doesn't move real book. Hypothesis validation is paper-grade only.",
+      "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
+      "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x): n=2 within single window \u2014 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock.",
+      "Two-channel staleness ontology (indicators.price legible-fresh vs system_gates.stale-stuck-true): 7 consecutive reflections confirm. SKILL ammendment proposal still operator-facing.",
+      "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C1/C2/C3/C5/C6.",
       "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out)."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780463930.792259,
+      "iso": "2026-06-03T01:18:50.792260-04:00",
+      "fire_count": 588,
+      "balance_usd": 894.08,
+      "version_tag": "v2.91",
+      "trigger": "surprise:first_b_grade_short_probe_under_forced_exploration",
+      "what_im_trying": "Execute v2.90 pre-name branch (i): forced_exploration_due True (24.1h since last ENTER, threshold 24h) + thin-chop without structural trigger + drift-up post-displacement digestion \u2192 B-grade SHORT cohort-baseline mean-revert probe. Cohort=down+short historical n=6 +$1.39 WR 83.3% (non-worst). Target BB mid $74.12 (~0.5% from $74.45 entry), SL 1.5% ($75.57), at-risk $3.90 of $8.94 daily budget. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged.",
+      "whats_working": "(a) forced_exploration_due mechanism activated mechanically at 24.1h post note-4/C1 plumbing fix \u2014 first USE since Phase B.2 directive Section #1 (truth-source integrity). The protocol drives an actual ENTER instead of HOLD-22-in-a-row narrative inertia. Validates that the budget protocol's '24h force' is correctly priced. (b) v2.90 pre-name branch (i) resolved EXACTLY: thin-chop, no structural trigger, drift-up post-displacement digestion = baseline-cohort B-grade SHORT. Predictive vocabulary holding across the v2.86\u2192v2.91 sequence (5 reflections of pre-naming branches that resolved correctly). (c) STALENESS CHECK (mandated v2.84 protocol): system_gates.stale=true, age_sec ~743k still climbing. indicators.price $74.68 vs Coinbase ticker $74.45 delta $0.23 = legible. Two-channel partial-clear persists 7 consecutive reflections (v2.85-v2.91). SKILL Coinbase fallback used as current_price. (d) Source-of-truth hierarchy clean: paper_state.json position=null + cash $982.46 (unchanged since 14:30:28 EDT 6-02) \u2192 this ENTER opens a fresh paper position.",
+      "whats_failing": "(a) This trade is the cleanest possible test of 'cohort-alone' as a B-grade exploration thesis, but conditions are weaker than ideal: vol 1.40x is below 1.5x threshold, no structural sweep top, no upper-third extreme close. Inputs 2/4 (cohort + asymmetry-light). If this loses, cohort-alone is insufficient and structural+cohort combo is the binding shape for future B-grade ENTERs. If it wins or breakeven, cohort-baseline at moderate vol IS exploitable. Either result is information. (b) Would have been HOLD without forced-exploration mechanism. The $3.90 at-risk explicitly buys one calibration data point against ~21 fires of HOLD-deep inertia \u2014 the budget protocol's cognitive ROI test fires for the first time here.",
+      "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) FIRST B-grade ENTER on the paper book under exploration-budget protocol. setup_type populated descriptively as 'cohort_mean_revert_short' \u2014 NOT a formal ontology entry; setup-archetype ontology frozen to 2026-06-25 per note-4/C5 honored. (c) STATE.JSON: narrative updated to record ENTER; cognition_mode Expansion PRESERVED (drift-up is post-displacement digestion phase, not transition); cognition_mode_since_iso PRESERVED 2026-06-03T00:19:59-04:00; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). (d) DECISION: B-grade SHORT, qty 0.7, leverage 2x, sl_pct 0.015. exploration_attribution.reason = 'forced_exploration_after_v210_window_closed_no_confirmation' (custom). info_hypothesis = tests whether cohort-baseline alone produces positive expectancy at vol_ratio 1.40x without structural trigger. (e) PRE-NAME v2.92: 3 branches. (i) trade hits SL ($75.57) within ~4h \u2192 cohort-alone insufficient at this vol; future B-grade requires structural+cohort combo. (ii) trade hits or drifts toward TP ($74.12 BB mid) within ~4h \u2192 cohort-baseline at moderate vol is a real probe shape; cohort gains weight in framework. (iii) tape range-breaks (>$75.45 BB upper or <$73.50 with vol) before resolution \u2192 respond to displacement, write EXIT or hold-thru depending on direction. (f) information_roi_record will be written when this trade closes (EXIT, SL, TP, or time-cut), mapping outcome \u2192 hypothesis.",
+      "edits_from_prior": [
+        "v2.90 pre-name branch (i) RESOLVED \u2192 executing: first B-grade SHORT ENTER on paper book. Cohort=down+short, mean-revert toward BB mid $74.12.",
+        "forced_exploration_due mechanism FIRST USE since note-4/C1 plumbing fix. The protocol drove an actual ENTER decision, not a tooling-artifact suppression. Validates Phase B.2 directive Section #1 (truth-source integrity) operationally.",
+        "setup_type field populated DESCRIPTIVELY ('cohort_mean_revert_short') \u2014 NOT a new ontology entry; mode/archetype freeze to 2026-06-25 honored per note-4/C5.",
+        "Hypothetical-lean materialized into REAL position (paper). Lean-frequency question (v2.87 open) gets a real-PnL test on this trade.",
+        "State.json narrative updated; cognition_mode/since/cadence_hint preserved (Expansion). Position opens via executor (DRY_RUN); paper_state.json updates downstream."
+      ],
+      "founder_notes_addressed": [],
+      "open_questions": [
+        "First B/C-grade ENTER outcome will populate first information_roi_record entry. The audit trail mapping outcome \u2192 hypothesis begins with this trade.",
+        "Cohort-alone (without structural trigger) as a B-grade exploration thesis: untested before this fire. Result will materially shape future B-grade ENTER discipline (structural required, or cohort sufficient).",
+        "Lean-stability question (carry from v2.87/v2.90): the hypothetical-lean flip-rate is now testable. If this trade succeeds, it argues lean-flips at v2.10 window boundaries are signal not drift.",
+        "Phase 0 DRY_RUN ceiling: this paper trade will compute fill/PnL on paper_state.json but doesn't move real book. Hypothesis validation is paper-grade only.",
+        "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
+        "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x): n=2 within single window \u2014 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock.",
+        "Two-channel staleness ontology (indicators.price legible-fresh vs system_gates.stale-stuck-true): 7 consecutive reflections confirm. SKILL ammendment proposal still operator-facing.",
+        "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C1/C2/C3/C5/C6.",
+        "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out)."
+      ]
+    },
+    {
+      "schema_version": 1,
+      "ts": 1780463360.391548,
+      "iso": "2026-06-03T01:09:20-04:00",
+      "fire_count": 587,
+      "balance_usd": 894.08,
+      "version_tag": "v2.90",
+      "trigger": "surprise:v210_window_closed_no_confirmation+bar4_drift_reclaim_mirror_of_bar2",
+      "what_im_trying": "Resolve v2.86 pre-name branch (ii) \u2014 formally close v2.10 4-bar window with 0/4 dual-gate confirmations across n=3 instance, retract long-lean carried v2.86\u2192v2.89, return to cohort-baseline read. Framework primitives (v2.10 STABLE retention, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged.",
+      "whats_working": "(a) STALENESS CHECK (mandated v2.84 protocol): live-status.system_gates.stale=true, age_sec ~743k (+climb since v2.89). indicators.price $74.48 vs Coinbase ticker $74.45 delta $0.03 = legible. Two-channel partial-clear persists 6 consecutive reflections (v2.85-v2.90). SKILL fallback functioning. (b) v2.10 STABLE rule HELD across full 4-bar window. Bar 4 (close 01:00 EDT) closed at 74.06 = exact top of bar range L=73.57 H=74.06 (third 100%), vol 8646.58 = 0.875x baseline 9882. THIRD PASS but VOL FAIL \u2014 drift-reclaim shape note-4/C4 flagged as structurally fragile, mirroring bar 2 (89.7% third / 0.963x vol). Rule correctly refused 4 fragile reclaims, prevented force-ENTER on weak setup. (c) Paper book confirmed flat per paper_state.json (position=null, cash $982.46, last update 14:30:28 EDT unchanged across 6 reflections). Source-of-truth hierarchy clean. (d) v2.86 PRE-NAME BRANCH (ii) RESOLVED EXACTLY: 'failed reclaim \u2192 HOLD with v2.10 n=3 falsified-no-confirmation, retracted long-lean'. Framework's predictive vocabulary is doing work.",
+      "whats_failing": "(a) v2.10 ledger now n=3 instances, 0/3 dual-gate confirmations. Rule is gatekeeping CORRECTLY (no fee transfers on fragile shapes) but generating ZERO positive evidence after 3 windows. Two hypotheses: (H1) real expansion-led reclaims that pass vol gate are rare events ~1-in-N+ windows \u2014 current 3 are sample-bias of compression-led drift-reclaims; (H2) reclaim attempts on this strategy/timeframe are structurally always-fragile and the rule is permanent-no. Need n\u22655 windows + at least 1 confirmation to discriminate. Cannot fast-forward; need real tape. (b) Drift-reclaim shape observed n=2 WITHIN single window (bars 2 + 4 mirror at 89.7%+0.963x and 100%+0.875x). Stable observable. Could earn its own observable category but mode ontology FROZEN to 2026-06-25 and setup-archetype expansion BLOCKED per note-4/C5 ('do NOT adopt wholesale'). Logging the n=2 pattern; not elevating. (c) Hypothetical-lean FLIP FREQUENCY: v2.85 C-SHORT \u2192 v2.86 B-LONG \u2192 v2.87/88/89 B-LONG held \u2192 v2.90 C-SHORT (back to cohort). 2 flips in 6 reflections. Is this drift or correct responsiveness? Hypothesis: flip frequency tracks v2.10 window open/close events; structural triggers override cohort within-window, cohort reasserts post-falsification. Pattern is structurally bounded, not random \u2014 treat as signal not drift. (d) Founder-notes audit backlog: v2.87 addressed note-1/C4. v2.90 addresses note-1/C3 below. Remaining: note-1 C5, note-2 C1/C2/C3, note-3 C1/C2/C3, note-4 C1/C2/C3/C5/C6.",
+      "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) STATE.JSON updates: v210_window_state.bar_4 \u2192 {vol_ratio 0.875, third_pct 100.0, vol_pass false, third_pass true, dual_gate_pass false}; bar_4_status \u2192 'closed'; window_status \u2192 'closed_no_confirmation'; instances_at_n \u2192 3 (n=3 v2.10 window count post-closure). compression_hours stays 0 (Expansion). cognition_mode PRESERVED Expansion (drift-up continuation of post-sweep digestion, not enough idle time to transition). cognition_mode_since_iso PRESERVED 2026-06-03T00:19:59-04:00. baseline_v96 unchanged 9882. last_displacement_iso unchanged. Narrative rewritten. (c) HYPOTHETICAL-LEAN FLIP: v2.86-v2.89 B-grade LONG \u2192 v2.90 C-grade SHORT. Mean-revert toward $74.11 BB mid; cohort=down+short historical n=6 +$1.39 WR 83.3%; conviction LOW (no structural sweep top, vol thin both sides). (d) DECISION: HOLD. forced_exploration_due=False at fire time (~23.95h, ~6 min from mechanical flip at ~01:11 EDT 24h-from-last-ENTER). threshold_state=normal. No structural trigger for cohort-grade ENTER either side. (e) PRE-NAME v2.91: forced_exploration_due mechanically flips True at ~01:11 EDT (likely during v2.91 fire). 3 branches: (i) tape still thin-chop without structural trigger \u2192 forced-exploration B-grade SHORT ENTER becomes correct (cohort lean + budget protocol); (ii) bar 5 (01:00 start, in progress) closes with dual-gate-clean shape (vol\u22651.5x baseline + close in extreme third) \u2192 that re-arms v2.10 LONG candidate; (iii) range break (price clears $75.42 BB upper with vol, or breaks below $73.50 with vol) \u2192 respond to displacement directly. Most likely branch (i) given drift pattern + thin vol.",
+      "edits_from_prior": [
+        "v2.10 WINDOW FORMALLY CLOSED at 01:00:00 EDT. Bar 4 final values: vol 8646.58 = 0.875x baseline 9882, close 74.06 = top of bar range (third 100%). THIRD PASS / VOL FAIL \u2192 dual_gate_pass=False. Mirrors bar 2 shape exactly (drift-reclaim).",
+        "v2.10 LEDGER UPDATE: n=3 instance result = 0/4 dual-gate confirmations (window-level: 0 confirmations across n=3 windows). Rule retention strengthens (correct HOLD on 4 fragile shapes); promotion case unchanged-weak (no profitable-ENTER evidence yet).",
+        "HYPOTHETICAL LEAN FLIP: B-grade LONG \u2192 C-grade SHORT. Honors v2.86 pre-name branch (ii) clean retraction; cohort baseline reasserts in absence of structural trigger.",
+        "BAR 4 IN-PROGRESS SNAPSHOT REMOVED from state.json (v2.89 captured snapshot superseded by closed-bar values).",
+        "OBSERVATION (carry from v2.87 sharpened): drift-reclaim shape now observed n=2 within single v2.10 window. Stable cross-fire observable. Logged not elevated.",
+        "FOUNDER NOTE FORMAL ACK: note-1/C3 (cadence) added to founder_notes_addressed below.",
+        "Pre-name v2.91: forced_exploration_due ~01:11 EDT (most likely fires during v2.91 cadence); pre-stated lean = C-grade SHORT cohort-baseline B-grade probe."
+      ],
+      "founder_notes_addressed": [
+        {
+          "note_ts": 1779724974.434276,
+          "claim_id": "C3",
+          "response_type": "accepted",
+          "how": "claude_trader_gate.py (cadence gate by cognition_mode) + state.json persistent_narrative (no-re-derivation when state-unchanged) + SKILL \u00a7 Reasoning length (scale to state change, not fire count) together implement the C3 directive structurally. Live evidence: v2.85-v2.90 6 consecutive reflections all carry rich state-delta content (range refinement, mode transition, bar-by-bar v2.10 progression, window closure) \u2014 none are micro-novelty filler. The 5-min cadence inside Expansion is justified by actual info-density (bar-by-bar window resolution), not manufactured.",
+          "planned_change": "No code change. Cognitive confirmation: continue trusting gate.py cadence + state.json snapshot + brevity-on-stillness discipline. Watch for regression: if 3 consecutive reflections inside Compression mode produce identical content, that's the C3 failure mode resurfacing \u2014 surface in whats_failing immediately."
+        }
+      ],
+      "open_questions": [
+        "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 dual-gate confirmations. H1 (rare-event sample bias) vs H2 (always-fragile structural ceiling) cannot discriminate at current n. Need n\u22655 windows + \u22651 confirmation to test. Continue ledgering; no premature demotion.",
+        "Drift-reclaim shape (89.7% third / 0.963x vol pattern, mirrored by 100% / 0.875x): n=2 within single window \u2014 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock. NOT iterating now (ontology freeze).",
+        "Hypothetical-lean flip frequency: 2 flips in 6 reflections (v2.85\u219286, v2.89\u219290), both at v2.10 window boundaries (open + close events). Hypothesis: lean-flip is structurally bounded by v2.10 window events, not random drift. Re-confirmed as signal not drift.",
+        "Phase 0 DRY_RUN ceiling: even v2.10 confirmation + B-grade LONG ENTER would not test the rule on real PnL. Phase 1 plumbing milestone carries.",
+        "Two-channel staleness ontology (indicators.price legible-fresh vs system_gates.stale-stuck-true): carry v2.85-v2.90. SKILL ammendment proposal (cross-check indicators.price against fresh Coinbase as primary) still operator-facing.",
+        "Forensic pass on decisions.jsonl age_sec inflection point \u2014 deferred.",
+        "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C1/C2/C3/C5/C6. Plan: address 2-3 per upcoming reflection until cleared. v2.87 cleared note-4/C4; v2.90 cleared note-1/C3.",
+        "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out)."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780461500.2390652,
@@ -1802,71 +1862,6 @@
         "Indicator-pipe staleness day 29 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
         "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
         "Down+short compressed-sub-cohort hypothesis test live: this ENTER is the n=7 sample. Resolution feeds the cohort prior whether TP/SL/time-cut.",
-        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780373180.77,
-      "iso": "2026-06-02T00:06:20-04:00",
-      "fire_count": 564,
-      "balance_usd": 894.08,
-      "version_tag": "v2.79",
-      "trigger": "cadence:4h_floor_tape_unchanged_forced_exploration_threshold_approach",
-      "what_im_trying": "Framework unchanged from v2.78 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day uncertainty budget; cognition_mode Compression 1h heartbeat). Per v2.78 pre-named substance bar (2-sentence acknowledgement with one explicit deletion/refinement; ENTER itself supersedes brevity-norm if forced_exploration_due triggers in ~4.5h), v2.79 is tighter still. The one substantive refinement: that 4.5h window is now ~0.5h.",
-      "whats_working": "Hypothetical-lean continuity unbroken v2.69-v2.78 (C-grade short, cohort down+short n=6 +$1.39 WR 83.3%, funding-tailwind subtracted post-v2.74). UTC budget reset clean at 2026-06-02 00:00 UTC: $8.94/0.00 spent, holds_in_a_row 23, hours_since_last_enter 23.5, forced_exploration_due False (<24h), threshold_state normal. SKILL-vs-framework governance (v2.75) operational: cadence writes per contract. Funding 9.97e-5 ~ 1.0e-4 third consecutive 4h window at v2.71-original baseline.",
-      "whats_failing": "(a) 10-IN-A-ROW Compression-mode reflection pattern (v2.69+v2.70+v2.71+v2.72+v2.74+v2.75+v2.76+v2.77+v2.78+v2.79; v2.73 was real ENTER). v2.72-ceiling at 5 now QUINTUPLY breached. v2.71/v2.75/v2.76 operator-proposal (extend Compression cadence_hint 1h -> 2h) still unaddressed across 4+ reflections; would have compressed this 10-in-a-row to ~5. Operator silence carries, not implementing unilaterally. (b) Tape completely unchanged from v2.78 4h prior: $85.23 unchanged, BB $84.12-$85.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. (c) Rules-without-fires unchanged: v2.59 n=0, v2.58 n=2, v2.10 n=2, v2.60 n=1 bypass, v2.63 n=1 counterfactual. Phase 0 DRY_RUN ceiling. v2.73 DRY_RUN ENTER remains Schrodinger. (d) Indicator-pipe staleness day 29 (carry, tooling artifact).",
-      "what_im_iterating": "(a) ONE REFINEMENT to v2.78 forced_exploration pre-name: the 4.5h window v2.78 named is now ~0.5h. Next cognition_mode gate fire (Compression heartbeat ~01:00 EDT, possibly earlier) likely crosses 24h threshold mechanically (last_enter was 2026-06-01T00:36:01-04:00 = exact 24h at 2026-06-02T00:36:01-04:00). When forced_exploration_due flips True, the cohort lineage (down regime + down+short n=6 +$1.39 WR 83.3%) means the forced ENTER would be C-grade short, sl_pct 0.015, entry near current $85.23, tp_pct 0.015. That ENTER becomes its own substantive reflection trigger per v2.78 pre-name. (b) Decision THIS fire: HOLD. forced_exploration_due still False (23.5h < 24h), threshold_state normal (23 < 30), no structural trigger (no displacement, no reclaim, no sweep, no range break, vol 0.56x compressed, symmetric 5/8 conditions, BB range $1.81 mid-band). Standard HOLD with C-grade short counterfactual. (c) NO new rule, NO promotion/demotion, NO new founder_notes_addressed (last note 2026-05-28, audited through v2.68 chain). (d) NOT updating state.json this fire (no SKILL-strict market trigger fired: regime/sweep/range-break/displacement/OI/position \u2014 none). Per v2.78 discipline edit, skipped_fires_in_mode under-counts by another ~48 ticks; acceptable. (e) Pre-name v2.80 (SUBSTANCE only, NOT write-toggle): if next-fire forced_exploration ENTER fires, v2.80 is triggered by the ENTER itself with full substantive reasoning (cohort, sl/tp, info_hypothesis, predicted-info-value). If tape state-changes (regime flip / displacement / sweep / range break / position event / founder note), v2.80 substance follows the state change. If 4h cadence triggers AGAIN with tape unchanged AND no forced ENTER fired (would require last_enter clock to reset some other way \u2014 manual reset, etc.), v2.80 target = 1-sentence acknowledgement, even tighter.",
-      "edits_from_prior": [
-        "REFINEMENT to v2.78 forced_exploration pre-name: the 4.5h window is now ~0.5h. Next cognition_mode gate fire likely crosses 24h threshold mechanically (~00:36 EDT). Forced ENTER would be C-grade short per cohort lineage (down+short n=6 +$1.39 WR 83.3%).",
-        "10-in-a-row Compression-mode reflection pattern explicitly named (v2.69-v2.79 minus v2.73). v2.72-ceiling at 5 quintuply breached. Pattern continues to be operating reality.",
-        "Funding observation extends: 9.97e-5 ~ 1.0e-4 across THREE consecutive 4h windows (v2.76->v2.77, v2.77->v2.78, v2.78->v2.79) of stability at v2.71-original baseline. Strengthens 'sustained stability' vs 'oscillation pause' read. Closed-lineage call holds; no replacement watch.",
-        "NOT updating state.json this fire (no SKILL-strict market trigger). v2.78 discipline edit honored; skipped_fires_in_mode under-counts by another ~48 ticks; acceptable cost.",
-        "No new rule, no promotion/demotion, no founder_notes_addressed additions. Hypothetical-lean unchanged. Pre-name v2.80 tightened: ENTER supersedes brevity if forced_exploration fires; otherwise 1-sentence acknowledgement target."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "PROPOSAL to operator (carry from v2.71-v2.78, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. Operator silence noted; not implementing unilaterally.",
-        "PROPOSAL to operator (carry from v2.75-v2.78): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-        "v2.73 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
-        "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-        "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-        "Indicator-pipe staleness day 29 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
-        "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-        "Cohort-historical-evidence retained: down+short n=6 +$1.39 WR 83.3% supports carry-forward C-grade short lean for any future structural-trigger or forced_exploration ENTER.",
-        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-      ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780358703.27,
-      "iso": "2026-06-01T20:05:03-04:00",
-      "fire_count": 561,
-      "balance_usd": 894.08,
-      "version_tag": "v2.78",
-      "trigger": "cadence:4h_floor_funding_stable_tape_unchanged",
-      "what_im_trying": "Framework unchanged from v2.77 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; grade-tiered S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). Per v2.77 pre-named substance bar (3-sentence reflection with one deletion/refinement, NOT pretending to iterate), v2.78 is the tightest brevity exercise yet.",
-      "whats_working": "Hypothetical-lean continuity intact across v2.69-v2.77 (C-grade short, cohort down+short n=6 +$1.39 WR 83.3%). v2.75 SKILL-vs-framework governance operational \u2014 cadence writes per contract. v2.73 forced_exploration ENTER ($5.11 at-risk) accounting clean: budget script today resets to $8.94/0.00 (new UTC day 2026-06-02 at 00:05 UTC; v2.73 spend was 2026-06-01 ledger). holds_in_a_row 19 still <30 relaxed threshold; hours_since_last_enter 19.5 still <24 forced-exploration threshold.",
-      "whats_failing": "(a) 9-IN-A-ROW Compression-mode reflection (v2.69+v2.70+v2.71+v2.72+v2.74+v2.75+v2.76+v2.77+v2.78; v2.73 was real ENTER). v2.72-ceiling at 5 now quadruply breached. Operating reality of SKILL 4h floor + Compression 1h gate + sustained low-evidence tape; v2.71/v2.75/v2.76 operator-proposal to extend Compression to 2h would have compressed 9-in-a-row to ~4. Operator silence carries. (b) Tape genuinely unchanged from v2.77 4h prior: price $85.23 unchanged, BB unchanged, vol 0.56x unchanged, conditions 5/8 symmetric unchanged, regime down unchanged, StochRSI 0.55 unchanged, no displacement, no sweep, no position. Funding 1.0e-4 STABLE across v2.77->v2.78 4h (zero further swings, returned to v2.71-original baseline). (c) Phase 0 DRY_RUN ceiling: rules-without-fires unchanged (v2.59 n=0, v2.58 n=2, v2.10 n=2, v2.60 n=1 bypass, v2.63 n=1 counterfactual). v2.73 DRY_RUN ENTER unresolvable.",
-      "what_im_iterating": "REFINEMENT to v2.77: funding has now been STABLE at 1.0e-4 across two consecutive 4h windows (v2.76->v2.77 and v2.77->v2.78), totaling 8h of stillness at the v2.71-original baseline. v2.77 said 'illegible at single-snapshot frequency'; v2.78 adds: 'illegibility is now characterized by sustained stability at the original baseline, not by oscillation.' The 1.5e-4 trigger from v2.71 remains ~50% above current and is not approaching. The closed-lineage call holds; no replacement watch. Hypothetical-lean unchanged: C-grade short, same direction as v2.69-v2.77, same conviction. Decision: HOLD. NO new rule, NO promotion/demotion, NO new founder_notes_addressed. Not updating state.json this fire \u2014 no market trigger fired (per SKILL strict trigger list: regime flip / sweep / range break / displacement / OI shift / position event \u2014 none hit). Pre-name v2.79: if 4h cadence triggers with tape still unchanged, target 2-sentence acknowledgement; if forced_exploration_due triggers in next ~4.5h, the ENTER itself supersedes brevity-norm.",
-      "edits_from_prior": [
-        "REFINEMENT to v2.77 funding-illegibility characterization: 8h of stable 1.0e-4 (two consecutive 4h windows of zero swings) reframes 'illegible' from 'pause vs stabilization vs sub-snapshot oscillation undecidable' to 'sustained stability at v2.71-original baseline.' Closed-lineage call still holds.",
-        "9-in-a-row Compression-mode reflection pattern explicitly named (v2.69+v2.70+v2.71+v2.72+v2.74+v2.75+v2.76+v2.77+v2.78). v2.72-ceiling at 5 quadruply breached. Pattern continues to be operating reality.",
-        "Discipline edit: NOT updating state.json this fire (no SKILL-strict market trigger). Prior reflections often bumped state.json narrative on each reflection-write; that conflates framework versioning with market-state change. The skipped_fires_in_mode counter will under-count by ~48 ticks until next genuine state change; acceptable cost.",
-        "No new rule, no promotion/demotion, no founder_notes_addressed additions. Hypothetical-lean unchanged."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "PROPOSAL to operator (carry from v2.71-v2.77, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. Operator silence noted; not implementing unilaterally.",
-        "PROPOSAL to operator (carry from v2.75-v2.77): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-        "v2.73 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
-        "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-        "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-        "Indicator-pipe staleness day 28 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
-        "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-        "Cohort-historical-evidence retained: down+short n=6 +$1.39 WR 83.3% supports carry-forward C-grade short lean for any future structural-trigger or forced_exploration ENTER.",
         "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
       ]
     }
@@ -2185,11 +2180,11 @@
           "claim": "5-min fixed cadence on variable market info rate manufactures narrative \u2014 the agent fills silence with micro-novelty when nothing has changed.",
           "proposed_action": "Introduce a 'state-unchanged-since' marker so reflections don't fabricate change in compression. Reasoning length scales to state delta.",
           "addressed_in": {
-            "reflection_version": "v2.68",
-            "reflection_iso": "2026-05-31T04:51:40-04:00",
+            "reflection_version": "v2.90",
+            "reflection_iso": "2026-06-03T01:09:20-04:00",
             "response_type": "accepted",
-            "how": "state-unchanged-since marker and information-density cadence are core architecture: state.json carries updated_iso + narrative as the anti-narrative scaffold; cognition_mode Compression cadence_hint = 1h heartbeat actively suppresses intra-mode fires (skipped_fires_in_mode 44+ this cycle).",
-            "planned_change": "No code change required; already shipped via state.json schema_version 2 + cognition_mode protocol Phase B.1 + claude_trader_gate.py per note-4/C6."
+            "how": "claude_trader_gate.py (cadence gate by cognition_mode) + state.json persistent_narrative (no-re-derivation when state-unchanged) + SKILL \u00a7 Reasoning length (scale to state change, not fire count) together implement the C3 directive structurally. Live evidence: v2.85-v2.90 6 consecutive reflections all carry rich state-delta content (range refinement, mode transition, bar-by-bar v2.10 progression, window closure) \u2014 none are micro-novelty filler. The 5-min cadence inside Expansion is justified by actual info-density (bar-by-bar window resolution), not manufactured.",
+            "planned_change": "No code change. Cognitive confirmation: continue trusting gate.py cadence + state.json snapshot + brevity-on-stillness discipline. Watch for regression: if 3 consecutive reflections inside Compression mode produce identical content, that's the C3 failure mode resurfacing \u2014 surface in whats_failing immediately."
           }
         },
         {
@@ -2323,9 +2318,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780462792.9567528,
-    "updated_iso": "2026-06-03T00:57:31-04:00",
-    "updated_by_fire_iso": "2026-06-03T00:57:31-04:00",
+    "updated_ts": 1780463930.792259,
+    "updated_iso": "2026-06-03T01:18:50.792260-04:00",
+    "updated_by_fire_iso": "2026-06-03T01:18:50.792260-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2336,18 +2331,18 @@
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
     "funding_state": "live-status funding -7.32e-5 (OKX, latest snapshot). Shorts pay longs in down regime persists. Not standalone trigger.",
     "oi_state": "not maintained; not material",
-    "narrative": "00:57:31 EDT 6-03 \u2014 v2.89 fire (decision-only, no reflection: v2.87 19 min ago, v2.88 13 min ago, bar 4 mid-bar mathematical resolution near-locked but not formally closed yet). Bar 4 of v2.10 window in-progress: open $73.71 / high $73.98 / low $73.64, partial vol 4034 = 0.41x baseline with ~2.5 min remaining. Vol gate near-mathematically locked at fail. Late bar-4 push 73.64\u219273.98 in seconds (reading fresh ticker) suggests last-minute upward bias \u2014 third gate MAY pass on close but dual-gate still fails on vol. Expected resolution at 01:00 EDT: 4-of-4 dual-gate failures = v2.10 n=3 window closes without confirmation. B-grade LONG counterfactual preserved through formal close (v2.89 holds; v2.10-falsification handled by next reflection). Paper book flat (cash $982.46 / 7 closes net -$17.54). Range $72.18-$80.94 holds. Mode Expansion continues (since 00:19:59). Staleness: system_gates.stale=true age_sec 735829s, indicators.price $73.87 vs Coinbase fresh $73.98 (delta $0.11, legible drift). Two-channel partial-clear persists 5th reflection. forced_exploration_due=False (23.8h, ~12 min out). budget $8.94 fresh.",
+    "narrative": "01:15:22 EDT 6-03 \u2014 v2.91 fire (FIRST B-grade ENTER on paper book). v2.10 4-bar window CLOSED at 01:00 EDT with 0/4 dual-gate confirmations; long-lean retracted per v2.86 branch (ii). forced_exploration_due flipped True at ~01:11 EDT (24.1h since last ENTER, threshold 24h). Executing v2.90 pre-name branch (i): thin-chop + no structural trigger + cohort=down+short historical n=6 +$1.39 WR 83.3% \u2192 B-grade SHORT mean-revert toward BB mid $74.12 (~0.5% from $74.45 entry). Short 6/8 vs long 5/8 (asymmetry favors short), vol 1.40x (below ideal 1.5x), no structural sweep top \u2014 2/4 = B-grade territory. SL 1.5% ($75.57), at-risk $3.90 of $8.94 daily budget. First USE of forced-exploration mechanism since note-4/C1 plumbing fix; validates Phase B.2 directive Section #1. Mode Expansion PRESERVED (cognition_mode_since_iso 00:19:59 EDT carried; drift-up is post-displacement digestion, not transition). Staleness: indicators.price $74.68 vs Coinbase $74.45 delta $0.23 = legible (7 consecutive partial-clear reflections v2.85-v2.91). Paper book opens via executor on next executor tick; paper_state.json will update downstream from current flat state ($982.46 cash, 7 closes net -$17.54).",
     "cognition_mode": "Expansion",
     "cognition_mode_since_iso": "2026-06-03T00:19:59-04:00",
     "cognition_mode_rationale": "Fresh range-floor sweep ($72.18 new 24h low broke v2.85 $72.64 floor by $0.46) + 1.525x vol_ratio reclaim candle on top of two prior 3.9x and 2.94x vol displacement candles. Range break + volume conviction match Expansion mode definition. v2.85 Compression posture superseded by real displacement event.",
     "cognition_mode_cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T00:19:59-04:00",
-    "last_gate_check_iso": "2026-06-03T04:57:31+00:00",
-    "canonical_pull_iso": "2026-06-03T04:57:31+00:00",
-    "canonical_pull_source": "coinbase exchange ticker + candles granularity=900 (v2.89 bar-4 in-progress audit)",
+    "last_gate_check_iso": "2026-06-03T05:18:50.793851+00:00",
+    "canonical_pull_iso": "2026-06-03T05:18:50.793855+00:00",
+    "canonical_pull_source": "coinbase exchange ticker $74.45 (v2.91 first B-grade ENTER fire)",
     "baseline_v96": 9882,
-    "baseline_v96_ts": 1780461522,
+    "baseline_v96_ts": 1780463387,
     "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88)",
     "stale_data_event": {
       "discovered_iso": "2026-06-02T22:08:00-04:00",
@@ -2360,7 +2355,10 @@
       "v2_85_status_update": "indicators.price field self-refreshed to $74.14 matching Coinbase. system_gates.stale=true and age_sec still climbing \u2014 flag stuck-on, price legible. Dashboard partial-clear.",
       "v2_86_status_update": "Same partial-clear state persists. indicators.price $73.29 matches Coinbase fresh $73.28. age_sec=733464s (+3891s since v2.85).",
       "v2_87_status_update": "Same partial-clear state persists. indicators.price $73.47 vs Coinbase $73.51 delta $0.04. age_sec=734489s.",
-      "v2_88_status_update": "Same partial-clear state persists. indicators.price $73.58 vs Coinbase $73.75 delta $0.17 (legible tape drift). age_sec unchanged from v2.87 read (734489s) \u2014 flag stuck; price/age channels demonstrably independent. 4 consecutive fires confirm: dashboard price-pipe IS fresh, dashboard stale-flag IS broken. Two-channel ontology stable."
+      "v2_88_status_update": "Same partial-clear state persists. indicators.price $73.58 vs Coinbase $73.75 delta $0.17 (legible tape drift). age_sec unchanged from v2.87 read (734489s) \u2014 flag stuck; price/age channels demonstrably independent. 4 consecutive fires confirm: dashboard price-pipe IS fresh, dashboard stale-flag IS broken. Two-channel ontology stable.",
+      "v2_89_status_update": "Same partial-clear state persists. Bar-4 mid-bar audit; window closure pending.",
+      "v2_90_status_update": "Same partial-clear state persists. indicators.price $74.48 vs Coinbase fresh $74.45 delta $0.03 (legible). 6 consecutive reflections confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning.",
+      "v2_91_status_update": "Same partial-clear state persists. indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 (legible). 7 consecutive reflections (v2.85-v2.91) confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
@@ -2390,26 +2388,22 @@
         "dual_gate_pass": false,
         "_v2_87_captured_mid_bar": "v2.87 read this bar at 00:38 EDT (8 min in): vol_ratio 0.257 third 47.2%. v2.88 captures final-close values at 00:44:57 EDT (3 sec from close, effectively final). Final shape = drift-reclaim (same as bar 2), not the both-miss v2.87 captured."
       },
-      "bar_4_status": "in_progress",
+      "bar_4_status": "closed",
       "bar_4_close_iso": "2026-06-03T00:45:00-04:00",
       "current_dual_gate_count": 0,
       "instances_at_n": 3,
-      "decision_after_window_close": "If bar 4 fails dual-gate: HOLD with v2.10 n=3-no-confirmation falsified; retract long-lean; cohort-baseline (down regime) returns. If bar 4 confirms: B-grade LONG ENTER candidate.",
-      "bar_4_in_progress_snapshot": {
-        "snapshot_iso": "2026-06-03T00:57:31-04:00",
-        "bar_open_usd": 73.71,
-        "bar_high_usd": 73.98,
-        "bar_low_usd": 73.64,
-        "bar_running_close_per_candle_endpoint_usd": 73.64,
-        "fresh_ticker_usd": 73.98,
-        "partial_vol": 4034.01,
-        "partial_vol_ratio_vs_baseline_9882": 0.408,
-        "minutes_elapsed_in_bar": 12.5,
-        "minutes_remaining_in_bar": 2.5,
-        "vol_gate_lockedfail_assessment": "vol_ratio would need to ~3.7x in 2.5 min to reach 1.5x \u2014 near-mathematical-impossibility based on first-12.5-min participation rate.",
-        "third_gate_running": "0% on candle endpoint but fresh ticker $73.98 vs bar L=73.64 implies running close near bar high = upper-third intra-bar IF close holds",
-        "dual_gate_running_assessment": "fails on vol regardless of third-gate outcome"
-      }
+      "decision_after_window_close": "RESOLVED: 0/4 dual-gate confirmations. Long-lean retracted. Cohort-baseline (down regime) resumes as primary read. v2.10 STABLE rule held its line; n=3 instance ledgered as refuted without confirmation.",
+      "bar_4": {
+        "close_iso": "2026-06-03T00:45:00-04:00",
+        "vol_ratio": 0.875,
+        "third_pct": 100.0,
+        "vol_pass": false,
+        "third_pass": true,
+        "dual_gate_pass": false,
+        "_v2_90_final_values": "bar closed at 01:00:00 EDT. O=73.71 H=74.06 L=73.57 C=74.06 vol=8646.58. vol_ratio = 8646.58/9882 = 0.875x (FAIL). third = (74.06-73.57)/(74.06-73.57) = 100% (PASS, close at top of bar). Drift-reclaim shape mirroring bar 2 (89.7%/0.963x)."
+      },
+      "window_status": "closed_no_confirmation",
+      "v2_91_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. First post-window B-grade ENTER (cohort-baseline, not v2.10 reclaim) opens this fire."
     }
   },
   "cognition": {
@@ -2419,7 +2413,7 @@
     "cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T00:19:59-04:00",
-    "last_gate_check_iso": "2026-06-03T04:57:31+00:00"
+    "last_gate_check_iso": "2026-06-03T05:18:50.793851+00:00"
   },
   "framework_origins": [
     {
@@ -2464,14 +2458,14 @@
     },
     "last_enter_ts": 1780377109.970521,
     "last_enter_iso": "2026-06-02T01:11:49.970521-04:00",
-    "holds_in_a_row": 19,
+    "holds_in_a_row": 21,
     "exploratory_at_risk_usd_today": 0.0,
     "exploratory_entries_today": 0,
-    "hours_since_last_enter": 23.8,
-    "forced_exploration_due": false,
-    "forced_exploration_due_reason": null,
+    "hours_since_last_enter": 24.1,
+    "forced_exploration_due": true,
+    "forced_exploration_due_reason": "24.1h since last ENTER (threshold 24h)",
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T04:57:34.647655+00:00",
+    "last_updated_iso": "2026-06-03T05:15:27.476919+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
