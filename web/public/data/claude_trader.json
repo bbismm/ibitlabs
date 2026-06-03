@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780472236,
-  "generated_iso": "2026-06-03T03:37:16-0400",
+  "generated_at": 1780473164,
+  "generated_iso": "2026-06-03T03:52:44-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 607,
+    "decisions_total": 609,
     "actions": {
-      "HOLD": 585,
+      "HOLD": 587,
       "ENTER": 15,
       "EXIT": 7
     },
@@ -15,20 +15,20 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 383,
       "ENTER_C": 2,
-      "HOLD_no_plausible": 51,
+      "HOLD_no_plausible": 53,
       "EXIT": 7,
       "ENTER_B": 12,
       "ENTER_A": 1
     },
     "confidence": {
       "high": 179,
-      "medium": 333,
+      "medium": 335,
       "low": 95
     },
-    "reasoning_chars_avg_all": 916,
-    "reasoning_chars_avg_last10": 1108,
+    "reasoning_chars_avg_all": 919,
+    "reasoning_chars_avg_last10": 1176,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T03:37:06-04:00",
+    "last_fire_iso": "2026-06-03T03:52:32.079-04:00",
     "balance_usd_latest": 892.62,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -107.38,
@@ -38,24 +38,24 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780472226.322,
-    "fire_iso": "2026-06-03T03:37:06-04:00",
+    "fire_ts": 1780473152.079839,
+    "fire_iso": "2026-06-03T03:52:32.079-04:00",
     "session_phase": "phase_0",
     "balance_usd": 892.62,
     "position_at_fire": {
       "direction": "short",
       "entry_price": 74.45,
       "qty": 0.7,
-      "unrealized_pnl_pct": -0.00806,
-      "minutes_held": 137
+      "unrealized_pnl_pct": -0.01048,
+      "minutes_held": 152
     },
-    "current_price": 75.05,
+    "current_price": 75.23,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.9316,
-      "vol_ratio": 0.03,
-      "momentum_pct": 0.39,
-      "rsi": 72.3
+      "stoch_rsi": 0.9748,
+      "vol_ratio": 0.0,
+      "momentum_pct": 0.0029,
+      "rsi": 74.2
     },
     "decision": "HOLD",
     "grade": null,
@@ -67,17 +67,17 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Managing open SHORT v2.91 entry $74.45 (+137min, adverse -0.806%, gross unrealized ~-$2.10; SL $75.57 buffer ~0.69%/~$1.82). Thesis primitives INTACT: conditions short 5/8 > long 4/8 asymmetry preserved; stoch_rsi 0.9316 still overbought (more than entry 0.901, supports continued short); regime=down unchanged; BB upper $75.78 above price $75.05 (no range break); vol_ratio collapsed 1.40x\u21920.03x = thin tape, no displacement risk against position (favorable). Staleness: live-status indicators.price $75.10 vs Coinbase fresh $75.05 delta $0.05 legible; system_gates.stale=true age_sec=745366 (+1300 since state.json 03:15 read, climbing consistent with stuck-on flag). Used Coinbase fresh as current_price per SKILL fallback. Three-channel staleness ontology stable (indicators_pro repopulated this fire \u2014 flicker not permanent null, consistent v2.93 read). Abort triggers all dormant: no BB-upper close (75.05<75.78), no range break (well below $80.94), regime stable. Time-cut convention ~4h \u2192 ~1h43m remaining. HOLD: counterfactual moot \u2014 directional commitment IS active and is the hypothesis being tested. No EXIT: thesis intact, SL has buffer, slight micro-improvement vs prior fire (75.10\u219275.05) hints at drift stalling rather than acceleration.",
-    "expected_holding_hours": 2,
+    "reasoning": "Open SHORT (v2.91 entry $74.45, qty 0.7, lev 2x, SL $75.57, TP target $74.31 BB mid) +152min held. Fresh Coinbase $75.23 vs live-status indicators.price $75.22 delta $0.01 legible. Adverse worsened from v2.95's -1.021% to -1.047% (gross unrealized ~-$0.55, lev-adjusted ~-$1.10 on $260 notional); SL buffer shrunk from $1.79 (v2.93 @ +115min) -> $0.34 (this fire @ +152min) = $1.45 erosion over 37min, still positive but materially compressed. Thesis primitives INTACT: short asymmetry 5/8 > long 4/8 preserved; stoch_rsi 0.9748 still overbought (vs entry 0.901, INTENSIFIED -- supports continued short); regime=down 288h unchanged; BB upper $75.90 above price $75.23 (no range break, $0.67 cushion); vol_ratio 0 thin tape (no displacement risk against position). Funding -9.4e-5 OKX (shorts pay longs in down regime) marginal headwind, not standalone trigger. Abort triggers all dormant. Staleness: system_gates.stale=true age_sec=746255 still climbing -- 9th consecutive reflection-window confirms stable two/three-channel ontology; SKILL Coinbase fallback functioning as price source. No reflection this fire: last v2.92 at 01:25:45 (+2h26min, cadence target 4h not yet reached); drift trajectory monotonic-slow with thesis intact, NOT a surprise trigger; SL handles downside if it fires. HOLD with thesis-committed-as-counterfactual.",
+    "expected_holding_hours": 4,
     "expected_pnl_pct_target": 0.005,
     "abort_conditions": [
-      "price closes above BB upper $75.78 with vol_ratio >1.5x (range break invalidates mean-revert)",
-      "SL $75.57 hit",
-      "regime flips up on live-status",
-      "vol_ratio spikes >2x with up-displacement (initiative reversal mid-trade)"
+      "price >= $75.57 (SL hit)",
+      "price clears $75.90 BB upper with vol_ratio >= 1.5x baseline (range break + displacement against position -> EXIT for damage control before SL)",
+      "regime flips from down to up on live-status",
+      "stoch_rsi collapses below 0.5 with momentum > +0.5% in 15min (thesis breakdown)"
     ],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": "managing open SHORT from v2.91; the directional commitment IS active and is the counterfactual being tested",
+    "no_plausible_counterfactual": "managing open SHORT from v2.91; the directional commitment IS active and is the counterfactual being tested (informational outcome will populate information_roi_record at close)",
     "exploration_attribution": null,
     "information_roi_record": null
   },
@@ -1507,11 +1507,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 19,
-    "avg_chars": 1090,
+    "holds_since_framework": 21,
+    "avg_chars": 1156,
     "since_iso": "2026-06-03T01:25:45-0400",
     "since_framework_version": "v2.92",
-    "latest_fire_iso": "2026-06-03T03:37:06-04:00"
+    "latest_fire_iso": "2026-06-03T03:52:32.079-04:00"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2534,14 +2534,14 @@
     },
     "last_enter_ts": 1780463930.792259,
     "last_enter_iso": "2026-06-03T01:18:50.792260-04:00",
-    "holds_in_a_row": 18,
+    "holds_in_a_row": 20,
     "exploratory_at_risk_usd_today": 3.91,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 2.3,
+    "hours_since_last_enter": 2.5,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T07:35:44.663541+00:00",
+    "last_updated_iso": "2026-06-03T07:50:56.803538+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
