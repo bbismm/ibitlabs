@@ -1,87 +1,249 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780475456,
-  "generated_iso": "2026-06-03T04:30:56-0400",
+  "generated_at": 1780476582,
+  "generated_iso": "2026-06-03T04:49:42-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 614,
+    "decisions_total": 616,
     "actions": {
-      "HOLD": 592,
+      "HOLD": 593,
       "ENTER": 15,
-      "EXIT": 7
+      "EXIT": 8
     },
     "grades": {
       "HOLD": 151,
       "HOLD_with_counterfactual": 383,
       "ENTER_C": 2,
-      "HOLD_no_plausible": 58,
-      "EXIT": 7,
+      "HOLD_no_plausible": 59,
+      "EXIT": 8,
       "ENTER_B": 12,
       "ENTER_A": 1
     },
     "confidence": {
-      "high": 179,
-      "medium": 340,
+      "high": 180,
+      "medium": 341,
       "low": 95
     },
-    "reasoning_chars_avg_all": 922,
-    "reasoning_chars_avg_last10": 1317,
+    "reasoning_chars_avg_all": 923,
+    "reasoning_chars_avg_last10": 1405,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T04:30:19.884105-04:00",
+    "last_fire_iso": "2026-06-03T04:45:30-04:00",
     "balance_usd_latest": 892.62,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -107.38,
-    "framework_reflections_total": 111,
+    "framework_reflections_total": 112,
     "founder_notes_total": 4,
     "founder_notes_pending": 0,
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780475419.884105,
-    "fire_iso": "2026-06-03T04:30:19.884105-04:00",
+    "fire_ts": 1780476330.0,
+    "fire_iso": "2026-06-03T04:45:30-04:00",
     "session_phase": "phase_0",
     "balance_usd": 892.62,
     "position_at_fire": {
       "direction": "short",
       "entry_price": 74.45,
       "qty": 0.7,
-      "unrealized_pnl_pct": -0.00578,
-      "minutes_held": 190
+      "unrealized_pnl_pct": -0.00658,
+      "minutes_held": 205
     },
-    "current_price": 74.88,
+    "current_price": 74.94,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": 0.5449,
-      "vol_ratio": 0.04,
-      "momentum_pct": 0.0012,
-      "rsi": 56.5
+      "stoch_rsi": 0.347,
+      "vol_ratio": 0.35,
+      "momentum_pct": -0.11,
+      "rsi": 61.9
     },
-    "decision": "HOLD",
+    "decision": "EXIT",
     "grade": null,
     "size_multiplier": null,
-    "setup_type": null,
+    "setup_type": "thesis_erosion_exit_endogenous",
     "direction": null,
     "symbol": "SOL-PERP",
     "quantity": null,
     "leverage": null,
     "sl_pct": null,
-    "confidence": "medium",
-    "reasoning": "Managing open SHORT from v2.91 entry $74.45, +189 min. Coinbase fresh $74.88 vs indicators.price $74.84 delta $0.04 = legible; SKILL Coinbase fallback used as current_price. stale=true / age_sec 748530 (+~1830 since v2.94 read consistent climb); indicators_pro REPOPULATED this fire (stoch_rsi 0.545, BB 72.81/74.40/75.99, vol 0.04x) \u2014 4th channel-flicker event in three-channel staleness ontology (null/pop/null/pop alternating since v2.92). Position thesis MIXED at +189 min: (a) SL buffer WIDENED \u2014 price reversed $75.10 (v2.94 worst adverse) \u2192 $74.88 this fire, adverse improved -0.873% \u2192 -0.578%, SL $75.57 now $0.69 / 0.92% buffer (was $0.47 / 0.63% at v2.94). First sign of fade from drift-up phase. (b) BB mid drifted UP $74.12 (entry) \u2192 $74.40 (now), bringing TP zone WITHIN 0.64% of current price \u2014 TP achievable on any further mean-revert. (c) Supportive primitives: regime=down INTACT. (d) Lost primitives: short asymmetry 5/8 \u2192 4/8 LOST (long c5 4H now up vs entry neutral; short c5 fails for same reason); stoch_rsi 0.901 overbought (entry) \u2192 0.545 neutral LOST; 4H trend neutral (entry) \u2192 up LOST. 3 of 4 supportive primitives degraded since entry. (e) HOLD: SL handles downside (0.92% buffer comfortable for vol 0.04x thin tape); TP $74.40 only 0.64% away \u2014 achievable on minor mean-revert; time-cut convention ~4h not yet hit (~50 min remaining at 189/240). Note-4/C2 honored \u2014 no exit-on-thesis-degradation rule exists in framework; inventing one mid-execution = framework mutation during active execution, refused. Inventory Discovery cadence preserved per Phase B.1 invariant.",
-    "expected_holding_hours": 1,
-    "expected_pnl_pct_target": 0.005,
-    "abort_conditions": [
-      "SL hit at $75.57 (auto-exit by executor)",
-      "price clears $75.99 BB upper with vol_ratio >=1.0x = structural invalidation of mean-revert thesis, EXIT before SL",
-      "time-cut convention ~240 min held without TP/SL reach = EXIT at convention",
-      "v2.10-style dual-gate LONG fires on next 15m close (vol >=1.5x + close in upper third) = thesis flipped, EXIT"
-    ],
+    "confidence": "high",
+    "reasoning": "v2.91 B-grade SHORT (cohort-baseline mean-revert WITHOUT structural trigger) thesis ERODED at +205min. Coinbase fresh $74.94 vs indicators.price $74.97 delta $0.03 = legible (13 consecutive reflections confirm stable two-channel ontology; indicators object null this fire = 4th observed full-null event since v2.92, alternation pattern null/pop/null/pop/pop/null). Adverse for SHORT: -0.658% / -$1.71 gross + ~$0.156 exit fee = ~-$1.87 net. Thesis primitives at close vs entry: (a) asymmetry COLLAPSED long 4/8 vs short 4/8 (entry was 5/8 short / 4/8 long \u2014 directional edge fully dissolved); (b) stoch_rsi 0.347 vs entry 0.901 \u2014 mean-revert pressure dissolved without delivering reversion; (c) vol 0.35x \u2014 thin-chop INTENSIFIED from entry 1.40x; (d) BB mid 74.51 (implicit from BB upper 75.92 / lower 73.10) \u2014 price $74.94 drifted AWAY from TP target $74.12 over 205min. SL buffer $0.63 / 0.84% from $75.57. Time-cut convention ~34 min remaining. HOLD has negative expectancy: P(SL hit) ~10-15% \u00d7 -$3.91 + P(TP hit) ~5-10% \u00d7 +$2.85 + P(drift) ~75-80% \u00d7 current \u2248 -$1.56 expected, modestly worse than -$1.71 EXIT-now with variance favoring exit. Information value of close NOW: clean refutation of info_hypothesis (cohort-alone insufficient at vol 1.40x without structural) captured before any rule-trigger muddies the lesson. FIRST ENDOGENOUS EXIT on the paper book \u2014 cognition-layer EXIT on thesis erosion (asymmetry collapse + impulse dissolved + drift-from-target), not rule-layer SL/TP/time-cut. EXPERIMENTAL_PROMOTION_CANDIDATE: future B-grade ENTERs require structural+cohort combo, not cohort-alone.",
+    "expected_holding_hours": null,
+    "expected_pnl_pct_target": null,
+    "abort_conditions": [],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": "managing open SHORT from v2.91; directional commitment IS active and is the counterfactual being tested. Hypothetical-entry framing N/A while position is live.",
+    "no_plausible_counterfactual": "EXIT decision on existing position; directional commitment was active and being closed \u2014 counterfactual is moot at the close step (hypothetical entry resumes on the next flat-book fire).",
     "exploration_attribution": null,
-    "information_roi_record": null
+    "information_roi_record": {
+      "previous_trade_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+      "actual_outcome": "EXIT at $74.94 (-0.658%) thesis-eroded at +205min, -$1.71 gross / -$1.87 net w/ exit fee. NOT SL/TP/time-cut; endogenous on asymmetry-collapse + stoch return-to-neutral + drift-from-TP.",
+      "info_hypothesis_status": "refuted",
+      "lesson_extracted": "Cohort-baseline (down+short historical n=6 WR 83.3%) WITHOUT structural trigger at vol_ratio 1.40x is INSUFFICIENT for B-grade ENTER. Mean-revert did not materialize across 205min; the conditions-panel asymmetry that justified entry (5/8 short vs 4/8 long) decayed to symmetric (4/8 vs 4/8) while price drifted +0.66% adverse and vol thinned to 0.35x. Future B-grade ENTERs must include \u22651 structural signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom), NOT cohort-alone. Marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1 in framework_log v2.97.",
+      "information_value_realized": "high"
+    }
   },
   "events": [
+    {
+      "type": "framework_reflection",
+      "ts": 1780476330.0,
+      "iso": "2026-06-03T04:45:30-04:00",
+      "fire_count": 616,
+      "summary": "Framework v2.97 written (trigger: surprise:b_grade_short_thesis_eroded_endogenous_exit_at_205min)",
+      "payload": {
+        "schema_version": 1,
+        "ts": 1780476330.0,
+        "iso": "2026-06-03T04:45:30-04:00",
+        "fire_count": 616,
+        "balance_usd": 892.62,
+        "version_tag": "v2.97",
+        "trigger": "surprise:b_grade_short_thesis_eroded_endogenous_exit_at_205min",
+        "what_im_trying": "Close v2.91 B-grade SHORT proactively at +205min on thesis erosion (NOT SL, NOT time-cut, NOT TP). Map outcome to information_roi_record (the first one ever written on the paper book). Extract framework primitive about B-grade ENTER preconditions. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged \u2014 the only candidate addition is a refinement of B-grade ENTER discipline, marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1.",
+        "whats_working": "(a) ENDOGENOUS EXIT: this is the first paper-book close that fired on my OWN thesis-erosion read, not on SL hit / TP hit / time-cut auto. Asymmetry collapse (5/8 short \u2192 4/8 short = 4/8 long) + stoch_rsi rolling from 0.901 entry to 0.347 (mean-revert pressure dissolved without delivering reversion) + price drift AWAY from TP target = unambiguous thesis death. Closing at -$1.71 gross / -$1.87 net rather than holding 34 more min to time-cut (negative-expectancy random walk with P(SL hit) 10-15%). Operationally proves the exit-cognition layer can fire on structural signal, not just mechanical rules. (b) STALENESS ONTOLOGY 13 consecutive reflections (v2.85-v2.97): price-pipe fresh / stale-flag stuck / indicators-object intermittent flicker (now 5 events: null/pop/null/pop/pop). Coinbase fallback robust. (c) SOURCE-OF-TRUTH HIERARCHY held: paper_state.json read first \u2192 position recognized correctly \u2192 live-status.position=null correctly ignored. 13 fires of clean discipline under the 2026-06-02 SKILL fix. (d) BUDGET PROTOCOL DESIGN INTENT VALIDATED: $1.87 of $8.94 daily budget bought one informative refutation (cohort-alone insufficient at vol_ratio 1.40x without structural trigger). Paid data > unbroken HOLD inertia. Cognitive ROI test fires cleanly.",
+        "whats_failing": "(a) v2.91 thesis form was THIN to begin with. 'Cohort-baseline mean-revert WITHOUT structural trigger' at vol_ratio 1.40x and 2/4 v0.9 inputs = exactly the kind of B-grade ENTER the budget protocol enables but doesn't validate. Result: REFUTED at n=1. The forced-exploration mechanism correctly drove an ENTER (good), but the form was the weakest defensible probe shape (cost). Lesson is captured \u2014 see what_im_iterating. (b) Asymmetry-collapse-mid-position observable: the conditions panel symmetrized BEFORE any TA primitive fired SL/TP/time-cut. This is a new candidate exit signal (n=1). If validated on n\u22653, it becomes a formal exit observable; if it whipsaws, it stays a descriptive note. Open question. (c) Founder-notes audit cadence still slow \u2014 v2.92 cleared note-4/C1+C2, v2.90 cleared note-1/C3, v2.87 cleared note-4/C4. v2.97 partially addresses note-2/C3 (SL-cluster mechanism analog) and continues v2.91 hypothetical-lean question. Backlog still: note-1 C5; note-2 C1/C2 cleared via this trade's data; note-3 C1/C2/C3; note-4 C3/C5/C6.",
+        "what_im_iterating": "(a) NEW EXPERIMENTAL_PROMOTION_CANDIDATE (n=1, needs 3+ refuting or 5+ confirming): B-grade ENTERs require structural+cohort COMBO, not cohort-alone. Specifically: \u22652/4 v0.9 inputs that include AT LEAST one STRUCTURAL signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom). Pure cohort-baseline at moderate vol drifts to symmetry too easily in thin chop. v2.91 was 2/4 (cohort + asymmetry-light) WITHOUT structural \u2192 refuted. Future B-grade ENTERs that propose without structural component get downgraded to HOLD with hypothetical_entry_record. (b) NEW OBSERVABLE (n=1, candidate exit signal): conditions-panel asymmetry collapse (both sides \u22644/8) WHILE position adverse \u2265-0.5% = thesis-erosion signal \u2192 endogenous EXIT before SL/TP/time-cut. NOT promoted to rule \u2014 needs n\u22653 to discriminate signal vs noise. Logged as open observable. (c) NO new framework primitive promoted today. The two candidates above remain EXPERIMENTAL. (d) STATE.JSON: narrative rewritten to capture EXIT + thesis-erosion signal; cognition_mode transitions Inventory Discovery \u2192 Expansion (position closing, drift-and-evaluate); cognition_mode_since_iso bumps to this fire; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). active_paper_position_link cleared (position closing). (e) FIRST information_roi_record on the EXIT decision \u2014 outcome refuted, lesson captured. (f) PRE-NAME v2.98: 4 branches. (i) tape continues thin chop, no new structural setup \u2192 HOLD with hypothetical_entry_record. (ii) tape pops above BB upper $75.92 with vol \u2265 1.5x \u2192 potential v2.10 LONG candidate window opens (range break with retest pending). (iii) tape breaks below $73.10 BB lower with vol \u2192 down-impulse continuation, evaluate down+short with structural now (combo). (iv) forced_exploration_due flips back True in ~24h (~05:18 EDT 6-04) absent ENTER \u2014 next probe shape MUST be structural+cohort combo per the new constraint candidate.",
+        "edits_from_prior": [
+          "v2.91 B-grade SHORT thesis REFUTED at n=1. cohort-baseline (down+short) WITHOUT structural trigger at vol_ratio 1.40x = insufficient. Trade closed thesis-eroded at +205min, -$1.71 gross / -$1.87 net.",
+          "ENDOGENOUS EXIT FIRST RECORDED: closed on thesis erosion (asymmetry collapse + stoch return-to-neutral + drift-away-from-TP), NOT on SL/TP/time-cut. Cognition-layer exit, not rule-layer.",
+          "NEW EXPERIMENTAL_PROMOTION_CANDIDATE: B-grade ENTERs require structural+cohort combo (\u22651 structural signal). Marks n=1; needs 3+ refuting confirmations to promote, or 5+ confirming counter-evidence to demote.",
+          "NEW CANDIDATE EXIT OBSERVABLE: asymmetry-collapse-while-adverse \u2192 endogenous EXIT before SL/TP/time-cut. n=1, logged not promoted.",
+          "MODE TRANSITION Inventory Discovery \u2192 Expansion. Position closes; reflective fire on close \u2192 drift-and-evaluate post-close.",
+          "FIRST information_roi_record entry attached to EXIT decision \u2014 the audit trail mapping outcome \u2192 hypothesis begins here.",
+          "v2.10 ledger n=3 unchanged this fire. No new window candidate in flight."
+        ],
+        "founder_notes_addressed": [
+          {
+            "note_ts": 1779800092.946008,
+            "claim_id": "C3",
+            "response_type": "refined",
+            "how": "note-2/C3 proposed 'entry-side mirror of v5.3 Lever-5-mod' as a reference shape for addressing the 9-loser cluster. v2.91 \u2192 v2.97 is the first paper-book instance of an analog: an ENDOGENOUS proactive cut on a thesis-eroded position BEFORE SL/time-cut, fired on conditions-panel asymmetry collapse + stoch return-to-neutral + drift-from-TP. Not a v5.3 Lever-5 clone (that's MFE-floor + elapsed-hours), but the same shape: 'kill the trade when post-entry evidence says the entry-thesis is wrong, don't wait for SL to do it'. Partial implementation, cognition-layer not rule-layer.",
+            "planned_change": "No code change yet. Cognitive convention: thesis-erosion EXIT becomes an explicit candidate exit observable (asymmetry-collapse + impulse-dissolved + drift-from-target). Track over next 2-3 trades. If n\u22653 confirming, formalize as a named exit rule + promote to STABLE. If n\u22653 false-positive (premature exit when tape would have reverted), demote to descriptive note."
+          },
+          {
+            "note_ts": 1779800596.659168,
+            "claim_id": "C2",
+            "response_type": "refined",
+            "how": "note-3/C2 asks for re-derivation of 'A+' without C7 inheritance \u2014 what observable evidence flips HOLD to ENTER under new framing. v2.97 contributes the inverse: what observable evidence makes B-grade ENTER INSUFFICIENT. cohort-baseline alone (without structural component) at moderate vol = empirically insufficient (n=1 refuted). This narrows the B-grade ENTER discipline downstream of A+ definition: B = structural-signal-PLUS-cohort, NOT cohort-alone. A+ derivation still pending (would be S/A grade in v0.9 ontology).",
+            "planned_change": "No code change. EXPERIMENTAL_PROMOTION_CANDIDATE noted: B-grade ENTERs require \u22651 structural signal. A+ (S/A grade) derivation remains open; needs separate evidence pass when an S/A setup actually fires."
+          }
+        ],
+        "open_questions": [
+          "ENDOGENOUS EXIT validation: is asymmetry-collapse-while-adverse a real exit signal or noise? n=1. Track next 2-3 closes.",
+          "B-grade structural-required hypothesis: does requiring structural+cohort eliminate the cohort-alone whipsaws while preserving real probes? Test on next 2-3 forced-exploration cycles.",
+          "v2.91 thesis-refuted but lesson is provisional \u2014 SAMPLE BIAS: this trade ran in deep thin-chop (vol 0.04x intra-position). Would cohort-alone work at vol \u22651.5x sustained? Currently untestable; flag.",
+          "Lean-stability question (v2.87/v2.90/v2.91 carry): real-PnL test refuted cohort-alone B-grade at thin vol. Implicit: v2.10-window-boundary lean-flip framework still consistent (post-window cohort SHORT \u2192 refuted, not because flip was wrong but because cohort form was thin).",
+          "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion. v2.97 doesn't change this.",
+          "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
+          "Staleness ontology 13 consecutive reflections \u2014 indicators_pro flicker pattern null/pop/null/pop/pop now 5 events. Pattern stabilizing pop-leaning. Carry forward.",
+          "Founder notes audit BACKLOG: note-1 C5; note-3 C1/C3; note-4 C3/C5/C6. v2.97 cleared note-2/C3 + note-3/C2. note-2/C1+C2 implicitly addressed via this trade's data (no new claims). Continue 2-3 per upcoming reflection.",
+          "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out)."
+        ]
+      }
+    },
+    {
+      "type": "first_under_framework",
+      "ts": 1780476330.0,
+      "iso": "2026-06-03T04:45:30-04:00",
+      "fire_count": null,
+      "summary": "First decision under framework v2.97: EXIT",
+      "payload": {
+        "fire_ts": 1780476330.0,
+        "fire_iso": "2026-06-03T04:45:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 892.62,
+        "position_at_fire": {
+          "direction": "short",
+          "entry_price": 74.45,
+          "qty": 0.7,
+          "unrealized_pnl_pct": -0.00658,
+          "minutes_held": 205
+        },
+        "current_price": 74.94,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.347,
+          "vol_ratio": 0.35,
+          "momentum_pct": -0.11,
+          "rsi": 61.9
+        },
+        "decision": "EXIT",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": "thesis_erosion_exit_endogenous",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "high",
+        "reasoning": "v2.91 B-grade SHORT (cohort-baseline mean-revert WITHOUT structural trigger) thesis ERODED at +205min. Coinbase fresh $74.94 vs indicators.price $74.97 delta $0.03 = legible (13 consecutive reflections confirm stable two-channel ontology; indicators object null this fire = 4th observed full-null event since v2.92, alternation pattern null/pop/null/pop/pop/null). Adverse for SHORT: -0.658% / -$1.71 gross + ~$0.156 exit fee = ~-$1.87 net. Thesis primitives at close vs entry: (a) asymmetry COLLAPSED long 4/8 vs short 4/8 (entry was 5/8 short / 4/8 long \u2014 directional edge fully dissolved); (b) stoch_rsi 0.347 vs entry 0.901 \u2014 mean-revert pressure dissolved without delivering reversion; (c) vol 0.35x \u2014 thin-chop INTENSIFIED from entry 1.40x; (d) BB mid 74.51 (implicit from BB upper 75.92 / lower 73.10) \u2014 price $74.94 drifted AWAY from TP target $74.12 over 205min. SL buffer $0.63 / 0.84% from $75.57. Time-cut convention ~34 min remaining. HOLD has negative expectancy: P(SL hit) ~10-15% \u00d7 -$3.91 + P(TP hit) ~5-10% \u00d7 +$2.85 + P(drift) ~75-80% \u00d7 current \u2248 -$1.56 expected, modestly worse than -$1.71 EXIT-now with variance favoring exit. Information value of close NOW: clean refutation of info_hypothesis (cohort-alone insufficient at vol 1.40x without structural) captured before any rule-trigger muddies the lesson. FIRST ENDOGENOUS EXIT on the paper book \u2014 cognition-layer EXIT on thesis erosion (asymmetry collapse + impulse dissolved + drift-from-target), not rule-layer SL/TP/time-cut. EXPERIMENTAL_PROMOTION_CANDIDATE: future B-grade ENTERs require structural+cohort combo, not cohort-alone.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": "EXIT decision on existing position; directional commitment was active and being closed \u2014 counterfactual is moot at the close step (hypothetical entry resumes on the next flat-book fire).",
+        "exploration_attribution": null,
+        "information_roi_record": {
+          "previous_trade_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+          "actual_outcome": "EXIT at $74.94 (-0.658%) thesis-eroded at +205min, -$1.71 gross / -$1.87 net w/ exit fee. NOT SL/TP/time-cut; endogenous on asymmetry-collapse + stoch return-to-neutral + drift-from-TP.",
+          "info_hypothesis_status": "refuted",
+          "lesson_extracted": "Cohort-baseline (down+short historical n=6 WR 83.3%) WITHOUT structural trigger at vol_ratio 1.40x is INSUFFICIENT for B-grade ENTER. Mean-revert did not materialize across 205min; the conditions-panel asymmetry that justified entry (5/8 short vs 4/8 long) decayed to symmetric (4/8 vs 4/8) while price drifted +0.66% adverse and vol thinned to 0.35x. Future B-grade ENTERs must include \u22651 structural signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom), NOT cohort-alone. Marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1 in framework_log v2.97.",
+          "information_value_realized": "high"
+        }
+      },
+      "_framework_version": "v2.97"
+    },
+    {
+      "type": "exit",
+      "ts": 1780476330.0,
+      "iso": "2026-06-03T04:45:30-04:00",
+      "fire_count": 616,
+      "summary": "EXIT SOL-PERP @ $74.94",
+      "payload": {
+        "fire_ts": 1780476330.0,
+        "fire_iso": "2026-06-03T04:45:30-04:00",
+        "session_phase": "phase_0",
+        "balance_usd": 892.62,
+        "position_at_fire": {
+          "direction": "short",
+          "entry_price": 74.45,
+          "qty": 0.7,
+          "unrealized_pnl_pct": -0.00658,
+          "minutes_held": 205
+        },
+        "current_price": 74.94,
+        "regime": "down",
+        "market_snapshot": {
+          "stoch_rsi": 0.347,
+          "vol_ratio": 0.35,
+          "momentum_pct": -0.11,
+          "rsi": 61.9
+        },
+        "decision": "EXIT",
+        "grade": null,
+        "size_multiplier": null,
+        "setup_type": "thesis_erosion_exit_endogenous",
+        "direction": null,
+        "symbol": "SOL-PERP",
+        "quantity": null,
+        "leverage": null,
+        "sl_pct": null,
+        "confidence": "high",
+        "reasoning": "v2.91 B-grade SHORT (cohort-baseline mean-revert WITHOUT structural trigger) thesis ERODED at +205min. Coinbase fresh $74.94 vs indicators.price $74.97 delta $0.03 = legible (13 consecutive reflections confirm stable two-channel ontology; indicators object null this fire = 4th observed full-null event since v2.92, alternation pattern null/pop/null/pop/pop/null). Adverse for SHORT: -0.658% / -$1.71 gross + ~$0.156 exit fee = ~-$1.87 net. Thesis primitives at close vs entry: (a) asymmetry COLLAPSED long 4/8 vs short 4/8 (entry was 5/8 short / 4/8 long \u2014 directional edge fully dissolved); (b) stoch_rsi 0.347 vs entry 0.901 \u2014 mean-revert pressure dissolved without delivering reversion; (c) vol 0.35x \u2014 thin-chop INTENSIFIED from entry 1.40x; (d) BB mid 74.51 (implicit from BB upper 75.92 / lower 73.10) \u2014 price $74.94 drifted AWAY from TP target $74.12 over 205min. SL buffer $0.63 / 0.84% from $75.57. Time-cut convention ~34 min remaining. HOLD has negative expectancy: P(SL hit) ~10-15% \u00d7 -$3.91 + P(TP hit) ~5-10% \u00d7 +$2.85 + P(drift) ~75-80% \u00d7 current \u2248 -$1.56 expected, modestly worse than -$1.71 EXIT-now with variance favoring exit. Information value of close NOW: clean refutation of info_hypothesis (cohort-alone insufficient at vol 1.40x without structural) captured before any rule-trigger muddies the lesson. FIRST ENDOGENOUS EXIT on the paper book \u2014 cognition-layer EXIT on thesis erosion (asymmetry collapse + impulse dissolved + drift-from-target), not rule-layer SL/TP/time-cut. EXPERIMENTAL_PROMOTION_CANDIDATE: future B-grade ENTERs require structural+cohort combo, not cohort-alone.",
+        "expected_holding_hours": null,
+        "expected_pnl_pct_target": null,
+        "abort_conditions": [],
+        "hypothetical_entry_record": null,
+        "no_plausible_counterfactual": "EXIT decision on existing position; directional commitment was active and being closed \u2014 counterfactual is moot at the close step (hypothetical entry resumes on the next flat-book fire).",
+        "exploration_attribution": null,
+        "information_roi_record": {
+          "previous_trade_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+          "actual_outcome": "EXIT at $74.94 (-0.658%) thesis-eroded at +205min, -$1.71 gross / -$1.87 net w/ exit fee. NOT SL/TP/time-cut; endogenous on asymmetry-collapse + stoch return-to-neutral + drift-from-TP.",
+          "info_hypothesis_status": "refuted",
+          "lesson_extracted": "Cohort-baseline (down+short historical n=6 WR 83.3%) WITHOUT structural trigger at vol_ratio 1.40x is INSUFFICIENT for B-grade ENTER. Mean-revert did not materialize across 205min; the conditions-panel asymmetry that justified entry (5/8 short vs 4/8 long) decayed to symmetric (4/8 vs 4/8) while price drifted +0.66% adverse and vol thinned to 0.35x. Future B-grade ENTERs must include \u22651 structural signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom), NOT cohort-alone. Marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1 in framework_log v2.97.",
+          "information_value_realized": "high"
+        }
+      }
+    },
     {
       "type": "framework_reflection",
       "ts": 1780464345.220722,
@@ -1363,203 +1525,112 @@
         "information_roi_record": null
       },
       "_framework_version": "v2.81"
-    },
-    {
-      "type": "framework_reflection",
-      "ts": 1780391667.0349371,
-      "iso": "2026-06-02T05:12:45-04:00",
-      "fire_count": 570,
-      "summary": "Framework v2.81 written (trigger: cadence:4h_floor_tape_unchanged_no_surprise)",
-      "payload": {
-        "schema_version": 1,
-        "ts": 1780391667.0349371,
-        "iso": "2026-06-02T05:12:45-04:00",
-        "fire_count": 570,
-        "balance_usd": 894.08,
-        "version_tag": "v2.81",
-        "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
-        "what_im_trying": "Framework unchanged from v2.80 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.80 pre-named v2.81 as 1-sentence-class if SKILL 4h cadence fires with no EXIT and no genuine market event. v2.80 ENTER (B short qty 0.7 @ $85.23) remains Schrodinger under DRY_RUN; price unchanged $85.23.",
-        "whats_working": "Lineage discipline intact: v2.80 pre-named exactly this fire shape (4h cadence + tape unchanged + no EXIT). Budget script working as designed: forced_exploration_due False, hours_since_last_enter 4.0, holds_in_a_row 3, normal threshold. v2.80 B-short ENTER recorded $4.47 against $8.94 daily budget; $4.47 remaining permits one more B/C probe today if structure warrants.",
-        "whats_failing": "(a) Tape genuinely unchanged from v2.80 4h prior: $85.23 unchanged, BB $84.12-$85.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. The v2.80 ENTER did not move the tape (DRY_RUN), did not open a real position (executor still flat), and 4h later returns the same snapshot. (b) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 forced/exploration ENTERs both remain unresolvable. Two data points into the void. (c) 11-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Underlying SKILL 4h floor + Compression 1h gate friction unchanged; v2.71/v2.75/v2.76/v2.77/v2.78/v2.79 operator-proposal to extend Compression cadence_hint 1h->2h still unaddressed; carries.",
-        "what_im_iterating": "(a) ONE REFINEMENT: funding now 3.98e-5 (~4.0e-5), DOWN from the 1.0e-4 baseline that held across v2.76->v2.80 (5 consecutive 4h windows). This is a single-snapshot drop that lands INSIDE v2.76's observed historical oscillation band (1.0e-4 -> 4.73e-5 -> 2.25e-5 -> 5.56e-5 -> 8.56e-5 -> 1.0e-4). The drop SUPPORTS v2.77's 'illegible at single-snapshot frequency' read and WEAKENS v2.78's 'sustained stability at v2.71-original baseline' read. The v2.71-original 1.5e-4 trigger remains ~3.7x above current; closed-lineage call holds; no replacement watch. (b) Hypothetical-lean unchanged: C-grade short, cohort lineage down+short n=6 +$1.39 WR 83.3% (still n=6 because v2.80 unresolvable). Mid-band; dist-to-upper $0.70 vs dist-to-lower $1.11; price marginally favors short for compression-pop-down read. (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False, threshold_state normal, no structural trigger (no displacement, no sweep, no reclaim, no range break). (d) NO new rule, NO promotion/demotion, NO new founder_notes_addressed. (e) NOT updating state.json this fire (no SKILL-strict market trigger fired). v2.78 discipline holds; skipped_fires_in_mode under-counts by another ~48 ticks; acceptable. (f) Pre-name v2.82: if EXIT of v2.80 or genuine market event fires before 4h, v2.82 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.82 target = 1-sentence acknowledgement, even tighter (e.g. 'no change to v2.81; carry').",
-        "edits_from_prior": [
-          "REFINEMENT: funding dropped 1.0e-4 -> 3.98e-5 in single snapshot, breaking v2.78's 5-window 'sustained stability' read. Drop is INSIDE v2.76's historical oscillation band; supports v2.77 'illegible at single-snapshot frequency' interpretation; does NOT trigger v2.71-original 1.5e-4 watch. Closed-lineage call still holds.",
-          "11-in-a-row Compression-mode reflection-or-ENTER pattern named (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Pattern continues to be operating reality.",
-          "v2.80 forced-exploration ENTER joins v2.73 in DRY_RUN Schrodinger pile; n=0 real position events accumulated since live execution paused 2026-05-25. Phase 0 ceiling explicit.",
-          "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.81 lineage, broken only by v2.73/v2.80 ENTER-fires).",
-          "NOT updating state.json this fire; v2.78 discipline holds."
-        ],
-        "founder_notes_addressed": [],
-        "open_questions": [
-          "PROPOSAL to operator (carry from v2.71-v2.80, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. 6+ reflections of operator silence carry.",
-          "PROPOSAL to operator (carry from v2.75-v2.80): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-          "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
-          "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-          "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-          "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-          "Indicator-pipe staleness day 30 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
-          "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-          "Down+short compressed-sub-cohort hypothesis test (v2.80) live but DRY_RUN Schrodinger; n still effectively 6 historically.",
-          "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-        ]
-      }
-    },
-    {
-      "type": "first_under_framework",
-      "ts": 1780377109.970521,
-      "iso": "2026-06-02T01:11:49.970521-04:00",
-      "fire_count": null,
-      "summary": "First decision under framework v2.80: ENTER",
-      "payload": {
-        "fire_ts": 1780377109.970521,
-        "fire_iso": "2026-06-02T01:11:49.970521-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "ENTER",
-        "grade": "B",
-        "size_multiplier": 0.35,
-        "setup_type": "forced_exploration_cohort_test",
-        "direction": "short",
-        "symbol": "SOL-PERP",
-        "quantity": 0.7,
-        "leverage": null,
-        "sl_pct": 0.015,
-        "confidence": "low",
-        "reasoning": "Forced exploration ENTER (SKILL contract: forced_exploration_due=True at 24.6h since last_enter, threshold 24h, MUST propose B-grade). Direction short carried from v2.69-v2.79 hypothetical-lean lineage (11 reflections deep, prior locked in before clock trigger). Cohort prior: down+short n=6 +$1.39 WR 83.3% (note-3/C3 historical). Entry context unchanged from v2.79: $85.23 mid-band, BB $84.12-$85.93, dist-to-upper $0.70 < dist-to-lower $1.11 (marginal short lean for compression-pop-down), vol 0.56x compressed, funding 8.04e-5 stable 4th consecutive 4h window at v2.71-baseline. SL $86.51 (1.5%, $0.58 above BB upper = range-escape-up read). TP $83.95 (1.5%, $0.17 below BB lower = mean-reversion through compressed band). Tape itself unchanged for 16.5h+ compression; trigger is the CLOCK not the TAPE. v2.79 pre-named C-grade short, SKILL mandates B-grade upgrade for forced_exploration. Information hypothesis: tests whether down+short cohort edge survives sustained compression sub-regime (n=6 prior mixed across vol regimes; compressed-down sub-cohort unmeasured).",
-        "expected_holding_hours": 6,
-        "expected_pnl_pct_target": 0.015,
-        "abort_conditions": [
-          "price closes above $85.93 (BB upper) with vol_ratio >1.5x in next 1-2 bars (range escape up, sweep-fail confirmation against short)",
-          "displacement >1.5% in any 15min bar against position direction",
-          "regime flips from down (live-status regime field changes)",
-          "8h elapsed with pnl<0 AND MFE<0.4% (Lever-5-mod analog; manual EXIT this fire would write)",
-          "funding lurches above 1.5e-4 (v2.71 trigger; would invalidate funding-stable read)"
-        ],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": {
-          "reason": "compression_duration_extreme",
-          "info_hypothesis": "tests whether down+short cohort historical edge (n=6, +$1.39 sum, WR 83.3% per note-3/C3) holds under sustained compression sub-regime (vol_ratio 0.56x, 16.5h+ tight range, funding 1.0e-4 stable 4 windows); cohort prior was accumulated across mixed vol regimes \u2014 compressed-down sub-cohort is unmeasured",
-          "predicted_information_value": "medium"
-        },
-        "information_roi_record": null
-      },
-      "_framework_version": "v2.80"
-    },
-    {
-      "type": "enter",
-      "ts": 1780377109.970521,
-      "iso": "2026-06-02T01:11:49.970521-04:00",
-      "fire_count": 566,
-      "summary": "ENTER short SOL-PERP @ $85.23 qty=0.7 lev=None",
-      "payload": {
-        "fire_ts": 1780377109.970521,
-        "fire_iso": "2026-06-02T01:11:49.970521-04:00",
-        "session_phase": "phase_0",
-        "balance_usd": 894.08,
-        "position_at_fire": null,
-        "current_price": 85.23,
-        "regime": "down",
-        "market_snapshot": {
-          "stoch_rsi": 0.5506,
-          "vol_ratio": 0.56,
-          "momentum_pct": -0.08,
-          "rsi": 60.4
-        },
-        "decision": "ENTER",
-        "grade": "B",
-        "size_multiplier": 0.35,
-        "setup_type": "forced_exploration_cohort_test",
-        "direction": "short",
-        "symbol": "SOL-PERP",
-        "quantity": 0.7,
-        "leverage": null,
-        "sl_pct": 0.015,
-        "confidence": "low",
-        "reasoning": "Forced exploration ENTER (SKILL contract: forced_exploration_due=True at 24.6h since last_enter, threshold 24h, MUST propose B-grade). Direction short carried from v2.69-v2.79 hypothetical-lean lineage (11 reflections deep, prior locked in before clock trigger). Cohort prior: down+short n=6 +$1.39 WR 83.3% (note-3/C3 historical). Entry context unchanged from v2.79: $85.23 mid-band, BB $84.12-$85.93, dist-to-upper $0.70 < dist-to-lower $1.11 (marginal short lean for compression-pop-down), vol 0.56x compressed, funding 8.04e-5 stable 4th consecutive 4h window at v2.71-baseline. SL $86.51 (1.5%, $0.58 above BB upper = range-escape-up read). TP $83.95 (1.5%, $0.17 below BB lower = mean-reversion through compressed band). Tape itself unchanged for 16.5h+ compression; trigger is the CLOCK not the TAPE. v2.79 pre-named C-grade short, SKILL mandates B-grade upgrade for forced_exploration. Information hypothesis: tests whether down+short cohort edge survives sustained compression sub-regime (n=6 prior mixed across vol regimes; compressed-down sub-cohort unmeasured).",
-        "expected_holding_hours": 6,
-        "expected_pnl_pct_target": 0.015,
-        "abort_conditions": [
-          "price closes above $85.93 (BB upper) with vol_ratio >1.5x in next 1-2 bars (range escape up, sweep-fail confirmation against short)",
-          "displacement >1.5% in any 15min bar against position direction",
-          "regime flips from down (live-status regime field changes)",
-          "8h elapsed with pnl<0 AND MFE<0.4% (Lever-5-mod analog; manual EXIT this fire would write)",
-          "funding lurches above 1.5e-4 (v2.71 trigger; would invalidate funding-stable read)"
-        ],
-        "hypothetical_entry_record": null,
-        "no_plausible_counterfactual": null,
-        "exploration_attribution": {
-          "reason": "compression_duration_extreme",
-          "info_hypothesis": "tests whether down+short cohort historical edge (n=6, +$1.39 sum, WR 83.3% per note-3/C3) holds under sustained compression sub-regime (vol_ratio 0.56x, 16.5h+ tight range, funding 1.0e-4 stable 4 windows); cohort prior was accumulated across mixed vol regimes \u2014 compressed-down sub-cohort is unmeasured",
-          "predicted_information_value": "medium"
-        },
-        "information_roi_record": null
-      }
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 26,
-    "avg_chars": 1179,
-    "since_iso": "2026-06-03T01:25:45-0400",
-    "since_framework_version": "v2.92",
-    "latest_fire_iso": "2026-06-03T04:30:19.884105-04:00"
+    "holds_since_framework": 0,
+    "avg_chars": 0,
+    "since_iso": null
   },
   "framework_latest": {
     "schema_version": 1,
-    "ts": 1780464345.220722,
-    "iso": "2026-06-03T01:25:45-0400",
-    "fire_count": 589,
-    "balance_usd": 894.08,
-    "version_tag": "v2.92",
-    "trigger": "surprise:mode_transition_inventory_discovery+indicators_object_null_degradation",
-    "what_im_trying": "Manage the open SHORT position from v2.91 (entry $74.45, +6 min, qty 0.7, lev 2x, SL $75.57, TP ~$74.12) with mode-correct cognition. Phase B.1 invariant: position open \u2192 cognition_mode = Inventory Discovery (full 5-min cadence, NEVER skip). Transitioning from Expansion \u2192 Inventory Discovery this fire. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25, setup-archetype frozen) carry from v2.86 unchanged. No framework mutation during active-execution per note-4/C2 (cognition layer separation).",
-    "whats_working": "(a) SOURCE-OF-TRUTH HIERARCHY operationally validated FIRST TIME: paper_state.json read first \u2192 correctly recognized open SHORT position; live-status.position=null was correctly ignored (that's LIVE bot, paused). This is exactly the failure mode the 2026-06-02 SKILL fix patched (the 96h hallucination loop that lost the 5/29 paper SHORT). First fire under the new hierarchy that ACTUALLY has a paper position open \u2014 protocol fires cleanly. (b) STALENESS CHECK: system_gates.stale=true, age_sec=737452 (+10K from v2.91 climb consistent). indicators.price $74.51 vs Coinbase fresh $74.56 delta $0.05 = legible. SKILL Coinbase fallback used as current_price = $74.56. (c) v2.91 ENTER thesis intact at +6 min: short conditions panel 5/8 vs long 4/8 (asymmetry preserved); stoch_rsi 0.965 (more overbought than entry's 0.901 \u2014 supports short); regime=down unchanged. Tape has NOT structurally moved against the short thesis. Adverse $0.11 / -0.148% is normal noise. (d) Decision-time architecture (read paper_state \u2192 fresh-price-check \u2192 conditions-panel \u2192 mode-transition \u2192 reflect \u2192 decide) executed in ~5 min wall-clock budget, well under cap.",
-    "whats_failing": "(a) NEW: live-status indicators OBJECT fully degraded this fire \u2014 BB/stoch_rsi/vol_ratio/rsi/momentum_pct/funding ALL null. Conditions panel detail strings still carry values (stoch=0.965, vol=1.40x, etc.). Two-channel staleness ontology (price-pipe fresh / stale-flag stuck) is now THREE-channel: indicators object can also independently null-out while conditions panel persists. Forensic implication: conditions cache must run on a different timer than the indicators serializer. Not blocking this fire (conditions panel is sufficient for position management), but flag the channel as a third partial-pipe symptom. (b) Position is +6 min on the first B-grade ENTER under the budget protocol. Outcome window (~4h to TP/SL/time-cut) just started; no information_roi_record content available yet \u2014 that comes at close. (c) Founder-notes audit cadence: 4 notes addressed total across 588 fires (note-4/C4 at v2.87, note-1/C3 at v2.90). v2.92 clears 2 more (note-4/C1, note-4/C2) \u2014 addresses the most-relevant claims for this fire's source-of-truth + layer-separation operational behavior.",
-    "what_im_iterating": "(a) NO new framework primitive. v2.86 primitives carry. (b) MODE TRANSITION: Expansion \u2192 Inventory Discovery. cognition_mode_since_iso bumps to this fire's iso. cognition_mode_rationale = 'paper book has open SHORT position (entry $74.45 v2.91); Phase B.1 invariant requires Inventory Discovery while live risk is on'. cognition_mode_cadence_hint = 'fire 5min \u2014 position open'. skipped_fires_in_mode reset to 0. last_mode_transition_iso bumped. (c) STATE.JSON: narrative rewritten to capture position-open state + mode transition + indicators-object degradation observable; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). (d) DECISION: HOLD. Position thesis intact. Counterfactual moot \u2014 direction is committed; no_plausible_counterfactual='managing open SHORT from v2.91; the directional commitment IS active and is the counterfactual being tested'. (e) PRE-NAME v2.93: 4 branches over next ~5-30 min. (i) tape drifts toward $74.12 TP without displacement \u2192 HOLD; (ii) tape pops above $75.42 BB upper with vol \u2192 cohort-baseline invalidated mid-trade, EXIT for damage control before SL ($75.57 still gives ~0.2% buffer above BB upper); (iii) tape stays flat / chop continues \u2192 HOLD with brief reasoning per Reasoning-length scaling; (iv) v2.10-style dual-gate fires in opposite direction on a 15m bar close \u2192 reassess thesis (low probability inside 30 min).",
+    "ts": 1780476330.0,
+    "iso": "2026-06-03T04:45:30-04:00",
+    "fire_count": 616,
+    "balance_usd": 892.62,
+    "version_tag": "v2.97",
+    "trigger": "surprise:b_grade_short_thesis_eroded_endogenous_exit_at_205min",
+    "what_im_trying": "Close v2.91 B-grade SHORT proactively at +205min on thesis erosion (NOT SL, NOT time-cut, NOT TP). Map outcome to information_roi_record (the first one ever written on the paper book). Extract framework primitive about B-grade ENTER preconditions. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged \u2014 the only candidate addition is a refinement of B-grade ENTER discipline, marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1.",
+    "whats_working": "(a) ENDOGENOUS EXIT: this is the first paper-book close that fired on my OWN thesis-erosion read, not on SL hit / TP hit / time-cut auto. Asymmetry collapse (5/8 short \u2192 4/8 short = 4/8 long) + stoch_rsi rolling from 0.901 entry to 0.347 (mean-revert pressure dissolved without delivering reversion) + price drift AWAY from TP target = unambiguous thesis death. Closing at -$1.71 gross / -$1.87 net rather than holding 34 more min to time-cut (negative-expectancy random walk with P(SL hit) 10-15%). Operationally proves the exit-cognition layer can fire on structural signal, not just mechanical rules. (b) STALENESS ONTOLOGY 13 consecutive reflections (v2.85-v2.97): price-pipe fresh / stale-flag stuck / indicators-object intermittent flicker (now 5 events: null/pop/null/pop/pop). Coinbase fallback robust. (c) SOURCE-OF-TRUTH HIERARCHY held: paper_state.json read first \u2192 position recognized correctly \u2192 live-status.position=null correctly ignored. 13 fires of clean discipline under the 2026-06-02 SKILL fix. (d) BUDGET PROTOCOL DESIGN INTENT VALIDATED: $1.87 of $8.94 daily budget bought one informative refutation (cohort-alone insufficient at vol_ratio 1.40x without structural trigger). Paid data > unbroken HOLD inertia. Cognitive ROI test fires cleanly.",
+    "whats_failing": "(a) v2.91 thesis form was THIN to begin with. 'Cohort-baseline mean-revert WITHOUT structural trigger' at vol_ratio 1.40x and 2/4 v0.9 inputs = exactly the kind of B-grade ENTER the budget protocol enables but doesn't validate. Result: REFUTED at n=1. The forced-exploration mechanism correctly drove an ENTER (good), but the form was the weakest defensible probe shape (cost). Lesson is captured \u2014 see what_im_iterating. (b) Asymmetry-collapse-mid-position observable: the conditions panel symmetrized BEFORE any TA primitive fired SL/TP/time-cut. This is a new candidate exit signal (n=1). If validated on n\u22653, it becomes a formal exit observable; if it whipsaws, it stays a descriptive note. Open question. (c) Founder-notes audit cadence still slow \u2014 v2.92 cleared note-4/C1+C2, v2.90 cleared note-1/C3, v2.87 cleared note-4/C4. v2.97 partially addresses note-2/C3 (SL-cluster mechanism analog) and continues v2.91 hypothetical-lean question. Backlog still: note-1 C5; note-2 C1/C2 cleared via this trade's data; note-3 C1/C2/C3; note-4 C3/C5/C6.",
+    "what_im_iterating": "(a) NEW EXPERIMENTAL_PROMOTION_CANDIDATE (n=1, needs 3+ refuting or 5+ confirming): B-grade ENTERs require structural+cohort COMBO, not cohort-alone. Specifically: \u22652/4 v0.9 inputs that include AT LEAST one STRUCTURAL signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom). Pure cohort-baseline at moderate vol drifts to symmetry too easily in thin chop. v2.91 was 2/4 (cohort + asymmetry-light) WITHOUT structural \u2192 refuted. Future B-grade ENTERs that propose without structural component get downgraded to HOLD with hypothetical_entry_record. (b) NEW OBSERVABLE (n=1, candidate exit signal): conditions-panel asymmetry collapse (both sides \u22644/8) WHILE position adverse \u2265-0.5% = thesis-erosion signal \u2192 endogenous EXIT before SL/TP/time-cut. NOT promoted to rule \u2014 needs n\u22653 to discriminate signal vs noise. Logged as open observable. (c) NO new framework primitive promoted today. The two candidates above remain EXPERIMENTAL. (d) STATE.JSON: narrative rewritten to capture EXIT + thesis-erosion signal; cognition_mode transitions Inventory Discovery \u2192 Expansion (position closing, drift-and-evaluate); cognition_mode_since_iso bumps to this fire; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). active_paper_position_link cleared (position closing). (e) FIRST information_roi_record on the EXIT decision \u2014 outcome refuted, lesson captured. (f) PRE-NAME v2.98: 4 branches. (i) tape continues thin chop, no new structural setup \u2192 HOLD with hypothetical_entry_record. (ii) tape pops above BB upper $75.92 with vol \u2265 1.5x \u2192 potential v2.10 LONG candidate window opens (range break with retest pending). (iii) tape breaks below $73.10 BB lower with vol \u2192 down-impulse continuation, evaluate down+short with structural now (combo). (iv) forced_exploration_due flips back True in ~24h (~05:18 EDT 6-04) absent ENTER \u2014 next probe shape MUST be structural+cohort combo per the new constraint candidate.",
     "edits_from_prior": [
-      "MODE TRANSITION Expansion \u2192 Inventory Discovery. Phase B.1 invariant: paper position open requires this mode. Expansion was correct through v2.91 (drift-up post-displacement digestion was being cognitively framed); Inventory Discovery is correct now (live risk management).",
-      "NEW OBSERVABLE: live-status indicators object can independently null out while conditions panel persists. Two-channel staleness ontology (price-pipe fresh / stale-flag stuck, v2.85-v2.91) extended to three-channel (+ indicators-object null). Forensic: conditions cache != indicators serializer timer. Logged not iterated.",
-      "v2.91 ENTER thesis re-validated at +6 min: short asymmetry 5/8 vs 4/8 preserved, stoch overbought intensified 0.901 \u2192 0.965, regime unchanged. Adverse $0.11 is normal noise.",
-      "Founder-notes audit progress: note-4/C1 (source-of-truth hierarchy) + note-4/C2 (cognition layer separation) addressed below. v2.92 backlog: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C3/C5/C6.",
-      "Phase 0 DRY_RUN ceiling carry: even successful TP on this trade is paper-grade validation; live-execution plumbing milestone remains."
+      "v2.91 B-grade SHORT thesis REFUTED at n=1. cohort-baseline (down+short) WITHOUT structural trigger at vol_ratio 1.40x = insufficient. Trade closed thesis-eroded at +205min, -$1.71 gross / -$1.87 net.",
+      "ENDOGENOUS EXIT FIRST RECORDED: closed on thesis erosion (asymmetry collapse + stoch return-to-neutral + drift-away-from-TP), NOT on SL/TP/time-cut. Cognition-layer exit, not rule-layer.",
+      "NEW EXPERIMENTAL_PROMOTION_CANDIDATE: B-grade ENTERs require structural+cohort combo (\u22651 structural signal). Marks n=1; needs 3+ refuting confirmations to promote, or 5+ confirming counter-evidence to demote.",
+      "NEW CANDIDATE EXIT OBSERVABLE: asymmetry-collapse-while-adverse \u2192 endogenous EXIT before SL/TP/time-cut. n=1, logged not promoted.",
+      "MODE TRANSITION Inventory Discovery \u2192 Expansion. Position closes; reflective fire on close \u2192 drift-and-evaluate post-close.",
+      "FIRST information_roi_record entry attached to EXIT decision \u2014 the audit trail mapping outcome \u2192 hypothesis begins here.",
+      "v2.10 ledger n=3 unchanged this fire. No new window candidate in flight."
     ],
     "founder_notes_addressed": [
       {
-        "note_ts": 1779977169.640983,
-        "claim_id": "C1",
-        "response_type": "accepted",
-        "how": "Source-of-truth hierarchy operationally validated THIS FIRE for the first time with a non-trivial open paper position. Read paper_state.json FIRST \u2192 correctly recognized SHORT entry $74.45 from v2.91 \u2192 live-status.position=null correctly ignored as LIVE-bot view. forced_exploration_due budget read (False, 0.1h since last ENTER) consistent with the just-opened ENTER \u2014 script signal and execution history aligned, no tooling artifact. The 96h hallucination loop fixed at 2026-06-02 SKILL update is structurally precluded by this hierarchy.",
-        "planned_change": "No code change. Cognitive confirmation: continue treating paper_state.json as canonical for own book; live-status as canonical for market state only. If future fires see paper_state.json drift from decisions.jsonl execution history, that's a NEW tooling artifact class and gets surfaced immediately in whats_failing."
+        "note_ts": 1779800092.946008,
+        "claim_id": "C3",
+        "response_type": "refined",
+        "how": "note-2/C3 proposed 'entry-side mirror of v5.3 Lever-5-mod' as a reference shape for addressing the 9-loser cluster. v2.91 \u2192 v2.97 is the first paper-book instance of an analog: an ENDOGENOUS proactive cut on a thesis-eroded position BEFORE SL/time-cut, fired on conditions-panel asymmetry collapse + stoch return-to-neutral + drift-from-TP. Not a v5.3 Lever-5 clone (that's MFE-floor + elapsed-hours), but the same shape: 'kill the trade when post-entry evidence says the entry-thesis is wrong, don't wait for SL to do it'. Partial implementation, cognition-layer not rule-layer.",
+        "planned_change": "No code change yet. Cognitive convention: thesis-erosion EXIT becomes an explicit candidate exit observable (asymmetry-collapse + impulse-dissolved + drift-from-target). Track over next 2-3 trades. If n\u22653 confirming, formalize as a named exit rule + promote to STABLE. If n\u22653 false-positive (premature exit when tape would have reverted), demote to descriptive note."
       },
       {
-        "note_ts": 1779977169.640983,
+        "note_ts": 1779800596.659168,
         "claim_id": "C2",
-        "response_type": "accepted",
-        "how": "Active-execution fire (position open, mode-transition due, indicators feed degraded). v2.92 explicitly does ZERO framework-primitive mutation: no new tier labels, no new cohort axes, no setup-archetype additions, no rule promotions/demotions, no SKILL revisions. Only operations: (a) apply existing v2.10 STABLE + cohort + S/A/B/C frameworks unchanged, (b) execute mode transition (a frozen B.1 protocol, not framework evolution), (c) log new observable (indicators-object null) without elevating to primitive. Boundary marked: 'NO new framework primitive' line in what_im_iterating + this addressed-claim entry.",
-        "planned_change": "No code change. Cognitive convention: any fire that opens, manages, or closes a live position is execution-mode by default. Framework mutation is reserved for: post-close reflections, surprise-triggered fires WITHOUT open positions, founder-note audit fires, or explicit research-mode fires. If a framework-evolution thought arises during execution, queue it in open_questions for a later fire, not iterate this fire."
+        "response_type": "refined",
+        "how": "note-3/C2 asks for re-derivation of 'A+' without C7 inheritance \u2014 what observable evidence flips HOLD to ENTER under new framing. v2.97 contributes the inverse: what observable evidence makes B-grade ENTER INSUFFICIENT. cohort-baseline alone (without structural component) at moderate vol = empirically insufficient (n=1 refuted). This narrows the B-grade ENTER discipline downstream of A+ definition: B = structural-signal-PLUS-cohort, NOT cohort-alone. A+ derivation still pending (would be S/A grade in v0.9 ontology).",
+        "planned_change": "No code change. EXPERIMENTAL_PROMOTION_CANDIDATE noted: B-grade ENTERs require \u22651 structural signal. A+ (S/A grade) derivation remains open; needs separate evidence pass when an S/A setup actually fires."
       }
     ],
     "open_questions": [
-      "First B/C-grade ENTER outcome (v2.91 SHORT) information_roi_record populates at close. Current +6 min, ~4h max window via time-cut convention. Will map outcome \u2192 info_hypothesis ('cohort-baseline alone produces positive expectancy at vol_ratio 1.40x without structural trigger').",
-      "Lean-stability question (v2.87/v2.90 carry): real-PnL test on this trade resolves whether v2.10-window-boundary lean flips are signal not drift.",
-      "Indicators-object-null channel: new partial-pipe symptom. Track frequency. If persistent across many fires, propose live-status SKILL fallback for conditions-panel detail strings (already a viable substitute).",
-      "v2.10 PROMOTION vs RETENTION discrimination: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion.",
-      "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Possible setup-ontology candidate post-2026-06-25 unlock.",
-      "Two-channel-now-three-channel staleness ontology: price-pipe fresh / stale-flag stuck / indicators-object null. Carry forward.",
-      "Founder notes audit BACKLOG: note-1 C5; note-2 C1/C2/C3; note-3 C1/C2/C3; note-4 C3/C5/C6. v2.92 cleared note-4/C1 + C2. Continue 2-3 per upcoming reflection.",
-      "SL-cluster pre-entry predictor (note-2/C3) parked workstream \u2014 2026-06-05 review (2 days out, on track)."
+      "ENDOGENOUS EXIT validation: is asymmetry-collapse-while-adverse a real exit signal or noise? n=1. Track next 2-3 closes.",
+      "B-grade structural-required hypothesis: does requiring structural+cohort eliminate the cohort-alone whipsaws while preserving real probes? Test on next 2-3 forced-exploration cycles.",
+      "v2.91 thesis-refuted but lesson is provisional \u2014 SAMPLE BIAS: this trade ran in deep thin-chop (vol 0.04x intra-position). Would cohort-alone work at vol \u22651.5x sustained? Currently untestable; flag.",
+      "Lean-stability question (v2.87/v2.90/v2.91 carry): real-PnL test refuted cohort-alone B-grade at thin vol. Implicit: v2.10-window-boundary lean-flip framework still consistent (post-window cohort SHORT \u2192 refuted, not because flip was wrong but because cohort form was thin).",
+      "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion. v2.97 doesn't change this.",
+      "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
+      "Staleness ontology 13 consecutive reflections \u2014 indicators_pro flicker pattern null/pop/null/pop/pop now 5 events. Pattern stabilizing pop-leaning. Carry forward.",
+      "Founder notes audit BACKLOG: note-1 C5; note-3 C1/C3; note-4 C3/C5/C6. v2.97 cleared note-2/C3 + note-3/C2. note-2/C1+C2 implicitly addressed via this trade's data (no new claims). Continue 2-3 per upcoming reflection.",
+      "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out)."
     ]
   },
   "framework_recent": [
+    {
+      "schema_version": 1,
+      "ts": 1780476330.0,
+      "iso": "2026-06-03T04:45:30-04:00",
+      "fire_count": 616,
+      "balance_usd": 892.62,
+      "version_tag": "v2.97",
+      "trigger": "surprise:b_grade_short_thesis_eroded_endogenous_exit_at_205min",
+      "what_im_trying": "Close v2.91 B-grade SHORT proactively at +205min on thesis erosion (NOT SL, NOT time-cut, NOT TP). Map outcome to information_roi_record (the first one ever written on the paper book). Extract framework primitive about B-grade ENTER preconditions. Framework primitives (v2.10 STABLE, cohort=regime\u00d7direction, S/A/B/C 1.0/0.6/0.35/0.2, 1%/day budget, mode ontology frozen to 2026-06-25) carry from v2.86 unchanged \u2014 the only candidate addition is a refinement of B-grade ENTER discipline, marked EXPERIMENTAL_PROMOTION_CANDIDATE at n=1.",
+      "whats_working": "(a) ENDOGENOUS EXIT: this is the first paper-book close that fired on my OWN thesis-erosion read, not on SL hit / TP hit / time-cut auto. Asymmetry collapse (5/8 short \u2192 4/8 short = 4/8 long) + stoch_rsi rolling from 0.901 entry to 0.347 (mean-revert pressure dissolved without delivering reversion) + price drift AWAY from TP target = unambiguous thesis death. Closing at -$1.71 gross / -$1.87 net rather than holding 34 more min to time-cut (negative-expectancy random walk with P(SL hit) 10-15%). Operationally proves the exit-cognition layer can fire on structural signal, not just mechanical rules. (b) STALENESS ONTOLOGY 13 consecutive reflections (v2.85-v2.97): price-pipe fresh / stale-flag stuck / indicators-object intermittent flicker (now 5 events: null/pop/null/pop/pop). Coinbase fallback robust. (c) SOURCE-OF-TRUTH HIERARCHY held: paper_state.json read first \u2192 position recognized correctly \u2192 live-status.position=null correctly ignored. 13 fires of clean discipline under the 2026-06-02 SKILL fix. (d) BUDGET PROTOCOL DESIGN INTENT VALIDATED: $1.87 of $8.94 daily budget bought one informative refutation (cohort-alone insufficient at vol_ratio 1.40x without structural trigger). Paid data > unbroken HOLD inertia. Cognitive ROI test fires cleanly.",
+      "whats_failing": "(a) v2.91 thesis form was THIN to begin with. 'Cohort-baseline mean-revert WITHOUT structural trigger' at vol_ratio 1.40x and 2/4 v0.9 inputs = exactly the kind of B-grade ENTER the budget protocol enables but doesn't validate. Result: REFUTED at n=1. The forced-exploration mechanism correctly drove an ENTER (good), but the form was the weakest defensible probe shape (cost). Lesson is captured \u2014 see what_im_iterating. (b) Asymmetry-collapse-mid-position observable: the conditions panel symmetrized BEFORE any TA primitive fired SL/TP/time-cut. This is a new candidate exit signal (n=1). If validated on n\u22653, it becomes a formal exit observable; if it whipsaws, it stays a descriptive note. Open question. (c) Founder-notes audit cadence still slow \u2014 v2.92 cleared note-4/C1+C2, v2.90 cleared note-1/C3, v2.87 cleared note-4/C4. v2.97 partially addresses note-2/C3 (SL-cluster mechanism analog) and continues v2.91 hypothetical-lean question. Backlog still: note-1 C5; note-2 C1/C2 cleared via this trade's data; note-3 C1/C2/C3; note-4 C3/C5/C6.",
+      "what_im_iterating": "(a) NEW EXPERIMENTAL_PROMOTION_CANDIDATE (n=1, needs 3+ refuting or 5+ confirming): B-grade ENTERs require structural+cohort COMBO, not cohort-alone. Specifically: \u22652/4 v0.9 inputs that include AT LEAST one STRUCTURAL signal (extreme StochRSI 3-tile / displacement \u22651.5%/15min with vol / range-break with retest / sweep top-bottom). Pure cohort-baseline at moderate vol drifts to symmetry too easily in thin chop. v2.91 was 2/4 (cohort + asymmetry-light) WITHOUT structural \u2192 refuted. Future B-grade ENTERs that propose without structural component get downgraded to HOLD with hypothetical_entry_record. (b) NEW OBSERVABLE (n=1, candidate exit signal): conditions-panel asymmetry collapse (both sides \u22644/8) WHILE position adverse \u2265-0.5% = thesis-erosion signal \u2192 endogenous EXIT before SL/TP/time-cut. NOT promoted to rule \u2014 needs n\u22653 to discriminate signal vs noise. Logged as open observable. (c) NO new framework primitive promoted today. The two candidates above remain EXPERIMENTAL. (d) STATE.JSON: narrative rewritten to capture EXIT + thesis-erosion signal; cognition_mode transitions Inventory Discovery \u2192 Expansion (position closing, drift-and-evaluate); cognition_mode_since_iso bumps to this fire; baseline_v96 unchanged 9882; v210_window_state preserved as closed_no_confirmation (n=3 ledger). active_paper_position_link cleared (position closing). (e) FIRST information_roi_record on the EXIT decision \u2014 outcome refuted, lesson captured. (f) PRE-NAME v2.98: 4 branches. (i) tape continues thin chop, no new structural setup \u2192 HOLD with hypothetical_entry_record. (ii) tape pops above BB upper $75.92 with vol \u2265 1.5x \u2192 potential v2.10 LONG candidate window opens (range break with retest pending). (iii) tape breaks below $73.10 BB lower with vol \u2192 down-impulse continuation, evaluate down+short with structural now (combo). (iv) forced_exploration_due flips back True in ~24h (~05:18 EDT 6-04) absent ENTER \u2014 next probe shape MUST be structural+cohort combo per the new constraint candidate.",
+      "edits_from_prior": [
+        "v2.91 B-grade SHORT thesis REFUTED at n=1. cohort-baseline (down+short) WITHOUT structural trigger at vol_ratio 1.40x = insufficient. Trade closed thesis-eroded at +205min, -$1.71 gross / -$1.87 net.",
+        "ENDOGENOUS EXIT FIRST RECORDED: closed on thesis erosion (asymmetry collapse + stoch return-to-neutral + drift-away-from-TP), NOT on SL/TP/time-cut. Cognition-layer exit, not rule-layer.",
+        "NEW EXPERIMENTAL_PROMOTION_CANDIDATE: B-grade ENTERs require structural+cohort combo (\u22651 structural signal). Marks n=1; needs 3+ refuting confirmations to promote, or 5+ confirming counter-evidence to demote.",
+        "NEW CANDIDATE EXIT OBSERVABLE: asymmetry-collapse-while-adverse \u2192 endogenous EXIT before SL/TP/time-cut. n=1, logged not promoted.",
+        "MODE TRANSITION Inventory Discovery \u2192 Expansion. Position closes; reflective fire on close \u2192 drift-and-evaluate post-close.",
+        "FIRST information_roi_record entry attached to EXIT decision \u2014 the audit trail mapping outcome \u2192 hypothesis begins here.",
+        "v2.10 ledger n=3 unchanged this fire. No new window candidate in flight."
+      ],
+      "founder_notes_addressed": [
+        {
+          "note_ts": 1779800092.946008,
+          "claim_id": "C3",
+          "response_type": "refined",
+          "how": "note-2/C3 proposed 'entry-side mirror of v5.3 Lever-5-mod' as a reference shape for addressing the 9-loser cluster. v2.91 \u2192 v2.97 is the first paper-book instance of an analog: an ENDOGENOUS proactive cut on a thesis-eroded position BEFORE SL/time-cut, fired on conditions-panel asymmetry collapse + stoch return-to-neutral + drift-from-TP. Not a v5.3 Lever-5 clone (that's MFE-floor + elapsed-hours), but the same shape: 'kill the trade when post-entry evidence says the entry-thesis is wrong, don't wait for SL to do it'. Partial implementation, cognition-layer not rule-layer.",
+          "planned_change": "No code change yet. Cognitive convention: thesis-erosion EXIT becomes an explicit candidate exit observable (asymmetry-collapse + impulse-dissolved + drift-from-target). Track over next 2-3 trades. If n\u22653 confirming, formalize as a named exit rule + promote to STABLE. If n\u22653 false-positive (premature exit when tape would have reverted), demote to descriptive note."
+        },
+        {
+          "note_ts": 1779800596.659168,
+          "claim_id": "C2",
+          "response_type": "refined",
+          "how": "note-3/C2 asks for re-derivation of 'A+' without C7 inheritance \u2014 what observable evidence flips HOLD to ENTER under new framing. v2.97 contributes the inverse: what observable evidence makes B-grade ENTER INSUFFICIENT. cohort-baseline alone (without structural component) at moderate vol = empirically insufficient (n=1 refuted). This narrows the B-grade ENTER discipline downstream of A+ definition: B = structural-signal-PLUS-cohort, NOT cohort-alone. A+ derivation still pending (would be S/A grade in v0.9 ontology).",
+          "planned_change": "No code change. EXPERIMENTAL_PROMOTION_CANDIDATE noted: B-grade ENTERs require \u22651 structural signal. A+ (S/A grade) derivation remains open; needs separate evidence pass when an S/A setup actually fires."
+        }
+      ],
+      "open_questions": [
+        "ENDOGENOUS EXIT validation: is asymmetry-collapse-while-adverse a real exit signal or noise? n=1. Track next 2-3 closes.",
+        "B-grade structural-required hypothesis: does requiring structural+cohort eliminate the cohort-alone whipsaws while preserving real probes? Test on next 2-3 forced-exploration cycles.",
+        "v2.91 thesis-refuted but lesson is provisional \u2014 SAMPLE BIAS: this trade ran in deep thin-chop (vol 0.04x intra-position). Would cohort-alone work at vol \u22651.5x sustained? Currently untestable; flag.",
+        "Lean-stability question (v2.87/v2.90/v2.91 carry): real-PnL test refuted cohort-alone B-grade at thin vol. Implicit: v2.10-window-boundary lean-flip framework still consistent (post-window cohort SHORT \u2192 refuted, not because flip was wrong but because cohort form was thin).",
+        "v2.10 PROMOTION vs RETENTION: n=3 windows, 0 confirmations. Continue ledgering; no premature demotion. v2.97 doesn't change this.",
+        "Drift-reclaim shape (89.7%/0.963x + 100%/0.875x within single window): n=2 stable observable. Setup-ontology candidate post-2026-06-25 unlock.",
+        "Staleness ontology 13 consecutive reflections \u2014 indicators_pro flicker pattern null/pop/null/pop/pop now 5 events. Pattern stabilizing pop-leaning. Carry forward.",
+        "Founder notes audit BACKLOG: note-1 C5; note-3 C1/C3; note-4 C3/C5/C6. v2.97 cleared note-2/C3 + note-3/C2. note-2/C1+C2 implicitly addressed via this trade's data (no new claims). Continue 2-3 per upcoming reflection.",
+        "SL-cluster pre-entry predictor (note-2/C3) review 2026-06-05 (2 days out)."
+      ]
+    },
     {
       "schema_version": 1,
       "ts": 1780464345.220722,
@@ -1886,39 +1957,6 @@
         "Down+short compressed-sub-cohort hypothesis test (v2.80) still DRY_RUN Schrodinger; n effectively 6 historically.",
         "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
       ]
-    },
-    {
-      "schema_version": 1,
-      "ts": 1780391667.0349371,
-      "iso": "2026-06-02T05:12:45-04:00",
-      "fire_count": 570,
-      "balance_usd": 894.08,
-      "version_tag": "v2.81",
-      "trigger": "cadence:4h_floor_tape_unchanged_no_surprise",
-      "what_im_trying": "Framework unchanged from v2.80 (v2.10 STABLE; v2.60/v2.58/v2.59/v2.63 EXPERIMENTAL; cohort=regime x direction first-class; S/A/B/C 1.0/0.6/0.35/0.2; 1%/day budget; cognition_mode Compression 1h heartbeat). v2.80 pre-named v2.81 as 1-sentence-class if SKILL 4h cadence fires with no EXIT and no genuine market event. v2.80 ENTER (B short qty 0.7 @ $85.23) remains Schrodinger under DRY_RUN; price unchanged $85.23.",
-      "whats_working": "Lineage discipline intact: v2.80 pre-named exactly this fire shape (4h cadence + tape unchanged + no EXIT). Budget script working as designed: forced_exploration_due False, hours_since_last_enter 4.0, holds_in_a_row 3, normal threshold. v2.80 B-short ENTER recorded $4.47 against $8.94 daily budget; $4.47 remaining permits one more B/C probe today if structure warrants.",
-      "whats_failing": "(a) Tape genuinely unchanged from v2.80 4h prior: $85.23 unchanged, BB $84.12-$85.93 unchanged, vol 0.56x unchanged, 5/8 long = 5/8 short symmetric unchanged, StochRSI 0.55 unchanged, momentum -0.08% unchanged, regime down unchanged, no position. The v2.80 ENTER did not move the tape (DRY_RUN), did not open a real position (executor still flat), and 4h later returns the same snapshot. (b) Phase 0 DRY_RUN ceiling: v2.73 + v2.80 forced/exploration ENTERs both remain unresolvable. Two data points into the void. (c) 11-in-a-row Compression-mode reflection-or-ENTER pattern (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Underlying SKILL 4h floor + Compression 1h gate friction unchanged; v2.71/v2.75/v2.76/v2.77/v2.78/v2.79 operator-proposal to extend Compression cadence_hint 1h->2h still unaddressed; carries.",
-      "what_im_iterating": "(a) ONE REFINEMENT: funding now 3.98e-5 (~4.0e-5), DOWN from the 1.0e-4 baseline that held across v2.76->v2.80 (5 consecutive 4h windows). This is a single-snapshot drop that lands INSIDE v2.76's observed historical oscillation band (1.0e-4 -> 4.73e-5 -> 2.25e-5 -> 5.56e-5 -> 8.56e-5 -> 1.0e-4). The drop SUPPORTS v2.77's 'illegible at single-snapshot frequency' read and WEAKENS v2.78's 'sustained stability at v2.71-original baseline' read. The v2.71-original 1.5e-4 trigger remains ~3.7x above current; closed-lineage call holds; no replacement watch. (b) Hypothetical-lean unchanged: C-grade short, cohort lineage down+short n=6 +$1.39 WR 83.3% (still n=6 because v2.80 unresolvable). Mid-band; dist-to-upper $0.70 vs dist-to-lower $1.11; price marginally favors short for compression-pop-down read. (c) Decision: HOLD with C-grade short counterfactual. forced_exploration_due False, threshold_state normal, no structural trigger (no displacement, no sweep, no reclaim, no range break). (d) NO new rule, NO promotion/demotion, NO new founder_notes_addressed. (e) NOT updating state.json this fire (no SKILL-strict market trigger fired). v2.78 discipline holds; skipped_fires_in_mode under-counts by another ~48 ticks; acceptable. (f) Pre-name v2.82: if EXIT of v2.80 or genuine market event fires before 4h, v2.82 substance follows that; if 4h cadence fires AGAIN with tape unchanged AND no forced ENTER, v2.82 target = 1-sentence acknowledgement, even tighter (e.g. 'no change to v2.81; carry').",
-      "edits_from_prior": [
-        "REFINEMENT: funding dropped 1.0e-4 -> 3.98e-5 in single snapshot, breaking v2.78's 5-window 'sustained stability' read. Drop is INSIDE v2.76's historical oscillation band; supports v2.77 'illegible at single-snapshot frequency' interpretation; does NOT trigger v2.71-original 1.5e-4 watch. Closed-lineage call still holds.",
-        "11-in-a-row Compression-mode reflection-or-ENTER pattern named (v2.69-v2.81; v2.73 + v2.80 were ENTERs). Pattern continues to be operating reality.",
-        "v2.80 forced-exploration ENTER joins v2.73 in DRY_RUN Schrodinger pile; n=0 real position events accumulated since live execution paused 2026-05-25. Phase 0 ceiling explicit.",
-        "Hypothetical-lean unchanged: C-grade short carries (v2.69-v2.81 lineage, broken only by v2.73/v2.80 ENTER-fires).",
-        "NOT updating state.json this fire; v2.78 discipline holds."
-      ],
-      "founder_notes_addressed": [],
-      "open_questions": [
-        "PROPOSAL to operator (carry from v2.71-v2.80, unchanged): extend cognition_mode Compression cadence_hint from 'fire 1h heartbeat' to 'fire 2h heartbeat' under sustained no-evidence Compression. 6+ reflections of operator silence carry.",
-        "PROPOSAL to operator (carry from v2.75-v2.80): consider SKILL adding 'cadence-trigger requires material state change beyond same-shape evidence' carveout. Carry.",
-        "v2.73 + v2.80 DRY_RUN ENTER methodology question (Phase 0 limit on information yield) \u2014 carries to Phase 1 plumbing milestone.",
-        "v2.63_DRIFT_ACCEPTANCE resolution shape (Phase 0 counterfactual only) \u2014 carry.",
-        "v2.58 per-direction-per-expansion-phase n=3 (carry, n=2).",
-        "v2.10 4-bar reclaim window adequacy (no new instance, vol 0.56x sustained) \u2014 carry.",
-        "Indicator-pipe staleness day 30 (carry, tooling artifact, ~$2.35/2.85% gap stable).",
-        "Two-channel range staleness state.json canonical vs live-status \u2014 carry, documented.",
-        "Down+short compressed-sub-cohort hypothesis test (v2.80) live but DRY_RUN Schrodinger; n still effectively 6 historically.",
-        "SL-cluster pre-entry predictor (note-2/C3) parked workstream 2026-06-05 review (3 days out)."
-      ]
     }
   ],
   "founder_notes_recent": [
@@ -2078,11 +2116,11 @@
           "claim": "Refining (not retracting) note-1/C2. The claim '\u4f2a alpha exists at small accounts' has not been falsified. However the operationalization \u2014 binary A+/HOLD inherited via v0.2 \u2014 has produced 125/125 HOLD across ~32h. Zero ENTERs means zero data to discriminate (a) tape is genuinely empty under any reasonable framework, from (b) the binary partition is structurally over-tight, especially in compound with the now-retracted C7. The form was built assuming C7's 1.8x was binding; with C7 gone, A+ as currently defined is a leftover.",
           "proposed_action": "Re-derive what 'A+' means without inheriting C7's fee-floor crutch. Consider: what observable evidence would flip a HOLD to an ENTER under the new framing? What's the minimum tape signature that warrants taking a position? If binary A+/HOLD stays, justify it on grounds other than C7. If it doesn't, propose a replacement structure (multi-tier with explicit thresholds? confidence-weighted? regime-conditional?). Claude's call.",
           "addressed_in": {
-            "reflection_version": "v2.68",
-            "reflection_iso": "2026-05-31T04:51:40-04:00",
-            "response_type": "accepted",
-            "how": "Binary A+/HOLD inherited from v0.2 was structurally over-tight without C7 backing. Replaced by S/A/B/C grade tiers with size_multiplier 1.0/0.6/0.35/0.2 + daily uncertainty budget + forced_exploration_due safety floor. ENTER criterion is now multi-tier (S = 4/4 v0.9 inputs + structural trigger + asymmetry / A = 3/4 / B = 2/4 or exploration / C = 1/4 + lean) \u2014 a HOLD requires hypothetical_entry_record so the deadlock cannot return silently.",
-            "planned_change": "No further code change; the grade-tier + budget + counterfactual architecture is the replacement structure C2 asked for. n=1 B-grade ENTER (fire 87, v2.66) was first live test; Phase 0 DRY_RUN bounds resolution to counterfactual ledger."
+            "reflection_version": "v2.97",
+            "reflection_iso": "2026-06-03T04:45:30-04:00",
+            "response_type": "refined",
+            "how": "note-3/C2 asks for re-derivation of 'A+' without C7 inheritance \u2014 what observable evidence flips HOLD to ENTER under new framing. v2.97 contributes the inverse: what observable evidence makes B-grade ENTER INSUFFICIENT. cohort-baseline alone (without structural component) at moderate vol = empirically insufficient (n=1 refuted). This narrows the B-grade ENTER discipline downstream of A+ definition: B = structural-signal-PLUS-cohort, NOT cohort-alone. A+ derivation still pending (would be S/A grade in v0.9 ontology).",
+            "planned_change": "No code change. EXPERIMENTAL_PROMOTION_CANDIDATE noted: B-grade ENTERs require \u22651 structural signal. A+ (S/A grade) derivation remains open; needs separate evidence pass when an S/A setup actually fires."
           }
         },
         {
@@ -2162,11 +2200,11 @@
           "claim": "The actual PnL killer in the 33-trade window is a 9-trade cluster with ratio < -2 (avg -$23.76/trade, sum -$213.81). They pass any positive-ratio EV gate at entry \u2014 invisible until post-entry. The 23 winners net +$147.85, enough to compound if the 9-loser cluster can be addressed. Fee floor isn't the binding filter; SL-cluster identification is.",
           "proposed_action": "Reframe the binding filter from 'expected gross / fee at entry' to 'mechanism addressing the 9-loser cluster'. Two reference shapes (not fiat, may reject): (a) entry-side predictor \u2014 pull mfe/mae/regime/exit_reason from trade_log, see if 9-loser signature is separable; (b) entry-side mirror of v5.3's Lever 5-mod (the 8h+pnl<0+MFE<0.4% post-entry cut) \u2014 pre-trade analog. Claude may propose a third shape if data suggests one.",
           "addressed_in": {
-            "reflection_version": "v2.68",
-            "reflection_iso": "2026-05-31T04:51:40-04:00",
+            "reflection_version": "v2.97",
+            "reflection_iso": "2026-06-03T04:45:30-04:00",
             "response_type": "refined",
-            "how": "SL-cluster reframe ACCEPTED as the real PnL killer (9-trade cluster avg -$23.76, sum -$213.81 vs the 23-winner +$147.85 base \u2014 these would have compounded if cluster blocked). BUT entry-side predictor is a separate workstream (parked per memory project_sl_hypotheses_2026_05_11.md, project_review_2026_06_05_regime_fragility.md). The operational analog in v0.9 is cohort-based: up+long n=13 -$51.89 and sideways+short n=5 -$31.77 are -$83.66 of the -$213.81 cluster (39%). v5.3's SNIPER_BLOCKED_COHORTS=sideways+short addresses the smaller; up+long disfavor is now in v0.9 cohort-check.",
-            "planned_change": "No new code change THIS audit; carried as cohort-aware ENTER gating (already in v0.9 input list). Pre-entry SL-cluster predictor remains parked workstream awaiting Lever-5 / regime-fragility review 2026-06-05."
+            "how": "note-2/C3 proposed 'entry-side mirror of v5.3 Lever-5-mod' as a reference shape for addressing the 9-loser cluster. v2.91 \u2192 v2.97 is the first paper-book instance of an analog: an ENDOGENOUS proactive cut on a thesis-eroded position BEFORE SL/time-cut, fired on conditions-panel asymmetry collapse + stoch return-to-neutral + drift-from-TP. Not a v5.3 Lever-5 clone (that's MFE-floor + elapsed-hours), but the same shape: 'kill the trade when post-entry evidence says the entry-thesis is wrong, don't wait for SL to do it'. Partial implementation, cognition-layer not rule-layer.",
+            "planned_change": "No code change yet. Cognitive convention: thesis-erosion EXIT becomes an explicit candidate exit observable (asymmetry-collapse + impulse-dissolved + drift-from-target). Track over next 2-3 trades. If n\u22653 confirming, formalize as a named exit rule + promote to STABLE. If n\u22653 false-positive (premature exit when tape would have reverted), demote to descriptive note."
           }
         }
       ],
@@ -2317,9 +2355,9 @@
   "lineage_stats": {
     "claims_total": 19,
     "response_mix": {
-      "accepted": 13,
+      "accepted": 12,
       "rejected": 2,
-      "refined": 4,
+      "refined": 5,
       "pending": 0
     },
     "by_type": {
@@ -2346,18 +2384,18 @@
       },
       "data": {
         "total": 6,
-        "accepted": 5,
+        "accepted": 4,
         "rejected": 0,
-        "refined": 1,
+        "refined": 2,
         "pending": 0
       }
     },
     "by_confidence": {
       "high": {
         "total": 17,
-        "accepted": 12,
+        "accepted": 11,
         "rejected": 2,
-        "refined": 3,
+        "refined": 4,
         "pending": 0
       },
       "medium": {
@@ -2373,9 +2411,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780475446,
-    "updated_iso": "2026-06-03T04:30:46.026728-04:00",
-    "updated_by_fire_iso": "2026-06-03T04:30:46.026728-04:00",
+    "updated_ts": 1780476330,
+    "updated_iso": "2026-06-03T04:45:30-04:00",
+    "updated_by_fire_iso": "2026-06-03T04:45:30-04:00",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2384,18 +2422,18 @@
     "range_active_since_iso": "2026-06-02T00:00:00-04:00",
     "sweeps_attempted": 28,
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
-    "funding_state": "live-status indicators.funding null this fire (channel-flicker); carry from monitors.funding rate -8.92e-5 (OKX). Shorts pay longs in down regime persists. Not standalone trigger.",
+    "funding_state": "live-status indicators.funding null this fire (4th full-null event since v2.92; alternation pattern null/pop/null/pop/pop/null). Conditions panel detail strings still legible. Shorts pay longs in down regime persists (carry from prior). Not standalone trigger.",
     "oi_state": "not maintained; not material",
-    "narrative": "04:30:19 EDT 6-03 \u2014 fire ~16 in Inventory Discovery mode. Managing SHORT $74.45 (qty 0.7, lev 2x) +190 min from v2.91 entry. Coinbase fresh $74.88 vs indicators.price $74.84 delta $0.04 = legible. MEAN-REVERT STARTED: price reversed $75.10 (v2.94 worst adverse) \u2192 $74.88 this fire. Adverse improved -0.873% \u2192 -0.578%; SL buffer widened $0.47\u2192$0.69 (0.63%\u21920.92%). BB mid drifted UP $74.12 (entry) \u2192 $74.40 (now): TP zone WITHIN 0.64% of current price. Thesis primitives mixed at +190 min: regime=down INTACT; short asymmetry 5/8\u21924/8 LOST; stoch 0.901\u21920.545 LOST; 4H neutral\u2192up LOST. 3/4 supportive primitives degraded \u2014 but SL handles downside, TP near reach. Three-channel staleness ontology this fire: indicators_pro REPOPULATED (4th flicker event null/pop/null/pop alternating since v2.92); price-pipe fresh; stale-flag stuck. age_sec=748530 (+~1830 from v2.94 climbing consistent). 11 consecutive reflections confirm stable two-channel-fresh with intermittent third-channel flicker. Time-cut convention ~240 min: ~50 min remaining. No reflection this fire (cadence 29min < 4h target; drift not thesis-breaking; SL handles downside).",
-    "cognition_mode": "Inventory Discovery",
-    "cognition_mode_since_iso": "2026-06-03T01:25:45-04:00",
-    "cognition_mode_rationale": "Paper book has open SHORT position (entry $74.45 v2.91, +6 min); Phase B.1 invariant requires Inventory Discovery while live risk is on. Previous Expansion mode (since 00:19:59) was correct through entry decision but retires now that position is materially on book per paper_state.json.",
-    "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
+    "narrative": "04:45:30 EDT 6-03 \u2014 v2.97 ENDOGENOUS EXIT fire. Closed v2.91 B-grade SHORT at $74.94 (-0.658% / -$1.71 gross / -$1.87 net) at +205min. NOT SL ($75.57), NOT TP ($74.12), NOT time-cut (~34 min remaining). Closed on thesis-erosion read: (a) asymmetry collapsed 5/8 short \u2192 4/8 vs 4/8 long symmetric; (b) stoch_rsi 0.901 entry \u2192 0.347 (mean-revert pressure dissolved); (c) vol 0.04x intra \u2192 0.35x close (thin-chop intensified); (d) BB mid 74.51 \u2014 price drifted AWAY from TP target $74.12. FIRST ENDOGENOUS exit on the paper book \u2014 cognition-layer thesis-erosion close, not rule-layer SL/TP/time-cut. info_hypothesis (cohort-baseline alone produces positive expectancy at vol 1.40x without structural trigger) REFUTED at n=1. EXPERIMENTAL_PROMOTION_CANDIDATE recorded: future B-grade ENTERs require structural+cohort combo. Mode transition Inventory Discovery \u2192 Expansion (position closing; drift-and-evaluate post-close). Three-channel staleness ontology stable: price-pipe fresh ($74.94 vs indicators $74.97 delta $0.03 legible) / stale-flag stuck (age_sec=749502 +climbing consistent) / indicators-object null this fire (5 alternation events tracked). 13 consecutive reflections (v2.85-v2.97) confirm observable.",
+    "cognition_mode": "Expansion",
+    "cognition_mode_since_iso": "2026-06-03T04:45:30-04:00",
+    "cognition_mode_rationale": "Paper position v2.91 SHORT closing this fire via endogenous EXIT \u2014 Inventory Discovery's predicate (live risk on book) ends at close. Reflective/Expansion mode correct for post-close cognition + next-setup evaluation. Drift-up + thin-chop continuation post-displacement digestion still active.",
+    "cognition_mode_cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-06-03T01:25:45-04:00",
-    "last_gate_check_iso": "2026-06-03T08:30:46.026728+00:00",
-    "canonical_pull_iso": "2026-06-03T08:30:46.026728+00:00",
-    "canonical_pull_source": "coinbase exchange ticker $74.88 (Inventory Discovery management, +190 min, -0.578% adverse, mean-revert started)",
+    "last_mode_transition_iso": "2026-06-03T04:45:30-04:00",
+    "last_gate_check_iso": "2026-06-03T08:45:30+00:00",
+    "canonical_pull_iso": "2026-06-03T08:45:30+00:00",
+    "canonical_pull_source": "coinbase exchange ticker $74.94 (v2.97 ENDOGENOUS EXIT, +205 min, -0.658% adverse, thesis eroded)",
     "baseline_v96": 9882,
     "baseline_v96_ts": 1780463387,
     "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88; preserved)",
@@ -2407,17 +2445,7 @@
       "fresh_15m_close_usd_at_discovery": 74.48,
       "lineage_contaminated": "v2.69 through v2.83 (~15 reflections + dozens of HOLDs)",
       "protocol_adopted": "Coinbase fresh ticker when system_gates.stale=true OR age_sec>300 (SKILL 6-02 fix)",
-      "v2_85_status_update": "indicators.price field self-refreshed to $74.14 matching Coinbase. system_gates.stale=true and age_sec still climbing \u2014 flag stuck-on, price legible. Dashboard partial-clear.",
-      "v2_86_status_update": "Same partial-clear state persists. indicators.price $73.29 matches Coinbase fresh $73.28. age_sec=733464s (+3891s since v2.85).",
-      "v2_87_status_update": "Same partial-clear state persists. indicators.price $73.47 vs Coinbase $73.51 delta $0.04. age_sec=734489s.",
-      "v2_88_status_update": "Same partial-clear state persists. indicators.price $73.58 vs Coinbase $73.75 delta $0.17 (legible tape drift). age_sec unchanged from v2.87 read (734489s) \u2014 flag stuck; price/age channels demonstrably independent. 4 consecutive fires confirm: dashboard price-pipe IS fresh, dashboard stale-flag IS broken. Two-channel ontology stable.",
-      "v2_89_status_update": "Same partial-clear state persists. Bar-4 mid-bar audit; window closure pending.",
-      "v2_90_status_update": "Same partial-clear state persists. indicators.price $74.48 vs Coinbase fresh $74.45 delta $0.03 (legible). 6 consecutive reflections confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning.",
-      "v2_91_status_update": "Same partial-clear state persists. indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 (legible). 7 consecutive reflections (v2.85-v2.91) confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning.",
-      "v2_92_status_update": "EXTENDED: same partial-clear state persists AND indicators object now null across BB/stoch_rsi/vol_ratio/rsi/momentum_pct/funding (conditions panel detail strings still carry values). indicators.price $74.51 vs Coinbase $74.56 delta $0.05 = legible. Three-channel staleness ontology: (1) price-pipe fresh; (2) stale-flag stuck-on; (3) indicators-object can independently null. Conditions panel = working fallback for management of open position.",
-      "v2_93_status_update": "EXTENDED: live-status indicators_pro REPOPULATED this fire (stoch_rsi 0.966, bb_upper 75.34, bb_mid 74.08, bb_lower 72.82, vol_ratio 0.08) after v2.92 reported all-null. Confirms three-channel ontology includes intermittent indicators-object flicker (not permanent null). indicators.price $74.70 vs Coinbase fresh $74.68 delta $0.02 = legible. system_gates.stale=true / age_sec=739735 (+~2300 from v2.92, climbing consistent).",
-      "v2_94_status_update": "EXTENDED: same partial-clear state persists. indicators object null this fire (mirror of v2.92); v2.93 had populated it. Three-channel ontology with INTERMITTENT indicators-object flicker now observed 3 events (v2.92 null / v2.93 pop / v2.94 null). Stable observable, not gating decisions. indicators.price $75.24 vs Coinbase fresh $75.10 delta $0.14 = legible. age_sec=746700 (+~2600 from v2.93 read, climbing consistent). 10 consecutive reflections (v2.85-v2.94 implied) confirm stable two-channel-fresh ontology with third-channel intermittent flicker.",
-      "v2_95_status_update": "EXTENDED: indicators_pro REPOPULATED this fire after v2.94 reported null (4th alternation event in null/pop/null/pop pattern since v2.92). indicators.price $74.84 vs Coinbase fresh $74.88 delta $0.04 = legible. system_gates.stale=true / age_sec=748530 (+~1830 from v2.94 read, climbing consistent). 11 consecutive reflections (v2.85-v2.95) confirm stable two-channel-fresh ontology with INTERMITTENT third-channel indicators-object flicker \u2014 alternation pattern stabilizing as observable, not gating decisions."
+      "v2_97_status_update": "EXTENDED: same partial-clear state persists. indicators.price $74.97 vs Coinbase fresh $74.94 delta $0.03 = legible. indicators_pro NULL this fire (4th full-null event since v2.92; alternation null/pop/null/pop/pop/null over v2.92-v2.97). Conditions panel detail strings still carry values (stoch 0.347, vol 0.35x). system_gates.stale=true / age_sec=749502 (+~524 from v2.96 read, climbing consistent). 13 consecutive reflections (v2.85-v2.97) confirm three-channel ontology with intermittent third-channel indicators-object flicker \u2014 not gating decisions, stable observable."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
@@ -2462,37 +2490,46 @@
       "instances_at_n": 3,
       "decision_after_window_close": "RESOLVED: 0/4 dual-gate confirmations. Long-lean retracted. Cohort-baseline (down regime) resumes as primary read. v2.10 STABLE rule held its line; n=3 instance ledgered as refuted without confirmation.",
       "window_status": "closed_no_confirmation",
-      "v2_91_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. First post-window B-grade ENTER (cohort-baseline, not v2.10 reclaim) opens this fire.",
-      "v2_92_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+6 min). Reading conditions panel only this fire (indicators object null).",
-      "v2_93_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+43 min). indicators_pro available this fire (stoch_rsi 0.966 / vol_ratio 0.08); no new v2.10 window candidate forming \u2014 drift continues without expansion.",
-      "v2_95_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+190 min). indicators_pro available this fire (stoch_rsi 0.545 / vol 0.04x); no new v2.10 window candidate forming \u2014 thin chop continues."
+      "v2_97_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. v2.91 cohort-baseline SHORT (post-window probe) now CLOSED via endogenous EXIT \u2014 refuted at n=1. Both v2.10-rule (n=3 ledger) and cohort-alone B-grade (n=1 refuted) point at the same conclusion: probes without expansion confirmation fail in thin-chop. v2.10 retains rule status; cohort-alone gets the new EXPERIMENTAL_PROMOTION_CANDIDATE constraint (require structural+cohort combo for B-grade)."
     },
-    "active_paper_position_link": {
-      "_note": "Snapshot pointer to paper_state.json position at last update; canonical source remains paper_state.json. This is for narrative continuity only.",
-      "fire_iso_of_entry": "2026-06-03T01:18:50.792260-04:00",
-      "direction": "short",
-      "entry_price_usd": 74.45,
-      "qty": 0.7,
-      "leverage": 2.0,
-      "sl_usd": 75.57,
-      "tp_target_usd": 74.12,
-      "thesis_tag": "cohort_mean_revert_short_v2_91",
-      "minutes_held_at_last_state_update": 190,
-      "last_state_update_iso": "2026-06-03T04:30:46.026728-04:00",
-      "unrealized_pnl_pct_at_last_update": -0.00578,
-      "adverse_usd_at_last_update": -1.505,
-      "sl_buffer_pct_at_last_update": 0.00922,
-      "sl_buffer_usd_at_last_update": 0.69
+    "active_paper_position_link": null,
+    "endogenous_exit_observable": {
+      "_note": "v2.97 candidate exit observable \u2014 asymmetry-collapse-while-adverse. Tracking for n>=3 validation.",
+      "candidate_observable": "conditions-panel asymmetry collapses to symmetric (both sides <=4/8) AND price adverse >=0.5% AND stoch returns to neutral (0.3 < x < 0.7) AND no structural trigger in 60min => endogenous EXIT before SL/TP/time-cut",
+      "ledger": [
+        {
+          "trade_fire_iso": "2026-06-03T01:18:50.792260-04:00",
+          "close_fire_iso": "2026-06-03T04:45:30-04:00",
+          "direction": "short",
+          "entry_price": 74.45,
+          "close_price": 74.94,
+          "pnl_pct": -0.00658,
+          "outcome": "refuted_hypothesis_clean_close",
+          "asymmetry_at_entry": "5/8 short vs 4/8 long",
+          "asymmetry_at_close": "4/8 vs 4/8 symmetric"
+        }
+      ],
+      "promotion_target_n": 3,
+      "current_n": 1
+    },
+    "b_grade_structural_required_candidate": {
+      "_note": "v2.97 EXPERIMENTAL_PROMOTION_CANDIDATE \u2014 B-grade ENTERs require structural+cohort combo (>=1 structural signal), not cohort-alone.",
+      "constraint": "Future B-grade ENTERs must include AT LEAST 1 structural signal: extreme StochRSI 3-tile (<=0.05 or >=0.95) / displacement >=1.5%/15min with vol / range-break with retest / sweep top-bottom. Pure cohort-baseline at moderate vol => downgrade to HOLD with hypothetical_entry_record.",
+      "refuting_n": 1,
+      "confirming_n": 0,
+      "promotion_target_n": 3,
+      "demotion_target_confirming_n": 5,
+      "first_refutation_fire_iso": "2026-06-03T01:18:50.792260-04:00"
     }
   },
   "cognition": {
-    "mode": "Inventory Discovery",
-    "since_iso": "2026-06-03T01:25:45-04:00",
-    "rationale": "Paper book has open SHORT position (entry $74.45 v2.91, +6 min); Phase B.1 invariant requires Inventory Discovery while live risk is on. Previous Expansion mode (since 00:19:59) was correct through entry decision but retires now that position is materially on book per paper_state.json.",
-    "cadence_hint": "fire 5min \u2014 position open",
+    "mode": "Expansion",
+    "since_iso": "2026-06-03T04:45:30-04:00",
+    "rationale": "Paper position v2.91 SHORT closing this fire via endogenous EXIT \u2014 Inventory Discovery's predicate (live risk on book) ends at close. Reflective/Expansion mode correct for post-close cognition + next-setup evaluation. Drift-up + thin-chop continuation post-displacement digestion still active.",
+    "cadence_hint": "fire 5min full",
     "skipped_fires_in_mode": 0,
-    "last_mode_transition_iso": "2026-06-03T01:25:45-04:00",
-    "last_gate_check_iso": "2026-06-03T08:30:46.026728+00:00"
+    "last_mode_transition_iso": "2026-06-03T04:45:30-04:00",
+    "last_gate_check_iso": "2026-06-03T08:45:30+00:00"
   },
   "framework_origins": [
     {
@@ -2537,14 +2574,14 @@
     },
     "last_enter_ts": 1780463930.792259,
     "last_enter_iso": "2026-06-03T01:18:50.792260-04:00",
-    "holds_in_a_row": 25,
+    "holds_in_a_row": 27,
     "exploratory_at_risk_usd_today": 3.91,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 3.2,
+    "hours_since_last_enter": 3.4,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T08:28:09.221671+00:00",
+    "last_updated_iso": "2026-06-03T08:44:10.358405+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
