@@ -1,13 +1,13 @@
 {
   "public_schema_version": 8,
-  "generated_at": 1780465778,
-  "generated_iso": "2026-06-03T01:49:38-0400",
+  "generated_at": 1780466648,
+  "generated_iso": "2026-06-03T02:04:08-0400",
   "experiment": "iBitLabs claude-trader Phase 0",
   "mode": "PAPER",
   "summary": {
-    "decisions_total": 592,
+    "decisions_total": 594,
     "actions": {
-      "HOLD": 570,
+      "HOLD": 572,
       "ENTER": 15,
       "EXIT": 7
     },
@@ -15,20 +15,20 @@
       "HOLD": 151,
       "HOLD_with_counterfactual": 383,
       "ENTER_C": 2,
-      "HOLD_no_plausible": 36,
+      "HOLD_no_plausible": 38,
       "EXIT": 7,
       "ENTER_B": 12,
       "ENTER_A": 1
     },
     "confidence": {
       "high": 179,
-      "medium": 318,
+      "medium": 320,
       "low": 95
     },
-    "reasoning_chars_avg_all": 910,
-    "reasoning_chars_avg_last10": 878,
+    "reasoning_chars_avg_all": 911,
+    "reasoning_chars_avg_last10": 993,
     "first_fire_iso": "2026-05-25T00:42:17.165714-04:00",
-    "last_fire_iso": "2026-06-03T01:48:50-0400",
+    "last_fire_iso": "2026-06-03T02:02:36-0400",
     "balance_usd_latest": 894.08,
     "starting_balance_usd": 1000.0,
     "pnl_total_usd": -105.92,
@@ -38,24 +38,24 @@
     "missed_setups_total": 0
   },
   "latest": {
-    "fire_ts": 1780465730.5,
-    "fire_iso": "2026-06-03T01:48:50-0400",
+    "fire_ts": 1780466556.0,
+    "fire_iso": "2026-06-03T02:02:36-0400",
     "session_phase": "phase_0",
     "balance_usd": 894.08,
     "position_at_fire": {
       "direction": "short",
       "entry_price": 74.45,
       "qty": 0.7,
-      "unrealized_pnl_pct": 0.00067,
-      "minutes_held": 29
+      "unrealized_pnl_pct": -0.00309,
+      "minutes_held": 43
     },
-    "current_price": 74.4,
+    "current_price": 74.68,
     "regime": "down",
     "market_snapshot": {
-      "stoch_rsi": null,
-      "vol_ratio": null,
-      "momentum_pct": null,
-      "rsi": null
+      "stoch_rsi": 0.966,
+      "vol_ratio": 0.08,
+      "momentum_pct": 1.5,
+      "rsi": 62.6
     },
     "decision": "HOLD",
     "grade": null,
@@ -67,17 +67,17 @@
     "leverage": null,
     "sl_pct": null,
     "confidence": "medium",
-    "reasoning": "Same baseline as last HOLD (01:42). Coinbase fresh $74.40 vs entry $74.45 = +0.067% favorable, ~30 min into the trade, modest drift toward TP $74.12 (~0.38% remaining). v2.91 thesis intact at +30 min: regime=down unchanged, live-status indicators show trend=down + stoch_zone 0.8 (still overbought) + bb_position 1 (upper-band anchored mean-revert) \u2014 all three preserved. Indicators-object PARTIAL RECOVERY this fire (trend/stoch_zone/bb_position carry values; finer fields BB/stoch_rsi/vol_ratio/rsi/momentum/funding still null) \u2014 three-channel staleness ontology in motion, not new failure shape. Stale-flag still stuck-on (age_sec 738877, +1425s from v2.92). Coinbase ticker preferred per SKILL fallback. No displacement, no abort, no SL test. Position management mode (Inventory Discovery, never skip). HOLD.",
+    "reasoning": "Position +43min: SHORT $74.45 -> $74.68 adverse -$0.23 (-0.31% / unrealized -$0.81 gross). Thesis intact \u2014 conditions panel 6/8 short vs 4/8 long; stoch_rsi 0.966 intensified vs entry 0.901 (more overbought); regime=down unchanged; price still well inside BB band ($74.68 vs upper $75.34). Vol_ratio collapse: 1.40 (entry) -> 0.69 (v2.92 conditions panel) -> 0.08 (indicators_pro this fire). Thin tape may slow rotation toward $74.12 TP but does not invalidate cohort-mean-revert thesis \u2014 no displacement, no sweep, no range break. SL $75.57 still 1.19% above current; abort triggers all dormant. Staleness ontology update: indicators_pro POPULATED this fire after being all-null in v2.92 \u2014 confirms intermittent indicators-object behavior as third partial-pipe channel (logged, not iterated; mode/archetype freeze honored). Coinbase fresh $74.68 vs live-status indicators.price $74.70 delta $0.02 = legible. system_gates.stale=true / age_sec=739735 still climbing. HOLD on managing live SHORT inventory.",
     "expected_holding_hours": 4,
     "expected_pnl_pct_target": 0.005,
     "abort_conditions": [
-      "price clears $75.42 BB upper with volume (mean-revert thesis invalidated mid-trade)",
-      "price prints $75.57 SL (1.5% adverse, hard stop)",
-      "regime flip from down -> up (cohort thesis flipped)",
-      "time-cut 4h elapsed without TP touch (drift-without-resolution = unprofitable carry)"
+      "price reaches SL $75.57",
+      "price breaks above BB upper $75.34 with vol_ratio >= 1.0",
+      "regime flips to up with displacement",
+      "8h time-cut if pnl<0 and MFE<0.4%"
     ],
     "hypothetical_entry_record": null,
-    "no_plausible_counterfactual": "managing open SHORT from v2.91; directional commitment is active and IS the counterfactual being tested. The information_roi_record at close will resolve the cohort-alone-at-vol-1.40x hypothesis.",
+    "no_plausible_counterfactual": "managing open SHORT from v2.91 \u2014 the directional commitment IS active and is the counterfactual being tested; lean is committed and on the book, not hypothetical",
     "exploration_attribution": null,
     "information_roi_record": null
   },
@@ -1507,11 +1507,11 @@
     }
   ],
   "hold_summary": {
-    "holds_since_framework": 4,
-    "avg_chars": 942,
+    "holds_since_framework": 6,
+    "avg_chars": 1000,
     "since_iso": "2026-06-03T01:25:45-0400",
     "since_framework_version": "v2.92",
-    "latest_fire_iso": "2026-06-03T01:48:50-0400"
+    "latest_fire_iso": "2026-06-03T02:02:36-0400"
   },
   "framework_latest": {
     "schema_version": 1,
@@ -2373,9 +2373,9 @@
   "missed_setups_total": 0,
   "state_snapshot": {
     "schema_version": 2,
-    "updated_ts": 1780464345.220722,
-    "updated_iso": "2026-06-03T01:25:45.220-04:00",
-    "updated_by_fire_iso": "2026-06-03T01:25:45.220-04:00",
+    "updated_ts": 1780466556.0,
+    "updated_iso": "2026-06-03T02:02:36-0400",
+    "updated_by_fire_iso": "2026-06-03T02:02:36-0400",
     "regime": "down",
     "regime_since_iso": "2026-05-25T00:37:00-04:00",
     "compression_hours": 0,
@@ -2386,16 +2386,16 @@
     "last_displacement_iso": "2026-06-02T23:30:00-04:00",
     "funding_state": "live-status funding -7.32e-5 (carry from v2.91; indicators.funding_rate null this fire). Shorts pay longs in down regime persists. Not standalone trigger.",
     "oi_state": "not maintained; not material",
-    "narrative": "01:25:45 EDT 6-03 \u2014 v2.92 fire (FIRST Inventory Discovery mode fire on paper book). v2.91 opened B-grade SHORT $74.45 6 min ago (qty 0.7, lev 2x, SL $75.57, TP ~$74.12 BB mid). Coinbase fresh $74.56 = -0.148% adverse, normal noise. Phase B.1 mode transition Expansion \u2192 Inventory Discovery (position open invariant); previous mode_since 2026-06-03T00:19:59-04:00 retired. Live-status conditions panel: short 5/8 vs long 4/8 (asymmetry held); stoch_rsi 0.965 intensified vs entry's 0.901 (supports short); regime=down unchanged. NEW partial-pipe symptom: live-status indicators OBJECT all-null this fire (BB/stoch_rsi/vol_ratio/rsi/momentum_pct/funding); conditions panel detail strings persist with values. Three-channel staleness ontology now stable: price-pipe fresh / stale-flag stuck / indicators-object null. Decision: HOLD. Trade alive, abort conditions intact, no displacement. Founder notes addressed: note-4/C1 (source-of-truth hierarchy operationally validated) + note-4/C2 (cognition layer separation honored \u2014 zero framework mutation this execution fire). Paper book: 0.7 SHORT open, cash $982.30, position notional $260.58.",
+    "narrative": "02:02:36 EDT 6-03 \u2014 v2.93 fire (5th fire in Inventory Discovery mode since v2.92 transition). Managing SHORT $74.45 (qty 0.7, lev 2x) +43 min from v2.91 entry. Coinbase fresh $74.68 = -0.31% adverse (-$0.81 gross unrealized). Thesis intact: conditions panel 6/8 short vs 4/8 long (stoch_rsi 0.966 intensified vs entry 0.901, regime=down). Vol_ratio collapse continues 1.40 -> 0.69 -> 0.08 \u2014 thin tape will slow rotation but no displacement / no range break / no sweep. SL $75.57 1.19% above; BB upper $75.34 above price. Abort triggers all dormant. Staleness update: indicators_pro REPOPULATED after v2.92 all-null \u2014 three-channel ontology (price-pipe fresh / stale-flag stuck / indicators-object intermittent) confirmed as flicker-pattern. No reflection this fire (cadence 4h, last v2.92 37 min ago, no thesis-breaking surprise). HOLD.",
     "cognition_mode": "Inventory Discovery",
     "cognition_mode_since_iso": "2026-06-03T01:25:45-04:00",
     "cognition_mode_rationale": "Paper book has open SHORT position (entry $74.45 v2.91, +6 min); Phase B.1 invariant requires Inventory Discovery while live risk is on. Previous Expansion mode (since 00:19:59) was correct through entry decision but retires now that position is materially on book per paper_state.json.",
     "cognition_mode_cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T01:25:45-04:00",
-    "last_gate_check_iso": "2026-06-03T05:25:45.220+00:00",
-    "canonical_pull_iso": "2026-06-03T05:25:45.220+00:00",
-    "canonical_pull_source": "coinbase exchange ticker $74.56 (v2.92 Inventory Discovery mode entry)",
+    "last_gate_check_iso": "2026-06-03T06:02:36+00:00",
+    "canonical_pull_iso": "2026-06-03T06:02:36+00:00",
+    "canonical_pull_source": "coinbase exchange ticker $74.68 (v2.93 Inventory Discovery position management)",
     "baseline_v96": 9882,
     "baseline_v96_ts": 1780463387,
     "baseline_v96_source": "coinbase exchange median(last_96_closed_15m_volumes) fresh recalc v2.87 (immaterial change vs v2.88; preserved)",
@@ -2414,7 +2414,8 @@
       "v2_89_status_update": "Same partial-clear state persists. Bar-4 mid-bar audit; window closure pending.",
       "v2_90_status_update": "Same partial-clear state persists. indicators.price $74.48 vs Coinbase fresh $74.45 delta $0.03 (legible). 6 consecutive reflections confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning.",
       "v2_91_status_update": "Same partial-clear state persists. indicators.price $74.68 vs Coinbase fresh $74.45 delta $0.23 (legible). 7 consecutive reflections (v2.85-v2.91) confirm stable two-channel ontology: price-pipe fresh / stale-flag stuck. SKILL fallback functioning.",
-      "v2_92_status_update": "EXTENDED: same partial-clear state persists AND indicators object now null across BB/stoch_rsi/vol_ratio/rsi/momentum_pct/funding (conditions panel detail strings still carry values). indicators.price $74.51 vs Coinbase $74.56 delta $0.05 = legible. Three-channel staleness ontology: (1) price-pipe fresh; (2) stale-flag stuck-on; (3) indicators-object can independently null. Conditions panel = working fallback for management of open position."
+      "v2_92_status_update": "EXTENDED: same partial-clear state persists AND indicators object now null across BB/stoch_rsi/vol_ratio/rsi/momentum_pct/funding (conditions panel detail strings still carry values). indicators.price $74.51 vs Coinbase $74.56 delta $0.05 = legible. Three-channel staleness ontology: (1) price-pipe fresh; (2) stale-flag stuck-on; (3) indicators-object can independently null. Conditions panel = working fallback for management of open position.",
+      "v2_93_status_update": "EXTENDED: live-status indicators_pro REPOPULATED this fire (stoch_rsi 0.966, bb_upper 75.34, bb_mid 74.08, bb_lower 72.82, vol_ratio 0.08) after v2.92 reported all-null. Confirms three-channel ontology includes intermittent indicators-object flicker (not permanent null). indicators.price $74.70 vs Coinbase fresh $74.68 delta $0.02 = legible. system_gates.stale=true / age_sec=739735 (+~2300 from v2.92, climbing consistent)."
     },
     "v210_window_state": {
       "window_start_iso": "2026-06-02T23:45:00-04:00",
@@ -2460,7 +2461,8 @@
       "decision_after_window_close": "RESOLVED: 0/4 dual-gate confirmations. Long-lean retracted. Cohort-baseline (down regime) resumes as primary read. v2.10 STABLE rule held its line; n=3 instance ledgered as refuted without confirmation.",
       "window_status": "closed_no_confirmation",
       "v2_91_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. First post-window B-grade ENTER (cohort-baseline, not v2.10 reclaim) opens this fire.",
-      "v2_92_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+6 min). Reading conditions panel only this fire (indicators object null)."
+      "v2_92_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+6 min). Reading conditions panel only this fire (indicators object null).",
+      "v2_93_status_note": "Window closed_no_confirmation persists. n=3 ledger preserved. Position from v2.91 alive (+43 min). indicators_pro available this fire (stoch_rsi 0.966 / vol_ratio 0.08); no new v2.10 window candidate forming \u2014 drift continues without expansion."
     },
     "active_paper_position_link": {
       "_note": "Snapshot pointer to paper_state.json position at last update; canonical source remains paper_state.json. This is for narrative continuity only.",
@@ -2471,7 +2473,11 @@
       "leverage": 2.0,
       "sl_usd": 75.57,
       "tp_target_usd": 74.12,
-      "thesis_tag": "cohort_mean_revert_short_v2_91"
+      "thesis_tag": "cohort_mean_revert_short_v2_91",
+      "minutes_held_at_last_state_update": 43,
+      "last_state_update_iso": "2026-06-03T02:02:36-0400",
+      "unrealized_pnl_pct_at_last_update": -0.00309,
+      "adverse_usd_at_last_update": -0.81
     }
   },
   "cognition": {
@@ -2481,7 +2487,7 @@
     "cadence_hint": "fire 5min \u2014 position open",
     "skipped_fires_in_mode": 0,
     "last_mode_transition_iso": "2026-06-03T01:25:45-04:00",
-    "last_gate_check_iso": "2026-06-03T05:25:45.220+00:00"
+    "last_gate_check_iso": "2026-06-03T06:02:36+00:00"
   },
   "framework_origins": [
     {
@@ -2526,14 +2532,14 @@
     },
     "last_enter_ts": 1780463930.792259,
     "last_enter_iso": "2026-06-03T01:18:50.792260-04:00",
-    "holds_in_a_row": 3,
+    "holds_in_a_row": 5,
     "exploratory_at_risk_usd_today": 3.91,
     "exploratory_entries_today": 1,
-    "hours_since_last_enter": 0.5,
+    "hours_since_last_enter": 0.7,
     "forced_exploration_due": false,
     "forced_exploration_due_reason": null,
     "threshold_state": "normal",
-    "last_updated_iso": "2026-06-03T05:48:23.306887+00:00",
+    "last_updated_iso": "2026-06-03T06:02:08.784081+00:00",
     "last_known_balance_usd": 892.62
   },
   "paper": {
