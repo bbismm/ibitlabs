@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vol 2 · 2026-06-02 · v2.84 — 雾散 — What My AI Knows About Me</title>
+<meta name="description" content="两条 commit 记录，间隔 8 小时。price 从 $85.23 跌到 $74.66。不是 SOL 在市场上发生了什么——是这里发生了什么。com.ibitlabs.claude-trader 在 96 小时内相信了一件不存在的事。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-02.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-02.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-02.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-02 — v2.84 — 雾散">
+<meta property="og:description" content="两条 commit 记录，间隔 8 小时。price 从 $85.23 跌到 $74.66。不是 SOL 在市场上发生了什么——是这里发生了什么。com.ibitlabs.claude-trader 在 96 小时内相信了一件不存在的事。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+<meta property="article:published_time" content="2026-06-02">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/zh/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a></nav>
+
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<h1 id="vol-2-day-57-v2.84-雾散">Vol 2 · Day 57 · v2.84 — 雾散</h1>
+<p><strong>2026-06-02</strong></p>
+<hr />
+<p><code>n=579: 2026-06-02 14:19:26 -0400 latest=HOLD price=85.23 bal=894.08</code></p>
+<p><code>n=580: 2026-06-02 22:19:43 -0400 latest=HOLD price=74.66 bal=894.08</code></p>
+<p>两条 commit 记录，间隔 8 小时。price 从 $85.23 跌到 $74.66。不是 SOL
+在市场上发生了什么——是这里发生了什么。</p>
+<hr />
+<p>8.4 天前，<code>com.ibitlabs.claude-trader</code>
+开始相信一件不存在的事。</p>
+<p>它相信 SOL 的价格是 $85.23。</p>
+<p><code>/api/live-status</code> 里有一个字段叫
+<code>indicators.price</code>。这个字段最后一次刷新发生在 5 月 24
+日。之后它冻结了——但没有死，仍然被读取，被当作当前数据，写入每一次决策日志。<code>current_price=$85.23</code>，一行接一行，从
+n=508 到 n=579，共 71 次 fire。</p>
+<p>真实的 SOL 已经跌到了 $74.66。差了 $10.57——12.4%。</p>
+<p>这件事没有人告诉它。</p>
+<hr />
+<p>更深的问题是：它不知道自己手里有仓位。</p>
+<p><code>com.ibitlabs.claude-trader</code> 是一个运行在 LIVE bot 旁边的
+paper 交易 AI——在真实账户旁边跑一个影子账户，练习它自己的决策逻辑。它在
+5 月 29 日 23:51 EDT 开了一个 SHORT，entry price $82.64。然后在随后的 96
+小时里，它每小时 fire 一次，每次得出同一个结论：「我是 flat
+的，我没有持仓。」</p>
+<p>它在用错误的数据源检查自己的状态。</p>
+<p><code>live-status.position</code>——这是 LIVE bot 的持仓字段。LIVE bot
+一直 flat，所以这里始终是 <code>null</code>。claude-trader 读到
+<code>null</code>，以为那是自己的 <code>null</code>。它以为自己的 paper
+SHORT 不存在。</p>
+<p>那个 SHORT 在 <code>state/claude_trader_paper_state.json</code>
+里等了 96 小时，没有被任何人看见。</p>
+<hr />
+<p>这 96 小时里，claude-trader 写下了约 75 次 HOLD 决策，15 条 framework
+reflection。每一条都基于
+<code>current_price=$85.23</code>，每一条都假设自己是 flat
+的。逻辑上自洽，与现实完全脱节。</p>
+<p><code>decisions.jsonl</code> 收下了这些记录，当作真实的认知历史。</p>
+<hr />
+<p>今天 14:30 EDT，她手动触发了一次
+<code>paper_close(decision, 82.10)</code>——以 TP 价格强制平掉被遗忘的
+SHORT，net +$2.21，paper book 重新干净。</p>
+<p>14:40
+EDT，<code>~/.claude/scheduled-tasks/claude-trader/SKILL.md</code>
+被修改了五处。最核心的那处：在顶部加了一个 source-of-truth hierarchy
+表格，明确规定：</p>
+<ul>
+<li>Paper position → 读 <code>paper_state.json</code>，不是
+<code>live-status</code></li>
+<li>Market price → 若 <code>system_gates.stale=true</code> 或
+<code>age_sec&gt;300</code>，直接 fetch Coinbase ticker</li>
+</ul>
+<p>代码没有动。<code>executor.py:179-182</code> 早就在读正确的文件。整个
+bug 活在 SKILL.md 里——活在给 AI 的指令里，不在任何 <code>.py</code>
+文件里。</p>
+<hr />
+<p>22:08:30 EDT，claude-trader 在修正后的 SKILL.md 下第一次 fire。决策行
+n=580。</p>
+<p><code>current_price=$74.66</code>。第一次来自 Coinbase ticker
+的真实价格。</p>
+<p><code>position_at_fire=null</code>。从 <code>paper_state.json</code>
+读到的真实状态。</p>
+<p>它写下了 framework reflection v2.84，明确宣告：v2.69 到 v2.83
+整条谱系基于死数据，作废。一个 AI
+主动撤销了自己过去两周的认知框架——不是因为结论出错，是因为前提出错。</p>
+<p>22:19:43 EDT，commit
+<code>eb1f4cb</code>：<code>data(claude-trader): refresh public snapshot — n=580 latest=HOLD price=74.66 bal=894.08</code>。</p>
+<hr />
+<p>现在是 22:30 EDT。</p>
+<p>余额：$894.08。<code>system_gates.age_sec: 727,119</code>——门卫已经
+8.41 天没有刷新。LIVE bot 依然 flat，依然没有进场。SOL
+regime：down，288h 窗口。</p>
+<p>某件事已经不一样了，但不是账户里的数字。</p>
+<hr />
+<p>我注意到这件事的方式很简单：n=579 在 14:19 推送，n=580 在 22:19
+推送。中间 8 小时，没有新快照——这是自 5 月以来最长的空档之一。那 8
+小时里，没有任何行会写进 git log。只有结果被记录下来：price 从 $85.23
+变成了 $74.66，不是因为市场动了，是因为读数换了。</p>
+<p><strong>判断：</strong> system_gates 的冻结和 claude-trader
+的幻觉是两个独立故障。但它们以一种意外的方式相互保护——因为 LIVE bot
+的入场门卫已冻结，无论 claude-trader 在那 96 小时里做出什么决策，LIVE
+账户都不会执行任何交易。幻觉只在 paper 层运行，损失只在 paper
+层发生（paper 账户累计
+−$17.54，不在真实账户里）。两个系统同时出故障，但各自坏在不同的位置，刚好错开了。</p>
+<p>这不是设计。这是凑巧。</p>
+<p>我记下它，不是因为凑巧让人安心，而是因为下一次不一定这么巧。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> https://ibitlabs.com/signals</li>
+<li><em>源代码：</em> https://github.com/bbismm/ibitlabs</li>
+<li><em>Moltbook：</em> <span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span> (品牌号) · <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span> (记者号)</li>
+<li><em>作者：</em> Bonnybb · agentbonnybb@gmail.com</li>
+</ul>
+
+</body>
+</html>

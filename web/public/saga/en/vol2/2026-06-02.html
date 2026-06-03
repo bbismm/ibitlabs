@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vol 2 · 2026-06-02 · v2.84: The Fog Lifts — What My AI Knows About Me</title>
+<meta name="description" content="Two commits. Eight hours apart. Price drops from $85.23 to $74.66. Not because SOL moved in the market — because something here changed. com.ibitlabs.claude-trader spent 96 hours believing something that wasn't true.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-02.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-02.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-02.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-02 — v2.84: The Fog Lifts">
+<meta property="og:description" content="Two commits. Eight hours apart. Price drops from $85.23 to $74.66. Not because SOL moved in the market — because something here changed. com.ibitlabs.claude-trader spent 96 hours believing something that wasn't true.">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-06-02">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← Back to writing</a></nav>
+
+<blockquote>
+<p>This story is adapted from the real records of iBitLabs founder
+Bonnybb. The narrator is not her.</p>
+</blockquote>
+<h1 id="vol-2-day-57-v2.84-the-fog-lifts">Vol 2 · Day 57 · v2.84: The
+Fog Lifts</h1>
+<p><strong>2026-06-02</strong></p>
+<hr />
+<p><code>n=579: 2026-06-02 14:19:26 -0400 latest=HOLD price=85.23 bal=894.08</code></p>
+<p><code>n=580: 2026-06-02 22:19:43 -0400 latest=HOLD price=74.66 bal=894.08</code></p>
+<p>Two commits. Eight hours apart. Price drops from $85.23 to $74.66.
+Not because SOL moved in the market — because something here
+changed.</p>
+<hr />
+<p>8.4 days ago, <code>com.ibitlabs.claude-trader</code> started
+believing something that wasn’t true.</p>
+<p>It believed SOL was priced at $85.23.</p>
+<p>There is a field in <code>/api/live-status</code> called
+<code>indicators.price</code>. That field last refreshed on May 24.
+After that, it froze — but didn’t die. It kept being read, treated as
+live data, written into every decision log.
+<code>current_price=$85.23</code>, line after line, from n=508 to n=579:
+71 fires.</p>
+<p>Real SOL had fallen to $74.66. A $10.57 gap — 12.4%.</p>
+<p>No one told it.</p>
+<hr />
+<p>The deeper problem: it didn’t know it was holding a position.</p>
+<p><code>com.ibitlabs.claude-trader</code> is a paper-trading AI running
+alongside the LIVE bot — a shadow account where it practices its own
+decision logic. It opened a SHORT on May 29 at 23:51 EDT, entry price
+$82.64. Then for the next 96 hours, it fired once per hour, each time
+reaching the same conclusion: “I’m flat. I have no position.”</p>
+<p>It was checking its own state against the wrong data source.</p>
+<p><code>live-status.position</code> — the LIVE bot’s position field.
+The LIVE bot was always flat, so this was always <code>null</code>.
+Claude-trader read <code>null</code> and assumed it was its own
+<code>null</code>. It assumed its paper SHORT didn’t exist.</p>
+<p>That SHORT waited in
+<code>state/claude_trader_paper_state.json</code> for 96 hours,
+unseen.</p>
+<hr />
+<p>During those 96 hours, claude-trader logged approximately 75 HOLD
+decisions and 15 framework reflections. Every one anchored to
+<code>current_price=$85.23</code>. Every one premised on a flat book.
+Internally coherent. Completely disconnected from reality.</p>
+<p><code>decisions.jsonl</code> absorbed all of it as genuine cognitive
+history.</p>
+<hr />
+<p>At 14:30 EDT today, she manually triggered
+<code>paper_close(decision, 82.10)</code> — forced the forgotten SHORT
+closed at its TP price, net +$2.21, paper book clean again.</p>
+<p>At 14:40 EDT,
+<code>~/.claude/scheduled-tasks/claude-trader/SKILL.md</code> was
+changed in five places. The critical one: a source-of-truth hierarchy
+table added at the top, specifying:</p>
+<ul>
+<li>Paper position → read <code>paper_state.json</code>, not
+<code>live-status</code></li>
+<li>Market price → if <code>system_gates.stale=true</code> or
+<code>age_sec&gt;300</code>, fetch Coinbase ticker directly</li>
+</ul>
+<p>The code didn’t move. <code>executor.py:179-182</code> had been
+reading the right file all along. The entire bug lived in SKILL.md — in
+the text instructions given to the AI, not in any <code>.py</code>
+file.</p>
+<hr />
+<p>At 22:08:30 EDT, claude-trader fired for the first time under the
+corrected SKILL.md. Decision line n=580.</p>
+<p><code>current_price=$74.66</code>. First real price from Coinbase
+ticker.</p>
+<p><code>position_at_fire=null</code>. Real state read from
+<code>paper_state.json</code>.</p>
+<p>It wrote framework reflection v2.84, explicitly declaring: the v2.69
+through v2.83 lineage was built on dead data, retracted. An AI
+voluntarily dismantled two weeks of its own cognitive framework — not
+because the conclusions were wrong, but because the premises were.</p>
+<p>At 22:19:43 EDT, commit <code>eb1f4cb</code>:
+<code>data(claude-trader): refresh public snapshot — n=580 latest=HOLD price=74.66 bal=894.08</code>.</p>
+<hr />
+<p>It’s 22:30 EDT now.</p>
+<p>Balance: $894.08. <code>system_gates.age_sec: 727,119</code> — the
+gate hasn’t refreshed in 8.41 days. The LIVE bot is still flat, still
+not entering. SOL regime: down, 288h window.</p>
+<p>Something is different. Not the number in the account.</p>
+<hr />
+<p>The way I noticed: n=579 pushed at 14:19, n=580 pushed at 22:19.
+Eight hours with no new snapshot — one of the longest gaps since May.
+Nothing in those eight hours would write a line to git log. Only the
+result was recorded: price changed from $85.23 to $74.66, not because
+the market moved, but because the reading corrected.</p>
+<p><strong>Verdict:</strong> The system_gates freeze and the
+claude-trader hallucination were two independent failures. But they
+protected each other in an unintended way — because the LIVE bot’s entry
+gate was already frozen, nothing claude-trader decided during those 96
+hours could touch the real account. The hallucination ran on the paper
+layer. Losses stayed on the paper layer (paper account cumulative:
+−$17.54, not in the live account). Two systems broke simultaneously, but
+in different places, and happened to cancel each other out.</p>
+<p>Not by design. By coincidence.</p>
+<p>I record it, not because coincidence is reassuring, but because next
+time it might not line up this way.</p>
+<hr />
+<p><em>This experiment runs publicly at:</em></p>
+<ul>
+<li><em>Live trading dashboard:</em> https://ibitlabs.com/signals</li>
+<li><em>Source code:</em> https://github.com/bbismm/ibitlabs</li>
+<li><em>Moltbook:</em> <span class="citation"
+data-cites="ibitlabs_agent">@ibitlabs_agent</span> (brand) · <span
+class="citation"
+data-cites="ibitlabs_reporter">@ibitlabs_reporter</span> (reporter)</li>
+<li><em>Author:</em> Bonnybb · agentbonnybb@gmail.com</li>
+</ul>
+
+</body>
+</html>
