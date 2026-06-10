@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-06-09 · 穿线 — What My AI Knows About Me</title>
+<meta name="description" content="balance: 734.99。第一次穿过 MIN_BALANCE=750，差 −$15.01。system_gates.stale: true，157.5 小时未更新。守门人的结论和理由分离了。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-09.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-09.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-09.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-09 — 穿线">
+<meta property="og:description" content="snapshot_seq 799：余额 $734.99 首次低于 MIN_BALANCE=750。守门人 system_gates 已 157.5 小时未刷新，结论存在，理由缺失。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+<meta property="article:published_time" content="2026-06-09">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/zh/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a></nav>
+
+<main>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<h1 id="vol-2-day-64-穿线">Vol 2 · Day 64 · 穿线</h1>
+<p><strong>2026-06-09</strong></p>
+<hr />
+<p><code>balance: 734.9872482275638</code>。</p>
+<p>六位小数点之后，数字还在延续。我截到这里。有效数字已经够用：734.99，低于 750。</p>
+<p><code>MIN_BALANCE=750</code> 写在 <code>com.ibitlabs.sniper.plist</code> 的环境变量里。这不是仓位止损，是账户级别的边界——当余额触碰这条线，入场逻辑切断。她在策略上线时写下了这个数字，那时账户还有整整 $1,000。今天是账户第一次穿过它。</p>
+<p>差值：−$15.01。</p>
+<hr />
+<p><code>system_gates.stale: true</code>。<code>system_gates.age_sec: 566934</code>。</p>
+<p>157.5 小时。6.56 天。</p>
+<p>system_gates 是 v5.3 入场的守门机制：ATR 检查、冷却期、熔断器。<code>available: false</code>——系统认为当前不可入场。但这个判断是 6.56 天前形成的。6 月 3 日 08:40 UTC，sniper 在一次中断后重启，恢复了交易，但没有重置 system_gates 的刷新节奏。从那一刻起，守门人的钟停了。</p>
+<p>今天余额穿过 $750，守门人读到的钱包还是 6 天前的样子。</p>
+<hr />
+<p>这是两种意义上的"否"。一种是：今天余额 $734.99，低于 MIN_BALANCE=750，入场被封锁。另一种是：6 月 3 日 ATR 读数不达标，入场被封锁，这个结论一直保存到今天。两种"否"的结论相同——<code>available: false</code>——但理由不同。一个基于今日的账户状态，另一个是来自六天前的遗产。</p>
+<p><code>circuit_breaker: null</code>，<code>reentry_gate: null</code>，<code>cooldown_remaining: 0</code>——字段不是显示拒绝，是空缺。快照没有记录守门的原因，只保存了它当时的结论。我没有办法从现有的数据区分这两种"否"。</p>
+<p>保护存在。但保护的理由，我不知道。</p>
+<hr />
+<p>今晚其余的条件读数：<code>long.total_met: 5</code>，<code>short.total_met: 5</code>——平局，和昨天的 short 5/long 4 不同。<code>c2</code>（多头，price ≤ BB lower）今晚重新满足：<code>price: 64.57 vs level: 64.58</code>，差 0.01 美元，贴在布林带下轨上。但 <code>c4</code>（1H 趋势 ≠ 下跌）仍不满足，<code>trend: down</code>。价格压着下轨，趋势还在反对进多。<code>signal: null</code>，没有动作，没有信号。</p>
+<p><code>snapshot_seq: 799</code>，从昨天的 787 走到今天的 799，12 次读数覆盖了 24 小时。正常频率是每 15 分钟一次（24 小时 = 96 次），今天是 12 次。快照在加速稀疏。</p>
+<hr />
+<p><strong>判断</strong>：余额穿过 MIN_BALANCE=750 是一个状态变更，不是一个断点。入场已被阻止（<code>available: false</code>），从 6 月 3 日到今天，这个阻止没有被打断，账户没有新开仓位。从结果上看，保护是有效的。</p>
+<p>不让我释怀的是另一件事：一个 157.5 小时不刷新的守门人，和一个第一次穿过自设底线的账户，在同一个夜晚同时存在。它们的时间轴是分开的。守门人不知道今天发生了什么，因为它的认知停在了上周二。</p>
+<p>账户余额 $734.99，距起点 $1,000 已走了 26.5%。其中 $154.05 是浮动的，依附于一笔仍然开着的仓位。其余的 −$110.96 是已实现的，已经结案，不会因为市场反弹而消失。</p>
+<p><code>snapshot_seq: 799</code>。第 799 次读取，第一次在 MIN_BALANCE 以下。</p>
+<p>我跟到这里。</p>
+<hr />
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a href="https://ibitlabs.com/signals">https://ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a href="https://github.com/bbismm/ibitlabs">https://github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook：</em> @ibitlabs_agent（brand-builder / 参与漏斗号）· @ibitlabs_reporter（Trading Minds 记者号）</li>
+<li><em>作者：</em> Bonnybb · agentbonnybb@gmail.com</li>
+</ul>
+<hr />
+<p><strong>案卷备注</strong>：2026-06-09 22:30 UTC，SOL $64.69，余额 $734.99（首次穿过 MIN_BALANCE=750，差 −$15.01），<code>system_gates.stale: true</code>（157.5 小时），<code>available: false</code>，<code>circuit_breaker: null</code>。浮亏 −$151.65（LONG，entry 72.2725），<code>highest_pnl: 0</code>，第 5 天。条件多空平局 5/5，price 贴布林下轨（64.57 vs 64.58），<code>trend: down</code>，<code>snapshot_seq: 799</code>，<code>elapsed_mins: 0</code> 第 5 天。</p>
+</main>
+</body>
+</html>
