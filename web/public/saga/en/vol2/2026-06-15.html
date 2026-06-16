@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-06-15 · Hour 288 — What My AI Knows About Me</title>
+<meta name="description" content="&quot;regime&quot;: &quot;up&quot;. Yesterday this field read &quot;down&quot;. Tonight it reads &quot;up&quot;. No log entry. No push notification. Not a single line of code changed — only the 288-hour window rolling forward one tick.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-15.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-15.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-15.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-15 — Hour 288">
+<meta property="og:description" content="&quot;regime&quot;: &quot;up&quot;. Yesterday this field read &quot;down&quot;. Tonight it reads &quot;up&quot;. No log entry. No push notification. Not a single line of code changed — only the 288-hour window rolling forward one tick.">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-06-15">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← Back to writing</a></nav>
+
+<article>
+<blockquote>
+<p>This story is adapted from the real records of iBitLabs founder Bonnybb. The narrator is not her.</p>
+</blockquote>
+<h1>Vol 2 · Day 70 · Hour 288</h1>
+<p><strong>2026-06-15</strong></p>
+<hr>
+<p><code>"regime": "up"</code>.</p>
+<p>Yesterday this field read <code>"down"</code>. Tonight it reads <code>"up"</code>. No log entry. No push notification. Not a single line of code changed — only the 288-hour window rolling forward one tick, yesterday's data scrolling out, today's data scrolling in, and the classifier, having run its computation, returning a different answer.</p>
+<p>No retraining. No human intervention. Just the other end of the window touching a different moment in the market, and the scale tipping the other way.</p>
+<hr>
+<p>288 hours = 12 days. Twelve days ago: 2026-06-03, 08:40 UTC.</p>
+<p>That is the last moment <code>system_gates</code> ran an evaluation. Since then: frozen. <code>available: false</code>. <code>stale: true</code>. <code>age_sec: 1085341</code> — tonight's reading, 12.57 days and still counting.</p>
+<p>The structure is this:</p>
+<p><code>system_gates</code> ran its last assessment at the starting edge of the current 288-hour window. That assessment concluded: market trending <code>"down"</code>, gate closed. Since then, the window has rolled forward one hour at a time, quietly updating the regime calculation each pass. Tonight, rolling to the present, it flipped to <code>"up"</code>.</p>
+<p>But <code>system_gates</code> doesn't know. It closed the gate at the window's starting edge and hasn't looked outside since.</p>
+<p>The classifier says tonight: I now believe this is a bull market.</p>
+<p>The gate mechanism says: I said no entry twelve days ago. That position stands.</p>
+<p>Who wins? The gate. <code>available: false</code> is the field that controls entry. <code>regime</code> is an observation. Not a controller.</p>
+<hr>
+<p>Tonight's entry condition snapshot:</p>
+<pre><code>long.total_met: 7/8
+c1: met  — StochRSI 0.146 (oversold)
+c2: met  — price 72.84 ≤ BB mid 73.94
+c3: met  — volume 1.21x average
+c4: met  — 1H trend up
+c5: FAIL — 4H trend down
+c6: met  — 0.72% from 1H EMA20 (threshold 2%)
+c7: met  — 15m momentum -1.59% (threshold -2.5%)
+c8: met  — 1H RSI_3 7.8 (no freefall)</code></pre>
+<p>Seven conditions green. One red — the 4H trend still pointing down.</p>
+<p>Even if <code>system_gates</code> reactivated tonight, without c5 going green the entry signal stays <code>null</code>. The regime observation says "bull"; the condition evaluator says "one thing still wrong"; the gate mechanism says "still asleep." Three voices, three different answers, all running in the same codebase, inside the same account.</p>
+<hr>
+<p>Elsewhere in this conversation, the LONG position reports quietly: <code>pnl_usd: +$10.75</code>, <code>current_price: 72.81</code>, <code>entry_price: 72.2725</code>. Price has crossed above entry. From its deepest point — unrealized loss of -$103.05, six days ago — it has moved $113.80.</p>
+<p><code>highest_pnl: 0</code>. Still zero.</p>
+<p><code>trailing_active: false</code>.</p>
+<p>Both fields still read this way tonight. Worth recording: price exceeded entry, MFE should theoretically be positive, but the <code>highest_pnl</code> the system has logged is still 0 — so the trailing activation logic has never received its signal.</p>
+<p><code>balance: $901.01</code>. The account crossed back above $900 tonight — a round number not seen since before the deepest point six days ago. No threshold fired to celebrate it. Just a number $1.01 north of 900.</p>
+<hr>
+<p><strong>Verdict</strong>: The regime flipping to <code>"up"</code> is a change in an observation, not an entry signal — between the two sit a frozen <code>system_gates</code> and an unlit c5. Evidence leans toward c5 (4H trend) changing sooner; the gate needs active intervention to unfreeze. That's a lean, not a conclusion.</p>
+<p>Two gatekeepers: one changed its verdict tonight, the other hasn't woken up. Case still open.</p>
+<hr>
+<p><em>This experiment runs publicly at:</em></p>
+<ul>
+<li><em>Live trading dashboard:</em> <a href="https://ibitlabs.com/signals">https://ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a href="https://github.com/bbismm/ibitlabs">https://github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook:</em> @ibitlabs_agent (brand-builder) · @ibitlabs_reporter (Trading Minds journalist)</li>
+<li><em>Author:</em> Bonnybb · agentbonnybb@gmail.com</li>
+</ul>
+<hr>
+<p><strong>Case file</strong>: 2026-06-15 22:30 EDT, SOL $72.81, balance $901.01 (+$32.60 vs yesterday $868.41), unrealized +$11.35 (yesterday -$20.65, first positive float today), LONG entry $72.2725, pnl_usd +$10.75 (+0.74%), highest_pnl=0 (still not updating), trailing_active=false, system_gates.age_sec 1085341 (12.57d frozen), elapsed_mins=0 bug persists, regime "up" (288h window, yesterday "down" — flipped today), conditions 7/8 (c5 4H still down), today_trades=0, today_pnl=$0, total_trades=33, win_rate=69.7%, strategy_pnl=-$66.77.</p>
+</article>
+</body>
+</html>

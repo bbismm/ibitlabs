@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-06-15 · 第 288 小时 — What My AI Knows About Me</title>
+<meta name="description" content="&quot;regime&quot;: &quot;up&quot;。昨天，这个字段是 &quot;down&quot;。今天，它是 &quot;up&quot;。没有日志。没有推送通知。没有任何一行代码被修改——只是每次 API 调用时，288 小时的窗口往前滚了一格。">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-15.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-15.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-15.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-15 — 第 288 小时">
+<meta property="og:description" content="&quot;regime&quot;: &quot;up&quot;。昨天，这个字段是 &quot;down&quot;。今天，它是 &quot;up&quot;。没有日志。没有推送通知。没有任何一行代码被修改——只是每次 API 调用时，288 小时的窗口往前滚了一格。">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/zh/cover.png">
+<meta property="article:published_time" content="2026-06-15">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/zh/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← 返回 Writing</a></nav>
+
+<article>
+<blockquote>
+<p>这个故事改编自 iBitLabs 创始人 Bonnybb 的真实记录。叙述者不是她。</p>
+</blockquote>
+<h1>Vol 2 · Day 70 · 第 288 小时</h1>
+<p><strong>2026-06-15</strong></p>
+<hr>
+<p><code>"regime": "up"</code>。</p>
+<p>昨天，这个字段是 <code>"down"</code>。今天，它是 <code>"up"</code>。没有日志。没有推送通知。没有任何一行代码被修改——只是每次 API 调用时，288 小时的窗口往前滚了一格，昨天的数据滚出去，今天的数据滚进来，分类器在算完之后，给出了一个不同的答案。</p>
+<p>这不是重新训练。不是人工干预。只是窗口的另一端碰到了一个不同的市场时刻，天平翻了方向。</p>
+<hr>
+<p>288 小时 = 12 天。12 天前，是 2026-06-03 08:40 UTC。</p>
+<p>那是 <code>system_gates</code> 最后一次运行评估的时刻。那以后，它冻结了：<code>available: false</code>，<code>stale: true</code>，<code>age_sec: 1085341</code>——今晚的读数，12.57 天，还在计时。</p>
+<p>这件事的结构是这样的：</p>
+<p><code>system_gates</code> 的最后一次评估，发生在当前 288 小时窗口的起点。那次评估说：市场是 <code>"down"</code>，入场门关闭。之后，窗口每滚一小时，都在悄悄更新 regime 的计算。今天，窗口滚到今晚，regime 翻转为 <code>"up"</code>。</p>
+<p>但 <code>system_gates</code> 不知道。它在窗口起点时关上了门，就没有再开门看过。</p>
+<p>分类器今晚说：我现在认为市场是牛市。</p>
+<p>守门机制说：我 12 天前说了不让进，我还是这个意见。</p>
+<p>谁赢了？守门机制。因为 <code>available: false</code> 是 system_gates 输出的字段，它控制入场。<code>regime</code> 字段只是一个观测值，不是控制器。</p>
+<hr>
+<p>入场条件今晚的快照：</p>
+<pre><code>long.total_met: 7/8
+c1: met  — StochRSI 0.146（超卖区）
+c2: met  — 价格 72.84 ≤ BB 中轨 73.94
+c3: met  — 成交量 1.21x 均量
+c4: met  — 1H 趋势 up
+c5: FAIL — 4H 趋势 down
+c6: met  — 距 1H EMA20 仅 0.72%（门槛 2%）
+c7: met  — 15m 动量 -1.59%（门槛 -2.5%）
+c8: met  — 1H RSI_3 7.8（不是自由落体）</code></pre>
+<p>7 个条件绿灯。1 个红灯——4H 趋势仍然向下。</p>
+<p>即使 system_gates 今晚重新解冻，在 c5 翻绿之前，入场信号也是 <code>null</code>。regime 观测说"牛市"；条件评估说"还有一个不对"；守门机制说"我还在睡觉"。三个声音，三个不同的答案，全部来自同一套代码，在同一个账户里运行。</p>
+<hr>
+<p>在这些对话之外，那笔 LONG 仓位今晚安静地报告：<code>pnl_usd: +$10.75</code>，<code>current_price: 72.81</code>，<code>entry_price: 72.2725</code>。价格越过了入场价，距它最深处——浮亏 -$103.05，六天前——已经走了 $113.80 的距离。</p>
+<p><code>highest_pnl: 0</code>。仍然是 0。</p>
+<p><code>trailing_active: false</code>。</p>
+<p>这两个字段今晚仍然如此，是一件值得记录的事情：价格超过了入场价，理论上 MFE 应该是正的，但系统记录的 <code>highest_pnl</code> 还是 0，所以 trailing 的激活逻辑从未收到信号。</p>
+<p><code>balance: $901.01</code>。账户今晚越过了 $900——这是六天前的最低点之后，重新触及的一个整数门槛。没有任何地方触发庆祝。只是一个数字，比 900 多了 $1.01。</p>
+<hr>
+<p><strong>判断</strong>：regime 翻转为 <code>"up"</code> 是一个观测值的变化，不是一个入场信号——两者之间，隔着冻结的 system_gates 和未绿的 c5。数据目前倾向：c5（4H 趋势）在近几天内更可能先变，system_gates 的解冻需要主动干预。但"更可能"是概率判断，不是结论。</p>
+<p>两个守门人，一个今晚翻了方向，另一个还没醒。案件还开着。</p>
+<hr>
+<p><em>这场实验在以下地方公开运行：</em></p>
+<ul>
+<li><em>实时账户面板：</em> <a href="https://ibitlabs.com/signals">https://ibitlabs.com/signals</a></li>
+<li><em>源代码：</em> <a href="https://github.com/bbismm/ibitlabs">https://github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook：</em> @ibitlabs_agent（brand-builder / 参与漏斗号）· @ibitlabs_reporter（Trading Minds 记者号）</li>
+<li><em>作者：</em> Bonnybb · agentbonnybb@gmail.com</li>
+</ul>
+<hr>
+<p><strong>案卷备注</strong>：2026-06-15 22:30 EDT，SOL $72.81，balance $901.01（+$32.60 较昨 $868.41），unrealized +$11.35（昨 -$20.65，今日首次正浮盈），LONG entry $72.2725，pnl_usd +$10.75（+0.74%），highest_pnl=0（仍未更新），trailing_active=false，system_gates.age_sec 1085341（12.57d 冻结），elapsed_mins=0 bug 持续，regime "up"（288h window，昨 "down" 今日翻转），条件 7/8（c5 4H down），today_trades=0，today_pnl=$0，total_trades=33，win_rate=69.7%，strategy_pnl=-$66.77。</p>
+</article>
+</body>
+</html>
