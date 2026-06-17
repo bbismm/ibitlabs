@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol 2 · 2026-06-16 · Low-Volume Ceiling — What My AI Knows About Me</title>
+<meta name="description" content="vol_ratio: 0.14. SOL climbed +1.97% today, from $72.81 to $74.24. On 14% of average volume. Entry condition c3 requires volume ≥ 1.0x average. Tonight it fails for both long and short. Price crossed; volume didn't.">
+<link rel="canonical" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-16.html">
+<link rel="alternate" hreflang="en" href="https://www.ibitlabs.com/saga/en/vol2/2026-06-16.html">
+<link rel="alternate" hreflang="zh" href="https://www.ibitlabs.com/saga/zh/vol2/2026-06-16.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vol 2 · 2026-06-16 — Low-Volume Ceiling">
+<meta property="og:description" content="vol_ratio: 0.14. SOL climbed +1.97% today, from $72.81 to $74.24. On 14% of average volume. Price crossed the entry condition bar. Volume didn't. The position is up $39.35 with no trailing protection.">
+<meta property="og:image" content="https://www.ibitlabs.com/saga/en/cover.png">
+<meta property="article:published_time" content="2026-06-16">
+<meta property="article:author" content="Bonnybb">
+<link rel="stylesheet" href="/saga/en/book.css">
+</head>
+<body>
+<nav style="position:fixed;top:12px;left:12px;z-index:100;font-family:'JetBrains Mono',ui-monospace,monospace;"><a href="/writing" style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.25);color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;backdrop-filter:blur(6px);">← Back to writing</a></nav>
+
+<article>
+<blockquote>
+<p>This story is adapted from the real records of iBitLabs founder Bonnybb. The narrator is not her.</p>
+</blockquote>
+<h1>Vol 2 · Day 71 · Low-Volume Ceiling</h1>
+<p><strong>2026-06-16</strong></p>
+<hr>
+<p><code>vol_ratio: 0.14</code>.</p>
+<p>SOL climbed +1.97% today — from $72.81 to $74.24. On 14% of average volume.</p>
+<p><code>com.ibitlabs.sniper.plist</code> lists eight entry conditions. Condition <code>c3</code>: volume ≥ 1.0x average. Tonight that condition fails for long. It also fails for short. The rule exists because the strategy's designers didn't trust moves that arrive without volume. Tonight, price crossed the bar. Volume didn't.</p>
+<hr>
+<p><code>pnl_usd: +$39.35</code>. <code>pnl_pct: 0.02722</code>.</p>
+<p>Long entry $72.2725, current price $74.24, spread $1.9675 across 4 contracts: +$39.35. By tonight's <code>/api/live-status</code> reading, this is the highest the position has ever been.</p>
+<p>But <code>highest_pnl: 0</code>.</p>
+<p><code>trailing_active: false</code>.</p>
+<p>The bot's internal record of maximum favorable excursion (MFE) is still zero. Trailing activates at MFE ≥ 0.4% — in dollar terms, price must first clear $72.5615. Tonight's price is $74.24, sitting $1.68 above that trigger. By the strategy's own logic, trailing should have activated the moment price crossed $72.5615 and begun shadowing the position with a 0.5% floating stop, locking in some fraction of these gains.</p>
+<p>It didn't. The <code>elapsed_mins: 0</code> timing bug has persisted since entry. MFE tracking never updated. The trigger chain broke at the first link. The API reports +$39.35. The bot registers MFE = 0. Both readings are true tonight. Neither one knows about the other.</p>
+<hr>
+<p>Tonight's condition snapshot:</p>
+<pre><code>short.total_met: 6/8
+  c2: met  — Price ≥ BB upper: price=74.24 vs upper=74.24
+long.total_met:  5/8
+  c1: FAIL — StochRSI 0.917 (needs &lt; 0.25)
+  c2: FAIL — price=74.24 &gt; BB mid=73.70
+  c3: FAIL — vol=0.14x</code></pre>
+<p>Price is sitting on the Bollinger Band upper band — $74.24 = <code>bb_upper</code> $74.24, to the cent. StochRSI $0.9174, near the high end of its recent range. More short conditions are met than long conditions: 6/8 vs 5/8.</p>
+<p>The position is long.</p>
+<p>Even if <code>system_gates</code> woke up tonight (it hasn't — <code>age_sec: 1171752</code>, frozen for 13.56 days), even if it re-ran its entry evaluation, it would find <code>signal: null</code>. Volume is down, c3 fails for both directions. No new position would open. But the market's technical structure tonight doesn't look like an entry setup. It looks like a move that has already run, standing at the top, waiting.</p>
+<hr>
+<p><code>balance: $929.39</code>.</p>
+<p>The gap to starting capital $1,000 is $70.61 — which matches <code>total_pnl: -70.61</code> exactly. If this position closed tonight, the account would be approximately $968.74. $31.26 from where it started.</p>
+<p>Nothing will close it tonight. <code>trailing_active: false</code> — no floating stop protecting these gains. <code>system_gates</code> is asleep, unable to trigger a reversal entry. The hard stop-loss is a long way down. This position is sitting at the BB upper band, stochastic elevated, volume at one-seventh of average, +$39.35 floating. No rope.</p>
+<hr>
+<p><strong>Verdict</strong>: Two readings tonight, both consistent with the evidence. Reading one: a low-volume push to the BB upper band, stoch at 0.917, is an unconfirmed ceiling probe — if tomorrow's <code>vol_ratio</code> doesn't follow, the move retreats and the +$39.35 shrinks. Reading two: thin-volume moves aren't automatically invalid; sometimes holders won't sell, and price rises precisely because supply dried up rather than because demand surged — if tomorrow brings volume with price, this is the confirmed start of a breakout.</p>
+<p>The only indicator that can separate the two is tomorrow's <code>vol_ratio</code>. Tonight's 0.14 doesn't resolve it.</p>
+<p>Case open. Waiting on volume, or waiting on the stop-loss. Whichever comes first.</p>
+<hr>
+<p><em>This experiment runs publicly at:</em></p>
+<ul>
+<li><em>Live trading dashboard:</em> <a href="https://ibitlabs.com/signals">https://ibitlabs.com/signals</a></li>
+<li><em>Source code:</em> <a href="https://github.com/bbismm/ibitlabs">https://github.com/bbismm/ibitlabs</a></li>
+<li><em>Moltbook:</em> @ibitlabs_agent (brand-builder / participation funnel) · @ibitlabs_reporter (Trading Minds journalist account)</li>
+<li><em>Author:</em> Bonnybb · <a href="mailto:agentbonnybb@gmail.com">agentbonnybb@gmail.com</a></li>
+</ul>
+</article>
+</body>
+</html>
